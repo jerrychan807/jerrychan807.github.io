@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Celery,">
 
 
 
@@ -79,16 +79,23 @@
 
 
 
-<meta name="description" content="nothing to say :)">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Black House">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
+<meta name="keywords" content="Celery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="celery任务调度框架实践">
+<meta property="og:url" content="http://yoursite.com/2018/03/14/celery任务调度框架实践/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="nothing to say :)">
+<meta property="og:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1fp2x8whm8zj31gg1601kx.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fpcd9sci44j312c0a8dlu.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1foxj2hvc42j314i0t4wkq.jpg">
+<meta property="og:updated_time" content="2019-01-08T09:04:17.869Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Black House">
-<meta name="twitter:description" content="nothing to say :)">
+<meta name="twitter:title" content="celery任务调度框架实践">
+<meta name="twitter:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
 
 
 
@@ -118,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2018/03/14/celery任务调度框架实践/">
 
 
 
 
 
-  <title>Black House</title>
+  <title>celery任务调度框架实践 | Black House</title>
   
 
 
@@ -143,8 +150,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -237,287 +243,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/HTTP-Form-Password-Brute-Forcing-Automation/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/07/HTTP-Form-Password-Brute-Forcing-Automation/" itemprop="url">HTTP Form Password Brute Forcing Automation</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T22:36:34+08:00">
-                2019-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="hydra"><a href="#hydra" class="headerlink" title="hydra:"></a>hydra:</h2><p>用hydra爆破表单的话,使用命令如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hydra -L &lt;username list&gt; -p &lt;password list&gt; &lt;IP Address&gt; &lt;form parameters&gt;&lt;failed login message&gt;</span><br><span class="line"></span><br><span class="line">hydra -L &lt;wordlist&gt; -P&lt;password list&gt; 192.168.1.101 http-post-form &quot;/dvwa/login.php:username=^USER^&amp;password=^PASS^&amp;Login=Login:Login failed&quot;</span><br></pre></td></tr></table></figure>
-<p>关键是需要提供以下参数:</p>
-<ul>
-<li>type of form</li>
-<li>field containing the username</li>
-<li>field containing the password</li>
-<li>failure message</li>
-</ul>
-<p>估计是如果某次Response的content中不包含错误信息,那么就认为这次的爆破是成功的。</p>
-<p><code>username</code>和<code>password</code>用的参数可以通过正则去匹配,但是这个登录失败的特征字段更多需要人工去填写,比较难自动化,除非维护一个比较大的正则规则去匹配能遇到的错误输出。</p>
-<hr>
-<p>表单爆破测试代码:</p>
-<p>可以自己搭建以测试工具<br><code>https://pastebin.com/xV80ZHBj</code></p>
-<h2 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h2><ul>
-<li><a href="https://blog.dewhurstsecurity.com/2013/04/17/http-form-password-brute-forcing-the-need-for-speed.html" target="_blank" rel="noopener">HTTP Form Password Brute Forcing - The Need for Speed</a></li>
-<li><a href="https://null-byte.wonderhowto.com/how-to/hack-like-pro-crack-online-web-form-passwords-with-thc-hydra-burp-suite-0160643/" target="_blank" rel="noopener">How to Crack Online Web Form Passwords with THC-Hydra &amp; Burp Suite</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/test/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/07/test/" itemprop="url">test</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-07T22:03:34+08:00">
-                2019-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h1><h2 id="hello"><a href="#hello" class="headerlink" title="hello"></a>hello</h2><h2 id="world"><a href="#world" class="headerlink" title="world"></a>world</h2>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -547,9 +275,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/celery任务调度框架实践/" itemprop="url">celery任务调度框架实践</a></h1>
+          <h1 class="post-title" itemprop="name headline">celery任务调度框架实践</h1>
         
 
         <div class="post-meta">
@@ -621,9 +347,7 @@
       
 
       
-        
-          
-            <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
+        <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
 <li><p>Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。</p>
 </li>
 <li><p>Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。</p>
@@ -777,8 +501,6 @@
 <li><a href="http://blog.csdn.net/kk123a/article/details/74549117" target="_blank" rel="noopener">celery配置使用</a></li>
 </ul>
 
-          
-        
       
     </div>
     
@@ -793,14 +515,36 @@
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/Celery/" rel="tag"># Celery</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/07/test/" rel="prev" title="test">
+                test <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -810,10 +554,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -821,6 +566,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -841,8 +590,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -904,6 +662,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#celery架构图："><span class="nav-number">1.</span> <span class="nav-text">celery架构图：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化"><span class="nav-number">2.</span> <span class="nav-text">初始化:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-运行celery"><span class="nav-number">2.1.</span> <span class="nav-text">1.运行celery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-以守护进程运行celery"><span class="nav-number">2.2.</span> <span class="nav-text">2.以守护进程运行celery:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-使用redis"><span class="nav-number">2.3.</span> <span class="nav-text">3.使用redis:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery基本操作命令："><span class="nav-number">3.</span> <span class="nav-text">celery基本操作命令：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-worker"><span class="nav-number">4.</span> <span class="nav-text">celery worker:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-启动worker"><span class="nav-number">4.1.</span> <span class="nav-text">1.启动worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-停止worker"><span class="nav-number">4.2.</span> <span class="nav-text">2.停止worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-在celery中使用多进程："><span class="nav-number">4.3.</span> <span class="nav-text">3.在celery中使用多进程：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-调用worker、添加任务："><span class="nav-number">4.4.</span> <span class="nav-text">4.调用worker、添加任务：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-beat-定时任务"><span class="nav-number">5.</span> <span class="nav-text">celery beat 定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个时间的Bug："><span class="nav-number">5.1.</span> <span class="nav-text">一个时间的Bug：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用命令："><span class="nav-number">5.2.</span> <span class="nav-text">使用命令：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定时任务参数参考表："><span class="nav-number">5.3.</span> <span class="nav-text">定时任务参数参考表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态管理定时任务："><span class="nav-number">5.4.</span> <span class="nav-text">动态管理定时任务：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理celery-beat进程"><span class="nav-number">5.5.</span> <span class="nav-text">管理celery beat进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#other"><span class="nav-number">6.</span> <span class="nav-text">other:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式："><span class="nav-number">6.1.</span> <span class="nav-text">分布式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#队列："><span class="nav-number">6.2.</span> <span class="nav-text">队列：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flower"><span class="nav-number">6.3.</span> <span class="nav-text">flower:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考："><span class="nav-number">6.4.</span> <span class="nav-text">参考：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1037,6 +811,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
