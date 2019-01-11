@@ -430,6 +430,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/git源码泄露exploit/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/08/git源码泄露exploit/" itemprop="url">git源码泄露exploit</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T17:37:44+08:00">
+                2019-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="gitHack工作原理"><a href="#gitHack工作原理" class="headerlink" title="gitHack工作原理:"></a>gitHack工作原理:</h1><h2 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h2><p>google hack <code>&quot;index of /.git&quot;</code></p>
+<h2 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h2><p><code>/.git/index</code>的作用:</p>
+<blockquote>
+<p>The index is a single, large, binary file in <baseofrepo>/.git/index, which lists all files in the current branch, their sha1 checksums, time stamps and the file name</baseofrepo></p>
+</blockquote>
+<p>通过<code>gin</code>这个工具去解析index文件</p>
+<p>解析结果:</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz2euqtlvpj30u01jnn9k.jpg" alt=""></p>
+<h2 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件:"></a>下载文件:</h2><p>通过上面获得的<code>sha1</code>来构造url:</p>
+<p>.git/objects/<code>sha前两位</code>/<code>sha后两位之后的内容</code></p>
+<p>对返回的数据进行<code>zlib</code>解压就可以下载到文件了</p>
+<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><ul>
+<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
+</ul>
+<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>对<code>.git</code>目录限制,不对外访问</p>
+<h1 id="漏洞原因"><a href="#漏洞原因" class="headerlink" title="漏洞原因:"></a>漏洞原因:</h1><p>开发人员通常会使用版本控制工具来管理代码,在上线的服务器上的根目录上使用简单的git操作就可以很方便的更新、管理代码。</p>
+<p>版本控制工具在带来便利的同时,由于开发人员的疏忽,导致出现源代码安全的问题</p>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://github.com/lijiejie/GitHack" target="_blank" rel="noopener">GitHack</a></li>
+<li><a href="https://www.jianshu.com/p/edae09535ea3" target="_blank" rel="noopener">如何利用.git文件夹下载整个网站泄漏的源码</a></li>
+<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/celery任务调度框架实践/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -759,7 +922,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
