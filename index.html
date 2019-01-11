@@ -374,6 +374,13 @@
 <p>那么其对应的url则为: domain/.svn/pristine/<code>checksum前两位数</code>/<code>checksum</code>加上.svn-base    </p>
 <p>即<code>https://domain/.svn/pristine/0a/0a781ca8d6e963590f208608e3d80f52307a116d.svn-base</code></p>
 <hr>
+<h1 id="题外话"><a href="#题外话" class="headerlink" title="题外话:"></a>题外话:</h1><p>在测试<a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a>的时候,发现有点小问题.提了个<a href="https://github.com/admintony/svnExploit/pull/1" target="_blank" rel="noopener">pr</a>.</p>
+<p>优化:</p>
+<ul>
+<li>1.thread-unsafe的Generator改用thread-safe的queue</li>
+<li>2.兼容Py2</li>
+</ul>
+<hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></li>
 <li><p><a href="https://www.rapid7.com/db/vulnerabilities/spider-svn-entries-disclosure" target="_blank" rel="noopener">Subversion entries file information disclosure</a></p>
