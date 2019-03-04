@@ -79,40 +79,22 @@
 
 
 
-<meta name="description" content="漏洞复现未开启debug模式, 1234567url: http://tp1-11:8888/public/index.php?s=captchapost:_method=__construct&amp;amp;filter[]=system&amp;amp;method=get&amp;amp;get[]=whoami  漏洞分析:定位关键代码:  第525行: 读取了配置文件的var_method,  并赋值 1$t">
+<meta name="description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;); 该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addslas">
 <meta name="keywords" content="VulnAnalysis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析">
-<meta property="og:url" content="http://yoursite.com/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/index.html">
+<meta property="og:title" content="BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
+<meta property="og:url" content="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="漏洞复现未开启debug模式, 1234567url: http://tp1-11:8888/public/index.php?s=captchapost:_method=__construct&amp;amp;filter[]=system&amp;amp;method=get&amp;amp;get[]=whoami  漏洞分析:定位关键代码:  第525行: 读取了配置文件的var_method,  并赋值 1$t">
+<meta property="og:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;); 该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addslas">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz71p6ocs7j31020p60ye.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p3j8xyyj30kd0biag3.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p6dbdpzj308600zjrf.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p91rk3mj306r02swex.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7patm6ucj307m02b3yx.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7ph3unyfj30st0am7ab.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7phjcuvjj306j03vaaq.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7pt0z2w3j30f60kpwjs.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7q2cjmt3j312m0h9n9p.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7qexfkgjj30a603aq3l.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg">
-<meta property="og:updated_time" content="2019-01-15T16:50:59.376Z">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fs1vjs44hvj30mm0h0q9g.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1fsi095pjgmj31260jk7l0.jpg">
+<meta property="og:updated_time" content="2019-03-04T04:25:29.415Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析">
-<meta name="twitter:description" content="漏洞复现未开启debug模式, 1234567url: http://tp1-11:8888/public/index.php?s=captchapost:_method=__construct&amp;amp;filter[]=system&amp;amp;method=get&amp;amp;get[]=whoami  漏洞分析:定位关键代码:  第525行: 读取了配置文件的var_method,  并赋值 1$t">
-<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz71p6ocs7j31020p60ye.jpg">
+<meta name="twitter:title" content="BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
+<meta name="twitter:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;); 该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addslas">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg">
 
 
 
@@ -142,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/">
+  <link rel="canonical" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
 
 
 
 
 
-  <title>ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析 | Black House</title>
+  <title>BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析 | Black House</title>
   
 
 
@@ -275,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -292,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</h1>
+          <h1 class="post-title" itemprop="name headline">BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</h1>
         
 
         <div class="post-meta">
@@ -304,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T22:36:34+08:00">
-                2019-01-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T00:49:00+08:00">
+                2018-06-20
               </time>
             
 
@@ -364,76 +346,85 @@
       
 
       
-        <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>未开启debug模式,</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz71p6ocs7j31020p60ye.jpg" alt=""></p>
-<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><p>定位关键代码:</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p3j8xyyj30kd0biag3.jpg" alt=""></p>
-<p>第525行: 读取了配置文件的<code>var_method</code>,</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p6dbdpzj308600zjrf.jpg" alt=""></p>
-<p>并赋值</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
-<p>第526行: </p>
-<p>引用了外部变量$POST</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p91rk3mj306r02swex.jpg" alt=""></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;method&#125;($_POST);</span><br></pre></td></tr></table></figure>
-<p>执行结果:</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7patm6ucj307m02b3yx.jpg" alt=""></p>
-<p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7ph3unyfj30st0am7ab.jpg" alt=""></p>
-<p>构造函数引入了外部变量,准备创建一个新实例</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7phjcuvjj306j03vaaq.jpg" alt=""></p>
-<p>这个实例的属性</p>
+        <h1 id="略读代码："><a href="#略读代码：" class="headerlink" title="略读代码："></a>略读代码：</h1><p>开头包含了文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &apos;/include/common.inc.php&apos;);</span><br></pre></td></tr></table></figure>
+<p>该文件中,<strong>全局数据转义</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
+<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg" alt=""></p>
+<hr>
+<h1 id="转换思路："><a href="#转换思路：" class="headerlink" title="转换思路："></a>转换思路：</h1><blockquote>
+<p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
+</blockquote>
+<p>参考一下：<a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></p>
+<p>可以发现对数据的注入，进行了<strong>加斜杠转义</strong>的操作。那么接下来找注入思路主要有以下3点：</p>
 <ul>
-<li><code>$method</code>被设置成了<code>get</code></li>
-<li><code>$get</code>方法的请求参数被设置成了一个array,值为<code>whoami</code></li>
-<li>全局过滤规则<code>$filter</code>被设置成了一个array,值为<code>system</code></li>
+<li>找<strong>整数型注入</strong></li>
+<li>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong><ul>
+<li><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fs1vjs44hvj30mm0h0q9g.jpg" alt="">  </li>
 </ul>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7pt0z2w3j30f60kpwjs.jpg" alt=""></p>
-<p>这个时候实例的初始化完成了。</p>
-<p>跳回到了<code>Route.php</code>检测URL路由的函数<code>check()</code>,这个时候的<code>method</code>值为<code>get</code></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7q2cjmt3j312m0h9n9p.jpg" alt=""></p>
-<p>经过一连串检测之后,</p>
-<p><code>App.php</code>run()函数对请求执行调用分发</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7qexfkgjj30a603aq3l.jpg" alt=""></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt=""></p>
-<p>继续跟进，</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt=""></p>
-<p>调用栈:</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt=""></p>
+</li>
+<li><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</li>
+</ul>
+<hr>
+<h1 id="尝试宽字节注入："><a href="#尝试宽字节注入：" class="headerlink" title="尝试宽字节注入："></a>尝试宽字节注入：</h1><ul>
+<li>抓包修改<code>admin_name=%df%27+or+1%3D1%23</code></li>
+<li>明文就是<code>%df&#39; or 1=1#</code></li>
+<li>单引号被转义后变成<code>%df\&#39; or 1=1#</code></li>
+<li>宽字节注入是利用mysql的一个特性,因为gbk是多字节编码，他认为两个字节代表一个汉字，所以<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来，就可以成功闭合sql语句了</li>
+<li>再加上后面的<code>or 1=1 #</code>就构造成了永真语句，可以成功免密登录管理员后台了</li>
+</ul>
+<hr>
+<h1 id="理解宽字节："><a href="#理解宽字节：" class="headerlink" title="理解宽字节："></a>理解宽字节：</h1><p>参考:<a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></p>
 <ul>
-<li><code>param()</code>获取当前请求的参数</li>
-<li><code>method()</code>当前的请求类型</li>
-<li><code>server()</code>获取server参数</li>
-<li><code>input()</code>获取变量 支持过滤和默认值</li>
-<li><code>getFilter()</code>获取过滤方法</li>
-</ul>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt=""></p>
-<p>这个时候我们之前创建的请求实例的<code>filter</code>方法为<code>system</code></p>
-<p>继续</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt=""></p>
+<li>本质是如何绕过addslashes函数：</li>
+<li>addslashes函数产生的效果就是，让<code>’</code>变成<code>\’</code>，让引号变得不再是“单引号”</li>
+<li><p>一般绕过方式就是，想办法处理<code>\’</code>前面的<code>\</code></p>
 <ul>
-<li><code>param()</code>获取当前请求的参数</li>
+<li>想办法给\前面再加一个\（或单数个即可），变成<code>\\’</code>，这样<code>\</code>被转义了，<code>’</code>逃出了限制</li>
+<li>想办法把<code>\</code>弄没有。</li>
 </ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt=""></p>
+</li>
+<li><p>mysql怎么判断一个字符是不是汉字?</p>
 <ul>
-<li><code>get()</code>设置获取GET参数</li>
+<li>根据gbk编码，第一个字节ascii码大于128，基本上就可以了。比如我们不用<code>%df</code>，用<code>%a1</code>也可以 </li>
 </ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt=""></p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt=""></p>
+</li>
+<li><p>gb2312和gbk的区别？</p>
 <ul>
-<li><code>input()</code>获取变量 支持过滤和默认值</li>
+<li>gb2312编码的取值范围。它的高位范围是<code>0xA1~0xF7</code>，低位范围是<code>0xA1~0xFE</code>，而<code>\</code>是<code>0x5c</code>，是不在低位范围中的。</li>
+<li><code>0x5c</code>根本不是gb2312中的编码，所以自然也是不会被吃掉的。 </li>
 </ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt=""></p>
+</li>
+</ul>
+<p>修复方案1：</p>
 <ul>
-<li><code>array_walk_recursive()</code></li>
-<li><code>filterValue</code>递归过滤给定的值<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt=""></li>
+<li>先调用mysql_set_charset函数设置连接所使用的字符集为gbk</li>
+<li><p>再调用mysql_real_escape_string来过滤用户输入。</p>
+</li>
+<li><p>这个方式是可行的，但有部分老的cms，在多处使用addslashes来过滤字符串，我们不可能去一个一个把addslashes都修改成mysql_real_escape_string。</p>
+</li>
 </ul>
-<p>执行结果:</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt=""></p>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://xz.aliyun.com/t/3845" target="_blank" rel="noopener">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></li>
-<li><a href="https://blog.csdn.net/u012903789/article/details/82433160" target="_blank" rel="noopener">php://input</a></li>
+<p>所以有修复方案2：</p>
+<ul>
+<li>将character_set_client设置为binary（二进制）。</li>
+<li>只需在所有sql语句前指定一下连接的形式是二进制：<br><code>mysql_query(&quot;SET character_set_connection=gbk, character_set_results=gbk,character_set_client=binary&quot;, $conn);</code></li>
+<li>所有数据以二进制的形式传递，就能有效避免宽字符注入。</li>
+</ul>
+<hr>
+<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><h2 id="requests不进行urldecode："><a href="#requests不进行urldecode：" class="headerlink" title="requests不进行urldecode："></a>requests不进行urldecode：</h2><p>参考：<a href="https://zhidao.baidu.com/question/1510942862655764300.html" target="_blank" rel="noopener">如何在requests post时不做urlencode</a><br>There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
+<p>并且加上<code>headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}</code></p>
+<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fsi095pjgmj31260jk7l0.jpg" alt=""></p>
+<p><a href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py" target="_blank" rel="noopener">poc链接</a></p>
+<hr>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>阅读源码的时候，先看看全局过滤</li>
+<li>gb2312、gbk编码的话，考虑宽字节注入</li>
+<li>宽字节注入的原理是 gbk是<strong>多字节编码</strong>，他认为两个字节代表一个汉字，所以可以用<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来</li>
+</ul>
+<hr>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
+<li><a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></li>
+<li><a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></li>
 </ul>
 
       
@@ -465,8 +456,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/11/子域名搜集/" rel="next" title="子域名搜集">
-                <i class="fa fa-chevron-left"></i> 子域名搜集
+              <a href="/2018/06/03/日志分析环境搭建/" rel="next" title="日志分析环境搭建">
+                <i class="fa fa-chevron-left"></i> 日志分析环境搭建
               </a>
             
           </div>
@@ -475,8 +466,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/16/获取masscan的扫描进度/" rel="prev" title="获取masscan的扫描进度">
-                获取masscan的扫描进度 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/11/BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析/" rel="prev" title="BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析">
+                BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -611,7 +602,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞复现"><span class="nav-number">1.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#略读代码："><span class="nav-number">1.</span> <span class="nav-text">略读代码：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转换思路："><span class="nav-number">2.</span> <span class="nav-text">转换思路：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#尝试宽字节注入："><span class="nav-number">3.</span> <span class="nav-text">尝试宽字节注入：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#理解宽字节："><span class="nav-number">4.</span> <span class="nav-text">理解宽字节：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写pocsuite插件："><span class="nav-number">5.</span> <span class="nav-text">编写pocsuite插件：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#requests不进行urldecode："><span class="nav-number">5.1.</span> <span class="nav-text">requests不进行urldecode：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证："><span class="nav-number">5.2.</span> <span class="nav-text">验证：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结："><span class="nav-number">6.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-number">7.</span> <span class="nav-text">参考：</span></a></li></ol></div>
             
 
           </div>
