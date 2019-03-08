@@ -252,6 +252,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/python-dynamic typing/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/07/python-dynamic typing/" itemprop="url">python-dynamic typing</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T14:36:34+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><h2 id="Question1"><a href="#Question1" class="headerlink" title="Question1:"></a>Question1:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">&lt;type <span class="string">'int'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>我们并没有显示声明<code>a</code>是个变量而且它的类型为<code>int</code></p>
+<p>那么python是怎么知道<code>a</code>是个变量而且知道它的类型的呢?</p>
+<h2 id="Question2"><a href="#Question2" class="headerlink" title="Question2:"></a>Question2:</h2><p>执行以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'string'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">'string'</span></span><br></pre></td></tr></table></figure>
+<p>a 的类型怎么发生了变化?</p>
+<hr>
+<p>以上2个问题涉及到python的一个重要的概念:<strong>动态类型(dynamic typing)</strong></p>
+<p>要搞清楚动态类型之前要先搞清楚3个重要的概念及其关系:</p>
+<ul>
+<li>Object 对象</li>
+<li>Reference 引用</li>
+<li>Variable 变量</li>
+</ul>
+<h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
+<p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg" alt=""></p>
+<p>除了告诉解释器它是多少位后,它还要声明类型.</p>
+<p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>由于我们不能直接接触到存在内存中的对象,能操作的是变量名,所以我们要将变量和对象建立一个关系:引用<code>reference</code></p>
+<p>python的引用跟C语言的指针很像,因为引用就是用指针实现的.</p>
+<h2 id="Variable"><a href="#Variable" class="headerlink" title="Variable:"></a>Variable:</h2><p>建立引用关系之后,我们就可以用变量名来操控对象了.</p>
+<p>所以,变量是对对象的引用的一个符号名。</p>
+<h2 id="三者的关系"><a href="#三者的关系" class="headerlink" title="三者的关系:"></a>三者的关系:</h2><p>变量和对象存储在内存的不同部分中,并链接了起来(由指针).</p>
+<p>实际就是,执行一个赋值语句的时候,python会做三件事:</p>
+<ol>
+<li>创建一个<code>对象</code>代表数值3</li>
+<li>创建一个<code>变量名a</code></li>
+<li>将<code>对象3</code>和<code>变量a</code>关联起来</li>
+</ol>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0v6sf2u9oj30mk094wfa.jpg" alt=""></p>
+<hr>
+<h1 id="共享引用"><a href="#共享引用" class="headerlink" title="共享引用"></a>共享引用</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0vcn69bszj30t40ag75n.jpg" alt=""></p>
+<p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'spam'</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0vcpscqerj30s20ec40e.jpg" alt=""></p>
+<p><code>变量a</code> 改变了指向，指向到了<code>&#39;spam&#39;对象</code></p>
+<p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li>《Studing Learning Python》</li>
+<li><a href="https://realpython.com/python-variables/" target="_blank" rel="noopener">Variables in Python</a></li>
+<li><a href="http://www.cnblogs.com/vamei/archive/2012/07/10/2582795.html" target="_blank" rel="noopener">Python进阶09 动态类型</a></li>
+<li><a href="https://www.youtube.com/watch?v=OE2j6hlU88o&amp;t=2s" target="_blank" rel="noopener">Dynamic Typing in Python</a></li>
+<li><a href="https://eli.thegreenplace.net/2012/03/30/python-objects-types-classes-and-instances-a-glossary" target="_blank" rel="noopener">Python objects, types, classes, and instances - a glossary</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/Centos7 Docker部署漏洞环境/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -382,7 +570,9 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看CONTAINER ID </span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                            NAMES</span><br><span class="line">6aa16caac712        medicean/vulapps:s_struts2_s2-032   <span class="string">"/usr/local/tomcat/b…"</span>   22 seconds ago      Up 21 seconds       0.0.0.0:80-&gt;8080/tcp             keen_carson</span><br><span class="line">ee8ea1d1acdd        medicean/vulapps:r_redis_1          <span class="string">"/start.sh"</span>              30 minutes ago      Up 4 minutes        22/tcp, 0.0.0.0:6379-&gt;6379/tcp   redisvul</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 参数always:始终重启,更新设为开机自启</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker update --restart=always 6aa16caac712</span></span><br><span class="line">6aa16caac712</span><br></pre></td></tr></table></figure>
 <p>重启机子,后允许<code>docker ps</code>查看是否自启成功</p>
-<h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
+<h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><h2 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器:"></a>删除容器:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有container</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES</span><br><span class="line">e6318265a202        httpd:centos        <span class="string">"/run.sh"</span>           5 minutes ago       Exited (127) 5 minutes ago                       httpd1              </span><br><span class="line">eaf9ee72f448        httpd:centos        <span class="string">"/run.sh"</span>           6 minutes ago                                                        httpd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># "docker rm 容器id"来删除一个终止状态的容器；若要删除一个运行中的容器，需要加-f参数。</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker rm e6318265a202</span></span><br><span class="line">e6318265a202</span><br></pre></td></tr></table></figure>
+<h2 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像:"></a>删除镜像:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除images，通过image的id来指定删除谁</span></span><br><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
 <hr>
 <h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>这样就可以使用一台机子来专门安装漏洞环境,方便poc测试、调试。</p>
@@ -1945,227 +2135,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/" itemprop="url">BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T00:49:00+08:00">
-                2018-06-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
-                    <span itemprop="name">VulnAnalysis</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="略读代码："><a href="#略读代码：" class="headerlink" title="略读代码："></a>略读代码：</h1><p>开头包含了文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &apos;/include/common.inc.php&apos;);</span><br></pre></td></tr></table></figure>
-<p>该文件中,<strong>全局数据转义</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
-<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg" alt=""></p>
-<hr>
-<h1 id="转换思路："><a href="#转换思路：" class="headerlink" title="转换思路："></a>转换思路：</h1><blockquote>
-<p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
-</blockquote>
-<p>参考一下：<a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></p>
-<p>可以发现对数据的注入，进行了<strong>加斜杠转义</strong>的操作。那么接下来找注入思路主要有以下3点：</p>
-<ul>
-<li>找<strong>整数型注入</strong></li>
-<li>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong><ul>
-<li><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fs1vjs44hvj30mm0h0q9g.jpg" alt="">  </li>
-</ul>
-</li>
-<li><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</li>
-</ul>
-<hr>
-<h1 id="尝试宽字节注入："><a href="#尝试宽字节注入：" class="headerlink" title="尝试宽字节注入："></a>尝试宽字节注入：</h1><ul>
-<li>抓包修改<code>admin_name=%df%27+or+1%3D1%23</code></li>
-<li>明文就是<code>%df&#39; or 1=1#</code></li>
-<li>单引号被转义后变成<code>%df\&#39; or 1=1#</code></li>
-<li>宽字节注入是利用mysql的一个特性,因为gbk是多字节编码，他认为两个字节代表一个汉字，所以<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来，就可以成功闭合sql语句了</li>
-<li>再加上后面的<code>or 1=1 #</code>就构造成了永真语句，可以成功免密登录管理员后台了</li>
-</ul>
-<hr>
-<h1 id="理解宽字节："><a href="#理解宽字节：" class="headerlink" title="理解宽字节："></a>理解宽字节：</h1><p>参考:<a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></p>
-<ul>
-<li>本质是如何绕过addslashes函数：</li>
-<li>addslashes函数产生的效果就是，让<code>’</code>变成<code>\’</code>，让引号变得不再是“单引号”</li>
-<li><p>一般绕过方式就是，想办法处理<code>\’</code>前面的<code>\</code></p>
-<ul>
-<li>想办法给\前面再加一个\（或单数个即可），变成<code>\\’</code>，这样<code>\</code>被转义了，<code>’</code>逃出了限制</li>
-<li>想办法把<code>\</code>弄没有。</li>
-</ul>
-</li>
-<li><p>mysql怎么判断一个字符是不是汉字?</p>
-<ul>
-<li>根据gbk编码，第一个字节ascii码大于128，基本上就可以了。比如我们不用<code>%df</code>，用<code>%a1</code>也可以 </li>
-</ul>
-</li>
-<li><p>gb2312和gbk的区别？</p>
-<ul>
-<li>gb2312编码的取值范围。它的高位范围是<code>0xA1~0xF7</code>，低位范围是<code>0xA1~0xFE</code>，而<code>\</code>是<code>0x5c</code>，是不在低位范围中的。</li>
-<li><code>0x5c</code>根本不是gb2312中的编码，所以自然也是不会被吃掉的。 </li>
-</ul>
-</li>
-</ul>
-<p>修复方案1：</p>
-<ul>
-<li>先调用mysql_set_charset函数设置连接所使用的字符集为gbk</li>
-<li><p>再调用mysql_real_escape_string来过滤用户输入。</p>
-</li>
-<li><p>这个方式是可行的，但有部分老的cms，在多处使用addslashes来过滤字符串，我们不可能去一个一个把addslashes都修改成mysql_real_escape_string。</p>
-</li>
-</ul>
-<p>所以有修复方案2：</p>
-<ul>
-<li>将character_set_client设置为binary（二进制）。</li>
-<li>只需在所有sql语句前指定一下连接的形式是二进制：<br><code>mysql_query(&quot;SET character_set_connection=gbk, character_set_results=gbk,character_set_client=binary&quot;, $conn);</code></li>
-<li>所有数据以二进制的形式传递，就能有效避免宽字符注入。</li>
-</ul>
-<hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><h2 id="requests不进行urldecode："><a href="#requests不进行urldecode：" class="headerlink" title="requests不进行urldecode："></a>requests不进行urldecode：</h2><p>参考：<a href="https://zhidao.baidu.com/question/1510942862655764300.html" target="_blank" rel="noopener">如何在requests post时不做urlencode</a><br>There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
-<p>并且加上<code>headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}</code></p>
-<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fsi095pjgmj31260jk7l0.jpg" alt=""></p>
-<p><a href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py" target="_blank" rel="noopener">poc链接</a></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>阅读源码的时候，先看看全局过滤</li>
-<li>gb2312、gbk编码的话，考虑宽字节注入</li>
-<li>宽字节注入的原理是 gbk是<strong>多字节编码</strong>，他认为两个字节代表一个汉字，所以可以用<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来</li>
-</ul>
-<hr>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
-<li><a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></li>
-<li><a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2218,7 +2187,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2229,7 +2198,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2240,7 +2209,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

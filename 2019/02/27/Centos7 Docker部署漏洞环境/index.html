@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="docker安装: 查询可用版本  123456789101112131415161718192021222324[root@localhost ~]# yum list docker-ce --showduplicates | sort -r已加载插件：fastestmirror, langpacks可安装的软件包Loading mirror speeds from cached hostfil">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-27T10:20:11.546Z">
+<meta property="og:updated_time" content="2019-03-05T03:50:16.777Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Centos7 Docker部署漏洞环境">
 <meta name="twitter:description" content="docker安装: 查询可用版本  123456789101112131415161718192021222324[root@localhost ~]# yum list docker-ce --showduplicates | sort -r已加载插件：fastestmirror, langpacks可安装的软件包Loading mirror speeds from cached hostfil">
@@ -379,7 +379,9 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看CONTAINER ID </span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                            NAMES</span><br><span class="line">6aa16caac712        medicean/vulapps:s_struts2_s2-032   <span class="string">"/usr/local/tomcat/b…"</span>   22 seconds ago      Up 21 seconds       0.0.0.0:80-&gt;8080/tcp             keen_carson</span><br><span class="line">ee8ea1d1acdd        medicean/vulapps:r_redis_1          <span class="string">"/start.sh"</span>              30 minutes ago      Up 4 minutes        22/tcp, 0.0.0.0:6379-&gt;6379/tcp   redisvul</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 参数always:始终重启,更新设为开机自启</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker update --restart=always 6aa16caac712</span></span><br><span class="line">6aa16caac712</span><br></pre></td></tr></table></figure>
 <p>重启机子,后允许<code>docker ps</code>查看是否自启成功</p>
-<h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
+<h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><h2 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器:"></a>删除容器:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有container</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES</span><br><span class="line">e6318265a202        httpd:centos        <span class="string">"/run.sh"</span>           5 minutes ago       Exited (127) 5 minutes ago                       httpd1              </span><br><span class="line">eaf9ee72f448        httpd:centos        <span class="string">"/run.sh"</span>           6 minutes ago                                                        httpd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># "docker rm 容器id"来删除一个终止状态的容器；若要删除一个运行中的容器，需要加-f参数。</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker rm e6318265a202</span></span><br><span class="line">e6318265a202</span><br></pre></td></tr></table></figure>
+<h2 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像:"></a>删除镜像:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除images，通过image的id来指定删除谁</span></span><br><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
 <hr>
 <h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>这样就可以使用一台机子来专门安装漏洞环境,方便poc测试、调试。</p>
@@ -427,6 +429,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/07/python-dynamic typing/" rel="prev" title="python-dynamic typing">
+                python-dynamic typing <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -505,7 +511,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -516,7 +522,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -527,7 +533,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -560,7 +566,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装"><span class="nav-number">1.</span> <span class="nav-text">docker安装:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞环境下载"><span class="nav-number">2.</span> <span class="nav-text">漏洞环境下载:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开机自启"><span class="nav-number">3.</span> <span class="nav-text">开机自启:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-服务开机自启"><span class="nav-number">3.1.</span> <span class="nav-text">docker 服务开机自启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞环境容器的开机自启"><span class="nav-number">3.2.</span> <span class="nav-text">漏洞环境容器的开机自启</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他常用命令"><span class="nav-number">4.</span> <span class="nav-text">其他常用命令:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#others"><span class="nav-number">5.</span> <span class="nav-text">others:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker安装"><span class="nav-number">1.</span> <span class="nav-text">docker安装:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞环境下载"><span class="nav-number">2.</span> <span class="nav-text">漏洞环境下载:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开机自启"><span class="nav-number">3.</span> <span class="nav-text">开机自启:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-服务开机自启"><span class="nav-number">3.1.</span> <span class="nav-text">docker 服务开机自启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞环境容器的开机自启"><span class="nav-number">3.2.</span> <span class="nav-text">漏洞环境容器的开机自启</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他常用命令"><span class="nav-number">4.</span> <span class="nav-text">其他常用命令:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#删除容器"><span class="nav-number">4.1.</span> <span class="nav-text">删除容器:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除镜像"><span class="nav-number">4.2.</span> <span class="nav-text">删除镜像:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#others"><span class="nav-number">5.</span> <span class="nav-text">others:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>
