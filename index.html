@@ -1257,6 +1257,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/简单的代码离线更新方案/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/13/简单的代码离线更新方案/" itemprop="url">简单的代码离线更新方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">
+                2019-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
+<hr>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
+<p>两者的区别:</p>
+<p><a href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle" target="_blank" rel="noopener">Which is better to use and why? git format-patch or git bundle?</a></p>
+<blockquote>
+<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
+</blockquote>
+<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
+<hr>
+<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
+<ul>
+<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
+<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
+<li>可能你的无线、有线网卡坏掉了。 </li>
+<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
+</ul>
+<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
+<hr>
+<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
+<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
+<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
+</blockquote>
+<blockquote>
+<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
+</blockquote>
+<blockquote>
+<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
+</blockquote>
+<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
+<p>某两次提交之间的所有patch:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
+<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+<p>打入patch/diff:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
+<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
+<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
+<hr>
+<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
+<li>更新包生成端:<ul>
+<li>分别生成各个项目的<code>bundle</code>文件</li>
+<li>加密压缩成<code>zip</code>文件</li>
+</ul>
+</li>
+<li>更新包使用端:<ul>
+<li>用密钥解密压缩包</li>
+<li>到指定目录移除原来的项目,执行<code>git clone</code> </li>
+</ul>
+</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg" alt=""></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="http://www.mottoin.com/article/network/97143.html" target="_blank" rel="noopener">巡风在隔离网络环境下的离线更新方案</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/33208607" target="_blank" rel="noopener">携程无线离线包增量更新方案实践</a></li>
+<li><a href="https://gitee.com/liujin0506/autopatch" target="_blank" rel="noopener">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
+<li><a href="https://blog.csdn.net/jinweilin/article/details/78356860" target="_blank" rel="noopener">git打两个版本的增量包</a></li>
+<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
+<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85" target="_blank" rel="noopener">Git 工具 - 打包</a></li>
+<li><a href="https://github.com/an23lm/GitBundlePlus" target="_blank" rel="noopener">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
+<li><a href="https://blog.csdn.net/sinat_20059415/article/details/80598347" target="_blank" rel="noopener">git 打补丁方法总结</a></li>
+<li><a href="https://blog.csdn.net/kangear/article/details/39675421" target="_blank" rel="noopener">Git打补丁常见问题</a></li>
+<li><a href="https://www.cnblogs.com/y041039/articles/2411600.html" target="_blank" rel="noopener">Git的Patch功能</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/获取masscan的扫描进度/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1973,169 +2191,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/git源码泄露exploit/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/08/git源码泄露exploit/" itemprop="url">git源码泄露exploit</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T17:37:44+08:00">
-                2019-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="gitHack工作原理"><a href="#gitHack工作原理" class="headerlink" title="gitHack工作原理:"></a>gitHack工作原理:</h1><h2 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h2><p>google hack <code>&quot;index of /.git&quot;</code></p>
-<h2 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h2><p><code>/.git/index</code>的作用:</p>
-<blockquote>
-<p>The index is a single, large, binary file in <baseofrepo>/.git/index, which lists all files in the current branch, their sha1 checksums, time stamps and the file name</baseofrepo></p>
-</blockquote>
-<p>通过<code>gin</code>这个工具去解析index文件</p>
-<p>解析结果:</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz2euqtlvpj30u01jnn9k.jpg" alt=""></p>
-<h2 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件:"></a>下载文件:</h2><p>通过上面获得的<code>sha1</code>来构造url:</p>
-<p>.git/objects/<code>sha前两位</code>/<code>sha后两位之后的内容</code></p>
-<p>对返回的数据进行<code>zlib</code>解压就可以下载到文件了</p>
-<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><ul>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
-</ul>
-<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>对<code>.git</code>目录限制,不对外访问</p>
-<h1 id="漏洞原因"><a href="#漏洞原因" class="headerlink" title="漏洞原因:"></a>漏洞原因:</h1><p>开发人员通常会使用版本控制工具来管理代码,在上线的服务器上的根目录上使用简单的git操作就可以很方便的更新、管理代码。</p>
-<p>版本控制工具在带来便利的同时,由于开发人员的疏忽,导致出现源代码安全的问题</p>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/lijiejie/GitHack" target="_blank" rel="noopener">GitHack</a></li>
-<li><a href="https://www.jianshu.com/p/edae09535ea3" target="_blank" rel="noopener">如何利用.git文件夹下载整个网站泄漏的源码</a></li>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2188,7 +2243,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
