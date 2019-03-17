@@ -570,10 +570,14 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line"><span class="keyword">print</span> kb.a</span><br></pre></td></tr></table></figure>
 <p>执行<code>print kb.a</code>的时候,访问一个不存在的属性的时候,会隐式调用<code>__getattr__</code>这个super method.</p>
 <p>当属性不存在的时候,<code>__getattr__</code>会raise an AttributeError exception.</p>
-<p>默认的<code>__getattr__</code>的报错:</p>
+<ul>
+<li><p>默认的<code>__getattr__</code>的报错:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &apos;AttribDict&apos; object has no attribute &apos;a&apos;</span><br></pre></td></tr></table></figure>
-<p>修改过的<code>__getattr__</code>的报错:</p>
+</li>
+<li><p>修改过的<code>__getattr__</code>的报错:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: unable to access item &apos;a&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
 <p>额,效果只是让错误输出更友好而已….</p>
 <h2 id="getstate-序列化"><a href="#getstate-序列化" class="headerlink" title="__getstate__ 序列化"></a><code>__getstate__</code> 序列化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getstate__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self.__dict__</span><br></pre></td></tr></table></figure>
 <p>代替对象的<strong>dict</strong>属性被保存。</p>
