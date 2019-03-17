@@ -348,6 +348,7 @@
             <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><h2 id="Question1"><a href="#Question1" class="headerlink" title="Question1:"></a>Question1:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">&lt;type <span class="string">'int'</span>&gt;</span><br></pre></td></tr></table></figure>
 <p>我们并没有显示声明<code>a</code>是个变量而且它的类型为<code>int</code></p>
 <p>那么python是怎么知道<code>a</code>是个变量而且知道它的类型的呢?</p>
+<hr>
 <h2 id="Question2"><a href="#Question2" class="headerlink" title="Question2:"></a>Question2:</h2><p>执行以下代码</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'string'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">'string'</span></span><br></pre></td></tr></table></figure>
 <p>a 的类型怎么发生了变化?</p>
@@ -359,15 +360,19 @@
 <li>Reference 引用</li>
 <li>Variable 变量</li>
 </ul>
+<hr>
 <h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
 <p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
 <p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg" alt=""></p>
 <p>除了告诉解释器它是多少位后,它还要声明类型.</p>
 <p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
+<hr>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>由于我们不能直接接触到存在内存中的对象,能操作的是变量名,所以我们要将变量和对象建立一个关系:引用<code>reference</code></p>
 <p>python的引用跟C语言的指针很像,因为引用就是用指针实现的.</p>
+<hr>
 <h2 id="Variable"><a href="#Variable" class="headerlink" title="Variable:"></a>Variable:</h2><p>建立引用关系之后,我们就可以用变量名来操控对象了.</p>
 <p>所以,变量是对对象的引用的一个符号名。</p>
+<hr>
 <h2 id="三者的关系"><a href="#三者的关系" class="headerlink" title="三者的关系:"></a>三者的关系:</h2><p>变量和对象存储在内存的不同部分中,并链接了起来(由指针).</p>
 <p>实际就是,执行一个赋值语句的时候,python会做三件事:</p>
 <ol>
