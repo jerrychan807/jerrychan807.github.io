@@ -252,6 +252,218 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/" itemprop="url">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T22:36:34+08:00">
+                2019-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
+                    <span itemprop="name">VulnAnalysis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>未开启debug模式,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz71p6ocs7j31020p60ye.jpg" alt=""></p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><p>定位关键代码:</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p3j8xyyj30kd0biag3.jpg" alt=""></p>
+<p>第525行: 读取了配置文件的<code>var_method</code>,</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p6dbdpzj308600zjrf.jpg" alt=""></p>
+<p>并赋值</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
+<p>第526行: </p>
+<p>引用了外部变量$POST</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7p91rk3mj306r02swex.jpg" alt=""></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;method&#125;($_POST);</span><br></pre></td></tr></table></figure>
+<p>执行结果:</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7patm6ucj307m02b3yx.jpg" alt=""></p>
+<p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7ph3unyfj30st0am7ab.jpg" alt=""></p>
+<p>构造函数引入了外部变量,准备创建一个新实例</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7phjcuvjj306j03vaaq.jpg" alt=""></p>
+<p>这个实例的属性</p>
+<ul>
+<li><code>$method</code>被设置成了<code>get</code></li>
+<li><code>$get</code>方法的请求参数被设置成了一个array,值为<code>whoami</code></li>
+<li>全局过滤规则<code>$filter</code>被设置成了一个array,值为<code>system</code></li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7pt0z2w3j30f60kpwjs.jpg" alt=""></p>
+<p>这个时候实例的初始化完成了。</p>
+<p>跳回到了<code>Route.php</code>检测URL路由的函数<code>check()</code>,这个时候的<code>method</code>值为<code>get</code></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7q2cjmt3j312m0h9n9p.jpg" alt=""></p>
+<p>经过一连串检测之后,</p>
+<p><code>App.php</code>run()函数对请求执行调用分发</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7qexfkgjj30a603aq3l.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt=""></p>
+<p>继续跟进，</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt=""></p>
+<p>调用栈:</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt=""></p>
+<ul>
+<li><code>param()</code>获取当前请求的参数</li>
+<li><code>method()</code>当前的请求类型</li>
+<li><code>server()</code>获取server参数</li>
+<li><code>input()</code>获取变量 支持过滤和默认值</li>
+<li><code>getFilter()</code>获取过滤方法</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt=""></p>
+<p>这个时候我们之前创建的请求实例的<code>filter</code>方法为<code>system</code></p>
+<p>继续</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt=""></p>
+<ul>
+<li><code>param()</code>获取当前请求的参数</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt=""></p>
+<ul>
+<li><code>get()</code>设置获取GET参数</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt=""></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt=""></p>
+<ul>
+<li><code>input()</code>获取变量 支持过滤和默认值</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt=""></p>
+<ul>
+<li><code>array_walk_recursive()</code></li>
+<li><code>filterValue</code>递归过滤给定的值<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt=""></li>
+</ul>
+<p>执行结果:</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt=""></p>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://xz.aliyun.com/t/3845" target="_blank" rel="noopener">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></li>
+<li><a href="https://blog.csdn.net/u012903789/article/details/82433160" target="_blank" rel="noopener">php://input</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/子域名搜集/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1876,7 +2088,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
