@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Celery,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -79,23 +79,16 @@
 
 
 
-<meta name="description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
-<meta name="keywords" content="Celery">
-<meta property="og:type" content="article">
-<meta property="og:title" content="celery任务调度框架实践">
-<meta property="og:url" content="http://yoursite.com/2018/03/14/celery任务调度框架实践/index.html">
+<meta name="description" content="nothing to say :)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Black House">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
+<meta property="og:description" content="nothing to say :)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1fp2x8whm8zj31gg1601kx.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fpcd9sci44j312c0a8dlu.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1foxj2hvc42j314i0t4wkq.jpg">
-<meta property="og:updated_time" content="2019-01-08T09:04:17.869Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="celery任务调度框架实践">
-<meta name="twitter:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
+<meta name="twitter:title" content="Black House">
+<meta name="twitter:description" content="nothing to say :)">
 
 
 
@@ -125,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/14/celery任务调度框架实践/">
+  <link rel="canonical" href="http://yoursite.com/page/3/">
 
 
 
 
 
-  <title>celery任务调度框架实践 | Black House</title>
+  <title>Black House</title>
   
 
 
@@ -150,7 +143,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -243,9 +237,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -275,7 +269,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">celery任务调度框架实践</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/14/celery任务调度框架实践/" itemprop="url">celery任务调度框架实践</a></h1>
         
 
         <div class="post-meta">
@@ -347,7 +343,9 @@
       
 
       
-        <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
+        
+          
+            <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
 <li><p>Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。</p>
 </li>
 <li><p>Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。</p>
@@ -501,6 +499,8 @@
 <li><a href="http://blog.csdn.net/kk123a/article/details/74549117" target="_blank" rel="noopener">celery配置使用</a></li>
 </ul>
 
+          
+        
       
     </div>
     
@@ -515,36 +515,14 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Celery/" rel="tag"># Celery</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/06/03/日志分析环境搭建/" rel="prev" title="日志分析环境搭建">
-                日志分析环境搭建 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -554,11 +532,14 @@
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
 
 
           </div>
@@ -566,10 +547,6 @@
 
 
           
-
-  
-
-
 
         </div>
         
@@ -590,17 +567,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -662,22 +630,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#celery架构图："><span class="nav-number">1.</span> <span class="nav-text">celery架构图：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化"><span class="nav-number">2.</span> <span class="nav-text">初始化:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-运行celery"><span class="nav-number">2.1.</span> <span class="nav-text">1.运行celery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-以守护进程运行celery"><span class="nav-number">2.2.</span> <span class="nav-text">2.以守护进程运行celery:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-使用redis"><span class="nav-number">2.3.</span> <span class="nav-text">3.使用redis:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery基本操作命令："><span class="nav-number">3.</span> <span class="nav-text">celery基本操作命令：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-worker"><span class="nav-number">4.</span> <span class="nav-text">celery worker:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-启动worker"><span class="nav-number">4.1.</span> <span class="nav-text">1.启动worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-停止worker"><span class="nav-number">4.2.</span> <span class="nav-text">2.停止worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-在celery中使用多进程："><span class="nav-number">4.3.</span> <span class="nav-text">3.在celery中使用多进程：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-调用worker、添加任务："><span class="nav-number">4.4.</span> <span class="nav-text">4.调用worker、添加任务：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-beat-定时任务"><span class="nav-number">5.</span> <span class="nav-text">celery beat 定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个时间的Bug："><span class="nav-number">5.1.</span> <span class="nav-text">一个时间的Bug：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用命令："><span class="nav-number">5.2.</span> <span class="nav-text">使用命令：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定时任务参数参考表："><span class="nav-number">5.3.</span> <span class="nav-text">定时任务参数参考表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态管理定时任务："><span class="nav-number">5.4.</span> <span class="nav-text">动态管理定时任务：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理celery-beat进程"><span class="nav-number">5.5.</span> <span class="nav-text">管理celery beat进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#other"><span class="nav-number">6.</span> <span class="nav-text">other:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式："><span class="nav-number">6.1.</span> <span class="nav-text">分布式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#队列："><span class="nav-number">6.2.</span> <span class="nav-text">队列：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flower"><span class="nav-number">6.3.</span> <span class="nav-text">flower:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考："><span class="nav-number">6.4.</span> <span class="nav-text">参考：</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -811,10 +763,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 

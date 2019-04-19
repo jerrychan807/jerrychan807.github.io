@@ -252,6 +252,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/Centos7系统安装/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/19/Centos7系统安装/" itemprop="url">Centos7系统安装</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T14:36:34+08:00">
+                2019-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装:"></a>系统安装:</h1><h2 id="镜像选择"><a href="#镜像选择" class="headerlink" title="镜像选择:"></a>镜像选择:</h2><p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
+<hr>
+<h2 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h2><p>正式生产服务器建议安装英文版本</p>
+<hr>
+<h2 id="自定义硬盘分区"><a href="#自定义硬盘分区" class="headerlink" title="自定义硬盘分区"></a>自定义硬盘分区</h2><p>这个比较重要</p>
+<hr>
+<h3 id="必要的分区"><a href="#必要的分区" class="headerlink" title="必要的分区:"></a>必要的分区:</h3><p><strong>boot分区</strong>:</p>
+<ul>
+<li><p>作用：<strong>引导分区</strong>，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，</p>
+</li>
+<li><p>分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长期使用的冗余文件塞满这个分区。</p>
+</li>
+</ul>
+<p><strong>/分区(根分区):</strong>         </p>
+<ul>
+<li><p>作用：所有的文件都从这里开始，你可以比喻为Windows的C盘，但其实有区别。如果你有大量的数据在根目录下（比如FTP等）可以划分大一点的空间</p>
+</li>
+<li><p>分区建议：建议15G以上。看需求，根分区和home分区的大小就类似C盘和D盘的空间分布一样，主要占空间在哪儿就在那里分大容量</p>
+</li>
+</ul>
+<p><strong>swap分区：</strong></p>
+<ul>
+<li><p>作用：<strong>类似于Windows的虚拟内存</strong>，在内存不够用时占用硬盘的虚拟内存来进行临时数据的存放，而对于linux就是swap分区</p>
+</li>
+<li><p>分区建议：建议是物理内存大小的2倍，比如你电脑是4G的物理内存，swap分区可以是8G</p>
+</li>
+</ul>
+<blockquote>
+<p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
+</blockquote>
+<hr>
+<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
+<ul>
+<li>4个cpu</li>
+<li>内存为6G</li>
+<li>硬盘为200G(精简置备模式)</li>
+</ul>
+<p>自定义的硬盘分区:</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1g27z9u1fknj30vm0bgdlo.jpg" alt=""></p>
+<p>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</p>
+<blockquote>
+<p>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</p>
+</blockquote>
+<hr>
+<h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
+<li>浏览数据存储</li>
+<li>新建文件夹</li>
+<li>copy 后缀为<code>.vmx</code>和<code>.vmdk</code>的文件到 新建的文件夹里</li>
+<li>在新的<code>.vmx</code>文件右键:添加资源.</li>
+</ol>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/wcwen1990/p/7630545.html" target="_blank" rel="noopener">CentOS7安装详解</a></li>
+<li><a href="https://www.osyunwei.com/archives/7829.html" target="_blank" rel="noopener">CentOS 7.0系统安装配置图解教程</a></li>
+<li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/06/nyawc源码-解析不了网页里的链接分析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2324,229 +2521,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/简单的代码离线更新方案/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/13/简单的代码离线更新方案/" itemprop="url">简单的代码离线更新方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">
-                2019-02-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
-<hr>
-<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
-<p>两者的区别:</p>
-<p><a href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle" target="_blank" rel="noopener">Which is better to use and why? git format-patch or git bundle?</a></p>
-<blockquote>
-<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
-</blockquote>
-<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
-<hr>
-<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
-<ul>
-<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
-<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
-<li>可能你的无线、有线网卡坏掉了。 </li>
-<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
-</ul>
-<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
-<hr>
-<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
-<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
-<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
-</blockquote>
-<blockquote>
-<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
-</blockquote>
-<blockquote>
-<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
-</blockquote>
-<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
-<p>eg:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
-<p>某两次提交之间的所有patch:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
-<p>eg:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
-<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
-<p>打入patch/diff:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
-<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
-<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
-<hr>
-<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
-<li>更新包生成端:<ul>
-<li>分别生成各个项目的<code>bundle</code>文件</li>
-<li>加密压缩成<code>zip</code>文件</li>
-</ul>
-</li>
-<li>更新包使用端:<ul>
-<li>用密钥解密压缩包</li>
-<li>到指定目录移除原来的项目,执行<code>git clone</code> </li>
-</ul>
-</li>
-</ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg" alt=""></p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="http://www.mottoin.com/article/network/97143.html" target="_blank" rel="noopener">巡风在隔离网络环境下的离线更新方案</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/33208607" target="_blank" rel="noopener">携程无线离线包增量更新方案实践</a></li>
-<li><a href="https://gitee.com/liujin0506/autopatch" target="_blank" rel="noopener">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
-<li><a href="https://blog.csdn.net/jinweilin/article/details/78356860" target="_blank" rel="noopener">git打两个版本的增量包</a></li>
-<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
-<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85" target="_blank" rel="noopener">Git 工具 - 打包</a></li>
-<li><a href="https://github.com/an23lm/GitBundlePlus" target="_blank" rel="noopener">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
-<li><a href="https://blog.csdn.net/sinat_20059415/article/details/80598347" target="_blank" rel="noopener">git 打补丁方法总结</a></li>
-<li><a href="https://blog.csdn.net/kangear/article/details/39675421" target="_blank" rel="noopener">Git打补丁常见问题</a></li>
-<li><a href="https://www.cnblogs.com/y041039/articles/2411600.html" target="_blank" rel="noopener">Git的Patch功能</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2594,7 +2573,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

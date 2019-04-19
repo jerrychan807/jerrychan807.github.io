@@ -252,6 +252,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/简单的代码离线更新方案/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/13/简单的代码离线更新方案/" itemprop="url">简单的代码离线更新方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">
+                2019-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
+<hr>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
+<p>两者的区别:</p>
+<p><a href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle" target="_blank" rel="noopener">Which is better to use and why? git format-patch or git bundle?</a></p>
+<blockquote>
+<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
+</blockquote>
+<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
+<hr>
+<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
+<ul>
+<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
+<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
+<li>可能你的无线、有线网卡坏掉了。 </li>
+<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
+</ul>
+<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
+<hr>
+<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
+<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
+<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
+</blockquote>
+<blockquote>
+<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
+</blockquote>
+<blockquote>
+<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
+</blockquote>
+<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
+<p>某两次提交之间的所有patch:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
+<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+<p>打入patch/diff:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
+<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
+<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
+<hr>
+<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
+<li>更新包生成端:<ul>
+<li>分别生成各个项目的<code>bundle</code>文件</li>
+<li>加密压缩成<code>zip</code>文件</li>
+</ul>
+</li>
+<li>更新包使用端:<ul>
+<li>用密钥解密压缩包</li>
+<li>到指定目录移除原来的项目,执行<code>git clone</code> </li>
+</ul>
+</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg" alt=""></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="http://www.mottoin.com/article/network/97143.html" target="_blank" rel="noopener">巡风在隔离网络环境下的离线更新方案</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/33208607" target="_blank" rel="noopener">携程无线离线包增量更新方案实践</a></li>
+<li><a href="https://gitee.com/liujin0506/autopatch" target="_blank" rel="noopener">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
+<li><a href="https://blog.csdn.net/jinweilin/article/details/78356860" target="_blank" rel="noopener">git打两个版本的增量包</a></li>
+<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
+<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85" target="_blank" rel="noopener">Git 工具 - 打包</a></li>
+<li><a href="https://github.com/an23lm/GitBundlePlus" target="_blank" rel="noopener">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
+<li><a href="https://blog.csdn.net/sinat_20059415/article/details/80598347" target="_blank" rel="noopener">git 打补丁方法总结</a></li>
+<li><a href="https://blog.csdn.net/kangear/article/details/39675421" target="_blank" rel="noopener">Git打补丁常见问题</a></li>
+<li><a href="https://www.cnblogs.com/y041039/articles/2411600.html" target="_blank" rel="noopener">Git的Patch功能</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/获取masscan的扫描进度/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1904,305 +2122,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/celery任务调度框架实践/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fyydwv3w0mj305i048a9w.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/celery任务调度框架实践/" itemprop="url">celery任务调度框架实践</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T22:37:44+08:00">
-                2018-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Development/" itemprop="url" rel="index">
-                    <span itemprop="name">Development</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
-<li><p>Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。</p>
-</li>
-<li><p>Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。</p>
-</li>
-<li><p>Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。</p>
-</li>
-<li><p>Producer：调用了Celery提供的API、函数或者装饰器而产生任务并交给任务队列处理的都是任务生产者。</p>
-</li>
-<li><p>Result Backend：任务处理完后保存状态信息和结果，以供查询。Celery默认已支持Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy等方式。</p>
-</li>
-</ol>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg" alt=""></p>
-<hr>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化:"></a>初始化:</h1><h2 id="1-运行celery"><a href="#1-运行celery" class="headerlink" title="1.运行celery"></a>1.运行celery</h2><p>mac环境下的celery一下载就能直接运行。<br>但是centos6.9 环境下好像下载之后并不能直接运行，估计是环境变量没有配好。<br>需要加上celery的安装路径。<br>使用<code>/usr/local/bin/celery -A your_app worker --loglevel=info</code></p>
-<hr>
-<h2 id="2-以守护进程运行celery"><a href="#2-以守护进程运行celery" class="headerlink" title="2.以守护进程运行celery:"></a>2.以守护进程运行celery:</h2><p>需要一个初始化脚本：celeryd</p>
-<ul>
-<li><p>使用方法：/etc/init.d/celeryd {start|stop|restart|status}</p>
-</li>
-<li><p>配置文件:/etc/default/celeryd</p>
-</li>
-</ul>
-<p>参考：</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/14275821/how-to-run-celery-as-a-daemon-in-production" target="_blank" rel="noopener">How to run celery as a daemon in production?</a></li>
-<li><a href="http://blog.csdn.net/happyAnger6/article/details/51626516" target="_blank" rel="noopener">Celery教程————-以守护进程方式运行worker</a></li>
-</ul>
-<hr>
-<h2 id="3-使用redis"><a href="#3-使用redis" class="headerlink" title="3.使用redis:"></a>3.使用redis:</h2><p>mac下安装redis</p>
-<ul>
-<li>brew install redis</li>
-<li>如果需要后台运行 redis 服务，使用命令 brew services start redis</li>
-<li>如果不需要后台服务，则使用命令 redis-server /usr/local/etc/redis.conf。</li>
-<li><a href="https://www.jianshu.com/p/3bdfda703552" target="_blank" rel="noopener">mac os 安装 redis</a></li>
-</ul>
-<p>安装redis后，启动时指定配置文件</p>
-<ul>
-<li><code>redis-server ./redis.conf</code></li>
-</ul>
-<p>检测后台进程是否存在  </p>
-<ul>
-<li><code>ps -ef |grep redis</code></li>
-</ul>
-<p>使用分布式时，其他worker机子无法访问redis去取任务：</p>
-<ul>
-<li>redis默认的安全策略，只准许本地访问。</li>
-<li>需要通过简单配置，完成允许外网访问。</li>
-<li>参考：<a href="http://www.cnblogs.com/likwo/p/5903377.html" target="_blank" rel="noopener">开启redis 允许外网IP 访问</a></li>
-</ul>
-<hr>
-<h1 id="celery基本操作命令："><a href="#celery基本操作命令：" class="headerlink" title="celery基本操作命令："></a>celery基本操作命令：</h1><p>参考：</p>
-<ul>
-<li><a href="http://funhacks.net/explore-python/Third-Party-Modules/celery.html" target="_blank" rel="noopener">Celery基础操作</a></li>
-<li><a href="http://blog.csdn.net/libing_thinking/article/category/7287529" target="_blank" rel="noopener">Celery-4.1 用户指南</a></li>
-</ul>
-<hr>
-<h1 id="celery-worker"><a href="#celery-worker" class="headerlink" title="celery worker:"></a>celery worker:</h1><h2 id="1-启动worker"><a href="#1-启动worker" class="headerlink" title="1.启动worker:"></a>1.启动worker:</h2><ul>
-<li><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></li>
-</ul>
-<hr>
-<h2 id="2-停止worker"><a href="#2-停止worker" class="headerlink" title="2.停止worker:"></a>2.停止worker:</h2><p><code>ps auxww | grep &#39;celery worker&#39; | awk &#39;{print $2}&#39; | xargs kill -9</code></p>
-<hr>
-<h2 id="3-在celery中使用多进程："><a href="#3-在celery中使用多进程：" class="headerlink" title="3.在celery中使用多进程："></a>3.在celery中使用多进程：</h2><p>我用的是<code>from multiprocessing import Pool</code>来实现多进程。<br>但是在运行过程中会直接报出这个错误<br><code>AssertionError: daemonic processes are not allowed to have children</code></p>
-<p>解决方法：</p>
-<ul>
-<li><p>重写一个Mypool<code>https://stackoverflow.com/questions/6974695/python-process-pool-non-daemonic</code></p>
-</li>
-<li><p>设置环境变量<br><code>export PYTHONOPTIMIZE=1</code></p>
-</li>
-</ul>
-<p>由于过段时间就会失效。。所以每次启动worker的时候的时候：<br><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></p>
-<p>以下 的方法没试过：</p>
-<blockquote>
-<p>there are two method to solve this problem ,disable assert：<br>1.where celery starts set export PYTHONOPTIMIZE=1 OR start celery with this parameter -O OPTIMIZATION<br>2.disable python packet multiprocessing process.py line 102:<br>assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes are not allowed to have children’</p>
-</blockquote>
-<hr>
-<h2 id="4-调用worker、添加任务："><a href="#4-调用worker、添加任务：" class="headerlink" title="4.调用worker、添加任务："></a>4.调用worker、添加任务：</h2><p>delay()和apply_async()</p>
-<p>我们之前调用任务使用了”delay()”方法，它其实是对”apply_async()”方法的封装，使得你只要传入任务所需的参数即可。对于特殊的任务调度需求，你需要使用”apply_async()”，其常用的参数有：</p>
-<ul>
-<li>countdown: 指定多少秒后任务才被执行</li>
-<li>eta: 指定任务被调度的时间，参数类型是datetime</li>
-<li>expires: 任务过期时间，参数类型可以是int（秒），也可以是datetime</li>
-<li>retry: 任务发送失败的重试次数</li>
-<li>priority: 任务优先级，范围是0-9</li>
-<li>serializer: 参数和返回值的序列化方式</li>
-</ul>
-<hr>
-<h1 id="celery-beat-定时任务"><a href="#celery-beat-定时任务" class="headerlink" title="celery beat 定时任务"></a>celery beat 定时任务</h1><h2 id="一个时间的Bug："><a href="#一个时间的Bug：" class="headerlink" title="一个时间的Bug："></a>一个时间的Bug：</h2><ul>
-<li>当前使用pip安装的celery，默认是安装的最新版本4.1.0，但是在这个版本中在获取当前时间的逻辑中存在bug，会导致定时任务配置后并不能在指定的时间被执行</li>
-<li>回退版本 到4.0.2才行</li>
-<li><a href="http://axiaoxin.com/article/228/" target="_blank" rel="noopener">celery 4.1.0 版本定时任务执行时间 bug</a></li>
-</ul>
-<p>另一种可行但麻烦的思路：</p>
-<p>celery的定时任务会有一定时间的延迟。比如，我规定模拟登陆新浪微博任务每隔10个小时执行一次，那么定时任务第一次执行就会在开启定时任务之后的10个小时后才会执行。而我抓取微博需要马上执行，需要带上cookie，所以不能等那1个小时。这个没有一个比较好的解决方法，可以使用celery的crontab()来代替schdule做定时，它会在启动的时候就执行。我采用的方法是第一次手动执行该任务，然后再通过schedule执行。</p>
-<hr>
-<h2 id="使用命令："><a href="#使用命令：" class="headerlink" title="使用命令："></a>使用命令：</h2><p>进入到对应your_app对应的目录下：<code>cd /your_dir/your_dir/your_dir</code><br>再执行：<code>/usr/local/bin/celery -A your_app beat -l info</code></p>
-<p>最方便的是，在命令中指定工作目录，一条命令即可：</p>
-<p><code>/usr/local/bin/celery -A your_dir beat -l info --workdir=/your_dir/your_dir/your_dir/</code></p>
-<hr>
-<h2 id="定时任务参数参考表："><a href="#定时任务参数参考表：" class="headerlink" title="定时任务参数参考表："></a>定时任务参数参考表：</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fp2x8whm8zj31gg1601kx.jpg" alt=""></p>
-<hr>
-<h2 id="动态管理定时任务："><a href="#动态管理定时任务：" class="headerlink" title="动态管理定时任务："></a>动态管理定时任务：</h2><p>查过挺多资料，有两种解决方法。跟celery运行的调度器(schedule)息息相关的。</p>
-<ul>
-<li>使用第三方schedule：<br>如django-celery-beat库会将定时任务的规则存入到数据库中，而不用通过配置文件来定义。</li>
-</ul>
-<p>try to install django-celery instead of django-celery-beat. django-celery works with Celery 3 (unlike django-celery-beat). You can then, for example import PeriodicTask from djcelery.models instead of from django_celery_beat.models . This allows you to add/delete/manipulate tasks both dynamically AND PROGRAMMATICALLY (not only from the Django admin site). The drawback to this workaround is that if one doesn’t need django-celery for anything other than this, then it bloats one’s app. Thus, It would be better to have Celery 4.0 included in cookiecutter-django so that django-celery-beat models can be used</p>
-<p><a href="http://www.liuliqiang.info/post/celery-advanced-topic-scheduler-and-priority/" target="_blank" rel="noopener">【celery进阶】定时任务和优先级</a></p>
-<ul>
-<li>使用框架默认schedule</li>
-</ul>
-<p>我使用的是这一种方法。<br>只能管理celery的配置文件了，每次增加或减少定时任务的时候，都要对配置文件进行相应的修改。<br>每次修改完都要重启celerybeat，试过多种方法，发现用supervisor来管理celery beat的进程是比较好的。</p>
-<hr>
-<h2 id="管理celery-beat进程"><a href="#管理celery-beat进程" class="headerlink" title="管理celery beat进程"></a>管理celery beat进程</h2><p>用supervisor来管理celery beat进程。</p>
-<ul>
-<li><p>安装：<code>pip install supervisor</code></p>
-</li>
-<li><p>Supervisor配置</p>
-<ul>
-<li><code>/usr/local/bin/echo_supervisord_conf  &gt; /etc/supervisord.conf</code></li>
-<li><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fpcd9sci44j312c0a8dlu.jpg" alt=""></li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>操作：<ul>
-<li>开启:<code>supervisord -c /etc/supervisord.conf</code></li>
-<li>重启：<code>supervisorctl -c /etc/supervisord.conf reload</code></li>
-<li>关闭:<code>supervisorctl -c /etc/supervisord.conf shutdown</code></li>
-</ul>
-</li>
-</ul>
-<hr>
-<h1 id="other"><a href="#other" class="headerlink" title="other:"></a>other:</h1><h2 id="分布式："><a href="#分布式：" class="headerlink" title="分布式："></a>分布式：</h2><ul>
-<li><a href="https://www.213.name/archives/1105" target="_blank" rel="noopener">笔记：集群部署celery分布式任务队列</a></li>
-<li><a href="https://www.jianshu.com/p/ee14ed9e4989" target="_blank" rel="noopener">《Python分布式计算》 第4章 Celery分布式应用 （Distributed Computing with Python）</a></li>
-</ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1foxj2hvc42j314i0t4wkq.jpg" alt=""></p>
-<hr>
-<h2 id="队列："><a href="#队列：" class="headerlink" title="队列："></a>队列：</h2><ul>
-<li><a href="https://www.jianshu.com/p/1f528c518ab5" target="_blank" rel="noopener">Celery从入门到放弃</a></li>
-<li><a href="http://blog.csdn.net/vintage_1/article/details/47664139" target="_blank" rel="noopener">celery beat实战</a></li>
-</ul>
-<hr>
-<h2 id="flower"><a href="#flower" class="headerlink" title="flower:"></a>flower:</h2><p>图形化管理celery界面：</p>
-<p><code>/usr/local/bin/celery -A celery_app flower --port=5555</code></p>
-<hr>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://www.mkernel.com/?p=117" target="_blank" rel="noopener">Python异步神器-Celery实战之Nmap扫描</a></li>
-<li><a href="https://hk.saowen.com/a/76cb411ce1023c1ee172406691abe47d7939a4b2d8c56a8439aab39f4486df30" target="_blank" rel="noopener">企業安全實踐(基礎建設)之主動分佈式WEB資產掃描</a></li>
-<li><a href="http://blog.csdn.net/junli_chen/article/details/73504343" target="_blank" rel="noopener">Celery 框架学习笔记</a></li>
-<li><a href="http://blog.csdn.net/kk123a/article/details/74549117" target="_blank" rel="noopener">celery配置使用</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2250,7 +2174,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
