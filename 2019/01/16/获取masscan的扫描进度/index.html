@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Preface:一开始打算通过subprocess模块来调用masscan,然后获取它输出的进度。 但是发现它的进度输出是覆盖刷新输出的。  这个时候，subprocess就无法获得它的输出了。 想了下,masscan这个刷新输出应该是优化过的结果,避免打印出太多重复无效的信息。 这个时候,我们只要修改一下它的输出就可以达到效果.  修改源码:搜索了一下,参考:C语言实现在控制台同一行覆盖刷新输出">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz88a4apgoj31fq0f6qci.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz88lesx3uj315r0u0avk.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz88n49e28j30xs0aak7m.jpg">
-<meta property="og:updated_time" content="2019-01-16T03:11:16.727Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d74ccaa35.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d74dc815b.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d74f398a5.jpg">
+<meta property="og:updated_time" content="2019-04-25T15:50:39.300Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="获取masscan的扫描进度">
 <meta name="twitter:description" content="Preface:一开始打算通过subprocess模块来调用masscan,然后获取它输出的进度。 但是发现它的进度输出是覆盖刷新输出的。  这个时候，subprocess就无法获得它的输出了。 想了下,masscan这个刷新输出应该是优化过的结果,避免打印出太多重复无效的信息。 这个时候,我们只要修改一下它的输出就可以达到效果.  修改源码:搜索了一下,参考:C语言实现在控制台同一行覆盖刷新输出">
-<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz88a4apgoj31fq0f6qci.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d74ccaa35.jpg">
 
 
 
@@ -348,7 +348,7 @@
       
         <h1 id="Preface"><a href="#Preface" class="headerlink" title="Preface:"></a>Preface:</h1><p>一开始打算通过<code>subprocess</code>模块来调用<code>masscan</code>,然后获取它输出的进度。</p>
 <p>但是发现它的进度输出是覆盖刷新输出的。</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz88a4apgoj31fq0f6qci.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d74ccaa35.jpg" alt=""></p>
 <p>这个时候，<code>subprocess</code>就无法获得它的输出了。</p>
 <p>想了下,<code>masscan</code>这个刷新输出应该是优化过的结果,避免打印出太多重复无效的信息。</p>
 <p>这个时候,我们只要修改一下它的输出就可以达到效果.</p>
@@ -357,10 +357,10 @@
 <p>知道<code>printf(&quot;\r&quot;);</code>是可以做到刷新输出的效果的。</p>
 <p>搜索关键字:<code>rate:</code></p>
 <p>定位到<code>main-status.c</code>这个文件</p>
-<p>修改这一行.将覆盖刷新输出改成 换行输出。<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz88lesx3uj315r0u0avk.jpg" alt=""></p>
+<p>修改这一行.将覆盖刷新输出改成 换行输出。<br><img src="https://i.loli.net/2019/04/25/5cc1d74dc815b.jpg" alt=""></p>
 <p>重新编译运行.</p>
 <p>可以看到效果:</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz88n49e28j30xs0aak7m.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d74f398a5.jpg" alt=""></p>
 <hr>
 <h2 id="获取进度百分比"><a href="#获取进度百分比" class="headerlink" title="获取进度百分比:"></a>获取进度百分比:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getPercentageNum</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    正则匹配百分比数字</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    re_pattern = <span class="string">r"(\d&#123;1,2&#125;.\d&#123;1,2&#125;)\%"</span></span><br><span class="line">    num_match_list = re.findall(re_pattern, content)</span><br><span class="line">    <span class="keyword">if</span> num_match_list:</span><br><span class="line">        <span class="keyword">return</span> num_match_list[<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cmd = shlex.split(shell_cmd)</span><br><span class="line"><span class="keyword">print</span> cmd</span><br><span class="line">        </span><br><span class="line">p = subprocess.Popen(cmd, shell=<span class="keyword">False</span>, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)</span><br><span class="line"><span class="keyword">while</span> p.poll() <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    line = p.stdout.readline()</span><br><span class="line">    line = line.strip()</span><br><span class="line">    <span class="keyword">if</span> line:</span><br><span class="line">        print(<span class="string">'percentage: [&#123;&#125;]'</span>.format(line))</span><br><span class="line">        <span class="keyword">print</span> getPercentageNum(line)</span><br></pre></td></tr></table></figure>

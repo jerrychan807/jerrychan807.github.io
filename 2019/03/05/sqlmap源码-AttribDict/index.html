@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="pre:sqlmap在处理数据的时候大量使用了自定义的AttribDict属性字典这个数据类型. 123456789101112131415# sqlmap pathspaths = AttribDict()# object to store original command line optionscmdLineOptions = AttribDict()# object to store me">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1g0r8qp0venj30g80bmwhl.jpg">
-<meta property="og:updated_time" content="2019-03-17T10:23:48.472Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg">
+<meta property="og:updated_time" content="2019-04-25T15:49:48.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sqlmap源码-AttribDict属性字典">
 <meta name="twitter:description" content="pre:sqlmap在处理数据的时候大量使用了自定义的AttribDict属性字典这个数据类型. 123456789101112131415# sqlmap pathspaths = AttribDict()# object to store original command line optionscmdLineOptions = AttribDict()# object to store me">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1g0r8qp0venj30g80bmwhl.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg">
 
 
 
@@ -351,7 +351,7 @@
 <hr>
 <h1 id="AttribDict组成"><a href="#AttribDict组成" class="headerlink" title="AttribDict组成:"></a><code>AttribDict</code>组成:</h1><p>这个类通过override了几个<code>super method</code>.</p>
 <p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0r8qp0venj30g80bmwhl.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt=""></p>
 <hr>
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
 <p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br>现在的自定义字典的用法:<code>dict1.key</code></p>

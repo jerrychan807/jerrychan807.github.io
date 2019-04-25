@@ -545,7 +545,7 @@
           
             <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>用<code>nyawc</code>框架,试图爬取该url<code>http://atmos.sysu.edu.cn/</code>里的文档类型链接的时候,发现爬取不到.</p>
 <p>比如</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1qxcfclq3j31nm0u01ky.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg" alt=""></p>
 <p>通过<code>python</code>模拟发包请求该url<code>http://atmos.sysu.edu.cn/article/2005</code></p>
 <p>发现返回包里没有<code>doc</code>链接.</p>
 <hr>
@@ -565,7 +565,7 @@
 <li>有利于<code>SEO</code>,复杂的url地址会对网页的收录造成影响</li>
 </ul>
 <p>例如:<code>http://www.prof…co.uk/products/brown-miniflo-gutter-148/</code>,URL本身包含搜索词中的单词.</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1uh6egctuj30ru0mc7h5.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d713de4f8.jpg" alt=""></p>
 <p>对于用户来说:</p>
 <ul>
 <li>让url看起来更简洁、更容易输入和记住</li>
@@ -598,7 +598,7 @@
 </code></pre><hr>
 <h1 id="Debug思路2"><a href="#Debug思路2" class="headerlink" title="Debug思路2:"></a>Debug思路2:</h1><p>抓包分析,比较浏览器请求的包与用<code>python</code>模拟发的包.</p>
 <hr>
-<h2 id="浏览器抓包的实际请求"><a href="#浏览器抓包的实际请求" class="headerlink" title="浏览器抓包的实际请求:"></a>浏览器抓包的实际请求:</h2><p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1uixk95z9j320g03edhs.jpg" alt=""></p>
+<h2 id="浏览器抓包的实际请求"><a href="#浏览器抓包的实际请求" class="headerlink" title="浏览器抓包的实际请求:"></a>浏览器抓包的实际请求:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d71524169.jpg" alt=""></p>
 <p>在获取我们需要的内容(第三个包)前,必须执行一个js请求.</p>
 <hr>
 <h2 id="模拟发的包"><a href="#模拟发的包" class="headerlink" title="模拟发的包:"></a>模拟发的包:</h2><p>发现第一个包的请求的状态码是<code>202</code>,也就是上面图的第一个包.</p>
@@ -636,7 +636,7 @@
 </ul>
 <hr>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他:"></a>其他:</h1><p>设置brupsuite截取js请求.</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1ujvfo6u3j314r0u0azo.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d716322e4.jpg" alt=""></p>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://www.smashingmagazine.com/2011/11/introduction-to-url-rewriting/" target="_blank" rel="noopener">URL重写简介</a></li>
@@ -1086,13 +1086,13 @@
 <p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
 <p>可参考一下,<a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></p>
 <hr>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d546833db.jpg" alt=""></p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d725c0556.jpg" alt=""></p>
 <blockquote>
 <p>画图真累人…</p>
 </blockquote>
 <p>由于代码量实在有点多,下面只能挑一些重点的来讲</p>
 <hr>
-<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d54747ff1.jpg" alt=""></p>
+<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d7268e30a.jpg" alt=""></p>
 <p><code>sqlmap</code>支持这五种数据类型</p>
 <ul>
 <li>XML</li>
@@ -1104,7 +1104,7 @@
 <h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r"(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r'(?s)\A(\s*\[)*\s*\&#123;.*"[^"]+"\s*:\s*("[^"]*"|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r"(?s)\A(\s*\[)*\s*\&#123;.*'[^']+'\s*:\s*('[^']+'|\d+).*\&#125;\s*(\]\s*)*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r"(?i)Content-Disposition:[^;]+;\s*name="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r"(\A|%s)(\w+)\[\]=.+%s\2\[\]="</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
 <h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54867094.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d727cb1ff.jpg" alt=""></p>
 <p>关键是这3个正则表达式,分别解析3种模式的数据</p>
 <p>简单理解为:</p>
 <ul>
@@ -1113,22 +1113,22 @@
 <li>模式<code>&quot;&quot;:true false null类型</code></li>
 </ul>
 <p>然后调用<code>process()</code>去解析出它的<code>参数名</code>和<code>整个参数</code>.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54988fb5.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d728a0f0a.jpg" alt=""></p>
 <p>解析到的数据会添加到<code>hintNames列表</code></p>
 <p>举2个实例方便理解.</p>
 <h3 id="例子1-json数据"><a href="#例子1-json数据" class="headerlink" title="例子1:json数据"></a>例子1:json数据</h3><p>比如现在有一段json数据.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54ae1bd6.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d729bb16c.jpg" alt=""></p>
 <p>经过解析后:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54c26466.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d72b012ae.jpg" alt=""></p>
 <p>简单的说就是,经过解析处理后,整段的json数据已经分割开来了,变成了一个个<strong>可测试的参数</strong></p>
 <h3 id="例子2-MULTIPART数据"><a href="#例子2-MULTIPART数据" class="headerlink" title="例子2:MULTIPART数据:"></a>例子2:MULTIPART数据:</h3><p>比如现在有一段MULTIPART类型的数据.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54d3e857.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d72d556d7.jpg" alt=""></p>
 <p>经过解析后，也变成了一个可测试的参数.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d54dec86b.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d72e49121.jpg" alt=""></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.</p>
 <hr>
-<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d54f0cda3.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d55033e26.jpg" alt=""></p>
+<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d72f95d9e.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d731c3ab5.jpg" alt=""></p>
 <p>通过正则匹配<code>url</code>是否符合<code>uri注入</code>的模式.</p>
 <p>正则表达式:<code>r&quot;//[^/]*/([^\.*?]+)\Z&quot;</code></p>
 <p>符合的情况:</p>
@@ -1345,7 +1345,7 @@
 <hr>
 <h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
 <p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt=""></p>
 <p>除了告诉解释器它是多少位后,它还要声明类型.</p>
 <p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
 <hr>
@@ -1362,13 +1362,13 @@
 <li>创建一个<code>变量名a</code></li>
 <li>将<code>对象3</code>和<code>变量a</code>关联起来</li>
 </ol>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0v6sf2u9oj30mk094wfa.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt=""></p>
 <hr>
 <h1 id="共享引用"><a href="#共享引用" class="headerlink" title="共享引用"></a>共享引用</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0vcn69bszj30t40ag75n.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt=""></p>
 <p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'spam'</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0vcpscqerj30s20ec40e.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt=""></p>
 <p><code>变量a</code> 改变了指向，指向到了<code>&#39;spam&#39;对象</code></p>
 <p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
 <hr>
@@ -1527,7 +1527,7 @@
 <hr>
 <h1 id="AttribDict组成"><a href="#AttribDict组成" class="headerlink" title="AttribDict组成:"></a><code>AttribDict</code>组成:</h1><p>这个类通过override了几个<code>super method</code>.</p>
 <p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0r8qp0venj30g80bmwhl.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt=""></p>
 <hr>
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
 <p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br>现在的自定义字典的用法:<code>dict1.key</code></p>
@@ -2236,8 +2236,8 @@
 <p>使用御剑爆破网站路径的时候,同理也会产生大量的误报.</p>
 </blockquote>
 <h2 id="例子"><a href="#例子" class="headerlink" title="例子:"></a>例子:</h2><p>Response code是200</p>
-<p>大量误报:<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0j199x0thj30te0g27fi.jpg" alt=""></p>
-<p>误报结果:<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0j2dirjwej31le0bijtw.jpg" alt=""></p>
+<p>大量误报:<br><img src="https://i.loli.net/2019/04/25/5cc1d6df955e8.jpg" alt=""></p>
+<p>误报结果:<br><img src="https://i.loli.net/2019/04/25/5cc1d6e0776ac.jpg" alt=""></p>
 <h2 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h2><p>暂时能想到的原因有:</p>
 <ul>
 <li>网站本身会自定义错误或者404页面</li>
@@ -2245,8 +2245,8 @@
 </ul>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>找到管理员的后台的目的,通常是为了暴力破解,尝试用弱密码进入到管理员的后台.</p>
 <p>那么就是有个共同点就是有登录页面</p>
-<p>密码框常用到是<code>input</code>标签的 type属性设为<code>password</code><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g0j2nx2teoj313y02q0vr.jpg" alt=""></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0j2o8jv7qj314e04q40x.jpg" alt=""></p>
+<p>密码框常用到是<code>input</code>标签的 type属性设为<code>password</code><br><img src="https://i.loli.net/2019/04/25/5cc1d6e141448.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6e1e2da6.jpg" alt=""></p>
 <p>解决方案：</p>
 <ul>
 <li>用<code>get</code>方法获取登录页面源码</li>
@@ -2413,36 +2413,36 @@
       
         
           
-            <h1 id="安装漏洞环境"><a href="#安装漏洞环境" class="headerlink" title="安装漏洞环境:"></a>安装漏洞环境:</h1><p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz8t4vg6ymj30vg0aaq6u.jpg" alt=""></p>
+            <h1 id="安装漏洞环境"><a href="#安装漏洞环境" class="headerlink" title="安装漏洞环境:"></a>安装漏洞环境:</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6ea9ebae.jpg" alt=""></p>
 <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现:"></a>漏洞复现:</h1><p>poc:<code>[Host]/admin/login/login_check.php?url_array[]=&lt;script&gt;alert(1)&lt;/script&gt;&amp;url_array[]=a</code></p>
 <p>管理员登录后台-安全与效率,触发xss</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0ef9q0s1rj31700qbato.jpg" alt=""></p>
-<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><h2 id="粗略猜测"><a href="#粗略猜测" class="headerlink" title="粗略猜测:"></a>粗略猜测:</h2><p>引入了外部变量,直接修改了数据库该值<br><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0efc23e9wj31go0qqaif.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6eb902ff.jpg" alt=""></p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><h2 id="粗略猜测"><a href="#粗略猜测" class="headerlink" title="粗略猜测:"></a>粗略猜测:</h2><p>引入了外部变量,直接修改了数据库该值<br><img src="https://i.loli.net/2019/04/25/5cc1d6ec922f7.jpg" alt=""></p>
 <p><code>/MetInfo6.1.3/app/system/safe/admin/index.class.php</code></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0efxx3shvj317m028tba.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6ed68069.jpg" alt=""></p>
 <p>查询数据库发现被是加密后的字段:</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0efyj24guj31ic074whe.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6ee20e9c.jpg" alt=""></p>
 <p>解密后应该就是<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
 <hr>
-<h2 id="跟踪分析"><a href="#跟踪分析" class="headerlink" title="跟踪分析:"></a>跟踪分析:</h2><h3 id="common-inc-php"><a href="#common-inc-php" class="headerlink" title="common.inc.php"></a>common.inc.php</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz8vg5ngrij31280irnfl.jpg" alt=""></p>
+<h2 id="跟踪分析"><a href="#跟踪分析" class="headerlink" title="跟踪分析:"></a>跟踪分析:</h2><h3 id="common-inc-php"><a href="#common-inc-php" class="headerlink" title="common.inc.php"></a>common.inc.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6ef6f74c.jpg" alt=""></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">foreach(array(&apos;_COOKIE&apos;, &apos;_POST&apos;, &apos;_GET&apos;) as $_request) &#123;</span><br><span class="line">	foreach($$_request as $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;0&#125; != &apos;_&apos; &amp;&amp; $$_key = daddslashes($_value,0,0,1);</span><br><span class="line">		$_M[&apos;form&apos;][$_key]=daddslashes($_value,0,0,1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这个时候,引入了外部变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code></p>
 <p>这个循环会遍历全局变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code>，然后对里面的值进行过滤,然后赋值到<code>$_M[form]</code></p>
 <p>进入循环之前,<code>$_M</code>变量的值为</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz8vf43gouj307604edgm.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f01e788.jpg" alt=""></p>
 <p>结束循环时,出现了变量覆盖,<code>$_M</code>变量的值为</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz8vholdndj30ot08stca.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f0e6c11.jpg" alt=""></p>
 <blockquote>
 <p>code mix with data.</p>
 </blockquote>
-<h3 id="login-check-php"><a href="#login-check-php" class="headerlink" title="login_check.php"></a>login_check.php</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0eh6xa3uzj327q066woq.jpg" alt=""></p>
+<h3 id="login-check-php"><a href="#login-check-php" class="headerlink" title="login_check.php"></a>login_check.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6f2717ec.jpg" alt=""></p>
 <p>payload经过<code>authcode</code>函数加密后.更新入了表<code>met_config</code>里的<code>met_adminfile</code>字段</p>
 <hr>
 <p>攻击者将payload注入到数据库后,管理员访问后台的安全与效率,触发xss时发生了什么?</p>
 <p>### </p>
 <p><code>load_class.php</code> 加载模块</p>
 <p>加载了<code>app/system/index/admin/</code>下的<code>index</code> 类,调用里面的<code>doindex</code>函数</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ehg5hr8oj321a0u07wh.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f434e32.jpg" alt=""></p>
 <p><code>index</code> 类继承了 <code>admin</code>类</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span> <span class="keyword">extends</span> <span class="title">admin</span></span></span><br></pre></td></tr></table></figure>
 <p><code>admin</code> 类继承了 <code>common</code>类</p>

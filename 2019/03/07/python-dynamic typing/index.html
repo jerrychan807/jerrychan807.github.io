@@ -87,15 +87,15 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:Question1:1234&amp;gt;&amp;gt;&amp;gt; a = 3&amp;gt;&amp;gt;&amp;gt; print type(a)&amp;lt;type &apos;int&apos;&amp;gt; 我们并没有显示声明a是个变量而且它的类型为int 那么python是怎么知道a是个变量而且知道它的类型的呢?  Question2:执行以下代码 123456&amp;gt;&amp;gt;&amp;gt; a = 3&amp;gt;&amp;gt;&amp;gt; a3&amp;gt;&amp;gt">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1g0v6sf2u9oj30mk094wfa.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcgy1g0vcn69bszj30t40ag75n.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1g0vcpscqerj30s20ec40e.jpg">
-<meta property="og:updated_time" content="2019-03-17T10:26:59.595Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg">
+<meta property="og:updated_time" content="2019-04-25T15:49:46.957Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-dynamic typing">
 <meta name="twitter:description" content="Pre:Question1:1234&amp;gt;&amp;gt;&amp;gt; a = 3&amp;gt;&amp;gt;&amp;gt; print type(a)&amp;lt;type &apos;int&apos;&amp;gt; 我们并没有显示声明a是个变量而且它的类型为int 那么python是怎么知道a是个变量而且知道它的类型的呢?  Question2:执行以下代码 123456&amp;gt;&amp;gt;&amp;gt; a = 3&amp;gt;&amp;gt;&amp;gt; a3&amp;gt;&amp;gt">
-<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg">
 
 
 
@@ -365,7 +365,7 @@
 <hr>
 <h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
 <p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g0uoz2rqfej30gg07k406.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt=""></p>
 <p>除了告诉解释器它是多少位后,它还要声明类型.</p>
 <p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
 <hr>
@@ -382,13 +382,13 @@
 <li>创建一个<code>变量名a</code></li>
 <li>将<code>对象3</code>和<code>变量a</code>关联起来</li>
 </ol>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0v6sf2u9oj30mk094wfa.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt=""></p>
 <hr>
 <h1 id="共享引用"><a href="#共享引用" class="headerlink" title="共享引用"></a>共享引用</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0vcn69bszj30t40ag75n.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt=""></p>
 <p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'spam'</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0vcpscqerj30s20ec40e.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt=""></p>
 <p><code>变量a</code> 改变了指向，指向到了<code>&#39;spam&#39;对象</code></p>
 <p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
 <hr>

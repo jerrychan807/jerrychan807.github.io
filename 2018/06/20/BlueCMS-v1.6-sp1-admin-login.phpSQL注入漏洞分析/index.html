@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;); 该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addslas">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fs1vjs44hvj30mm0h0q9g.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1fsi095pjgmj31260jk7l0.jpg">
-<meta property="og:updated_time" content="2019-03-04T04:25:29.415Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg">
+<meta property="og:updated_time" content="2019-04-25T15:48:31.222Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
 <meta name="twitter:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;); 该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addslas">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg">
 
 
 
@@ -350,7 +350,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &apos;/include/common.inc.php&apos;);</span><br></pre></td></tr></table></figure>
 <p>该文件中,<strong>全局数据转义</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
-<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fs1v7hl3avj31hk0dm1b8.jpg" alt=""></p>
+<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg" alt=""></p>
 <hr>
 <h1 id="转换思路："><a href="#转换思路：" class="headerlink" title="转换思路："></a>转换思路：</h1><blockquote>
 <p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
@@ -360,7 +360,7 @@
 <ul>
 <li>找<strong>整数型注入</strong></li>
 <li>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong><ul>
-<li><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fs1vjs44hvj30mm0h0q9g.jpg" alt="">  </li>
+<li><img src="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg" alt="">  </li>
 </ul>
 </li>
 <li><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</li>
@@ -413,7 +413,7 @@
 <hr>
 <h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><h2 id="requests不进行urldecode："><a href="#requests不进行urldecode：" class="headerlink" title="requests不进行urldecode："></a>requests不进行urldecode：</h2><p>参考：<a href="https://zhidao.baidu.com/question/1510942862655764300.html" target="_blank" rel="noopener">如何在requests post时不做urlencode</a><br>There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
 <p>并且加上<code>headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}</code></p>
-<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fsi095pjgmj31260jk7l0.jpg" alt=""></p>
+<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg" alt=""></p>
 <p><a href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py" target="_blank" rel="noopener">poc链接</a></p>
 <hr>
 <h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
