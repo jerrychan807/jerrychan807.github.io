@@ -400,6 +400,7 @@
 <li><a href="https://www.cnblogs.com/wcwen1990/p/7630545.html" target="_blank" rel="noopener">CentOS7安装详解</a></li>
 <li><a href="https://www.osyunwei.com/archives/7829.html" target="_blank" rel="noopener">CentOS 7.0系统安装配置图解教程</a></li>
 <li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
+<li><a href="https://blog.csdn.net/justlpf/article/details/80703763" target="_blank" rel="noopener">linux xfs和ext4的区别</a></li>
 </ul>
 
           
@@ -1085,13 +1086,13 @@
 <p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
 <p>可参考一下,<a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></p>
 <hr>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g18ierv44kj30xo0u0tyc.jpg" alt=""></p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d546833db.jpg" alt=""></p>
 <blockquote>
 <p>画图真累人…</p>
 </blockquote>
 <p>由于代码量实在有点多,下面只能挑一些重点的来讲</p>
 <hr>
-<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g18ivcxo6aj30k80b877q.jpg" alt=""></p>
+<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d54747ff1.jpg" alt=""></p>
 <p><code>sqlmap</code>支持这五种数据类型</p>
 <ul>
 <li>XML</li>
@@ -1103,7 +1104,7 @@
 <h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r"(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r'(?s)\A(\s*\[)*\s*\&#123;.*"[^"]+"\s*:\s*("[^"]*"|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r"(?s)\A(\s*\[)*\s*\&#123;.*'[^']+'\s*:\s*('[^']+'|\d+).*\&#125;\s*(\]\s*)*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r"(?i)Content-Disposition:[^;]+;\s*name="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r"(\A|%s)(\w+)\[\]=.+%s\2\[\]="</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
 <h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g18jd1dctrj32b20py7wh.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54867094.jpg" alt=""></p>
 <p>关键是这3个正则表达式,分别解析3种模式的数据</p>
 <p>简单理解为:</p>
 <ul>
@@ -1112,22 +1113,22 @@
 <li>模式<code>&quot;&quot;:true false null类型</code></li>
 </ul>
 <p>然后调用<code>process()</code>去解析出它的<code>参数名</code>和<code>整个参数</code>.</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g18jiu6he5j31s20dggvv.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54988fb5.jpg" alt=""></p>
 <p>解析到的数据会添加到<code>hintNames列表</code></p>
 <p>举2个实例方便理解.</p>
 <h3 id="例子1-json数据"><a href="#例子1-json数据" class="headerlink" title="例子1:json数据"></a>例子1:json数据</h3><p>比如现在有一段json数据.</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g18k4fo48ej31bu0oeaxs.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54ae1bd6.jpg" alt=""></p>
 <p>经过解析后:</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g18jru2pyvj32di0iotyo.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54c26466.jpg" alt=""></p>
 <p>简单的说就是,经过解析处理后,整段的json数据已经分割开来了,变成了一个个<strong>可测试的参数</strong></p>
 <h3 id="例子2-MULTIPART数据"><a href="#例子2-MULTIPART数据" class="headerlink" title="例子2:MULTIPART数据:"></a>例子2:MULTIPART数据:</h3><p>比如现在有一段MULTIPART类型的数据.</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g18k5nxoa4j319c0hck41.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54d3e857.jpg" alt=""></p>
 <p>经过解析后，也变成了一个可测试的参数.</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g18k35o4jej32n006kk37.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d54dec86b.jpg" alt=""></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.</p>
 <hr>
-<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g18krl6061j31640pen3z.jpg" alt=""></p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g18k7wzz4kj31zw0jmkbw.jpg" alt=""></p>
+<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d54f0cda3.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d55033e26.jpg" alt=""></p>
 <p>通过正则匹配<code>url</code>是否符合<code>uri注入</code>的模式.</p>
 <p>正则表达式:<code>r&quot;//[^/]*/([^\.*?]+)\Z&quot;</code></p>
 <p>符合的情况:</p>
