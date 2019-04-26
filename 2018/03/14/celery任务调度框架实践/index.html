@@ -87,15 +87,15 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcgy1fp2x8whm8zj31gg1601kx.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fpcd9sci44j312c0a8dlu.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1foxj2hvc42j314i0t4wkq.jpg">
-<meta property="og:updated_time" content="2019-01-08T09:04:17.869Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg">
+<meta property="og:updated_time" content="2019-04-26T10:54:18.102Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="celery任务调度框架实践">
 <meta name="twitter:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
-<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg">
 
 
 
@@ -359,7 +359,7 @@
 <li><p>Result Backend：任务处理完后保存状态信息和结果，以供查询。Celery默认已支持Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy等方式。</p>
 </li>
 </ol>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fox2qxfixgj310u0u2jx3.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg" alt=""></p>
 <hr>
 <h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化:"></a>初始化:</h1><h2 id="1-运行celery"><a href="#1-运行celery" class="headerlink" title="1.运行celery"></a>1.运行celery</h2><p>mac环境下的celery一下载就能直接运行。<br>但是centos6.9 环境下好像下载之后并不能直接运行，估计是环境变量没有配好。<br>需要加上celery的安装路径。<br>使用<code>/usr/local/bin/celery -A your_app worker --loglevel=info</code></p>
 <hr>
@@ -447,7 +447,7 @@
 <p>最方便的是，在命令中指定工作目录，一条命令即可：</p>
 <p><code>/usr/local/bin/celery -A your_dir beat -l info --workdir=/your_dir/your_dir/your_dir/</code></p>
 <hr>
-<h2 id="定时任务参数参考表："><a href="#定时任务参数参考表：" class="headerlink" title="定时任务参数参考表："></a>定时任务参数参考表：</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fp2x8whm8zj31gg1601kx.jpg" alt=""></p>
+<h2 id="定时任务参数参考表："><a href="#定时任务参数参考表：" class="headerlink" title="定时任务参数参考表："></a>定时任务参数参考表：</h2><p><img src="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg" alt=""></p>
 <hr>
 <h2 id="动态管理定时任务："><a href="#动态管理定时任务：" class="headerlink" title="动态管理定时任务："></a>动态管理定时任务：</h2><p>查过挺多资料，有两种解决方法。跟celery运行的调度器(schedule)息息相关的。</p>
 <ul>
@@ -467,7 +467,7 @@
 <li><p>Supervisor配置</p>
 <ul>
 <li><code>/usr/local/bin/echo_supervisord_conf  &gt; /etc/supervisord.conf</code></li>
-<li><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fpcd9sci44j312c0a8dlu.jpg" alt=""></li>
+<li><img src="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg" alt=""></li>
 </ul>
 </li>
 </ul>
@@ -484,7 +484,7 @@
 <li><a href="https://www.213.name/archives/1105" target="_blank" rel="noopener">笔记：集群部署celery分布式任务队列</a></li>
 <li><a href="https://www.jianshu.com/p/ee14ed9e4989" target="_blank" rel="noopener">《Python分布式计算》 第4章 Celery分布式应用 （Distributed Computing with Python）</a></li>
 </ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1foxj2hvc42j314i0t4wkq.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg" alt=""></p>
 <hr>
 <h2 id="队列："><a href="#队列：" class="headerlink" title="队列："></a>队列：</h2><ul>
 <li><a href="https://www.jianshu.com/p/1f528c518ab5" target="_blank" rel="noopener">Celery从入门到放弃</a></li>
