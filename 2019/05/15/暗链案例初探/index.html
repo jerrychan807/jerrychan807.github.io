@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="SourceCodeReading,">
+  <meta name="keywords" content="WebSecurity,">
 
 
 
@@ -79,23 +79,31 @@
 
 
 
-<meta name="description" content="Pre:最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.  Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100">
-<meta name="keywords" content="SourceCodeReading">
+<meta name="description" content="主页被黑被篡改:案例1:https://www.and-the-like.com/  无法关键词识别,只有图片  案例2:https://www.daobangedu.com/  有关键词:时时彩等  案例3:www.lexuedidai.com  有图片也有关键字关键词:彩票 赌博 投注 随便访问里面的js的网站,有个phpinfo呀.http://275195.com/index.php  案">
+<meta name="keywords" content="WebSecurity">
 <meta property="og:type" content="article">
-<meta property="og:title" content="dsss源码-100行的SqliScanner-源码分析笔记">
-<meta property="og:url" content="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/index.html">
+<meta property="og:title" content="暗链案例初探">
+<meta property="og:url" content="http://yoursite.com/2019/05/15/暗链案例初探/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="Pre:最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.  Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100">
+<meta property="og:description" content="主页被黑被篡改:案例1:https://www.and-the-like.com/  无法关键词识别,只有图片  案例2:https://www.daobangedu.com/  有关键词:时时彩等  案例3:www.lexuedidai.com  有图片也有关键字关键词:彩票 赌博 投注 随便访问里面的js的网站,有个phpinfo呀.http://275195.com/index.php  案">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/05/06/5cd054aa1e705.png">
-<meta property="og:image" content="https://i.loli.net/2019/05/06/5cd0550f672ff.png">
-<meta property="og:image" content="https://i.loli.net/2019/05/06/5cd0557531ada.png">
-<meta property="og:image" content="https://i.loli.net/2019/05/06/5cd05595e835e.png">
-<meta property="og:updated_time" content="2019-05-06T15:52:44.644Z">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc42c6e127e17972.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc4339e253695045.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc440978f9b52950.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc44b187d5914134.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc38bec7e5451537.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc3bcc48eb112943.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc3f048811515654.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc471b7c45e43997.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdc476987bd781253.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdd75977a49848288.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/16/5cdd75f55e34e10877.png">
+<meta property="og:updated_time" content="2019-05-16T16:41:22.889Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="dsss源码-100行的SqliScanner-源码分析笔记">
-<meta name="twitter:description" content="Pre:最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.  Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100">
-<meta name="twitter:image" content="https://i.loli.net/2019/05/06/5cd054aa1e705.png">
+<meta name="twitter:title" content="暗链案例初探">
+<meta name="twitter:description" content="主页被黑被篡改:案例1:https://www.and-the-like.com/  无法关键词识别,只有图片  案例2:https://www.daobangedu.com/  有关键词:时时彩等  案例3:www.lexuedidai.com  有图片也有关键字关键词:彩票 赌博 投注 随便访问里面的js的网站,有个phpinfo呀.http://275195.com/index.php  案">
+<meta name="twitter:image" content="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png">
 
 
 
@@ -125,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/">
+  <link rel="canonical" href="http://yoursite.com/2019/05/15/暗链案例初探/">
 
 
 
 
 
-  <title>dsss源码-100行的SqliScanner-源码分析笔记 | Black House</title>
+  <title>暗链案例初探 | Black House</title>
   
 
 
@@ -258,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/暗链案例初探/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -275,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">dsss源码-100行的SqliScanner-源码分析笔记</h1>
+          <h1 class="post-title" itemprop="name headline">暗链案例初探</h1>
         
 
         <div class="post-meta">
@@ -287,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T14:36:34+08:00">
+                2019-05-15
               </time>
             
 
@@ -310,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
                   </a>
                 </span>
 
@@ -347,29 +355,57 @@
       
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
+        <h1 id="主页被黑被篡改"><a href="#主页被黑被篡改" class="headerlink" title="主页被黑被篡改:"></a>主页被黑被篡改:</h1><h2 id="案例1"><a href="#案例1" class="headerlink" title="案例1:"></a>案例1:</h2><p><code>https://www.and-the-like.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png" alt=""></p>
+<p>无法关键词识别,只有图片</p>
+<hr>
+<h2 id="案例2"><a href="#案例2" class="headerlink" title="案例2:"></a>案例2:</h2><p><code>https://www.daobangedu.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc42c6e127e17972.png" alt=""></p>
+<p>有关键词:时时彩等</p>
+<hr>
+<h2 id="案例3"><a href="#案例3" class="headerlink" title="案例3:"></a>案例3:</h2><p><code>www.lexuedidai.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc4339e253695045.png" alt=""></p>
+<p>有图片也有关键字<br>关键词:彩票 赌博 投注</p>
+<p>随便访问里面的js的网站,有个<code>phpinfo</code>呀.<br><code>http://275195.com/index.php</code><br><img src="https://i.loli.net/2019/05/16/5cdc440978f9b52950.png" alt=""></p>
+<hr>
+<h3 id="案例4"><a href="#案例4" class="headerlink" title="案例4:"></a>案例4:</h3><p><code>http://www.fslp1.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc44b187d5914134.png" alt=""></p>
+<p>关键词:彩票,娱乐平台,时时彩</p>
+<hr>
+<h1 id="跳转"><a href="#跳转" class="headerlink" title="跳转:"></a>跳转:</h1><h2 id="案例1-1"><a href="#案例1-1" class="headerlink" title="案例1:"></a>案例1:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var n = Math.floor(Math.random()*3);</span><br><span class="line">if(n==0)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68599.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==1)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68499.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==2)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.131313.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>js的<code>document.writeln</code>重新刷新页面</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc38bec7e5451537.png" alt=""></p>
+<hr>
+<h2 id="案例2-1"><a href="#案例2-1" class="headerlink" title="案例2:"></a>案例2:</h2><p>url:<code>http://www.wuzuilaojiao.com/</code></p>
+<p>要挂代理才能访问到博彩页面,页面源码没有关键词,只有图片.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3bcc48eb112943.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;frame name=&quot;main&quot; src=&quot;http://mark.zc.qp891.com&quot; scrolling=&quot;yes&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p><code>&lt;frame src=&quot;/example/html/frame_b.html&quot;&gt;</code>既是表示当前的框架里面显示src后面这个路径的html页</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3f048811515654.png" alt=""></p>
+<hr>
+<h2 id="案例3-1"><a href="#案例3-1" class="headerlink" title="案例3:"></a>案例3:</h2><p>url: <code>www.gzbihua.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc471b7c45e43997.png" alt=""></p>
+<p><code>https://www.gzbihua.com/template/pc/skin/js/jquery.tz.js</code></p>
+<p>这个js应该只是打乱了,没有混淆.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc476987bd781253.png" alt=""></p>
+<hr>
+<h2 id="案例4-1"><a href="#案例4-1" class="headerlink" title="案例4:"></a>案例4:</h2><p>初始url:<code>http://www.aohougz.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75977a49848288.png" alt=""></p>
+<p>第一次跳转到:<code>https://www.mtc39.com/?att=996</code><br>再跳转到:<code>http://www.13145.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75f55e34e10877.png" alt=""></p>
+<p>最终页面没有敏感词.只有个图片里有文字:彩票</p>
 <blockquote>
-<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
+<p>如果在最终页面,再通过敏感字判断也不行.<br>初始url的源码里是有关键字的<code>彩票 , 投注</code><br>那么判断思路,应该是在每个页面都要进行判断.</p>
 </blockquote>
-<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
-<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
-<p>原仓库地址:<a href="https://github.com/stamparm/DSSS" target="_blank" rel="noopener">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
 <hr>
-<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png" alt=""></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>js的<code>document.writeln</code><br>frame标签的src</p>
 <hr>
-<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png" alt=""></p>
-<p>亮点:</p>
-<ul>
-<li>TEXT文本的处理</li>
-</ul>
+<h1 id="敏感字词库"><a href="#敏感字词库" class="headerlink" title="敏感字词库:"></a>敏感字词库:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">足球</span><br><span class="line">外围</span><br><span class="line">好彩</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>待补充</p>
+</blockquote>
 <hr>
-<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png" alt=""></p>
-<hr>
-<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png" alt=""></p>
-<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8" target="_blank" rel="noopener">issue</a>问作者.</p>
-<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
-<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
-<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
+<h1 id="想法"><a href="#想法" class="headerlink" title="想法:"></a>想法:</h1><p>网上固然有很多别人的文章,但是不如自己切实的去访问,记录一下.<br>毕竟别人的东西,只是看了,最终也不能转化吸收成你的.</p>
 
       
     </div>
@@ -387,7 +423,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/SourceCodeReading/" rel="tag"># SourceCodeReading</a>
+            <a href="/tags/WebSecurity/" rel="tag"># WebSecurity</a>
           
         </div>
       
@@ -400,8 +436,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" rel="next" title="WPSIH-网站个人敏感信息文件扫描器-开发记录">
-                <i class="fa fa-chevron-left"></i> WPSIH-网站个人敏感信息文件扫描器-开发记录
+              <a href="/2019/05/10/python-杀死subprocess进程/" rel="next" title="python-杀死subprocess进程">
+                <i class="fa fa-chevron-left"></i> python-杀死subprocess进程
               </a>
             
           </div>
@@ -409,10 +445,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/10/python-杀死subprocess进程/" rel="prev" title="python-杀死subprocess进程">
-                python-杀死subprocess进程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -546,7 +578,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程"><span class="nav-number">2.</span> <span class="nav-text">整体流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提取内容函数："><span class="nav-number">2.1.</span> <span class="nav-text">提取内容函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于报错的测试"><span class="nav-number">2.2.</span> <span class="nav-text">基于报错的测试:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于布尔的测试"><span class="nav-number">2.3.</span> <span class="nav-text">基于布尔的测试:</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主页被黑被篡改"><span class="nav-number">1.</span> <span class="nav-text">主页被黑被篡改:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#案例1"><span class="nav-number">1.1.</span> <span class="nav-text">案例1:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例2"><span class="nav-number">1.2.</span> <span class="nav-text">案例2:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例3"><span class="nav-number">1.3.</span> <span class="nav-text">案例3:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例4"><span class="nav-number">1.3.1.</span> <span class="nav-text">案例4:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#跳转"><span class="nav-number">2.</span> <span class="nav-text">跳转:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#案例1-1"><span class="nav-number">2.1.</span> <span class="nav-text">案例1:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例2-1"><span class="nav-number">2.2.</span> <span class="nav-text">案例2:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例3-1"><span class="nav-number">2.3.</span> <span class="nav-text">案例3:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例4-1"><span class="nav-number">2.4.</span> <span class="nav-text">案例4:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#敏感字词库"><span class="nav-number">4.</span> <span class="nav-text">敏感字词库:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#想法"><span class="nav-number">5.</span> <span class="nav-text">想法:</span></a></li></ol></div>
             
 
           </div>
