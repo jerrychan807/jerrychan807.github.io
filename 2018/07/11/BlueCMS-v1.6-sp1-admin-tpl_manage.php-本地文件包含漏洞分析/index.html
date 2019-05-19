@@ -370,6 +370,7 @@
 <p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
 <h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">elseif($act == &apos;edit&apos;)&#123;</span><br><span class="line">$file = $_GET[&apos;tpl_name&apos;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&apos;templates/default/&apos;.$file, &apos;rb&apos;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&apos;打开目标模板文件失败&apos;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&apos;content&apos;] = fread($handle, filesize(BLUE_ROOT.&apos;templates/default/&apos;.$file)); # 读取文件</span><br><span class="line">$tpl[&apos;content&apos;] = htmlentities($tpl[&apos;content&apos;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&apos;name&apos;] = $file;</span><br><span class="line">template_assign(array(&apos;current_act&apos;, &apos;tpl&apos;), array(&apos;编辑模板&apos;, $tpl));</span><br><span class="line">$smarty-&gt;display(&apos;tpl_info.htm&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
 <p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg" alt=""></p>
 <p>有什么比较有价值的网站文件吗?</p>
@@ -515,7 +516,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

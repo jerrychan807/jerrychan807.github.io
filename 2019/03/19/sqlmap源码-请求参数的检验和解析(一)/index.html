@@ -365,9 +365,11 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用sqlmap的时候,</p>
 <p>一般会直接这样使用:<code>sqlmap -u http://sqlilabs:8888/Less-1/?id=1</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[10:18:54] [INFO] testing if GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] confirming that GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] GET parameter &apos;id&apos; is dynamic</span><br></pre></td></tr></table></figure>
+
 <p>这个时候,sqlmap会自动识别到get请求的有可测试参数<code>id</code><br>那么,sqlmap是如何解析到这个参数的呢?</p>
 <p>重点讲解一下<code>target.py</code>下的解析请求参数函数<code>_setRequestParams()</code></p>
 <h1 id="setRequestParams-函数"><a href="#setRequestParams-函数" class="headerlink" title="_setRequestParams()函数"></a>_setRequestParams()函数</h1><h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明:"></a>函数说明:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Check and set the parameters and perform checks on 'data' option for</span></span><br><span class="line"><span class="string">    HTTP method POST. </span></span><br><span class="line"><span class="string">    """</span></span><br></pre></td></tr></table></figure>
+
 <p>对请求的参数进行检验和解析.</p>
 <p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
 <p>可参考一下,<a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></p>
@@ -389,6 +391,7 @@
 </ul>
 <h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r"(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r'(?s)\A(\s*\[)*\s*\&#123;.*"[^"]+"\s*:\s*("[^"]*"|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r"(?s)\A(\s*\[)*\s*\&#123;.*'[^']+'\s*:\s*('[^']+'|\d+).*\&#125;\s*(\]\s*)*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r"(?i)Content-Disposition:[^;]+;\s*name="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r"(\A|%s)(\w+)\[\]=.+%s\2\[\]="</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
+
 <h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
 <p><img src="https://i.loli.net/2019/04/25/5cc1d727cb1ff.jpg" alt=""></p>
 <p>关键是这3个正则表达式,分别解析3种模式的数据</p>
@@ -459,8 +462,10 @@
 <h2 id="识别csrf-token"><a href="#识别csrf-token" class="headerlink" title="识别csrf-token:"></a>识别csrf-token:</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g18lgn9s0cj30g80h6myb.jpg" alt=""></p>
 <p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g18lihe55oj31xi0oetwg.jpg" alt=""></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Infixes used for automatic recognition of parameters carrying anti-CSRF tokens</span></span><br><span class="line">CSRF_TOKEN_PARAMETER_INFIXES = (<span class="string">"csrf"</span>, <span class="string">"xsrf"</span>, <span class="string">"token"</span>)</span><br></pre></td></tr></table></figure>
+
 <p>尝试在<code>header</code>数据中寻找有无<code>cstf-token</code>标记的字眼,如果有认为无法注入.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elif</span> conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I):</span><br><span class="line">    testSqlInj = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+
 <p>refs:<a href="https://www.360zhijia.com/360anquanke/178754.html" target="_blank" rel="noopener">【技术分享】使用burp macros和sqlmap绕过csrf防护进行sql注入</a></p>
 <blockquote>
 <p>然而，一些像CSRF、tokens或者简单的的反自动化技术如在一个表单中包含一个隐藏值就能够阻止自动化工具正确的工作</p>
@@ -593,7 +598,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

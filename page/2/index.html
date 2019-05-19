@@ -252,6 +252,321 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/sqlmap源码-AttribDict/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/05/sqlmap源码-AttribDict/" itemprop="url">sqlmap源码-AttribDict属性字典</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T14:36:34+08:00">
+                2019-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>sqlmap在处理数据的时候大量使用了自定义的<code>AttribDict</code>属性字典这个数据类型.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sqlmap paths</span></span><br><span class="line">paths = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store original command line options</span></span><br><span class="line">cmdLineOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store merged options (command line, configuration file and default options)</span></span><br><span class="line">mergedOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes command</span></span><br><span class="line"><span class="comment"># line options and settings</span></span><br><span class="line">conf = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes results</span></span><br><span class="line">kb = AttribDict()</span><br></pre></td></tr></table></figure>
+
+<p>所以有必要看看<code>AttribDict</code>这个类.</p>
+<p>顺便总结一下自己不熟悉的相关知识点.</p>
+<hr>
+<h1 id="AttribDict组成"><a href="#AttribDict组成" class="headerlink" title="AttribDict组成:"></a><code>AttribDict</code>组成:</h1><p>这个类通过override了几个<code>super method</code>.</p>
+<p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt=""></p>
+<hr>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br>现在的自定义字典的用法:<code>dict1.key</code></p>
+<hr>
+<h2 id="init-初始化"><a href="#init-初始化" class="headerlink" title="__init__ 初始化"></a><code>__init__</code> 初始化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, indict=None, attribute=None)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> indict <span class="keyword">is</span> <span class="keyword">None</span>: </span><br><span class="line">        indict = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Set any attributes here - before initialisation</span></span><br><span class="line">    <span class="comment"># these remain as normal attributes   在初始化之前设置通用属性</span></span><br><span class="line">    self.attribute = attribute</span><br><span class="line">    dict.__init__(self, indict)</span><br><span class="line">    self.__initialised = <span class="keyword">True</span> <span class="comment"># 初始化标志</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># After initialisation, setting attributes</span></span><br><span class="line">    <span class="comment"># is the same as setting an item  初始化之后</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="setattr-对一个属性赋值"><a href="#setattr-对一个属性赋值" class="headerlink" title="__setattr__ 对一个属性赋值"></a><code>__setattr__</code> 对一个属性赋值</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, item, value)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Maps attributes to values</span></span><br><span class="line"><span class="string">    Only if we are initialised   只对初始化过的实例赋值</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># This test allows attributes to be set in the __init__ method</span></span><br><span class="line">    <span class="comment"># 允许在初始化的时候设置属性</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">"_AttribDict__initialised"</span> <span class="keyword">not</span> <span class="keyword">in</span> self.__dict__:</span><br><span class="line">        <span class="keyword">return</span> dict.__setattr__(self, item, value)</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Any normal attributes are handled normally</span></span><br><span class="line">    <span class="keyword">elif</span> item <span class="keyword">in</span> self.__dict__: <span class="comment"># 如果已经设置过了</span></span><br><span class="line">        dict.__setattr__(self, item, value)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>: <span class="comment"># 没设置过的</span></span><br><span class="line">        self.__setitem__(item, value)</span><br></pre></td></tr></table></figure>
+
+<p>例如执行以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line">kb.a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><code>kb = AttribDict()</code>执行完,也就初始化完<code>kb</code>这个实例了,对象的属性储存在对象的<code>__dict__</code>属性中,这个时候它的<code>__dict__</code>为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'_AttribDict__initialised'</span>: <span class="keyword">True</span>, <span class="string">'attribute'</span>: <span class="keyword">None</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>kb.a=1</code>即对实例的属性赋值的时候,就会隐式调用到<code>__setattr__</code>这个super method.</p>
+<p>首先会在<code>__dict__</code>搜索是否初始化过的标志属性</p>
+<ul>
+<li><p>如果未初始化过的话,返回一个<code>dict</code>.</p>
+</li>
+<li><p>如果初始化过的实例,会根据<code>key</code>在<code>__dict__</code>搜索</p>
+<ul>
+<li><p>如果这个属性已经设置过的话,会调用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dict.__setattr__(self, item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self.itme = value`,对一个属性赋值(覆盖已有属性)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果这个属性没设置过的话,会调用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.__setitem__(item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self[key] = val`,对新索引值赋值</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="getattr-访问一个不存在的属性"><a href="#getattr-访问一个不存在的属性" class="headerlink" title="__getattr__ 访问一个不存在的属性"></a><code>__getattr__</code> 访问一个不存在的属性</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, item)</span>:</span></span><br><span class="line">    <span class="string">""" </span></span><br><span class="line"><span class="string">    Maps values to attributes</span></span><br><span class="line"><span class="string">    Only called if there *is NOT* an attribute with this name </span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> self.__getitem__(item) <span class="comment"># 通过key获取value</span></span><br><span class="line">    <span class="keyword">except</span> KeyError:</span><br><span class="line">        <span class="keyword">raise</span> AttributeError(<span class="string">"unable to access item '%s'"</span> % item)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line"><span class="keyword">print</span> kb.a</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>print kb.a</code>的时候,访问一个不存在的属性的时候,会隐式调用<code>__getattr__</code>这个super method.</p>
+<p>当属性不存在的时候,<code>__getattr__</code>会raise an AttributeError exception.</p>
+<ul>
+<li><p>默认的<code>__getattr__</code>的报错:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &apos;AttribDict&apos; object has no attribute &apos;a&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改过的<code>__getattr__</code>的报错:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: unable to access item &apos;a&apos;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>额,效果只是让错误输出更友好而已….</p>
+<hr>
+<h2 id="getstate-序列化"><a href="#getstate-序列化" class="headerlink" title="__getstate__ 序列化"></a><code>__getstate__</code> 序列化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getstate__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self.__dict__</span><br></pre></td></tr></table></figure>
+
+<p>代替对象的<strong>dict</strong>属性被保存。</p>
+<p>当对象pickled，你可返回一个自定义的状态被保存。<br>当对象unpickled时，这个状态将会被<code>__setstate__</code>使用。</p>
+<hr>
+<h2 id="setstate-序列化"><a href="#setstate-序列化" class="headerlink" title="__setstate__ 序列化"></a><code>__setstate__</code> 序列化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setstate__</span><span class="params">(self, dict)</span>:</span></span><br><span class="line">    self.__dict__ = dict</span><br></pre></td></tr></table></figure>
+
+<p>对象unpickled时，如果<code>__setstate__</code>定义对象状态会传递来代替用对象的<strong>dict</strong>属性。</p>
+<p>这正好跟<code>__getstate__</code>手牵手：当二者都被定义了，你可以描述对象的pickled状态，任何你想要的。</p>
+<hr>
+<h2 id="deepcopy-深复制"><a href="#deepcopy-深复制" class="headerlink" title="__deepcopy__ 深复制"></a><code>__deepcopy__</code> 深复制</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__deepcopy__</span><span class="params">(self, memo)</span>:</span></span><br><span class="line">    retVal = self.__class__()</span><br><span class="line">    memo[id(self)] = retVal</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> attr <span class="keyword">in</span> dir(self):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> attr.startswith(<span class="string">'_'</span>):</span><br><span class="line">            value = getattr(self, attr)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> isinstance(value, (types.BuiltinFunctionType, types.FunctionType, types.MethodType)):</span><br><span class="line">                setattr(retVal, attr, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> self.items():</span><br><span class="line">        retVal.__setitem__(key, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> retVal</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对于简单的 object，用 shallow copy 和 deep copy 没区别</p>
+</blockquote>
+<blockquote>
+<p>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</p>
+</blockquote>
+<p>嵌套的复杂object,为了保证数据的独立性,要尽量的使用deepcopy.</p>
+<hr>
+<h1 id="好处"><a href="#好处" class="headerlink" title="好处:"></a>好处:</h1><p>kb作为一个全局的字典,保留了相关的配置信息,很多代码里都会用到这个全局的字典,暂时能想到这样的好处就是</p>
+<ul>
+<li>大篇幅代码都用到的话,<code>dict1.key</code>比<code>dict1[&quot;key&quot;]</code>看起来更简洁.更pythonic.</li>
+<li>可以自定义更加友好的错误输出提示信息.</li>
+<li>扫描中断需要继续的话,可以自定义序列化的内容,便于自己保存对象.</li>
+</ul>
+<hr>
+<h1 id="相关知识点"><a href="#相关知识点" class="headerlink" title="相关知识点:"></a>相关知识点:</h1><h2 id="special-method"><a href="#special-method" class="headerlink" title="special method:"></a>special method:</h2><h3 id="特殊之处在哪呢"><a href="#特殊之处在哪呢" class="headerlink" title="特殊之处在哪呢?"></a>特殊之处在哪呢?</h3><p>它的特殊之处在于:</p>
+<p>如果把Python当成一个<code>framework</code>的话，这些预留的特殊方法相当于接口<code>interface</code>.</p>
+<p>你可以通过这些接口,使得<code>your-object</code>就跟<code>built-in object</code>高度一致,也能复用到<code>built in-object</code>原有的强大的功能.</p>
+<hr>
+<h2 id="有哪些类型的接口呢"><a href="#有哪些类型的接口呢" class="headerlink" title="有哪些类型的接口呢?"></a>有哪些类型的接口呢?</h2><p>可以在以下这些方面定制你自己的类:</p>
+<ol>
+<li>构造和初始化</li>
+<li>控制属性访问</li>
+<li>创建自定义容器</li>
+<li>反射</li>
+<li>可调用的对象</li>
+<li>上下文管理</li>
+<li>创建对象描述器</li>
+<li>复制</li>
+</ol>
+<hr>
+<h3 id="什么时候会用到特殊方法呢"><a href="#什么时候会用到特殊方法呢" class="headerlink" title="什么时候会用到特殊方法呢?"></a>什么时候会用到特殊方法呢?</h3><p><strong>原有的数据类型的功能不能满足你的要求.</strong></p>
+<p>例子:</p>
+<ol>
+<li>你可以像sqlmap这里的<code>AttribDict</code>在原生字典的基础上构造自己符合自己项目的数据类型.</li>
+<li>自带的<code>dict</code>是无序的,如果你想用有序的字典.你可以用<code>collections</code>模块的<code>OrderedDict</code>.而这个<code>OrderedDict</code>就是在<code>dict</code>的基础上拓展来的.</li>
+</ol>
+<hr>
+<h2 id="dict-对象的属性系统"><a href="#dict-对象的属性系统" class="headerlink" title="__dict__ 对象的属性系统:"></a><code>__dict__</code> 对象的属性系统:</h2><ul>
+<li>对象的属性储存在对象的<code>__dict__</code>属性中</li>
+<li><code>__dict__</code>为一个词典，键为属性名，对应的值为属性本身.</li>
+</ul>
+<p>来源:</p>
+<ul>
+<li><code>类属性(class attribute)</code>: 类定义 or 根据类定义继承来的</li>
+<li><code>对象属性(object attribute)</code>: 对象实例定义的</li>
+</ul>
+<p>例子:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">bird</span><span class="params">(object)</span>:</span></span><br><span class="line">    feather = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">chicken</span><span class="params">(bird)</span>:</span></span><br><span class="line">    fly = <span class="keyword">False</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, age)</span>:</span></span><br><span class="line">        self.age = age</span><br><span class="line"></span><br><span class="line">summer = chicken(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">print(bird.__dict__)</span><br><span class="line">print(chicken.__dict__)</span><br><span class="line">print(summer.__dict__)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bird对象属性 比如feather</span></span><br><span class="line">&#123;<span class="string">'__dict__'</span>: &lt;attribute <span class="string">'__dict__'</span> of <span class="string">'bird'</span> objects&gt;, <span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'__weakref__'</span>: &lt;attribute <span class="string">'__weakref__'</span> of <span class="string">'bird'</span> objects&gt;, <span class="string">'feather'</span>: <span class="keyword">True</span>, <span class="string">'__doc__'</span>: <span class="keyword">None</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># chicken对象属性 比如fly和__init__方法</span></span><br><span class="line">&#123;<span class="string">'fly'</span>: <span class="keyword">False</span>, <span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'__doc__'</span>: <span class="keyword">None</span>, <span class="string">'__init__'</span>: &lt;function __init__ at <span class="number">0x2b91db476d70</span>&gt;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># summer对象属性 比如age</span></span><br><span class="line">&#123;<span class="string">'age'</span>: <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有一些属性，比如<code>__doc__</code>，并不是由我们定义的，而是由Python自动生成。</p>
+<p>此外，bird类也有父类，是object类(正如我们的bird定义，<code>class bird(object)</code>)。</p>
+<p>这个object类是Python中所有类的父类。</p>
+<p>可以看到，<strong>Python中的属性是分层定义的</strong>，比如这里分为<code>object/bird/chicken/summer</code>这四层。</p>
+<p><strong>当我们需要调用某个属性的时候，Python会一层层向上遍历，直到找到那个属性。</strong>(某个属性可能出现再不同的层被重复定义，Python向上的过程中，会选取先遇到的那一个，也就是比较低层的属性定义)。</p>
+<p>当我们有一个summer对象的时候，分别查询summer对象、chicken类、bird类以及object类的属性，就可以知道summer对象所有的<code>__dict__</code>，就可以找到通过对象summer可以调用和修改的所有属性了.</p>
+<p>refs: <a href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html" target="_blank" rel="noopener">Python深入03 对象的属性</a></p>
+<hr>
+<h2 id="deep-copy和shadow-copy"><a href="#deep-copy和shadow-copy" class="headerlink" title="deep copy和shadow copy:"></a>deep copy和shadow copy:</h2><blockquote>
+<ul>
+<li>我们寻常意义的复制就是深复制，即将被复制对象完全再复制一遍作为独立的新个体单独存在。所以改变原有被复制对象不会对已经复制出来的新对象产生影响。 </li>
+<li>而浅复制并不会产生一个独立的对象单独存在，他只是将原有的数据块打上一个新标签，所以当其中一个标签被改变的时候，数据块就会发生变化，另一个标签也会随之改变。这就和我们寻常意义上的复制有所不同了。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>对于简单的 object，用 shallow copy 和 deep copy 没区别</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</li>
+</ul>
+</blockquote>
+<p>refs: <a href="https://www.cnblogs.com/hokky/p/8476698.html" target="_blank" rel="noopener">Python-copy()与deepcopy()区别</a></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><p><a href="https://stackoverflow.com/questions/2033150/subclassing-dict-should-dict-init-be-called" target="_blank" rel="noopener">Subclassing dict: should dict.<strong>init</strong>() be called?</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/yuxinleipp/article/details/7869290" target="_blank" rel="noopener">Python 方法调用机制</a></p>
+</li>
+<li><p><a href="https://stackoverflow.com/questions/12627949/python-override-getstate-and-setstate" target="_blank" rel="noopener">Python, override__getstate__() and <strong>setstate</strong>()</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/codingwithme/article/details/41675679" target="_blank" rel="noopener">sqlmap源码阅读之基础(dict,sys)</a></p>
+</li>
+<li><p><a href="http://python.jobbole.com/88367/" target="_blank" rel="noopener">Python 魔术方法 - Magic Method</a></p>
+</li>
+<li><p><a href="https://pycoders-weekly-chinese.readthedocs.io/en/latest/issue6/a-guide-to-pythons-magic-methods.html#id13" target="_blank" rel="noopener">Python 魔术方法指南</a></p>
+</li>
+<li><p><a href="https://docs.python.org/2/reference/datamodel.html#customizing-attribute-access" target="_blank" rel="noopener">3. Data model</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html" target="_blank" rel="noopener">Python深入03 对象的属性</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/blackmatrix/p/5630515.html" target="_blank" rel="noopener">Python新式类与经典类的区别</a></p>
+</li>
+<li><p><a href="https://www.peterbe.com/plog/must__deepcopy__" target="_blank" rel="noopener">When to <strong>deepcopy</strong> classes in Python</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/hokky/p/8476698.html" target="_blank" rel="noopener">Python-copy()与deepcopy()区别</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/sqlmap源码-checkSameHost函数的疑问/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -350,12 +665,15 @@
 <hr>
 <h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSameHost</span><span class="params">(*urls)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target.com/images/page2.php')</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target2.com/images/page2.php')</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">elif</span> len(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_</span><span class="params">(value)</span>:</span> <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r"\A\w+://"</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">"http://%s"</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> all(re.sub(<span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or "").netloc.split(':')[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r"(?i)\Awww\." (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
-<li><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code><ul>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
+<ul>
 <li><code>True</code></li>
 </ul>
 </li>
-<li><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code><ul>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
+<ul>
 <li><code>False</code></li>
 </ul>
 </li>
@@ -536,19 +854,23 @@
 <li>查询可用版本</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum list docker-ce --showduplicates | sort -r</span></span><br><span class="line">已加载插件：fastestmirror, langpacks</span><br><span class="line">可安装的软件包</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line">docker-ce.x86_64            3:18.09.2-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            3:18.09.1-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            3:18.09.0-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.3.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.2.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.1.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.0.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.3.ce-1.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.0.ce-1.el7.centos             docker-ce-stable</span><br></pre></td></tr></table></figure>
+
 <p>如果使用<code>yum install docker-ce</code>下载下来的docker版本是很有可能是第一个<code>3:18.09.2-3.el7</code>,运行的时候会报错,要指定<code>centos</code>的版本下载才能正常运行.</p>
 <ul>
 <li>安装指定版本</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum install docker-ce-18.03.1.ce-1.el7.centos</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>启动docker</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>测试安装结果</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run hello-world                       </span></span><br><span class="line"></span><br><span class="line">Hello from Docker!</span><br><span class="line">This message shows that your installation appears to be working correctly.</span><br><span class="line"></span><br><span class="line">To generate this message, Docker took the following steps:</span><br><span class="line"> 1. The Docker client contacted the Docker daemon.</span><br><span class="line"> 2. The Docker daemon pulled the <span class="string">"hello-world"</span> image from the Docker Hub.</span><br><span class="line">    (amd64)</span><br><span class="line"> 3. The Docker daemon created a new container from that image <span class="built_in">which</span> runs the</span><br><span class="line">    executable that produces the output you are currently reading.</span><br><span class="line"> 4. The Docker daemon streamed that output to the Docker client, <span class="built_in">which</span> sent it</span><br><span class="line">    to your terminal.</span><br><span class="line"></span><br><span class="line">To try something more ambitious, you can run an Ubuntu container with:</span><br><span class="line"> $ docker run -it ubuntu bash</span><br><span class="line"></span><br><span class="line">Share images, automate workflows, and more with a free Docker ID:</span><br><span class="line"> https://hub.docker.com/</span><br><span class="line"></span><br><span class="line">For more examples and ideas, visit:</span><br><span class="line"> https://docs.docker.com/get-started/</span><br></pre></td></tr></table></figure>
+
 <p>无报错,则正常</p>
 <hr>
 <h1 id="漏洞环境下载"><a href="#漏洞环境下载" class="headerlink" title="漏洞环境下载:"></a>漏洞环境下载:</h1><ul>
@@ -560,19 +882,29 @@
 </li>
 <li><p><a href="https://blog.51cto.com/13767724/2164915?source=dra" target="_blank" rel="noopener">CentOS7下安装Docker-Compose</a></p>
 </li>
-<li><a href="https://blog.csdn.net/xiaoxianerqq/article/details/80579113" target="_blank" rel="noopener">cannot uninstall a distutils installed project’</a></li>
+<li><p><a href="https://blog.csdn.net/xiaoxianerqq/article/details/80579113" target="_blank" rel="noopener">cannot uninstall a distutils installed project’</a></p>
+</li>
 </ul>
 <hr>
 <h1 id="开机自启"><a href="#开机自启" class="headerlink" title="开机自启:"></a>开机自启:</h1><h2 id="docker-服务开机自启"><a href="#docker-服务开机自启" class="headerlink" title="docker 服务开机自启"></a>docker 服务开机自启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl enable docker.service</span></span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.</span><br></pre></td></tr></table></figure>
+
 <h2 id="漏洞环境容器的开机自启"><a href="#漏洞环境容器的开机自启" class="headerlink" title="漏洞环境容器的开机自启"></a>漏洞环境容器的开机自启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取镜像到本地</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull medicean/vulapps:s_struts2_s2-032</span></span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动环境</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -p 80:8080 medicean/vulapps:s_struts2_s2-032</span></span><br><span class="line">6aa16caac712adcc0f5410dbed2aaa14a303ede2378311f0c2222b1901bcef25</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看CONTAINER ID </span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                            NAMES</span><br><span class="line">6aa16caac712        medicean/vulapps:s_struts2_s2-032   <span class="string">"/usr/local/tomcat/b…"</span>   22 seconds ago      Up 21 seconds       0.0.0.0:80-&gt;8080/tcp             keen_carson</span><br><span class="line">ee8ea1d1acdd        medicean/vulapps:r_redis_1          <span class="string">"/start.sh"</span>              30 minutes ago      Up 4 minutes        22/tcp, 0.0.0.0:6379-&gt;6379/tcp   redisvul</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 参数always:始终重启,更新设为开机自启</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker update --restart=always 6aa16caac712</span></span><br><span class="line">6aa16caac712</span><br></pre></td></tr></table></figure>
+
 <p>重启机子,后允许<code>docker ps</code>查看是否自启成功</p>
 <h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><h2 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器:"></a>删除容器:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有container</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES</span><br><span class="line">e6318265a202        httpd:centos        <span class="string">"/run.sh"</span>           5 minutes ago       Exited (127) 5 minutes ago                       httpd1              </span><br><span class="line">eaf9ee72f448        httpd:centos        <span class="string">"/run.sh"</span>           6 minutes ago                                                        httpd</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># "docker rm 容器id"来删除一个终止状态的容器；若要删除一个运行中的容器，需要加-f参数。</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker rm e6318265a202</span></span><br><span class="line">e6318265a202</span><br></pre></td></tr></table></figure>
+
 <h2 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像:"></a>删除镜像:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除images，通过image的id来指定删除谁</span></span><br><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>这样就可以使用一台机子来专门安装漏洞环境,方便poc测试、调试。</p>
 <hr>
@@ -731,6 +1063,7 @@
 <p>在语法上，go语句是一个普通的函数或方法调用前加上<strong>关键字<code>go</code></strong>。</p>
 <p>go语句会使其语句中的函数在一个新创建的<code>goroutine</code>中运行。而go语句本身会迅速地完成。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f()    <span class="comment">// call f(); wait for it to return</span></span><br><span class="line"><span class="keyword">go</span> f() <span class="comment">// create a new goroutine that calls f(); don't wait</span></span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>在Go语言中，语言本身就已经实现和支持了并发,所以写起并发来相当方便.</p>
 </blockquote>
@@ -745,17 +1078,21 @@
 <li>将需要处理的Url分成n等份</li>
 </ol>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">divided</span><span class="params">(links []<span class="keyword">string</span>, goroutineNum <span class="keyword">int</span>)</span> [][]<span class="title">string</span></span> &#123;</span><br><span class="line">	chunkSize := (<span class="built_in">len</span>(links) + goroutineNum - <span class="number">1</span>) / goroutineNum</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dividedPath [][]<span class="keyword">string</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(links); i += chunkSize &#123;</span><br><span class="line">		end := i + chunkSize</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> end &gt; <span class="built_in">len</span>(links) &#123;</span><br><span class="line">			end = <span class="built_in">len</span>(links)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		dividedPath = <span class="built_in">append</span>(dividedPath, links[i:end])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> dividedPath</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>2.开启n个goroutine去消费掉url</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">dividedLinks := divided(collected_path, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> _, link := <span class="keyword">range</span> dividedLinks &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"%#v\n"</span>, <span class="built_in">len</span>(link))</span><br><span class="line">	wg.Add(<span class="number">1</span>) <span class="comment">// Increment the WaitGroup counter.</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(link []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">		<span class="comment">// Launch a goroutine to fetch the link.</span></span><br><span class="line">		scan(start_url, link)</span><br><span class="line">		<span class="comment">// Fetch the link.</span></span><br><span class="line">		wg.Done()</span><br><span class="line">	&#125;(link)</span><br><span class="line">&#125;</span><br><span class="line">wg.Wait() <span class="comment">// Wait for all goroutines to finish.</span></span><br></pre></td></tr></table></figure>
+
 <h1 id="速度比较"><a href="#速度比较" class="headerlink" title="速度比较:"></a>速度比较:</h1><h2 id="自身速度比较"><a href="#自身速度比较" class="headerlink" title="自身速度比较:"></a>自身速度比较:</h2><p>go 不用并发消耗的时间:</p>
 <p>不同网络环境下的消耗时间:</p>
 <ol>
-<li><code>elapsed time:  1.951978378s</code> (5个goroutine)</li>
+<li><p><code>elapsed time:  1.951978378s</code> (5个goroutine)</p>
+</li>
 <li><p><code>elapsed time:  11.353934431s</code></p>
 </li>
 <li><p><code>elapsed time:  35.50535812s</code> (5个goroutine)</p>
 </li>
-<li><code>elapsed time:  2m32.608078161s</code></li>
+<li><p><code>elapsed time:  2m32.608078161s</code></p>
+</li>
 </ol>
 <h2 id="与python的速度比较"><a href="#与python的速度比较" class="headerlink" title="与python的速度比较:"></a>与python的速度比较:</h2><p>python:<br>2个线程:<code>74.5581650734s</code></p>
 <p>go:<br>2个goroutine<br><code>elapsed time:  1m10.233281137s</code></p>
@@ -960,6 +1297,7 @@
 <hr>
 <h2 id="跟踪分析"><a href="#跟踪分析" class="headerlink" title="跟踪分析:"></a>跟踪分析:</h2><h3 id="common-inc-php"><a href="#common-inc-php" class="headerlink" title="common.inc.php"></a>common.inc.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6ef6f74c.jpg" alt=""></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">foreach(array(&apos;_COOKIE&apos;, &apos;_POST&apos;, &apos;_GET&apos;) as $_request) &#123;</span><br><span class="line">	foreach($$_request as $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;0&#125; != &apos;_&apos; &amp;&amp; $$_key = daddslashes($_value,0,0,1);</span><br><span class="line">		$_M[&apos;form&apos;][$_key]=daddslashes($_value,0,0,1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这个时候,引入了外部变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code></p>
 <p>这个循环会遍历全局变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code>，然后对里面的值进行过滤,然后赋值到<code>$_M[form]</code></p>
 <p>进入循环之前,<code>$_M</code>变量的值为</p>
@@ -979,6 +1317,7 @@
 <p><img src="https://i.loli.net/2019/04/25/5cc1d6f434e32.jpg" alt=""></p>
 <p><code>index</code> 类继承了 <code>admin</code>类</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span> <span class="keyword">extends</span> <span class="title">admin</span></span></span><br></pre></td></tr></table></figure>
+
 <p><code>admin</code> 类继承了 <code>common</code>类</p>
 <h3 id="common-class-php"><a href="#common-class-php" class="headerlink" title="common.class.php"></a>common.class.php</h3><p><code>common</code>类 构造函数里面,加载了全站的配置数据</p>
 <p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0ehqbi24wj30u00iatgb.jpg" alt=""></p>
@@ -1008,6 +1347,7 @@
 <hr>
 <h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>造成变量覆盖时使用的语法.</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$hell=<span class="string">"abc"</span>; $$hell=<span class="string">"def"</span>;等同于$abc=<span class="string">"def"</span></span><br><span class="line"></span><br><span class="line">$_request = _GET</span><br><span class="line">$$_request = $_GET</span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>这是个trick?</p>
 </blockquote>
@@ -1183,9 +1523,11 @@
 <hr>
 <h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
+
 <p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
 <h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
 <p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
@@ -1198,16 +1540,22 @@
 </blockquote>
 <h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
+
 <p>eg:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
+
 <p>某两次提交之间的所有patch:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
+
 <p>eg:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
+
 <h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
 <p>打入patch/diff:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
 <p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
@@ -1397,7 +1745,9 @@
 <p><img src="https://i.loli.net/2019/04/25/5cc1d74f398a5.jpg" alt=""></p>
 <hr>
 <h2 id="获取进度百分比"><a href="#获取进度百分比" class="headerlink" title="获取进度百分比:"></a>获取进度百分比:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getPercentageNum</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    正则匹配百分比数字</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    re_pattern = <span class="string">r"(\d&#123;1,2&#125;.\d&#123;1,2&#125;)\%"</span></span><br><span class="line">    num_match_list = re.findall(re_pattern, content)</span><br><span class="line">    <span class="keyword">if</span> num_match_list:</span><br><span class="line">        <span class="keyword">return</span> num_match_list[<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cmd = shlex.split(shell_cmd)</span><br><span class="line"><span class="keyword">print</span> cmd</span><br><span class="line">        </span><br><span class="line">p = subprocess.Popen(cmd, shell=<span class="keyword">False</span>, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)</span><br><span class="line"><span class="keyword">while</span> p.poll() <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    line = p.stdout.readline()</span><br><span class="line">    line = line.strip()</span><br><span class="line">    <span class="keyword">if</span> line:</span><br><span class="line">        print(<span class="string">'percentage: [&#123;&#125;]'</span>.format(line))</span><br><span class="line">        <span class="keyword">print</span> getPercentageNum(line)</span><br></pre></td></tr></table></figure>
+
 <p>通过上面两个函数,就可以获取到 扫描的进度百分比了.</p>
 <h1 id="另一种思路"><a href="#另一种思路" class="headerlink" title="另一种思路:"></a>另一种思路:</h1><p>开启一个msscan,按下回车键的时候,会再次输出进度。</p>
 <p>或许可以与进程通信,然后发送信号,来获取进度信息。</p>
@@ -1544,6 +1894,7 @@
           
             <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>未开启debug模式,</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
+
 <p><img src="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg" alt=""></p>
 <h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><p>定位关键代码:</p>
 <p><img src="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg" alt=""></p>
@@ -1551,10 +1902,12 @@
 <p><img src="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg" alt=""></p>
 <p>并赋值</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
+
 <p>第526行: </p>
 <p>引用了外部变量$POST</p>
 <p><img src="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg" alt=""></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;method&#125;($_POST);</span><br></pre></td></tr></table></figure>
+
 <p>执行结果:</p>
 <p><img src="https://i.loli.net/2019/04/25/5cc1d70444143.jpg" alt=""></p>
 <p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
@@ -1961,210 +2314,14 @@
 </ul>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></li>
+<li><p><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></p>
+</li>
 <li><p><a href="https://www.rapid7.com/db/vulnerabilities/spider-svn-entries-disclosure" target="_blank" rel="noopener">Subversion entries file information disclosure</a></p>
 </li>
 <li><p><a href="https://stackoverflow.com/questions/20043472/multithreading-why-arent-generators-thread-safe-what-happens-when-it-is-share" target="_blank" rel="noopener">multithreading: Why aren’t generators thread-safe? What happens when it is shared among threads?</a></p>
 </li>
-<li><a href="https://stackoverflow.com/questions/20042534/python-why-different-threads-get-their-own-series-of-values-from-one-generator" target="_blank" rel="noopener">Python: Why different threads get their own series of values from one generator?</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/端口扫描-遇到蜜罐情况/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/10/端口扫描-遇到蜜罐情况/" itemprop="url">端口扫描-遇到防护设备的情况</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T22:36:34+08:00">
-                2019-01-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h1><p>在做主机资产扫描-识别端口开放情况与服务的时候,一开始很容易遇到的问题就是:<strong>识别端口数量过少</strong>,</p>
-<p>就是有些端口明明开放了,你却识别不出来.</p>
-<p>要解决这个问题,可以考虑以下思路:</p>
-<ul>
-<li>修改<code>nmap</code>参数,<strong>跳过存活主机的发现</strong></li>
-<li>有可能是发包数过快,网络设备处理不过来,存在<strong>丢包</strong>的情况</li>
-</ul>
-<h1 id="新的问题"><a href="#新的问题" class="headerlink" title="新的问题:"></a>新的问题:</h1><p>解决完<strong>识别端口数量过少</strong>的问题后,后来又出现了另一个问题:<strong>识别端口数量过多</strong></p>
-<p>例子1:</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35e8f5d9.jpg" alt=""></p>
-<p>例子2:</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g19n1px5zhj31co0ruk9j.jpg" alt=""></p>
-<p>图中显示的端口都是开放状态.</p>
-<p>refs:DC0531技术沙龙-国内SRC漏洞挖掘经验和技巧分享</p>
-<hr>
-<h1 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h1><p>目标主机可能有防护设备如<strong>蜜罐</strong>等.</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g19nopfda1j30a60a4goh.jpg" alt=""></p>
-<hr>
-<h2 id="什么是蜜罐"><a href="#什么是蜜罐" class="headerlink" title="什么是蜜罐"></a>什么是蜜罐</h2><blockquote>
-<p>通常将<strong>蜜罐(honeypot)</strong>定义为一种安全资源.</p>
-<p><strong>它不需要提供实际的应用，蜜罐的存在价值就是诱导和记录攻击行为</strong>，从而了解攻击者的入侵方法和手段，并能够延缓其攻击进程</p>
-<p>进而根据捕获的攻击行为数据，分析攻击者使用的攻击方法和工具，从而让防御方针对性地增强系统的安全防护能力。</p>
-</blockquote>
-<p><strong>有点草船借箭的意味.</strong></p>
-<hr>
-<h2 id="蜜罐的分类"><a href="#蜜罐的分类" class="headerlink" title="蜜罐的分类"></a>蜜罐的分类</h2><p><strong>蜜罐的交互程度通常取决于蜜罐对相应服务的模拟程度。</strong></p>
-<p>（1）低交互蜜罐<br>该类蜜罐通常只提供少量的交互功能，<strong>蜜罐在特定端口监听连接并记录数据包，可以用来实现端口扫描和暴力破解的检测</strong>。低交互蜜罐结构简单，易于安装部署，由于模拟程度低功能较少，收集信息有限但风险也较低。</p>
-<p>（2）高交互蜜罐<br>高交互蜜罐通常基于真实的应用环境来构建，能提供真实的服务。高交互蜜罐可用来获取大量的信息，能够捕获攻击者多种操作行为，从而具备发现新的攻击方式和漏洞利用方法的能力。由于高交互蜜罐给攻击者提供了一个相对真实的应用环境，因此风险较大，通常会注重数据控制方面的功能。</p>
-<hr>
-<h2 id="简单总结"><a href="#简单总结" class="headerlink" title="简单总结:"></a>简单总结:</h2><p>黑客入侵或做安全检测的时候,往往要先做信息搜集.</p>
-<p>第一步便是要看看目标主机开放了什么端口,以及端口上对应的服务.(攻击面 attack face)</p>
-<p>而简单的,部署上一个<strong>低交互蜜罐</strong>,就可以增大攻击者(检测者)的难度.cool~</p>
-<hr>
-<h1 id="对检测者的影响"><a href="#对检测者的影响" class="headerlink" title="对检测者的影响:"></a>对检测者的影响:</h1><h2 id="卡死检测者"><a href="#卡死检测者" class="headerlink" title="卡死检测者:"></a>卡死检测者:</h2><p>一般检测的时候,我们都会对<strong>整个网段进行全端口扫描</strong>.</p>
-<p>如果这个网段内某一两台主机部署了蜜罐的话,那么这整个检测任务会处于几乎卡死的状态.</p>
-<p>所以,一台部署了蜜罐的设备,可能不仅仅是保护自身，对于同网段的机子来说也有一定的益处.</p>
-<h2 id="大量脏数据入库"><a href="#大量脏数据入库" class="headerlink" title="大量脏数据入库:"></a>大量脏数据入库:</h2><p>如果检测的时候,没有恰当的处理,很有可能会造成大量的脏数据入库.</p>
-<hr>
-<h1 id="简单的解决方案"><a href="#简单的解决方案" class="headerlink" title="简单的解决方案:"></a>简单的解决方案:</h1><p>识别端口的开放情况和服务,这两个功能一定要分开.</p>
-<blockquote>
-<p>可见开发时的设计要遵从 <strong>高内聚、低耦合原则</strong>.</p>
-</blockquote>
-<p>如果识别一个主机开放了过多的端口(如超过100个),那么可以选择</p>
-<ul>
-<li>跳过这个主机.</li>
-<li>仅识别top 100</li>
-</ul>
-<hr>
-<h1 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h1><p>某个主机或某个网段内部署了蜜罐,会不会有点 <strong>此地无银三百两</strong>的意味呢?</p>
-<p>或许发现、识别蜜罐的同时,也侧面说明了这个网段内有企业重要的资产?!</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="http://phantom0301.cc/2016/03/23/Antihoneypot/" target="_blank" rel="noopener">反蜜罐技术学习</a></li>
-<li><a href="https://cloud.tencent.com/developer/article/1047554" target="_blank" rel="noopener">浅谈简易端口扫描威胁感知系统的设计与实现</a></li>
-<li><a href="https://sosly.me/index.php/2017/09/05/jymiguan2/" target="_blank" rel="noopener">蜜罐与内网安全从0到1（二）</a></li>
-<li>DC0531技术沙龙-国内SRC漏洞挖掘经验和技巧分享</li>
+<li><p><a href="https://stackoverflow.com/questions/20042534/python-why-different-threads-get-their-own-series-of-values-from-one-generator" target="_blank" rel="noopener">Python: Why different threads get their own series of values from one generator?</a></p>
+</li>
 </ul>
 
           
@@ -2253,7 +2410,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

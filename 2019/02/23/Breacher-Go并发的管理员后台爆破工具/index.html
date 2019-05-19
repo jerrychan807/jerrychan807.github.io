@@ -358,6 +358,7 @@
 <p>在语法上，go语句是一个普通的函数或方法调用前加上<strong>关键字<code>go</code></strong>。</p>
 <p>go语句会使其语句中的函数在一个新创建的<code>goroutine</code>中运行。而go语句本身会迅速地完成。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f()    <span class="comment">// call f(); wait for it to return</span></span><br><span class="line"><span class="keyword">go</span> f() <span class="comment">// create a new goroutine that calls f(); don't wait</span></span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>在Go语言中，语言本身就已经实现和支持了并发,所以写起并发来相当方便.</p>
 </blockquote>
@@ -372,17 +373,21 @@
 <li>将需要处理的Url分成n等份</li>
 </ol>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">divided</span><span class="params">(links []<span class="keyword">string</span>, goroutineNum <span class="keyword">int</span>)</span> [][]<span class="title">string</span></span> &#123;</span><br><span class="line">	chunkSize := (<span class="built_in">len</span>(links) + goroutineNum - <span class="number">1</span>) / goroutineNum</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dividedPath [][]<span class="keyword">string</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(links); i += chunkSize &#123;</span><br><span class="line">		end := i + chunkSize</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> end &gt; <span class="built_in">len</span>(links) &#123;</span><br><span class="line">			end = <span class="built_in">len</span>(links)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		dividedPath = <span class="built_in">append</span>(dividedPath, links[i:end])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> dividedPath</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>2.开启n个goroutine去消费掉url</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">dividedLinks := divided(collected_path, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> _, link := <span class="keyword">range</span> dividedLinks &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"%#v\n"</span>, <span class="built_in">len</span>(link))</span><br><span class="line">	wg.Add(<span class="number">1</span>) <span class="comment">// Increment the WaitGroup counter.</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(link []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">		<span class="comment">// Launch a goroutine to fetch the link.</span></span><br><span class="line">		scan(start_url, link)</span><br><span class="line">		<span class="comment">// Fetch the link.</span></span><br><span class="line">		wg.Done()</span><br><span class="line">	&#125;(link)</span><br><span class="line">&#125;</span><br><span class="line">wg.Wait() <span class="comment">// Wait for all goroutines to finish.</span></span><br></pre></td></tr></table></figure>
+
 <h1 id="速度比较"><a href="#速度比较" class="headerlink" title="速度比较:"></a>速度比较:</h1><h2 id="自身速度比较"><a href="#自身速度比较" class="headerlink" title="自身速度比较:"></a>自身速度比较:</h2><p>go 不用并发消耗的时间:</p>
 <p>不同网络环境下的消耗时间:</p>
 <ol>
-<li><code>elapsed time:  1.951978378s</code> (5个goroutine)</li>
+<li><p><code>elapsed time:  1.951978378s</code> (5个goroutine)</p>
+</li>
 <li><p><code>elapsed time:  11.353934431s</code></p>
 </li>
 <li><p><code>elapsed time:  35.50535812s</code> (5个goroutine)</p>
 </li>
-<li><code>elapsed time:  2m32.608078161s</code></li>
+<li><p><code>elapsed time:  2m32.608078161s</code></p>
+</li>
 </ol>
 <h2 id="与python的速度比较"><a href="#与python的速度比较" class="headerlink" title="与python的速度比较:"></a>与python的速度比较:</h2><p>python:<br>2个线程:<code>74.5581650734s</code></p>
 <p>go:<br>2个goroutine<br><code>elapsed time:  1m10.233281137s</code></p>
@@ -554,7 +559,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

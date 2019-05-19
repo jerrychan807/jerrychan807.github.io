@@ -349,12 +349,14 @@
 <p>当这个命令超过这个最大时间的时候,我们主动kill掉,以保证程序接下来可以正常运行.</p>
 <hr>
 <h1 id="py3"><a href="#py3" class="headerlink" title="py3:"></a>py3:</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p = subprocess.Popen([cmd],stdout=subprocess.PIPE)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    (stdoutput, erroutput) = p.communicate(timeout=TIMEOUT)  <span class="comment"># 超时时间</span></span><br><span class="line"><span class="keyword">except</span> subprocess.TimeoutExpired:</span><br><span class="line">    p.kill()</span><br><span class="line">    print(<span class="string">"[*] TIMEOUT: %s"</span> % cmd)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
 <p>py3的<code>subprocess</code>库原生支持了超时时间的参数.</p>
 <p>过了超时时间的时候,会抛出<code>TimeoutExpired</code>异常.我们只需要<code>catch</code>到再做处理就行了.</p>
 <hr>
 <h1 id="py2"><a href="#py2" class="headerlink" title="py2:"></a>py2:</h1><p>没想到py2的<code>subprocess</code>库还并没有支持<code>timeout</code>参数.只能自己手动计时.到时间kill掉.</p>
 <p>搜索到的实现比较好的示例代码,只需要简单改改就可以用了.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Timer</span><br><span class="line"> </span><br><span class="line">kill = <span class="keyword">lambda</span> process: process.kill()</span><br><span class="line">cmd = [<span class="string">'ping'</span>, <span class="string">'www.google.com'</span>]</span><br><span class="line">ping = subprocess.Popen(</span><br><span class="line">    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line"> </span><br><span class="line">my_timer = Timer(<span class="number">5</span>, kill, [ping])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    my_timer.start()</span><br><span class="line">    stdout, stderr = ping.communicate()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    my_timer.cancel()</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="另一种卡死的情况"><a href="#另一种卡死的情况" class="headerlink" title="另一种卡死的情况:"></a>另一种卡死的情况:</h1><blockquote>
 <p>原因是使用<code>Popen.wait()</code>后直接读<code>PIPE.stdout.read()</code>之前，可能缓存已经满了，此时导致了卡死。</p>
@@ -487,7 +489,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
