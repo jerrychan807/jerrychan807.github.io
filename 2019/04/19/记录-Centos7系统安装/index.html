@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="VulnAnalysis,">
+  <meta name="keywords" content="Dev,">
 
 
 
@@ -79,22 +79,20 @@
 
 
 
-<meta name="description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;);  该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addsla">
-<meta name="keywords" content="VulnAnalysis">
+<meta name="description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长">
+<meta name="keywords" content="Dev">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
-<meta property="og:url" content="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/index.html">
+<meta property="og:title" content="记录-Centos7系统安装">
+<meta property="og:url" content="http://yoursite.com/2019/04/19/记录-Centos7系统安装/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;);  该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addsla">
+<meta property="og:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg">
-<meta property="og:updated_time" content="2019-04-25T15:48:31.222Z">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg">
+<meta property="og:updated_time" content="2019-05-22T03:58:27.442Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
-<meta name="twitter:description" content="略读代码：开头包含了文件 1require_once(dirname(__FILE__) . &amp;apos;/include/common.inc.php&amp;apos;);  该文件中,全局数据转义 1234567if(!get_magic_quotes_gpc())//如果没有开启&amp;#123;	$_POST = deep_addslashes($_POST);	$_GET = deep_addsla">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg">
+<meta name="twitter:title" content="记录-Centos7系统安装">
+<meta name="twitter:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg">
 
 
 
@@ -124,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/19/记录-Centos7系统安装/">
 
 
 
 
 
-  <title>BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析 | Black House</title>
+  <title>记录-Centos7系统安装 | Black House</title>
   
 
 
@@ -257,7 +255,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/记录-Centos7系统安装/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -274,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</h1>
+          <h1 class="post-title" itemprop="name headline">记录-Centos7系统安装</h1>
         
 
         <div class="post-meta">
@@ -286,8 +284,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T00:49:00+08:00">
-                2018-06-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T14:36:34+08:00">
+                2019-04-19
               </time>
             
 
@@ -309,8 +307,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
-                    <span itemprop="name">VulnAnalysis</span>
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
                   </a>
                 </span>
 
@@ -346,90 +344,62 @@
       
 
       
-        <h1 id="略读代码："><a href="#略读代码：" class="headerlink" title="略读代码："></a>略读代码：</h1><p>开头包含了文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &apos;/include/common.inc.php&apos;);</span><br></pre></td></tr></table></figure>
-
-<p>该文件中,<strong>全局数据转义</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
-
-<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg" alt=""></p>
+        <h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装:"></a>系统安装:</h1><h2 id="镜像选择"><a href="#镜像选择" class="headerlink" title="镜像选择:"></a>镜像选择:</h2><p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
 <hr>
-<h1 id="转换思路："><a href="#转换思路：" class="headerlink" title="转换思路："></a>转换思路：</h1><blockquote>
-<p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
+<h2 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h2><p>正式生产服务器建议安装英文版本</p>
+<hr>
+<h2 id="自定义硬盘分区"><a href="#自定义硬盘分区" class="headerlink" title="自定义硬盘分区"></a>自定义硬盘分区</h2><p>这个比较重要</p>
+<hr>
+<h3 id="必要的分区"><a href="#必要的分区" class="headerlink" title="必要的分区:"></a>必要的分区:</h3><p><strong>boot分区</strong>:</p>
+<ul>
+<li><p>作用：<strong>引导分区</strong>，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，</p>
+</li>
+<li><p>分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长期使用的冗余文件塞满这个分区。</p>
+</li>
+</ul>
+<p><strong>/分区(根分区):</strong>         </p>
+<ul>
+<li><p>作用：所有的文件都从这里开始，你可以比喻为Windows的C盘，但其实有区别。如果你有大量的数据在根目录下（比如FTP等）可以划分大一点的空间</p>
+</li>
+<li><p>分区建议：建议15G以上。看需求，根分区和home分区的大小就类似C盘和D盘的空间分布一样，主要占空间在哪儿就在那里分大容量</p>
+</li>
+</ul>
+<p><strong>swap分区：</strong></p>
+<ul>
+<li><p>作用：<strong>类似于Windows的虚拟内存</strong>，在内存不够用时占用硬盘的虚拟内存来进行临时数据的存放，而对于linux就是swap分区</p>
+</li>
+<li><p>分区建议：建议是物理内存大小的2倍，比如你电脑是4G的物理内存，swap分区可以是8G</p>
+</li>
+</ul>
+<blockquote>
+<p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
 </blockquote>
-<p>参考一下：<a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></p>
-<p>可以发现对数据的注入，进行了<strong>加斜杠转义</strong>的操作。那么接下来找注入思路主要有以下3点：</p>
-<ul>
-<li>找<strong>整数型注入</strong></li>
-<li>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong><ul>
-<li><img src="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg" alt="">  </li>
-</ul>
-</li>
-<li><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</li>
-</ul>
 <hr>
-<h1 id="尝试宽字节注入："><a href="#尝试宽字节注入：" class="headerlink" title="尝试宽字节注入："></a>尝试宽字节注入：</h1><ul>
-<li>抓包修改<code>admin_name=%df%27+or+1%3D1%23</code></li>
-<li>明文就是<code>%df&#39; or 1=1#</code></li>
-<li>单引号被转义后变成<code>%df\&#39; or 1=1#</code></li>
-<li>宽字节注入是利用mysql的一个特性,因为gbk是多字节编码，他认为两个字节代表一个汉字，所以<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来，就可以成功闭合sql语句了</li>
-<li>再加上后面的<code>or 1=1 #</code>就构造成了永真语句，可以成功免密登录管理员后台了</li>
+<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
+<ul>
+<li>4个cpu</li>
+<li>内存为6G</li>
+<li>硬盘为200G(精简置备模式)</li>
 </ul>
+<p>自定义的硬盘分区:</p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
+<p>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</p>
+<blockquote>
+<p>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</p>
+</blockquote>
 <hr>
-<h1 id="理解宽字节："><a href="#理解宽字节：" class="headerlink" title="理解宽字节："></a>理解宽字节：</h1><p>参考:<a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></p>
-<ul>
-<li><p>本质是如何绕过addslashes函数：</p>
-</li>
-<li><p>addslashes函数产生的效果就是，让<code>’</code>变成<code>\’</code>，让引号变得不再是“单引号”</p>
-</li>
-<li><p>一般绕过方式就是，想办法处理<code>\’</code>前面的<code>\</code></p>
-<ul>
-<li>想办法给\前面再加一个\（或单数个即可），变成<code>\\’</code>，这样<code>\</code>被转义了，<code>’</code>逃出了限制</li>
-<li>想办法把<code>\</code>弄没有。</li>
-</ul>
-</li>
-<li><p>mysql怎么判断一个字符是不是汉字?</p>
-<ul>
-<li>根据gbk编码，第一个字节ascii码大于128，基本上就可以了。比如我们不用<code>%df</code>，用<code>%a1</code>也可以 </li>
-</ul>
-</li>
-<li><p>gb2312和gbk的区别？</p>
-<ul>
-<li>gb2312编码的取值范围。它的高位范围是<code>0xA1~0xF7</code>，低位范围是<code>0xA1~0xFE</code>，而<code>\</code>是<code>0x5c</code>，是不在低位范围中的。</li>
-<li><code>0x5c</code>根本不是gb2312中的编码，所以自然也是不会被吃掉的。 </li>
-</ul>
-</li>
-</ul>
-<p>修复方案1：</p>
-<ul>
-<li><p>先调用mysql_set_charset函数设置连接所使用的字符集为gbk</p>
-</li>
-<li><p>再调用mysql_real_escape_string来过滤用户输入。</p>
-</li>
-<li><p>这个方式是可行的，但有部分老的cms，在多处使用addslashes来过滤字符串，我们不可能去一个一个把addslashes都修改成mysql_real_escape_string。</p>
-</li>
-</ul>
-<p>所以有修复方案2：</p>
-<ul>
-<li>将character_set_client设置为binary（二进制）。</li>
-<li>只需在所有sql语句前指定一下连接的形式是二进制：<br><code>mysql_query(&quot;SET character_set_connection=gbk, character_set_results=gbk,character_set_client=binary&quot;, $conn);</code></li>
-<li>所有数据以二进制的形式传递，就能有效避免宽字符注入。</li>
-</ul>
+<h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
+<li>浏览数据存储</li>
+<li>新建文件夹</li>
+<li>copy 后缀为<code>.vmx</code>和<code>.vmdk</code>的文件到 新建的文件夹里</li>
+<li>在新的<code>.vmx</code>文件右键:添加资源.</li>
+</ol>
 <hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><h2 id="requests不进行urldecode："><a href="#requests不进行urldecode：" class="headerlink" title="requests不进行urldecode："></a>requests不进行urldecode：</h2><p>参考：<a href="https://zhidao.baidu.com/question/1510942862655764300.html" target="_blank" rel="noopener">如何在requests post时不做urlencode</a><br>There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
-<p>并且加上<code>headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}</code></p>
-<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg" alt=""></p>
-<p><a href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py" target="_blank" rel="noopener">poc链接</a></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>阅读源码的时候，先看看全局过滤</li>
-<li>gb2312、gbk编码的话，考虑宽字节注入</li>
-<li>宽字节注入的原理是 gbk是<strong>多字节编码</strong>，他认为两个字节代表一个汉字，所以可以用<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来</li>
-</ul>
-<hr>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
-<li><a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></li>
-<li><a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></li>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/wcwen1990/p/7630545.html" target="_blank" rel="noopener">CentOS7安装详解</a></li>
+<li><a href="https://www.osyunwei.com/archives/7829.html" target="_blank" rel="noopener">CentOS 7.0系统安装配置图解教程</a></li>
+<li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
+<li><a href="https://blog.csdn.net/justlpf/article/details/80703763" target="_blank" rel="noopener">linux xfs和ext4的区别</a></li>
 </ul>
 
       
@@ -448,7 +418,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/VulnAnalysis/" rel="tag"># VulnAnalysis</a>
+            <a href="/tags/Dev/" rel="tag"># Dev</a>
           
         </div>
       
@@ -461,8 +431,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/03/记录-日志分析环境搭建/" rel="next" title="记录-日志分析环境搭建">
-                <i class="fa fa-chevron-left"></i> 记录-日志分析环境搭建
+              <a href="/2019/04/06/nyawc源码-解析不了网页里的链接分析/" rel="next" title="nyawc框架-解析不了网页里的链接的分析">
+                <i class="fa fa-chevron-left"></i> nyawc框架-解析不了网页里的链接的分析
               </a>
             
           </div>
@@ -471,8 +441,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/11/BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析/" rel="prev" title="BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析">
-                BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" rel="prev" title="WPSIH-网站个人敏感信息文件扫描器-开发记录">
+                WPSIH-网站个人敏感信息文件扫描器-开发记录 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -607,7 +577,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#略读代码："><span class="nav-number">1.</span> <span class="nav-text">略读代码：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转换思路："><span class="nav-number">2.</span> <span class="nav-text">转换思路：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#尝试宽字节注入："><span class="nav-number">3.</span> <span class="nav-text">尝试宽字节注入：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#理解宽字节："><span class="nav-number">4.</span> <span class="nav-text">理解宽字节：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编写pocsuite插件："><span class="nav-number">5.</span> <span class="nav-text">编写pocsuite插件：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#requests不进行urldecode："><span class="nav-number">5.1.</span> <span class="nav-text">requests不进行urldecode：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证："><span class="nav-number">5.2.</span> <span class="nav-text">验证：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结："><span class="nav-number">6.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-number">7.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统安装"><span class="nav-number">1.</span> <span class="nav-text">系统安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像选择"><span class="nav-number">1.1.</span> <span class="nav-text">镜像选择:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语言选择"><span class="nav-number">1.2.</span> <span class="nav-text">语言选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义硬盘分区"><span class="nav-number">1.3.</span> <span class="nav-text">自定义硬盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必要的分区"><span class="nav-number">1.3.1.</span> <span class="nav-text">必要的分区:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际的配置"><span class="nav-number">1.3.2.</span> <span class="nav-text">实际的配置:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机拷贝"><span class="nav-number">2.</span> <span class="nav-text">虚拟机拷贝:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>
