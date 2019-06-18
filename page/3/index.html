@@ -637,6 +637,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/svn源码泄露exploit/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/10/svn源码泄露exploit/" itemprop="url">Svn源码泄露exploit</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T22:36:34+08:00">
+                2019-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h1><p>google hack: <code>Index of /.svn</code></p>
+<h1 id="svnExploit工作原理"><a href="#svnExploit工作原理" class="headerlink" title="svnExploit工作原理"></a>svnExploit工作原理</h1><h2 id="判断svn版本号"><a href="#判断svn版本号" class="headerlink" title="判断svn版本号"></a>判断svn版本号</h2><p>通过根目录下的entries文件来判断</p>
+<p>版本号&gt;1.7的话,</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73a42af8.jpg" alt=""></p>
+<p>版本号&lt;1.7的话,</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73af3f2b.jpg" alt=""></p>
+<h2 id="版本号小于1-7的情况"><a href="#版本号小于1-7的情况" class="headerlink" title="版本号小于1.7的情况:"></a>版本号小于1.7的情况:</h2><h3 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h3><p><code>.svn/entries</code> 包含了项目的文件和文件夹列表。</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73ba78ca.jpg" alt=""></p>
+<p>可以解析这个文件来获取文件列表<code>file_list</code>和路径列表<code>dir_list</code>。</p>
+<h3 id="循环解析元数据"><a href="#循环解析元数据" class="headerlink" title="循环解析元数据:"></a>循环解析元数据:</h3><p>上面收集了文件夹列表,进入每个文件夹继续解析元数据<code>entries</code>文件</p>
+<p>现在有了整个项目结构了</p>
+<h3 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件"></a>下载文件</h3><p>.SVN-BASE files store a base copy of a file</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73c5c73f.jpg" alt=""></p>
+<p>在每个文件后面加上<code>.svn-base</code>,然后请求对应的url就可以下载文件</p>
+<hr>
+<h2 id="版本号大于1-7的情况"><a href="#版本号大于1-7的情况" class="headerlink" title="版本号大于1.7的情况:"></a>版本号大于1.7的情况:</h2><h3 id="下载数据库文件"><a href="#下载数据库文件" class="headerlink" title="下载数据库文件"></a>下载数据库文件</h3><p>下载<code>/.svn/wc.db</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73d53d53.jpg" alt=""></p>
+<h3 id="连接数据库文件"><a href="#连接数据库文件" class="headerlink" title="连接数据库文件"></a>连接数据库文件</h3><p>从<code>Node</code>表中查询出 </p>
+<ul>
+<li>相对路径</li>
+<li>文件类型</li>
+<li>校验值</li>
+</ul>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73e53b2e.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d73f61b38.jpg" alt=""></p>
+<h3 id="下载文件-1"><a href="#下载文件-1" class="headerlink" title="下载文件"></a>下载文件</h3><p>如果一个文件的<code>checksum</code>为 0a781ca8d6e963590f208608e3d80f52307a116d</p>
+<p>那么其对应的url则为: domain/.svn/pristine/<code>checksum前两位数</code>/<code>checksum</code>加上.svn-base    </p>
+<p>即<code>https://domain/.svn/pristine/0a/0a781ca8d6e963590f208608e3d80f52307a116d.svn-base</code></p>
+<hr>
+<h1 id="题外话"><a href="#题外话" class="headerlink" title="题外话:"></a>题外话:</h1><p>在测试<a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a>的时候,发现有点小问题.提了个<a href="https://github.com/admintony/svnExploit/pull/1" target="_blank" rel="noopener">pr</a>.</p>
+<p>优化:</p>
+<ul>
+<li>1.thread-unsafe的Generator改用thread-safe的queue</li>
+<li>2.兼容Py2</li>
+</ul>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><p><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></p>
+</li>
+<li><p><a href="https://www.rapid7.com/db/vulnerabilities/spider-svn-entries-disclosure" target="_blank" rel="noopener">Subversion entries file information disclosure</a></p>
+</li>
+<li><p><a href="https://stackoverflow.com/questions/20043472/multithreading-why-arent-generators-thread-safe-what-happens-when-it-is-share" target="_blank" rel="noopener">multithreading: Why aren’t generators thread-safe? What happens when it is shared among threads?</a></p>
+</li>
+<li><p><a href="https://stackoverflow.com/questions/20042534/python-why-different-threads-get-their-own-series-of-values-from-one-generator" target="_blank" rel="noopener">Python: Why different threads get their own series of values from one generator?</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/端口扫描-遇到蜜罐情况/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -786,193 +973,6 @@
 <li><a href="https://cloud.tencent.com/developer/article/1047554" target="_blank" rel="noopener">浅谈简易端口扫描威胁感知系统的设计与实现</a></li>
 <li><a href="https://sosly.me/index.php/2017/09/05/jymiguan2/" target="_blank" rel="noopener">蜜罐与内网安全从0到1（二）</a></li>
 <li>DC0531技术沙龙-国内SRC漏洞挖掘经验和技巧分享</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/svn源码泄露exploit/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/10/svn源码泄露exploit/" itemprop="url">Svn源码泄露exploit</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T22:36:34+08:00">
-                2019-01-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h1><p>google hack: <code>Index of /.svn</code></p>
-<h1 id="svnExploit工作原理"><a href="#svnExploit工作原理" class="headerlink" title="svnExploit工作原理"></a>svnExploit工作原理</h1><h2 id="判断svn版本号"><a href="#判断svn版本号" class="headerlink" title="判断svn版本号"></a>判断svn版本号</h2><p>通过根目录下的entries文件来判断</p>
-<p>版本号&gt;1.7的话,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73a42af8.jpg" alt=""></p>
-<p>版本号&lt;1.7的话,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73af3f2b.jpg" alt=""></p>
-<h2 id="版本号小于1-7的情况"><a href="#版本号小于1-7的情况" class="headerlink" title="版本号小于1.7的情况:"></a>版本号小于1.7的情况:</h2><h3 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h3><p><code>.svn/entries</code> 包含了项目的文件和文件夹列表。</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73ba78ca.jpg" alt=""></p>
-<p>可以解析这个文件来获取文件列表<code>file_list</code>和路径列表<code>dir_list</code>。</p>
-<h3 id="循环解析元数据"><a href="#循环解析元数据" class="headerlink" title="循环解析元数据:"></a>循环解析元数据:</h3><p>上面收集了文件夹列表,进入每个文件夹继续解析元数据<code>entries</code>文件</p>
-<p>现在有了整个项目结构了</p>
-<h3 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件"></a>下载文件</h3><p>.SVN-BASE files store a base copy of a file</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73c5c73f.jpg" alt=""></p>
-<p>在每个文件后面加上<code>.svn-base</code>,然后请求对应的url就可以下载文件</p>
-<hr>
-<h2 id="版本号大于1-7的情况"><a href="#版本号大于1-7的情况" class="headerlink" title="版本号大于1.7的情况:"></a>版本号大于1.7的情况:</h2><h3 id="下载数据库文件"><a href="#下载数据库文件" class="headerlink" title="下载数据库文件"></a>下载数据库文件</h3><p>下载<code>/.svn/wc.db</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73d53d53.jpg" alt=""></p>
-<h3 id="连接数据库文件"><a href="#连接数据库文件" class="headerlink" title="连接数据库文件"></a>连接数据库文件</h3><p>从<code>Node</code>表中查询出 </p>
-<ul>
-<li>相对路径</li>
-<li>文件类型</li>
-<li>校验值</li>
-</ul>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73e53b2e.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73f61b38.jpg" alt=""></p>
-<h3 id="下载文件-1"><a href="#下载文件-1" class="headerlink" title="下载文件"></a>下载文件</h3><p>如果一个文件的<code>checksum</code>为 0a781ca8d6e963590f208608e3d80f52307a116d</p>
-<p>那么其对应的url则为: domain/.svn/pristine/<code>checksum前两位数</code>/<code>checksum</code>加上.svn-base    </p>
-<p>即<code>https://domain/.svn/pristine/0a/0a781ca8d6e963590f208608e3d80f52307a116d.svn-base</code></p>
-<hr>
-<h1 id="题外话"><a href="#题外话" class="headerlink" title="题外话:"></a>题外话:</h1><p>在测试<a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a>的时候,发现有点小问题.提了个<a href="https://github.com/admintony/svnExploit/pull/1" target="_blank" rel="noopener">pr</a>.</p>
-<p>优化:</p>
-<ul>
-<li>1.thread-unsafe的Generator改用thread-safe的queue</li>
-<li>2.兼容Py2</li>
-</ul>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><p><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></p>
-</li>
-<li><p><a href="https://www.rapid7.com/db/vulnerabilities/spider-svn-entries-disclosure" target="_blank" rel="noopener">Subversion entries file information disclosure</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/20043472/multithreading-why-arent-generators-thread-safe-what-happens-when-it-is-share" target="_blank" rel="noopener">multithreading: Why aren’t generators thread-safe? What happens when it is shared among threads?</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/20042534/python-why-different-threads-get-their-own-series-of-values-from-one-generator" target="_blank" rel="noopener">Python: Why different threads get their own series of values from one generator?</a></p>
-</li>
 </ul>
 
           
