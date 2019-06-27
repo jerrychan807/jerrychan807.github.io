@@ -88,7 +88,8 @@
 <meta property="og:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg">
-<meta property="og:updated_time" content="2019-05-22T06:56:50.428Z">
+<meta property="og:image" content="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png">
+<meta property="og:updated_time" content="2019-06-27T03:51:45.550Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-Centos7系统安装">
 <meta name="twitter:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长">
@@ -383,10 +384,13 @@
 </ul>
 <p>自定义的硬盘分区:</p>
 <p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
-<p>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</p>
+<p><del>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</del></p>
 <blockquote>
-<p>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</p>
+<p><del>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</del></p>
 </blockquote>
+<p>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</p>
+<p>不然可能会出现io error这类错误,导致系统崩溃…</p>
+<p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt=""></p>
 <hr>
 <h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
 <li>浏览数据存储</li>
