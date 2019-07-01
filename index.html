@@ -863,25 +863,27 @@
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line"><span class="built_in">cd</span> Python-2.7.13</span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span></span><br><span class="line">make</span><br><span class="line">make altinstall</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 软链接:</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/python2.7 /usr/bin/python</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 备份原有系统默认的py</span></span><br><span class="line">mv /usr/bin/python /usr/bin/python.bak</span><br><span class="line"></span><br><span class="line"><span class="comment"># 软链接:</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/python2.7 /usr/bin/python</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://i.loli.net/2019/05/23/5ce61595de84126805.png" alt=""></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装pip</span></span><br><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装pip</span></span><br><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 软链接:</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/pip2.7 /usr/bin/pip</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 备份原有系统默认的py</span></span><br><span class="line">mv /usr/bin/python /usr/bin/python.bak</span><br><span class="line"><span class="comment"># 删掉原来的python(慎用...)</span></span><br><span class="line">rm -rf /usr/bin/python</span><br><span class="line"><span class="comment"># 软链接:</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/bin/pip2.7 /usr/bin/pip</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改yum文件头部,要指向系统默认的Python</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看/usr/bin/目录下所有yum文件头部</span></span><br><span class="line">ll /usr/bin/yum*　　</span><br><span class="line"><span class="comment"># 修改/usr/bin/目录下所有yum文件头部</span></span><br><span class="line">vi /usr/bin/yum*　　</span><br><span class="line"><span class="comment">#!/usr/bin/python 修改成: #!/usr/bin/python2.7</span></span><br></pre></td></tr></table></figure>
+<p>修改yum配置:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改yum文件头部,要指向系统默认的Python</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看/usr/bin/目录下所有yum文件头部</span></span><br><span class="line">ll /usr/bin/yum*　　</span><br><span class="line"><span class="comment"># 修改/usr/bin/目录下所有yum文件头部,一般就修改/usr/bin/yum这个</span></span><br><span class="line">vi /usr/bin/yum*　　</span><br><span class="line"><span class="comment">#!/usr/bin/python 修改成: #!/usr/bin/python2.7</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改urlgrabber-ext-down头部</span></span><br><span class="line">vi /usr/libexec/urlgrabber-ext-down　　</span><br><span class="line"><span class="comment">#!/usr/bin/python 修改成 #!/usr/bin/python2.7</span></span><br></pre></td></tr></table></figure>
 
 <hr>
 <h1 id="包的迁移"><a href="#包的迁移" class="headerlink" title="包的迁移:"></a>包的迁移:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导出</span></span><br><span class="line">pip2 freeze &gt; py2requirements.txt</span><br><span class="line">pip3 freeze &gt; py3requirements.txt</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">pip install -r requirements.txt</span><br><span class="line"><span class="comment"># 加aliyun代理</span></span><br><span class="line">pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>注意:pip会顺序从列表上安装下来,遇到某个有问题的包后,会退出.后面的包不会被安装到.</p>
 </blockquote>
+<p>一些无法或很难安装的包,可以尝试通过复制来迁移</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到第三包的安装路径</span></span><br><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> sys.path</span><br><span class="line"></span><br><span class="line">[<span class="string">''</span>, <span class="string">'/usr/local/lib/python27.zip'</span>, <span class="string">'/usr/local/lib/python2.7'</span>, <span class="string">'/usr/local/lib/python2.7/plat-linux2'</span>, <span class="string">'/usr/local/lib/python2.7/lib-tk'</span>, <span class="string">'/usr/local/lib/python2.7/lib-old'</span>, <span class="string">'/usr/local/lib/python2.7/lib-dynload'</span>, <span class="string">'/usr/local/lib/python2.7/site-packages'</span>]</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://www.cnblogs.com/chillax1314/p/7976839.html" target="_blank" rel="noopener">CentOS6.8安装Python3.6.3</a></li>
@@ -2239,6 +2241,13 @@
 <hr>
 <h2 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h2><p>正式生产服务器建议安装英文版本</p>
 <hr>
+<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
+<ul>
+<li>4个cpu</li>
+<li>内存为6G</li>
+<li>硬盘为200G(精简置备模式)</li>
+</ul>
+<hr>
 <h2 id="自定义硬盘分区"><a href="#自定义硬盘分区" class="headerlink" title="自定义硬盘分区"></a>自定义硬盘分区</h2><p>这个比较重要</p>
 <hr>
 <h3 id="必要的分区"><a href="#必要的分区" class="headerlink" title="必要的分区:"></a>必要的分区:</h3><p><strong>boot分区</strong>:</p>
@@ -2266,21 +2275,25 @@
 <p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
 </blockquote>
 <hr>
-<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
-<ul>
-<li>4个cpu</li>
-<li>内存为6G</li>
-<li>硬盘为200G(精简置备模式)</li>
-</ul>
-<p>自定义的硬盘分区:</p>
+<h3 id="硬盘分区"><a href="#硬盘分区" class="headerlink" title="硬盘分区:"></a>硬盘分区:</h3><p>自定义的硬盘分区:</p>
 <p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
 <p><del>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</del></p>
 <blockquote>
 <p><del>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</del></p>
 </blockquote>
-<p>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</p>
+<p><del>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</del></p>
 <p>不然可能会出现io error这类错误,导致系统崩溃…</p>
 <p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt=""></p>
+<p>之前在使用centos6的时候,很少出现io error这类错误</p>
+<p>查看旧系统cento6的磁盘类型,</p>
+<p><img src="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png" alt=""></p>
+<p>依据这个进行配置.都是选用<code>ext4</code>,而不是默认的<code>xfs</code></p>
+<p>配置完成后</p>
+<p><img src="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png" alt=""></p>
+<p>在之后要尽量少直接断电,要正常关机…</p>
+<blockquote>
+<p>经常断电硬盘早晚完蛋。</p>
+</blockquote>
 <hr>
 <h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
 <li>浏览数据存储</li>
@@ -2295,6 +2308,7 @@
 <li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
 <li><a href="https://blog.csdn.net/justlpf/article/details/80703763" target="_blank" rel="noopener">linux xfs和ext4的区别</a></li>
 <li><a href="https://blog.csdn.net/sinat_29384657/article/details/51152954" target="_blank" rel="noopener">CentOS 7 安装教程、硬盘分区、LVM、网络配置、软件源配置、制作</a></li>
+<li><a href="https://v2ex.com/t/146662" target="_blank" rel="noopener">在经常突然断电的情况下，使用 ext4 和 xfs 哪个文件系统更安全？</a></li>
 </ul>
 
           
