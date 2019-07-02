@@ -252,6 +252,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/记录-修改Mysql最大连接数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/02/记录-修改Mysql最大连接数/" itemprop="url">记录-修改Mysql最大连接数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T14:36:34+08:00">
+                2019-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>之前常遇到<code>mysql gone away</code>这类错误,由于用的是<code>sqlalchemy</code>里的<code>Null Pool</code>.即不使用连接池。</p>
+<blockquote>
+<p>按道理来说,要选用连接池的,但由于还没找到<code>sqlalchemy</code>连接池与celery多进程的最佳实践,故暂时搁置这个方案…</p>
+</blockquote>
+<p>这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接.</p>
+<p>这样在高并发的情况下会频繁连接数据库，占用很多连接数.</p>
+<p>所以这个时候要适当增大mysql的最大连接数.</p>
+<hr>
+<h1 id="查询"><a href="#查询" class="headerlink" title="查询:"></a>查询:</h1><p>查询最大连接数</p>
+<p><code>show variables like &#39;%max_connections%&#39;;</code></p>
+<p>历史最大连接数量</p>
+<p><code>show global status like &#39;Max_used_connections&#39;;</code></p>
+<hr>
+<h1 id="修改最大连接数"><a href="#修改最大连接数" class="headerlink" title="修改最大连接数:"></a>修改最大连接数:</h1><h2 id="修改mysql配置文件"><a href="#修改mysql配置文件" class="headerlink" title="修改mysql配置文件:"></a>修改mysql配置文件:</h2><blockquote>
+<p>环境:Centos7</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # and set to the amount of RAM for the most important data</span></span><br><span class="line"><span class="comment"># cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.</span></span><br><span class="line"><span class="comment"># innodb_buffer_pool_size = 128M</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to turn on a very important data integrity option: logging</span></span><br><span class="line"><span class="comment"># changes to the binary log between backups.</span></span><br><span class="line"><span class="comment"># log_bin</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to set options mainly useful for reporting servers.</span></span><br><span class="line"><span class="comment"># The server defaults are faster for transactions and fast SELECTs.</span></span><br><span class="line"><span class="comment"># Adjust sizes as needed, experiment to find the optimal values.</span></span><br><span class="line"><span class="comment"># join_buffer_size = 128M</span></span><br><span class="line"><span class="comment"># sort_buffer_size = 2M</span></span><br><span class="line"><span class="comment"># read_rnd_buffer_size = 2M</span></span><br><span class="line"><span class="attr">datadir</span>=/var/lib/mysql</span><br><span class="line"><span class="attr">socket</span>=/var/lib/mysql/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="attr">port</span>=<span class="number">33066</span></span><br><span class="line"></span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">500</span></span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">512</span>M</span><br><span class="line"><span class="comment">#query_cache_limit = 4M</span></span><br><span class="line"><span class="attr">wait_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">interactive_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"></span><br><span class="line"><span class="comment"># Disabling symbolic-links is recommended to prevent assorted security risks</span></span><br><span class="line"><span class="attr">symbolic-links</span>=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Recommended in standard MySQL setup</span></span><br><span class="line"><span class="attr">sql_mode</span>=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld_safe]</span></span><br><span class="line"><span class="attr">log-error</span>=/var/log/mysqld.log</span><br><span class="line"><span class="attr">pid-file</span>=/var/run/mysqld/mysqld.pid</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>第一次只修改了配置文件,也没有及时验证有无修改成功.才发现改了配置文件还不够,还需要继续往下修改.</p>
+</blockquote>
+<hr>
+<h2 id="配置limits-conf"><a href="#配置limits-conf" class="headerlink" title="配置limits.conf:"></a>配置limits.conf:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/security/limits.conf</span><br><span class="line"><span class="comment">#  添加mysql用户配置</span></span><br><span class="line">mysql hard nofile 65535</span><br><span class="line">mysql soft nofile 65535</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="配置mariadb-service"><a href="#配置mariadb-service" class="headerlink" title="配置mariadb.service:"></a>配置mariadb.service:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/lib/systemd/system/mysqld.service</span><br><span class="line"><span class="comment"># 添加参数</span></span><br><span class="line">LimitNOFILE=65535</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重启mysql</span></span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>之前在解决类似的数据库错误的时候,确实是比较难定位到具体的原因.</p>
+<p><a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+<blockquote>
+<p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
+<p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
+</blockquote>
+<p>最好的方法是对涉及到组件(元素)一一去排查原因,不要一直想当然的陷入到代码里.那样会只见树不见林…</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/phpper/p/9570792.html" target="_blank" rel="noopener">Mysql 连接数,最大并发数设置</a></li>
+<li><a href="https://blog.csdn.net/u014074757/article/details/80527445" target="_blank" rel="noopener">MySQL配置max_connections无效</a></li>
+<li><a href="https://www.cnblogs.com/langdashu/p/5889352.html" target="_blank" rel="noopener">MySQL配置文件my.cnf的理解</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en" target="_blank" rel="noopener">MySQL 8.0参考手册</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/30/记录-RabbitMq-Install/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -912,6 +1102,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/" itemprop="url">记录-uwsgi+celery+psycopg2 DB连接问题排错过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-30T14:36:34+08:00">
+                2019-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>celery的worker进程中,报错</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/strategies.py"</span>, line <span class="number">106</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> dialect.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/default.py"</span>, line <span class="number">412</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> self.dbapi.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py"</span>, line <span class="number">130</span>, <span class="keyword">in</span> connect</span><br><span class="line">    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)</span><br><span class="line">OperationalError: (psycopg2.OperationalError) could <span class="keyword">not</span> receive data <span class="keyword">from</span> server: Connection timed out</span><br><span class="line"> (Background on this error at: http://sqlalche.me/e/e3q8)</span><br></pre></td></tr></table></figure>
+
+<p>连接超时,无法取得数据.</p>
+<hr>
+<h1 id="Debug思路"><a href="#Debug思路" class="headerlink" title="Debug思路:"></a>Debug思路:</h1><h2 id="1-连接数"><a href="#1-连接数" class="headerlink" title="1.连接数:"></a>1.连接数:</h2><p>看到报错 <code>could not receive data from server: Connection timed out</code></p>
+<p>一开始觉得是最大连接数的问题.</p>
+<p>因为别的正在泡的应用会用<code>pool_size=100</code>的连接池去连接<code>postgresql</code>里的某个数据库,</p>
+<p>查询最大连接数<code>show max_connections;</code></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef801e4f8e874593.png" alt=""></p>
+<blockquote>
+<p>最大连接连接数默认才100,那么<code>pool_size=100</code>的连接池去连接的话会全部占用了吧…</p>
+</blockquote>
+<p>再继续查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> max_conn,used,res_for_super,max_conn-used-res_for_super res_for_normal </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">  (<span class="keyword">select</span> <span class="keyword">count</span>(*) used <span class="keyword">from</span> pg_stat_activity) t1,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> res_for_super <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$superuser_reserved_connections$$) t2,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> max_conn <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$max_connections$$) t3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/05/30/5cef80989906427300.png" alt=""></p>
+<p>实际上,并非连接数被占满了,还是有空余的连接数的.</p>
+<p>既然还有剩余的,那我这个应用把连接池的<code>pool_size</code>改为<code>10</code>,应该能正常连接上吧.</p>
+<p>修改之后,还是报同样的错误不行.</p>
+<hr>
+<p>搜索了一下,然后根据这个链接<a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+<p>继续排错:</p>
+<blockquote>
+<p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
+<p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
+</blockquote>
+<hr>
+<ol>
+<li>你能从服务器ping服务器吗？如果没有，请从故障排除网络开始</li>
+</ol>
+<p><img src="https://i.loli.net/2019/05/30/5cef8390689c218268.png" alt=""></p>
+<blockquote>
+<p>ping 第一个网段的ip 发现会丢包..有点奇怪…</p>
+</blockquote>
+<p>ping另一个网段的ip</p>
+<p><img src="https://i.loli.net/2019/05/30/5cef85fa2890d42171.png" alt=""></p>
+<blockquote>
+<p>不会丢包.难道要用另一个网段的ip来建立数据库连接?</p>
+</blockquote>
+<hr>
+<ol start="2">
+<li>你可以使用相同的端口，IP地址等通过psql连接到服务器吗？如果超时，您可能需要检查防火墙和postgresql配置</li>
+</ol>
+<p>查看postgre 数据库所在的服务器的防火墙设置.发现也正常.</p>
+<p>在客户端写了个简单的脚本,发现也连接正常.<br><img src="https://i.loli.net/2019/05/30/5cef8456dc52c19819.png" alt=""></p>
+<hr>
+<h1 id="真正的问题"><a href="#真正的问题" class="headerlink" title="真正的问题:"></a>真正的问题:</h1><p>最终发现.用来连接数据库的内网ip冲突了…</p>
+<p>omg…</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/xiangnan/p/10051240.html" target="_blank" rel="noopener">科学地增加postgresql最大连接数</a></li>
+</ul>
+<ul>
+<li><p><a href="https://docs.sqlalchemy.org/en/13/core/pooling.html#pool-disconnects" target="_blank" rel="noopener">SQLAlchemy 1.3文档-连接池</a></p>
+</li>
+<li><p><a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+</li>
+<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002080.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
+</li>
+<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002078.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
+</li>
+<li><p><a href="https://github.com/heroku-python/django-postgrespool/issues/3" target="_blank" rel="noopener">Celery jobs throw exceptions #3</a></p>
+</li>
+<li><p><a href="http://jorgenmodin.net/index_html/process-safe-connection-pool-for-psycopg2-postgresql" target="_blank" rel="noopener">rocess safe connection pool for psycopg2 (postgresql)</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/23/记录-Centos7安装py环境/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1201,7 +1599,17 @@
       
         
           
-            <h1 id="安装-amp-初始化"><a href="#安装-amp-初始化" class="headerlink" title="安装&amp;初始化:"></a>安装&amp;初始化:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/pip2.7 install supervisor</span><br></pre></td></tr></table></figure>
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Centos7不推荐使用<code>rc.local</code>,推荐自己配<code>service</code>但因为之前用惯了Cenos6,故一开始也沿用<code>rc.local</code>.</p>
+<p>后来<code>rc.local</code>启的进程会导致系统无法正常快速的<code>reboot</code>,然后就频繁断电操作(虽然是虚拟机)..导致系统的硬盘崩了..</p>
+<p>为了更好的管理进程,所以选用<code>supervisor</code>这个工具.</p>
+<p>理由参考这篇文章的介绍(<a href="https://my.oschina.net/goskyblue/blog/380828" target="_blank" rel="noopener">进程管理工具supervisor简介及使用技巧</a>)</p>
+<blockquote>
+<p>经常碰到要跑一些守护进程。平常我的做法是开一个tmux软件或者screen，然后启动软件。如果有其他人问，我则会建议用<code>nohup your-program &amp;&gt;nohup.log &amp;</code>这种方式。</p>
+<p>可是这种做法毕竟不是长久之计，机器重启或者不小心kill了某个进程，后台运行的这个进程可能就不小心死掉了。</p>
+<p>后来开源界的大牛建议我用supervisor。尝试之后，简直是如获至宝。作为一个存在了长达10年多的进程管理软件，他已经相当成熟。</p>
+</blockquote>
+<hr>
+<h1 id="安装-amp-初始化"><a href="#安装-amp-初始化" class="headerlink" title="安装&amp;初始化:"></a>安装&amp;初始化:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/pip2.7 install supervisor</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化配置文件</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/echo_supervisord_conf &gt; /xxx/supervisord.conf</span><br></pre></td></tr></table></figure>
 
@@ -1214,9 +1622,14 @@
 <p>配置项有很多…</p>
 </blockquote>
 <hr>
-<h1 id="基本操作命令"><a href="#基本操作命令" class="headerlink" title="基本操作命令:"></a>基本操作命令:</h1><h2 id="启动supervisor"><a href="#启动supervisor" class="headerlink" title="启动supervisor:"></a>启动supervisor:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /okscan/okscan-manager/supervisord.conf</span><br></pre></td></tr></table></figure>
+<h1 id="基本操作命令"><a href="#基本操作命令" class="headerlink" title="基本操作命令:"></a>基本操作命令:</h1><h2 id="启停supervisor"><a href="#启停supervisor" class="headerlink" title="启停supervisor:"></a>启停supervisor:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
 
-<h2 id="管理进程"><a href="#管理进程" class="headerlink" title="管理进程:"></a>管理进程:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf start program_name</span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop program_name</span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf restart program_name</span><br><span class="line"><span class="comment"># 停止全部进程</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop all</span><br><span class="line"><span class="comment"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl /etc/supervisord.conf shutdown</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重载</span></span><br><span class="line">supervisorctl /etc/supervisord.conf reload</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="管理进程"><a href="#管理进程" class="headerlink" title="管理进程:"></a>管理进程:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf start program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf restart program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止全部进程</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
 
 <hr>
 <h1 id="定期重启指定进程方法"><a href="#定期重启指定进程方法" class="headerlink" title="定期重启指定进程方法"></a>定期重启指定进程方法</h1><p><code>Supervisor</code>配合<code>crontab</code>可定期重启.</p>
@@ -1224,8 +1637,14 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 * * * * supervisorctl -c /etc/supervisord.conf restart abc</span><br></pre></td></tr></table></figure>
 
 <hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>初步使用的感觉是,配置起来不麻烦,要重启进程的话也很方便,不用在手打冗长的命令.</p>
+<p>但是配置项不算少,要真正用得好,还是要在实践中慢慢定下适合自己程序的配置项.</p>
+<p>配置项的介绍可以参考<a href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/" target="_blank" rel="noopener">Supervisor文档</a></p>
+<hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://blog.csdn.net/fdipzone/article/details/80146558" target="_blank" rel="noopener">Supervisor定期重启指定进程</a></li>
+<li><a href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/" target="_blank" rel="noopener">Supervisor文档</a></li>
+<li><a href="https://my.oschina.net/goskyblue/blog/380828" target="_blank" rel="noopener">进程管理工具supervisor简介及使用技巧</a></li>
 </ul>
 
           
@@ -1824,483 +2243,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/" itemprop="url">dsss源码-100行的SqliScanner-源码分析笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
-<blockquote>
-<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
-</blockquote>
-<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
-<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
-<p>原仓库地址:<a href="https://github.com/stamparm/DSSS" target="_blank" rel="noopener">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
-<hr>
-<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png" alt=""></p>
-<hr>
-<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png" alt=""></p>
-<p>亮点:</p>
-<ul>
-<li>TEXT文本的处理</li>
-</ul>
-<hr>
-<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png" alt=""></p>
-<hr>
-<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png" alt=""></p>
-<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8" target="_blank" rel="noopener">issue</a>问作者.</p>
-<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
-<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
-<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" itemprop="url">WPSIH-网站个人敏感信息文件扫描器-开发记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-25T14:36:34+08:00">
-                2019-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="项目名-WPSIH"><a href="#项目名-WPSIH" class="headerlink" title="项目名:WPSIH"></a>项目名:WPSIH</h1><p>Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器</p>
-<p><img src="https://i.loli.net/2019/04/28/5cc5b3a24036a.png" alt=""></p>
-<p>项目地址:<a href="https://github.com/jerrychan807/WSPIH" target="_blank" rel="noopener">WSPIH</a></p>
-<hr>
-<h1 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果:"></a>运行效果:</h1><p><img src="https://i.loli.net/2019/04/30/5cc72451486a1.png" alt=""></p>
-<hr>
-<h1 id="程序执行逻辑"><a href="#程序执行逻辑" class="headerlink" title="程序执行逻辑:"></a>程序执行逻辑:</h1><p><img src="https://i.loli.net/2019/04/29/5cc71ada6c08d.png" alt=""></p>
-<hr>
-<h2 id="爬取链接"><a href="#爬取链接" class="headerlink" title="爬取链接:"></a>爬取链接:</h2><p>需要过滤掉一些无用的后缀名:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IGNORED_EXTESIONS = [&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;woff&quot;, &quot;ttf&quot;, &quot;eot&quot;, &quot;svg&quot;, &quot;woff2&quot;, &quot;ico&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>并筛选出需要的后缀名,然后保存下来:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EXCEL_EXTENSIONS = [&quot;xls&quot;, &quot;xlsx&quot;]</span><br><span class="line">PDF_EXTENSIONS = [&quot;pdf&quot;]</span><br><span class="line">WORD_EXTENSIONS = [&quot;doc&quot;, &quot;docx&quot;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="解析文本内容"><a href="#解析文本内容" class="headerlink" title="解析文本内容:"></a>解析文本内容:</h2><p>ExcelParser:</p>
-<ul>
-<li>使用<code>xlrd</code>模块</li>
-</ul>
-<p>PdfParser：</p>
-<ul>
-<li>使用<code>pdfminer</code>模块</li>
-<li>无法检测图片中是否存在敏感信息；</li>
-</ul>
-<p>WordParser:</p>
-<ul>
-<li>使用<code>python-docx</code>模块</li>
-<li>无法检测图片中是否存在敏感信息；</li>
-<li>只支持.docx</li>
-</ul>
-<blockquote>
-<p><code>doc</code>后缀的,需要在wins环境下转换成<code>docx</code>后缀,然后才能解析.遂放弃.</p>
-</blockquote>
-<hr>
-<h2 id="基于正则匹配敏感信息"><a href="#基于正则匹配敏感信息" class="headerlink" title="基于正则匹配敏感信息"></a>基于正则匹配敏感信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHONE_REGEX = r&apos;^(?:\+?86)?1(?:3\d&#123;3&#125;|5[^4\D]\d&#123;2&#125;|8\d&#123;3&#125;|7(?:[35678]\d&#123;2&#125;|4(?:0\d|1[0-2]|9\d))|9[189]\d&#123;2&#125;|66\d&#123;2&#125;)\d&#123;6&#125;$&apos;</span><br><span class="line"></span><br><span class="line">EMAIL_REGEX = r&apos;^\w+@(\w+\.)+\w+&apos;</span><br><span class="line"></span><br><span class="line">IDCARD_REGEX = r&apos;^[1-9]\d&#123;5&#125;(18|19|20)\d&#123;2&#125;((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d&#123;3&#125;[0-9Xx]&apos;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>手机号码的正则一开始没在后面加上<code>$</code>符号(<code>$</code>是正则表达式匹配字符串结束位置),因为一开始在简单测试excel里的手机号码的时候,发现有这种情况:<code>13424324567.0</code>,所以唐突的把<code>$</code>去掉了.</p>
-<p>这种就是没有经过大量测试的后果.</p>
-<p>导致产生了很多误报. 可见正则大法好,但是要<strong>深刻理解和正确使用</strong>.不然误报太多了.</p>
-</blockquote>
-<hr>
-<h1 id="一些有趣的点"><a href="#一些有趣的点" class="headerlink" title="一些有趣的点:"></a>一些有趣的点:</h1><h2 id="隐藏起来的敏感信息"><a href="#隐藏起来的敏感信息" class="headerlink" title="隐藏起来的敏感信息:"></a>隐藏起来的敏感信息:</h2><p>有些文件是能匹配出敏感结果的,但是实际上你去打开那个文件,你会找不到结果.举例如下:</p>
-<ul>
-<li>excel的隐藏列:</li>
-</ul>
-<p><img src="https://i.loli.net/2019/04/29/5cc71c1146490.png" alt=""></p>
-<ul>
-<li>excel的折叠列:</li>
-</ul>
-<p>拉开前:</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc736e3b72a8.png" alt=""></p>
-<p>看图上的绿色线,是把内容折叠了起来</p>
-<p>实际上把绿色线拉开之后,确实是存在敏感信息的.</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc736f97350d.png" alt=""></p>
-<hr>
-<h2 id="在书里找到了敏感信息"><a href="#在书里找到了敏感信息" class="headerlink" title="在书里找到了敏感信息:"></a>在书里找到了敏感信息:</h2><p>在一本书里,匹配到了邮箱…估计是作者、出版社的联系方式..</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc721bf2ce18.jpg" alt=""></p>
-<p>尴尬…</p>
-<hr>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题:"></a>问题:</h1><h2 id="已解决的Bug"><a href="#已解决的Bug" class="headerlink" title="已解决的Bug:"></a>已解决的Bug:</h2><h3 id="把命令写死了"><a href="#把命令写死了" class="headerlink" title="把命令写死了:"></a>把命令写死了:</h3><p><img src="https://i.loli.net/2019/04/30/5cc7233328377.png" alt=""></p>
-<blockquote>
-<p>不同环境下的python执行路径是不同的…</p>
-</blockquote>
-<hr>
-<h3 id="跨平台运行的问题"><a href="#跨平台运行的问题" class="headerlink" title="跨平台运行的问题:"></a>跨平台运行的问题:</h3><p>比如wins下没有<code>find</code>命令,要用<code>for</code></p>
-<blockquote>
-<p>跨平台运行是个令人头疼的问题呀..会有很多意想不到的结果出现.</p>
-</blockquote>
-<hr>
-<h3 id="减少模板类文件的误报"><a href="#减少模板类文件的误报" class="headerlink" title="减少模板类文件的误报:"></a>减少模板类文件的误报:</h3><p>如模板类,解决办法: 通过数量判定,例如从某个文件收集到的邮箱少于2个.则认为这是个模板类文件.</p>
-<p>举例:</p>
-<p><img src="https://i.loli.net/2019/04/28/5cc5c4a676f30.png" alt=""><br><img src="https://i.loli.net/2019/04/28/5cc5c5113bb70.png" alt=""></p>
-<hr>
-<h1 id="待改进的地方"><a href="#待改进的地方" class="headerlink" title="待改进的地方:"></a>待改进的地方:</h1><hr>
-<h2 id="更多的正则匹配"><a href="#更多的正则匹配" class="headerlink" title="更多的正则匹配:"></a>更多的正则匹配:</h2><p>for Chinese:</p>
-<ul>
-<li>支付宝账号</li>
-<li>社保账号</li>
-<li>银行卡号</li>
-<li>身份证</li>
-<li>护照</li>
-<li>香港永久性居民身份证</li>
-<li>澳门永久性居民身份证</li>
-<li>台湾居民来往大陆通行证</li>
-<li>军官证</li>
-</ul>
-<p>for Foreign:</p>
-<ul>
-<li>外国手机号</li>
-<li>外国身份证号码</li>
-</ul>
-<blockquote>
-<p>估计也没时间去完善hhh</p>
-</blockquote>
-<hr>
-<h2 id="基于关键字匹配"><a href="#基于关键字匹配" class="headerlink" title="基于关键字匹配:"></a>基于关键字匹配:</h2><ul>
-<li>身份证</li>
-<li>身份证号</li>
-<li>身份证号码</li>
-<li>身份证件号码</li>
-<li>证件号码 </li>
-<li>zjhm</li>
-<li>证件类型</li>
-<li>证书号码</li>
-<li>手机</li>
-<li>联系电话</li>
-<li>联系方式</li>
-<li>电子邮箱</li>
-<li>dzly</li>
-<li>通信地址</li>
-<li>家庭地址</li>
-</ul>
-<blockquote>
-<p>预期使用关键词匹配的话,误报会很多,只适用于excel类型的表头.</p>
-</blockquote>
-<hr>
-<h2 id="动态链接下载"><a href="#动态链接下载" class="headerlink" title="动态链接下载:"></a>动态链接下载:</h2><ul>
-<li><code>http://yjsy.uibe.edu.cn/common/downloadFile.jsp?id=119295</code></li>
-<li><code>http://yz.nwafu.edu.cn/common/rtfeditor/openfile.jsp?id=DBCPDBDDDFDIDBCPDADBDGCOHIGMHD</code></li>
-</ul>
-<p>类似以上这种url,要访问动态链接,服务器才会返回文件的url地址.</p>
-<p>目前是处理不了这种情况.</p>
-<blockquote>
-<p>搜索引擎是可以爬取到这类url的文件的<br>预计解决办法是:1.要用上无头浏览器等技术.模拟发包是不行的 2.直接访问该url并下载文件.</p>
-</blockquote>
-<hr>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他:"></a>其他:</h1><hr>
-<h2 id="测试服务器"><a href="#测试服务器" class="headerlink" title="测试服务器:"></a>测试服务器:</h2><p><img src="https://i.loli.net/2019/04/30/5cc732ed512d9.jpg" alt=""></p>
-<p>跑到机子模糊…</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc7330875dcd.jpg" alt=""></p>
-<hr>
-<h2 id="搜索引擎hack"><a href="#搜索引擎hack" class="headerlink" title="搜索引擎hack:"></a>搜索引擎hack:</h2><p>百度:</p>
-<p><code>site:*.edu.cn filetype:xls</code><br><code>site:*.edu.cn filetype:xls 身份证</code></p>
-<p>google:</p>
-<p><code>site:*.edu.cn filetype:xls</code></p>
-<blockquote>
-<p>主要是用于前期寻找测试文件</p>
-</blockquote>
-<hr>
-<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点:"></a>注意点:</h2><p>我已知的,目前<code>edu-src</code>判定是敏感文件的范围是:</p>
-<ul>
-<li>个人手机</li>
-<li>个人住址</li>
-<li><del>个人邮箱</del> (目前不收了)</li>
-<li><strong>身份证</strong></li>
-</ul>
-<p>不属于的范围:</p>
-<ul>
-<li>工作邮箱</li>
-<li>准考证号</li>
-</ul>
-<blockquote>
-<p>知道规则也很重要..hhh</p>
-</blockquote>
-<hr>
-<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h2><ul>
-<li>作为信息公示的话,身份证显示后六位或者打码显示即可</li>
-<li>如无必要,不要上传到公网上.</li>
-</ul>
-<hr>
-<h1 id="Contributors"><a href="#Contributors" class="headerlink" title="Contributors:"></a>Contributors:</h1><ul>
-<li>JackChan1024</li>
-</ul>
-<blockquote>
-<p>hacking together , is so cool…</p>
-</blockquote>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://jingyan.baidu.com/article/148a192191dc9a4d71c3b11c.html" target="_blank" rel="noopener">excel中如何隐藏列和取消隐藏列</a></li>
-<li><a href="https://github.com/tijme/not-your-average-web-crawler" target="_blank" rel="noopener">not-your-average-web-crawler</a> 这是个很棒的爬虫框架.</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2353,7 +2295,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
