@@ -252,6 +252,229 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/记录-Centos7系统安装/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/19/记录-Centos7系统安装/" itemprop="url">记录-Centos7系统安装</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T14:36:34+08:00">
+                2019-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装:"></a>系统安装:</h1><h2 id="镜像选择"><a href="#镜像选择" class="headerlink" title="镜像选择:"></a>镜像选择:</h2><p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
+<hr>
+<h2 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h2><p>正式生产服务器建议安装英文版本</p>
+<hr>
+<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
+<ul>
+<li>4个cpu</li>
+<li>内存为6G</li>
+<li>硬盘为200G(精简置备模式)</li>
+</ul>
+<hr>
+<h2 id="自定义硬盘分区"><a href="#自定义硬盘分区" class="headerlink" title="自定义硬盘分区"></a>自定义硬盘分区</h2><p>这个比较重要</p>
+<hr>
+<h3 id="必要的分区"><a href="#必要的分区" class="headerlink" title="必要的分区:"></a>必要的分区:</h3><p><strong>boot分区</strong>:</p>
+<ul>
+<li><p>作用：<strong>引导分区</strong>，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，</p>
+</li>
+<li><p>分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长期使用的冗余文件塞满这个分区。</p>
+</li>
+</ul>
+<p><strong>/分区(根分区):</strong>         </p>
+<ul>
+<li><p>作用：所有的文件都从这里开始，你可以比喻为Windows的C盘，但其实有区别。如果你有大量的数据在根目录下（比如FTP等）可以划分大一点的空间</p>
+</li>
+<li><p>分区建议：建议15G以上。看需求，根分区和home分区的大小就类似C盘和D盘的空间分布一样，主要占空间在哪儿就在那里分大容量</p>
+</li>
+</ul>
+<p><strong>swap分区：</strong></p>
+<ul>
+<li><p>作用：<strong>类似于Windows的虚拟内存</strong>，在内存不够用时占用硬盘的虚拟内存来进行临时数据的存放，而对于linux就是swap分区</p>
+</li>
+<li><p>分区建议：建议是物理内存大小的2倍，比如你电脑是4G的物理内存，swap分区可以是8G</p>
+</li>
+</ul>
+<blockquote>
+<p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
+</blockquote>
+<hr>
+<h3 id="硬盘分区"><a href="#硬盘分区" class="headerlink" title="硬盘分区:"></a>硬盘分区:</h3><p>自定义的硬盘分区:</p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
+<p><del>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</del></p>
+<blockquote>
+<p><del>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</del></p>
+</blockquote>
+<p><del>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</del></p>
+<p>不然可能会出现io error这类错误,导致系统崩溃…</p>
+<p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt=""></p>
+<p>之前在使用centos6的时候,很少出现io error这类错误</p>
+<p>查看旧系统cento6的磁盘类型,</p>
+<p><img src="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png" alt=""></p>
+<p>依据这个进行配置.都是选用<code>ext4</code>,而不是默认的<code>xfs</code></p>
+<p>配置完成后</p>
+<p><img src="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png" alt=""></p>
+<p>在之后要尽量少直接断电,要正常关机…</p>
+<blockquote>
+<p>经常断电硬盘早晚完蛋。</p>
+</blockquote>
+<hr>
+<h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
+<li>浏览数据存储</li>
+<li>新建文件夹</li>
+<li>copy 后缀为<code>.vmx</code>和<code>.vmdk</code>的文件到 新建的文件夹里</li>
+<li>在新的<code>.vmx</code>文件右键:添加资源.</li>
+</ol>
+<hr>
+<h1 id="初始化安装"><a href="#初始化安装" class="headerlink" title="初始化安装:"></a>初始化安装:</h1><ul>
+<li><p><a href="https://blog.csdn.net/zwx_lucky/article/details/50116051" target="_blank" rel="noopener">centos7没有安装ifconfig命令的解决方法</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/kreo/p/4368811.html" target="_blank" rel="noopener">CentOS7安装iptables防火墙</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/chenghuikai/article/details/45173909" target="_blank" rel="noopener">Centos7下rc.local文件开机不执行…</a></p>
+</li>
+</ul>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/wcwen1990/p/7630545.html" target="_blank" rel="noopener">CentOS7安装详解</a></li>
+<li><a href="https://www.osyunwei.com/archives/7829.html" target="_blank" rel="noopener">CentOS 7.0系统安装配置图解教程</a></li>
+<li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
+<li><a href="https://blog.csdn.net/justlpf/article/details/80703763" target="_blank" rel="noopener">linux xfs和ext4的区别</a></li>
+<li><a href="https://blog.csdn.net/sinat_29384657/article/details/51152954" target="_blank" rel="noopener">CentOS 7 安装教程、硬盘分区、LVM、网络配置、软件源配置、制作</a></li>
+<li><a href="https://v2ex.com/t/146662" target="_blank" rel="noopener">在经常突然断电的情况下，使用 ext4 和 xfs 哪个文件系统更安全？</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/06/nyawc源码-解析不了网页里的链接分析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1577,6 +1800,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/XSScon源码-Simple XSS Scanner tool/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/01/XSScon源码-Simple XSS Scanner tool/" itemprop="url">XSScon源码-Simple XSS Scanner tool</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:36:34+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><h1 id="搭建靶机环境"><a href="#搭建靶机环境" class="headerlink" title="搭建靶机环境:"></a>搭建靶机环境:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.0.107/xss/level2.php</span><br></pre></td></tr></table></figure>
+
+<h1 id="注释代码"><a href="#注释代码" class="headerlink" title="注释代码:"></a>注释代码:</h1><hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/jerrysion/p/5522673.html" target="_blank" rel="noopener">为什么要进行URL编码</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/sqlmap源码-checkSameHost函数的疑问/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2188,455 +2558,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/22/Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/22/Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析/" itemprop="url">Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T00:49:00+08:00">
-                2019-02-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
-                    <span itemprop="name">VulnAnalysis</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="安装漏洞环境"><a href="#安装漏洞环境" class="headerlink" title="安装漏洞环境:"></a>安装漏洞环境:</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6ea9ebae.jpg" alt=""></p>
-<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现:"></a>漏洞复现:</h1><p>poc:<code>[Host]/admin/login/login_check.php?url_array[]=&lt;script&gt;alert(1)&lt;/script&gt;&amp;url_array[]=a</code></p>
-<p>管理员登录后台-安全与效率,触发xss</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6eb902ff.jpg" alt=""></p>
-<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><h2 id="粗略猜测"><a href="#粗略猜测" class="headerlink" title="粗略猜测:"></a>粗略猜测:</h2><p>引入了外部变量,直接修改了数据库该值<br><img src="https://i.loli.net/2019/04/25/5cc1d6ec922f7.jpg" alt=""></p>
-<p><code>/MetInfo6.1.3/app/system/safe/admin/index.class.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6ed68069.jpg" alt=""></p>
-<p>查询数据库发现被是加密后的字段:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6ee20e9c.jpg" alt=""></p>
-<p>解密后应该就是<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
-<hr>
-<h2 id="跟踪分析"><a href="#跟踪分析" class="headerlink" title="跟踪分析:"></a>跟踪分析:</h2><h3 id="common-inc-php"><a href="#common-inc-php" class="headerlink" title="common.inc.php"></a>common.inc.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6ef6f74c.jpg" alt=""></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">foreach(array(&apos;_COOKIE&apos;, &apos;_POST&apos;, &apos;_GET&apos;) as $_request) &#123;</span><br><span class="line">	foreach($$_request as $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;0&#125; != &apos;_&apos; &amp;&amp; $$_key = daddslashes($_value,0,0,1);</span><br><span class="line">		$_M[&apos;form&apos;][$_key]=daddslashes($_value,0,0,1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个时候,引入了外部变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code></p>
-<p>这个循环会遍历全局变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code>，然后对里面的值进行过滤,然后赋值到<code>$_M[form]</code></p>
-<p>进入循环之前,<code>$_M</code>变量的值为</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6f01e788.jpg" alt=""></p>
-<p>结束循环时,出现了变量覆盖,<code>$_M</code>变量的值为</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6f0e6c11.jpg" alt=""></p>
-<blockquote>
-<p>code mix with data.</p>
-</blockquote>
-<h3 id="login-check-php"><a href="#login-check-php" class="headerlink" title="login_check.php"></a>login_check.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6f2717ec.jpg" alt=""></p>
-<p>payload经过<code>authcode</code>函数加密后.更新入了表<code>met_config</code>里的<code>met_adminfile</code>字段</p>
-<hr>
-<p>攻击者将payload注入到数据库后,管理员访问后台的安全与效率,触发xss时发生了什么?</p>
-<p>### </p>
-<p><code>load_class.php</code> 加载模块</p>
-<p>加载了<code>app/system/index/admin/</code>下的<code>index</code> 类,调用里面的<code>doindex</code>函数</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6f434e32.jpg" alt=""></p>
-<p><code>index</code> 类继承了 <code>admin</code>类</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span> <span class="keyword">extends</span> <span class="title">admin</span></span></span><br></pre></td></tr></table></figure>
-
-<p><code>admin</code> 类继承了 <code>common</code>类</p>
-<h3 id="common-class-php"><a href="#common-class-php" class="headerlink" title="common.class.php"></a>common.class.php</h3><p><code>common</code>类 构造函数里面,加载了全站的配置数据</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0ehqbi24wj30u00iatgb.jpg" alt=""></p>
-<p>load_config_global函数,先读取了数据库的配置到<code>$M</code>全局数组中,</p>
-<p>此时的<code>met_adminfile</code>还没解密<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0ehy76stbj31aq0f87dx.jpg" alt=""></p>
-<p>经过<code>authcode</code>解密函数后,<br><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0ehzt6b3ij323s09kk3c.jpg" alt=""></p>
-<p>可以看到<code>met_adminfile</code>就是我们的payload<br><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ei0nueppj30nc0ee7ah.jpg" alt=""></p>
-<h3 id="admin-class-php"><a href="#admin-class-php" class="headerlink" title="admin.class.php"></a>admin.class.php</h3><p>执行<code>check()</code>函数:</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0ei492hgej31iu0geqd7.jpg" alt=""></p>
-<p>将$M全局数组里的值赋给了<code>$met_adminfile</code></p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ei5dwdf4j32580e04mv.jpg" alt=""></p>
-<h3 id="加载页面"><a href="#加载页面" class="headerlink" title="加载页面:"></a>加载页面:</h3><p>先加载渲染了侧边栏、头部底部之后,最后才加载渲染<code>/app/system/safe/admin/index.class.php</code></p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0eiv8ks2vj328p0u0e81.jpg" alt=""></p>
-<hr>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h2><ul>
-<li><code>login_check.php</code> 10行 包含了<code>../include/common.inc.php</code></li>
-</ul>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0egz5zgcwj30h600qaah.jpg" alt=""></p>
-<ul>
-<li><code>common.inc.php</code> 79-84行,循环赋值给<code>$M</code>数组时产生了变量覆盖</li>
-</ul>
-<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0egzvve8tj3102068791.jpg" alt=""></p>
-<ul>
-<li><code>login_check.php</code> 13-18行,将payload加密后更新入了表<code>met_config</code>里的<code>met_adminfile</code>字段</li>
-</ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0eh167azuj327e05w124.jpg" alt=""></p>
-<hr>
-<h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>造成变量覆盖时使用的语法.</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$hell=<span class="string">"abc"</span>; $$hell=<span class="string">"def"</span>;等同于$abc=<span class="string">"def"</span></span><br><span class="line"></span><br><span class="line">$_request = _GET</span><br><span class="line">$$_request = $_GET</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这是个trick?</p>
-</blockquote>
-<hr>
-<h1 id="思考"><a href="#思考" class="headerlink" title="思考:"></a>思考:</h1><ul>
-<li>善用搜索,加对断点可以加快跟踪调试的速度</li>
-<li>一开始粗略猜测,可以知道大体的思路</li>
-<li>对前端页面进行元素查看,也可以方便加断点,加快速度</li>
-</ul>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://blog.csdn.net/dl425134845/article/details/49616557" target="_blank" rel="noopener">php下session_cache_limiter(private,must-revalidate)–表单填写内容不丢失</a></li>
-<li><a href="https://www.anquanke.com/post/id/169456" target="_blank" rel="noopener">Metinfo 6.x存储型XSS分析（CVE-2018-20486）</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/简单的代码离线更新方案/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/13/简单的代码离线更新方案/" itemprop="url">简单的代码离线更新方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">
-                2019-02-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
-<hr>
-<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
-<p>两者的区别:</p>
-<p><a href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle" target="_blank" rel="noopener">Which is better to use and why? git format-patch or git bundle?</a></p>
-<blockquote>
-<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
-</blockquote>
-<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
-<hr>
-<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
-<ul>
-<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
-<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
-<li>可能你的无线、有线网卡坏掉了。 </li>
-<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
-</ul>
-<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
-<hr>
-<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
-
-<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
-<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
-</blockquote>
-<blockquote>
-<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
-</blockquote>
-<blockquote>
-<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
-</blockquote>
-<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
-
-<p>eg:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
-
-<p>某两次提交之间的所有patch:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
-
-<p>eg:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
-
-<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
-
-<p>打入patch/diff:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
-<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
-<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
-<hr>
-<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
-<li>更新包生成端:<ul>
-<li>分别生成各个项目的<code>bundle</code>文件</li>
-<li>加密压缩成<code>zip</code>文件</li>
-</ul>
-</li>
-<li>更新包使用端:<ul>
-<li>用密钥解密压缩包</li>
-<li>到指定目录移除原来的项目,执行<code>git clone</code> </li>
-</ul>
-</li>
-</ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg" alt=""></p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="http://www.mottoin.com/article/network/97143.html" target="_blank" rel="noopener">巡风在隔离网络环境下的离线更新方案</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/33208607" target="_blank" rel="noopener">携程无线离线包增量更新方案实践</a></li>
-<li><a href="https://gitee.com/liujin0506/autopatch" target="_blank" rel="noopener">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
-<li><a href="https://blog.csdn.net/jinweilin/article/details/78356860" target="_blank" rel="noopener">git打两个版本的增量包</a></li>
-<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
-<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85" target="_blank" rel="noopener">Git 工具 - 打包</a></li>
-<li><a href="https://github.com/an23lm/GitBundlePlus" target="_blank" rel="noopener">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
-<li><a href="https://blog.csdn.net/sinat_20059415/article/details/80598347" target="_blank" rel="noopener">git 打补丁方法总结</a></li>
-<li><a href="https://blog.csdn.net/kangear/article/details/39675421" target="_blank" rel="noopener">Git打补丁常见问题</a></li>
-<li><a href="https://www.cnblogs.com/y041039/articles/2411600.html" target="_blank" rel="noopener">Git的Patch功能</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2684,7 +2610,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
