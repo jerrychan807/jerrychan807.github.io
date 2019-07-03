@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:celery+redis 经常会出现重复任务. 所以打算用rabbitmq替换redis.  下载与安装:erlang:12# 安装erlangyum install erlang -y  rabbitmq:1234567# 安装RabbitMQ# 下载rpmwget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-02T03:49:59.277Z">
+<meta property="og:updated_time" content="2019-07-02T15:13:01.677Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-RabbitMq-Install">
 <meta name="twitter:description" content="Pre:celery+redis 经常会出现重复任务. 所以打算用rabbitmq替换redis.  下载与安装:erlang:12# 安装erlangyum install erlang -y  rabbitmq:1234567# 安装RabbitMQ# 下载rpmwget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbi">
@@ -365,7 +365,12 @@
 <h1 id="修改celery配置文件"><a href="#修改celery配置文件" class="headerlink" title="修改celery配置文件:"></a>修改celery配置文件:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br></pre></td></tr></table></figure>
 
 <p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
-<p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便.</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
+<p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
+<p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
+<p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
+<p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://www.cnblogs.com/uptothesky/p/6094357.html" target="_blank" rel="noopener">在CentOS7上安装RabbitMQ</a></li>
@@ -411,8 +416,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/02/记录-修改Mysql最大连接数/" rel="prev" title="记录-修改Mysql最大连接数">
-                记录-修改Mysql最大连接数 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/07/01/XSScon源码-Simple XSS Scanner tool/" rel="prev" title="XSScon源码-Simple XSS Scanner tool">
+                XSScon源码-Simple XSS Scanner tool <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -547,7 +552,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下载与安装"><span class="nav-number">2.</span> <span class="nav-text">下载与安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#erlang"><span class="nav-number">2.1.</span> <span class="nav-text">erlang:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rabbitmq"><span class="nav-number">2.2.</span> <span class="nav-text">rabbitmq:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化配置"><span class="nav-number">3.</span> <span class="nav-text">初始化配置:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">创建配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户设置"><span class="nav-number">3.2.</span> <span class="nav-text">用户设置:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改celery配置文件"><span class="nav-number">4.</span> <span class="nav-text">修改celery配置文件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下载与安装"><span class="nav-number">2.</span> <span class="nav-text">下载与安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#erlang"><span class="nav-number">2.1.</span> <span class="nav-text">erlang:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rabbitmq"><span class="nav-number">2.2.</span> <span class="nav-text">rabbitmq:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化配置"><span class="nav-number">3.</span> <span class="nav-text">初始化配置:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">创建配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户设置"><span class="nav-number">3.2.</span> <span class="nav-text">用户设置:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改celery配置文件"><span class="nav-number">4.</span> <span class="nav-text">修改celery配置文件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>

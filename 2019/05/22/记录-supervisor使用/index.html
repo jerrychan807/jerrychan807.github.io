@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:Centos7不推荐使用rc.local,推荐自己配service但因为之前用惯了Cenos6,故一开始也沿用rc.local. 后来rc.local启的进程会导致系统无法正常快速的reboot,然后就频繁断电操作(虽然是虚拟机)..导致系统的硬盘崩了.. 为了更好的管理进程,所以选用supervisor这个工具. 理由参考这篇文章的介绍(进程管理工具supervisor简介及使用技巧)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-02T15:02:40.185Z">
+<meta property="og:updated_time" content="2019-07-02T15:17:22.797Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-Supervisor使用">
 <meta name="twitter:description" content="Pre:Centos7不推荐使用rc.local,推荐自己配service但因为之前用惯了Cenos6,故一开始也沿用rc.local. 后来rc.local启的进程会导致系统无法正常快速的reboot,然后就频繁断电操作(虽然是虚拟机)..导致系统的硬盘崩了.. 为了更好的管理进程,所以选用supervisor这个工具. 理由参考这篇文章的介绍(进程管理工具supervisor简介及使用技巧)">
@@ -365,6 +365,9 @@
 <p>配置项有很多…</p>
 </blockquote>
 <hr>
+<h2 id="tips"><a href="#tips" class="headerlink" title="tips:"></a>tips:</h2><p><a href="https://github.com/Supervisor/supervisor/issues/980" target="_blank" rel="noopener">supervisor crash when config command include java “%t %p” variable</a></p>
+<p>如果在运行的命令中有用到<code>%</code>,会报格式错误.这个时候只需要双写<code>%</code>即<code>%%</code>就好了.</p>
+<hr>
 <h1 id="基本操作命令"><a href="#基本操作命令" class="headerlink" title="基本操作命令:"></a>基本操作命令:</h1><h2 id="启停supervisor"><a href="#启停supervisor" class="headerlink" title="启停supervisor:"></a>启停supervisor:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl /etc/supervisord.conf shutdown</span><br></pre></td></tr></table></figure>
@@ -388,6 +391,7 @@
 <li><a href="https://blog.csdn.net/fdipzone/article/details/80146558" target="_blank" rel="noopener">Supervisor定期重启指定进程</a></li>
 <li><a href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/" target="_blank" rel="noopener">Supervisor文档</a></li>
 <li><a href="https://my.oschina.net/goskyblue/blog/380828" target="_blank" rel="noopener">进程管理工具supervisor简介及使用技巧</a></li>
+<li><a href="https://github.com/Supervisor/supervisor/issues/980" target="_blank" rel="noopener">supervisor crash when config command include java “%t %p” variable</a></li>
 </ul>
 
       
@@ -565,7 +569,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-amp-初始化"><span class="nav-number">2.</span> <span class="nav-text">安装&amp;初始化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">3.</span> <span class="nav-text">编辑配置文件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作命令"><span class="nav-number">4.</span> <span class="nav-text">基本操作命令:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启停supervisor"><span class="nav-number">4.1.</span> <span class="nav-text">启停supervisor:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理进程"><span class="nav-number">4.2.</span> <span class="nav-text">管理进程:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定期重启指定进程方法"><span class="nav-number">5.</span> <span class="nav-text">定期重启指定进程方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-amp-初始化"><span class="nav-number">2.</span> <span class="nav-text">安装&amp;初始化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">3.</span> <span class="nav-text">编辑配置文件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">3.1.</span> <span class="nav-text">tips:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作命令"><span class="nav-number">4.</span> <span class="nav-text">基本操作命令:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启停supervisor"><span class="nav-number">4.1.</span> <span class="nav-text">启停supervisor:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理进程"><span class="nav-number">4.2.</span> <span class="nav-text">管理进程:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定期重启指定进程方法"><span class="nav-number">5.</span> <span class="nav-text">定期重启指定进程方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>
