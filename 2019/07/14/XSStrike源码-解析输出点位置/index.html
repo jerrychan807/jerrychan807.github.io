@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Dev,">
+  <meta name="keywords" content="SourceCodeReading,">
 
 
 
@@ -79,23 +79,24 @@
 
 
 
-<meta name="description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  实际的配置:虚拟机的配置  4个cpu 内存为6G 硬盘为200G(精简置备模式)   自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：">
-<meta name="keywords" content="Dev">
+<meta name="description" content="Pre: 潜在注入点检测: 潜在注入的检测是判断输入点是否可以成功把数据注入到页面内容 对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS； 在潜在注入点的检测通常使用的是一个随机字符串，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。 为什么不直接使用Payload进行判断呢？ 因为Payload里包含了攻击代">
+<meta name="keywords" content="SourceCodeReading">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记录-Centos7系统安装">
-<meta property="og:url" content="http://yoursite.com/2019/04/19/记录-Centos7系统安装/index.html">
+<meta property="og:title" content="XSStrike源码(二)-潜在注入点检测">
+<meta property="og:url" content="http://yoursite.com/2019/07/14/XSStrike源码-解析输出点位置/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  实际的配置:虚拟机的配置  4个cpu 内存为6G 硬盘为200G(精简置备模式)   自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：">
+<meta property="og:description" content="Pre: 潜在注入点检测: 潜在注入的检测是判断输入点是否可以成功把数据注入到页面内容 对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS； 在潜在注入点的检测通常使用的是一个随机字符串，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。 为什么不直接使用Payload进行判断呢？ 因为Payload里包含了攻击代">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png">
-<meta property="og:image" content="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png">
-<meta property="og:image" content="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png">
-<meta property="og:updated_time" content="2019-07-02T03:13:36.115Z">
+<meta property="og:image" content="https://i.loli.net/2019/07/16/5d2ca9b1c1b5d72584.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/16/5d2caafb10c1587305.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/14/5d2b3fccaa40267676.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/14/5d2b3c73d09d963919.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/16/5d2ca3e0cec2634464.png">
+<meta property="og:updated_time" content="2019-07-15T16:58:34.742Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="记录-Centos7系统安装">
-<meta name="twitter:description" content="系统安装:镜像选择:生产服务器如果是大内存（4G以上内存），建议安装64位版本  语言选择正式生产服务器建议安装英文版本  实际的配置:虚拟机的配置  4个cpu 内存为6G 硬盘为200G(精简置备模式)   自定义硬盘分区这个比较重要  必要的分区:boot分区:  作用：引导分区，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，  分区建议：">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg">
+<meta name="twitter:title" content="XSStrike源码(二)-潜在注入点检测">
+<meta name="twitter:description" content="Pre: 潜在注入点检测: 潜在注入的检测是判断输入点是否可以成功把数据注入到页面内容 对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS； 在潜在注入点的检测通常使用的是一个随机字符串，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。 为什么不直接使用Payload进行判断呢？ 因为Payload里包含了攻击代">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/16/5d2ca9b1c1b5d72584.png">
 
 
 
@@ -125,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/04/19/记录-Centos7系统安装/">
+  <link rel="canonical" href="http://yoursite.com/2019/07/14/XSStrike源码-解析输出点位置/">
 
 
 
 
 
-  <title>记录-Centos7系统安装 | Black House</title>
+  <title>XSStrike源码(二)-潜在注入点检测 | Black House</title>
   
 
 
@@ -258,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/19/记录-Centos7系统安装/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/14/XSStrike源码-解析输出点位置/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -275,7 +276,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">记录-Centos7系统安装</h1>
+          <h1 class="post-title" itemprop="name headline">XSStrike源码(二)-潜在注入点检测</h1>
         
 
         <div class="post-meta">
@@ -287,8 +288,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-19T14:36:34+08:00">
-                2019-04-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-14T14:36:34+08:00">
+                2019-07-14
               </time>
             
 
@@ -310,8 +311,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
                   </a>
                 </span>
 
@@ -347,87 +348,59 @@
       
 
       
-        <h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装:"></a>系统安装:</h1><h2 id="镜像选择"><a href="#镜像选择" class="headerlink" title="镜像选择:"></a>镜像选择:</h2><p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
-<hr>
-<h2 id="语言选择"><a href="#语言选择" class="headerlink" title="语言选择"></a>语言选择</h2><p>正式生产服务器建议安装英文版本</p>
-<hr>
-<h3 id="实际的配置"><a href="#实际的配置" class="headerlink" title="实际的配置:"></a>实际的配置:</h3><p>虚拟机的配置</p>
-<ul>
-<li>4个cpu</li>
-<li>内存为6G</li>
-<li>硬盘为200G(精简置备模式)</li>
-</ul>
-<hr>
-<h2 id="自定义硬盘分区"><a href="#自定义硬盘分区" class="headerlink" title="自定义硬盘分区"></a>自定义硬盘分区</h2><p>这个比较重要</p>
-<hr>
-<h3 id="必要的分区"><a href="#必要的分区" class="headerlink" title="必要的分区:"></a>必要的分区:</h3><p><strong>boot分区</strong>:</p>
-<ul>
-<li><p>作用：<strong>引导分区</strong>，包含了系统启动的必要内核文件，即使根分区顺坏也能正常引导启动 一般这些文件所占空间在200M以下，</p>
-</li>
-<li><p>分区建议：分区的时候可选100M-500M之间,如果空间足够用，建议分300-500M。避免由于长期使用的冗余文件塞满这个分区。</p>
-</li>
-</ul>
-<p><strong>/分区(根分区):</strong>         </p>
-<ul>
-<li><p>作用：所有的文件都从这里开始，你可以比喻为Windows的C盘，但其实有区别。如果你有大量的数据在根目录下（比如FTP等）可以划分大一点的空间</p>
-</li>
-<li><p>分区建议：建议15G以上。看需求，根分区和home分区的大小就类似C盘和D盘的空间分布一样，主要占空间在哪儿就在那里分大容量</p>
-</li>
-</ul>
-<p><strong>swap分区：</strong></p>
-<ul>
-<li><p>作用：<strong>类似于Windows的虚拟内存</strong>，在内存不够用时占用硬盘的虚拟内存来进行临时数据的存放，而对于linux就是swap分区</p>
-</li>
-<li><p>分区建议：建议是物理内存大小的2倍，比如你电脑是4G的物理内存，swap分区可以是8G</p>
-</li>
-</ul>
-<blockquote>
-<p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><hr>
+<h1 id="潜在注入点检测"><a href="#潜在注入点检测" class="headerlink" title="潜在注入点检测:"></a>潜在注入点检测:</h1><blockquote>
+<p>潜在注入的检测是<strong>判断输入点是否可以成功把数据注入到页面内容</strong></p>
+<p>对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS；</p>
+<p><strong>在潜在注入点的检测通常使用的是一个随机字符串</strong>，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。</p>
+<p>为什么不直接使用Payload进行判断呢？</p>
+<p>因为Payload里包含了攻击代码，通常很多应用都有防火墙或者过滤机制，Payload中的关键词会被拦截导致提交失败或者不会返回输出在页面，但这种情况不代表不能XSS，因为有可能只是Payload不够好，没有绕过过滤或者其他安全机制，所以采用无害的随机数字字符就可以避免这种情况产生，先验证可注入，再调整Payload去绕过过滤；而随机的目的在于不希望固定字符成为XSS防御黑名单里的关键词。— <a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></p>
 </blockquote>
 <hr>
-<h3 id="硬盘分区"><a href="#硬盘分区" class="headerlink" title="硬盘分区:"></a>硬盘分区:</h3><p>自定义的硬盘分区:</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
-<p><del>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</del></p>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h1><h2 id="无害字符串替换"><a href="#无害字符串替换" class="headerlink" title="无害字符串替换:"></a>无害字符串替换:</h2><p>XSStrike采用的方式是用了作者自己的名字来作为特殊字符串.</p>
 <blockquote>
-<p><del>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</del></p>
+<p>也相当于作者的一个banner信息..</p>
 </blockquote>
-<p><del>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</del></p>
-<p>不然可能会出现io error这类错误,导致系统崩溃…</p>
-<p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt=""></p>
-<p>之前在使用centos6的时候,很少出现io error这类错误</p>
-<p>查看旧系统cento6的磁盘类型,</p>
-<p><img src="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png" alt=""></p>
-<p>依据这个进行配置.都是选用<code>ext4</code>,而不是默认的<code>xfs</code></p>
-<p>配置完成后</p>
-<p><img src="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png" alt=""></p>
-<p>在之后要尽量少直接断电,要正常关机…</p>
-<blockquote>
-<p>经常断电硬盘早晚完蛋。</p>
-</blockquote>
+<p><img src="https://i.loli.net/2019/07/16/5d2ca9b1c1b5d72584.png" alt=""></p>
+<ul>
+<li>以<code>v3dm0s</code>去替换参数值</li>
+<li>发包请求,在返回包源码中搜索<code>v3dm0s</code></li>
+<li>如果搜到多个地方有,那么说明可能存在多个输出点</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例:"></a>示例:</h3><p>有一个初始请求url:<code>http://192.168.0.104/xss/level1.php?name=test</code></p>
+<p>将参数值<code>test</code>替换成<code>v3dm0s</code></p>
+<p>替换后的请求url:<code>http://192.168.0.104/xss/level1.php?name=v3dm0s</code></p>
+<p><img src="https://i.loli.net/2019/07/16/5d2caafb10c1587305.png" alt=""></p>
+<p>那么说明这个页面有一个输出点.</p>
+<h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码:"></a>实现代码:</h3><p><img src="https://i.loli.net/2019/07/14/5d2b3fccaa40267676.png" alt=""></p>
+<p>在解析完参数的前提下,进行替换.<br>然后调用<code>htmlParser</code>从返回包原文解析潜在注入点(输出点)的上下文环境.</p>
 <hr>
-<h1 id="虚拟机拷贝"><a href="#虚拟机拷贝" class="headerlink" title="虚拟机拷贝:"></a>虚拟机拷贝:</h1><ol>
-<li>浏览数据存储</li>
-<li>新建文件夹</li>
-<li>copy 后缀为<code>.vmx</code>和<code>.vmdk</code>的文件到 新建的文件夹里</li>
-<li>在新的<code>.vmx</code>文件右键:添加资源.</li>
-</ol>
-<hr>
-<h1 id="初始化安装"><a href="#初始化安装" class="headerlink" title="初始化安装:"></a>初始化安装:</h1><ul>
-<li><p><a href="https://blog.csdn.net/zwx_lucky/article/details/50116051" target="_blank" rel="noopener">centos7没有安装ifconfig命令的解决方法</a></p>
-</li>
-<li><p><a href="https://www.cnblogs.com/kreo/p/4368811.html" target="_blank" rel="noopener">CentOS7安装iptables防火墙</a></p>
-</li>
-<li><p><a href="https://blog.csdn.net/chenghuikai/article/details/45173909" target="_blank" rel="noopener">Centos7下rc.local文件开机不执行…</a></p>
+<h2 id="解析输出点的上下文环境"><a href="#解析输出点的上下文环境" class="headerlink" title="解析输出点的上下文环境:"></a>解析输出点的上下文环境:</h2><p>每个输出点的环境都作为一个字典<code>occurences</code>存储.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="number">455</span>: &#123;<span class="string">'position'</span>: <span class="number">455</span>, <span class="string">'context'</span>: <span class="string">'attribute'</span>, <span class="string">'details'</span>: &#123;<span class="string">'tag'</span>: <span class="string">'input'</span>, <span class="string">'type'</span>: <span class="string">'value'</span>, <span class="string">'quote'</span>: <span class="string">'"'</span>, <span class="string">'value'</span>: <span class="string">'v3dm0s'</span>, <span class="string">'name'</span>: <span class="string">'value'</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>position</code>:表示输出点在页面中的第几个字符处</li>
+<li><code>context</code>: 输出位置点的执行环境(<code>script</code>,<code>attribute</code>,<code>html</code>,<code>comment</code>等)</li>
+<li><code>details</code>: 执行环境的具体信息<ul>
+<li><code>tag</code>: 输出点在什么标签(<code>div</code>,<code>a</code>,<code>input</code>等)</li>
+<li><code>type</code>: 输出点是参数名还是参数值(<code>name</code>, <code>value</code>)</li>
+<li><code>quote</code>: 输出点是用什么包裹起来的(单引号,双引号,`号)</li>
+<li><code>value</code>: s</li>
+<li><code>name</code>:</li>
+</ul>
 </li>
 </ul>
+<h3 id="输出点在html中"><a href="#输出点在html中" class="headerlink" title="输出点在html中:"></a>输出点在html中:</h3><p>示例:</p>
+<p><img src="https://i.loli.net/2019/07/14/5d2b3c73d09d963919.png" alt=""></p>
+<h3 id="输出点在属性中"><a href="#输出点在属性中" class="headerlink" title="输出点在属性中:"></a>输出点在属性中:</h3><p>示例:</p>
+<p><img src="https://i.loli.net/2019/07/16/5d2ca3e0cec2634464.png" alt=""></p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://www.cnblogs.com/wcwen1990/p/7630545.html" target="_blank" rel="noopener">CentOS7安装详解</a></li>
-<li><a href="https://www.osyunwei.com/archives/7829.html" target="_blank" rel="noopener">CentOS 7.0系统安装配置图解教程</a></li>
-<li><a href="https://blog.csdn.net/xiaodage/article/details/83070380" target="_blank" rel="noopener">centos7分区建议生产环境</a></li>
-<li><a href="https://blog.csdn.net/justlpf/article/details/80703763" target="_blank" rel="noopener">linux xfs和ext4的区别</a></li>
-<li><a href="https://blog.csdn.net/sinat_29384657/article/details/51152954" target="_blank" rel="noopener">CentOS 7 安装教程、硬盘分区、LVM、网络配置、软件源配置、制作</a></li>
-<li><a href="https://v2ex.com/t/146662" target="_blank" rel="noopener">在经常突然断电的情况下，使用 ext4 和 xfs 哪个文件系统更安全？</a></li>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
+<li><a href="https://www.freebuf.com/articles/web/191003.html" target="_blank" rel="noopener">利用XSStrike Fuzzing XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
 </ul>
 
       
@@ -446,7 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Dev/" rel="tag"># Dev</a>
+            <a href="/tags/SourceCodeReading/" rel="tag"># SourceCodeReading</a>
           
         </div>
       
@@ -459,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/06/nyawc源码-解析不了网页里的链接分析/" rel="next" title="nyawc框架-解析不了网页里的链接的分析">
-                <i class="fa fa-chevron-left"></i> nyawc框架-解析不了网页里的链接的分析
+              <a href="/2019/07/02/记录-修改Mysql最大连接数/" rel="next" title="记录-修改Mysql最大连接数">
+                <i class="fa fa-chevron-left"></i> 记录-修改Mysql最大连接数
               </a>
             
           </div>
@@ -468,10 +441,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" rel="prev" title="WPSIH-网站个人敏感信息文件扫描器-开发记录">
-                WPSIH-网站个人敏感信息文件扫描器-开发记录 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -605,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统安装"><span class="nav-number">1.</span> <span class="nav-text">系统安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像选择"><span class="nav-number">1.1.</span> <span class="nav-text">镜像选择:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语言选择"><span class="nav-number">1.2.</span> <span class="nav-text">语言选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实际的配置"><span class="nav-number">1.2.1.</span> <span class="nav-text">实际的配置:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义硬盘分区"><span class="nav-number">1.3.</span> <span class="nav-text">自定义硬盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必要的分区"><span class="nav-number">1.3.1.</span> <span class="nav-text">必要的分区:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬盘分区"><span class="nav-number">1.3.2.</span> <span class="nav-text">硬盘分区:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机拷贝"><span class="nav-number">2.</span> <span class="nav-text">虚拟机拷贝:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化安装"><span class="nav-number">3.</span> <span class="nav-text">初始化安装:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">4.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#潜在注入点检测"><span class="nav-number">2.</span> <span class="nav-text">潜在注入点检测:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流程"><span class="nav-number">3.</span> <span class="nav-text">流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#无害字符串替换"><span class="nav-number">3.1.</span> <span class="nav-text">无害字符串替换:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.1.1.</span> <span class="nav-text">示例:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现代码"><span class="nav-number">3.1.2.</span> <span class="nav-text">实现代码:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析输出点的上下文环境"><span class="nav-number">3.2.</span> <span class="nav-text">解析输出点的上下文环境:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#输出点在html中"><span class="nav-number">3.2.1.</span> <span class="nav-text">输出点在html中:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出点在属性中"><span class="nav-number">3.2.2.</span> <span class="nav-text">输出点在属性中:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">4.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
             
 
           </div>

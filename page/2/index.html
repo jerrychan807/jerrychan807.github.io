@@ -252,6 +252,201 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/暗链案例初探/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/15/暗链案例初探/" itemprop="url">暗链案例初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T14:36:34+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="主页被黑被篡改"><a href="#主页被黑被篡改" class="headerlink" title="主页被黑被篡改:"></a>主页被黑被篡改:</h1><h2 id="案例1"><a href="#案例1" class="headerlink" title="案例1:"></a>案例1:</h2><p><code>https://www.and-the-like.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png" alt=""></p>
+<p>无法关键词识别,只有图片</p>
+<hr>
+<h2 id="案例2"><a href="#案例2" class="headerlink" title="案例2:"></a>案例2:</h2><p><code>https://www.daobangedu.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc42c6e127e17972.png" alt=""></p>
+<p>有关键词:时时彩等</p>
+<hr>
+<h2 id="案例3"><a href="#案例3" class="headerlink" title="案例3:"></a>案例3:</h2><p><code>www.lexuedidai.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc4339e253695045.png" alt=""></p>
+<p>有图片也有关键字<br>关键词:彩票 赌博 投注</p>
+<p>随便访问里面的js的网站,有个<code>phpinfo</code>呀.<br><code>http://275195.com/index.php</code><br><img src="https://i.loli.net/2019/05/16/5cdc440978f9b52950.png" alt=""></p>
+<hr>
+<h3 id="案例4"><a href="#案例4" class="headerlink" title="案例4:"></a>案例4:</h3><p><code>http://www.fslp1.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc44b187d5914134.png" alt=""></p>
+<p>关键词:彩票,娱乐平台,时时彩</p>
+<hr>
+<h1 id="跳转"><a href="#跳转" class="headerlink" title="跳转:"></a>跳转:</h1><h2 id="案例1-1"><a href="#案例1-1" class="headerlink" title="案例1:"></a>案例1:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var n = Math.floor(Math.random()*3);</span><br><span class="line">if(n==0)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68599.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==1)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68499.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==2)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.131313.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>js的<code>document.writeln</code>重新刷新页面</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc38bec7e5451537.png" alt=""></p>
+<hr>
+<h2 id="案例2-1"><a href="#案例2-1" class="headerlink" title="案例2:"></a>案例2:</h2><p>url:<code>http://www.wuzuilaojiao.com/</code></p>
+<p>要挂代理才能访问到博彩页面,页面源码没有关键词,只有图片.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3bcc48eb112943.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;frame name=&quot;main&quot; src=&quot;http://mark.zc.qp891.com&quot; scrolling=&quot;yes&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;frame src=&quot;/example/html/frame_b.html&quot;&gt;</code>既是表示当前的框架里面显示src后面这个路径的html页</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3f048811515654.png" alt=""></p>
+<hr>
+<h2 id="案例3-1"><a href="#案例3-1" class="headerlink" title="案例3:"></a>案例3:</h2><p>url: <code>www.gzbihua.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc471b7c45e43997.png" alt=""></p>
+<p><code>https://www.gzbihua.com/template/pc/skin/js/jquery.tz.js</code></p>
+<p>这个js应该只是打乱了,没有混淆.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc476987bd781253.png" alt=""></p>
+<hr>
+<h2 id="案例4-1"><a href="#案例4-1" class="headerlink" title="案例4:"></a>案例4:</h2><p>初始url:<code>http://www.aohougz.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75977a49848288.png" alt=""></p>
+<p>第一次跳转到:<code>https://www.mtc39.com/?att=996</code><br>再跳转到:<code>http://www.13145.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75f55e34e10877.png" alt=""></p>
+<p>最终页面没有敏感词.只有个图片里有文字:彩票</p>
+<blockquote>
+<p>如果在最终页面,再通过敏感字判断也不行.<br>初始url的源码里是有关键字的<code>彩票 , 投注</code><br>那么判断思路,应该是在每个页面都要进行判断.</p>
+</blockquote>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>js的<code>document.writeln</code><br>frame标签的src</p>
+<hr>
+<h1 id="敏感字词库"><a href="#敏感字词库" class="headerlink" title="敏感字词库:"></a>敏感字词库:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">足球</span><br><span class="line">外围</span><br><span class="line">好彩</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>待补充</p>
+</blockquote>
+<hr>
+<h1 id="想法"><a href="#想法" class="headerlink" title="想法:"></a>想法:</h1><p>网上固然有很多别人的文章,但是不如自己切实的去访问,记录一下.<br>毕竟别人的东西,只是看了,最终也不能转化吸收成你的.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/python-杀死subprocess进程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2431,196 +2626,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/sqlmap源码-checkSameHost函数的疑问/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/01/sqlmap源码-checkSameHost函数的疑问/" itemprop="url">sqlmap源码-checkSameHost函数的疑问</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:36:34+08:00">
-                2019-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在看sqlmap源码的时候,看了它的<code>crawler</code>，用到了<code>checkSameHost</code>函数.</p>
-<p>跟进到<code>lib.core.common</code>公共函数里看<code>checkSameHost</code>函数,产生了一些疑问</p>
-<hr>
-<h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSameHost</span><span class="params">(*urls)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target.com/images/page2.php')</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target2.com/images/page2.php')</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">elif</span> len(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_</span><span class="params">(value)</span>:</span> <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r"\A\w+://"</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">"http://%s"</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> all(re.sub(<span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or "").netloc.split(':')[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r"(?i)\Awww\." (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
-<ul>
-<li><code>False</code></li>
-</ul>
-</li>
-<li><p><code>http://xxx.com</code>,<code>http://www.xxx.com</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code></p>
-<ul>
-<li><code>False</code></li>
-<li>?????</li>
-</ul>
-</li>
-</ul>
-<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h2><p>很多时候,<code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code>这两个子域名是可以解析同一个ip上的,这种情况下<code>sameHost</code>判断应该为<code>True</code>才对,为什么这里为<code>False</code>呢?</p>
-<h2 id="answer"><a href="#answer" class="headerlink" title="answer:"></a>answer:</h2><p>这里的sameHost应该是有歧义<br>严格意义上,是否是sameHost应该通过ip来判断,但是如果url很多的话,都去其解析域名对应的ip,会消耗时间</p>
-<p>广义上看,这里的sameHost应该指的是same website.</p>
-<p>通过域名来判断是否是相同的网站,是ok的.</p>
-<hr>
-<h1 id="域名与ip的关系"><a href="#域名与ip的关系" class="headerlink" title="域名与ip的关系:"></a>域名与ip的关系:</h1><p>常见的情况下,一个域名与一个ip是对应的.</p>
-<p>但是<strong>域名与ip的关系不一定是一对一的关系,可以是多对一或者是一对多的关系</strong>.</p>
-<ul>
-<li><p>多个域名解析到一个ip:</p>
-<ul>
-<li><a href="https://jingyan.baidu.com/article/a24b33cd55c7ba19ff002b4b.html" target="_blank" rel="noopener">IIS中怎么配置虚拟主机</a></li>
-<li><a href="https://segmentfault.com/q/1010000002442790" target="_blank" rel="noopener">IS可否将多个域名配置到同一个IP/端口</a></li>
-</ul>
-</li>
-<li><p>一个域名解析到多个ip:</p>
-<ul>
-<li><a href="https://www.cnblogs.com/cuihongyu3503319/archive/2012/07/09/2583129.html" target="_blank" rel="noopener">负载均衡实现，一个域名对应多个IP地址</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2673,7 +2678,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

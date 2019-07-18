@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:Centos7不推荐使用rc.local,推荐自己配service但因为之前用惯了Cenos6,故一开始也沿用rc.local. 后来rc.local启的进程会导致系统无法正常快速的reboot,然后就频繁断电操作(虽然是虚拟机)..导致系统的硬盘崩了.. 为了更好的管理进程,所以选用supervisor这个工具. 理由参考这篇文章的介绍(进程管理工具supervisor简介及使用技巧)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-10T03:13:15.491Z">
+<meta property="og:updated_time" content="2019-07-10T03:16:44.397Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-Supervisor使用">
 <meta name="twitter:description" content="Pre:Centos7不推荐使用rc.local,推荐自己配service但因为之前用惯了Cenos6,故一开始也沿用rc.local. 后来rc.local启的进程会导致系统无法正常快速的reboot,然后就频繁断电操作(虽然是虚拟机)..导致系统的硬盘崩了.. 为了更好的管理进程,所以选用supervisor这个工具. 理由参考这篇文章的介绍(进程管理工具supervisor简介及使用技巧)">
@@ -352,6 +352,13 @@
 <p>后来开源界的大牛建议我用supervisor。尝试之后，简直是如获至宝。作为一个存在了长达10年多的进程管理软件，他已经相当成熟。</p>
 </blockquote>
 <hr>
+<h1 id="Supervisor组成部分"><a href="#Supervisor组成部分" class="headerlink" title="Supervisor组成部分:"></a>Supervisor组成部分:</h1><p>1) <strong>supervisord: 服务守护进程</strong>:
+supervisor服务器的进程名是supervisord。它主要负责在自己的调用中启动子程序，响应客户端的命令，重新启动崩溃或退出的进程，记录其子进程stdout和stderr的输出，以及生成和处理对应于子进程生命周期中的”event”服务器进程使用的配置文件，通常路径存放在/etc/supervisord.confa中。此配置文件是INI格式的配置文件。</p>
+<p>1) <strong>supervisorctl：命令行客户端</strong>:
+supervisor命令行的客户端名称是supervisorctl。它为supervisord提供了一个类似于shell的交互界面。使用supervisorctl，用户可以查看不同的supervisord进程列表，获取控制子进程的状态，如停止和启动子进程</p>
+<p>3) Web Server：提供与supervisorctl功能相当的WEB操作界面<br>一个可以通过Web界面来查看和控制进程的状态，默认监听在9091上。</p>
+<p>4) XML-RPC Interface：XML-RPC接口<br>supervisor用于控制的XML-RPC接口</p>
+<hr>
 <h1 id="安装-amp-初始化"><a href="#安装-amp-初始化" class="headerlink" title="安装&amp;初始化:"></a>安装&amp;初始化:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/pip2.7 install supervisor</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化配置文件</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/echo_supervisord_conf &gt; /xxx/supervisord.conf</span><br></pre></td></tr></table></figure>
@@ -377,6 +384,7 @@
 <hr>
 <h2 id="管理进程"><a href="#管理进程" class="headerlink" title="管理进程:"></a>管理进程:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf start program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf restart program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止全部进程</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
 
+<hr>
 <h2 id="加入启动项"><a href="#加入启动项" class="headerlink" title="加入启动项:"></a>加入启动项:</h2><blockquote>
 <p>centos7环境下</p>
 </blockquote>
@@ -406,6 +414,8 @@
 <li><a href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/" target="_blank" rel="noopener">Supervisor文档</a></li>
 <li><a href="https://my.oschina.net/goskyblue/blog/380828" target="_blank" rel="noopener">进程管理工具supervisor简介及使用技巧</a></li>
 <li><a href="https://github.com/Supervisor/supervisor/issues/980" target="_blank" rel="noopener">supervisor crash when config command include java “%t %p” variable</a></li>
+<li><a href="https://www.jianshu.com/p/e1c3e6fbae80" target="_blank" rel="noopener">在centos7上使用systemd启动supervisor</a></li>
+<li><a href="https://www.cnblogs.com/kevingrace/p/7525200.html" target="_blank" rel="noopener">Supervisor (进程管理利器) 使用说明 - 运维笔记</a></li>
 </ul>
 
       
@@ -528,7 +538,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -583,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-amp-初始化"><span class="nav-number">2.</span> <span class="nav-text">安装&amp;初始化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">3.</span> <span class="nav-text">编辑配置文件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">3.1.</span> <span class="nav-text">tips:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作命令"><span class="nav-number">4.</span> <span class="nav-text">基本操作命令:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启停supervisor"><span class="nav-number">4.1.</span> <span class="nav-text">启停supervisor:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理进程"><span class="nav-number">4.2.</span> <span class="nav-text">管理进程:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入启动项"><span class="nav-number">4.3.</span> <span class="nav-text">加入启动项:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定期重启指定进程方法"><span class="nav-number">5.</span> <span class="nav-text">定期重启指定进程方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Supervisor组成部分"><span class="nav-number">2.</span> <span class="nav-text">Supervisor组成部分:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装-amp-初始化"><span class="nav-number">3.</span> <span class="nav-text">安装&amp;初始化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">4.</span> <span class="nav-text">编辑配置文件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">4.1.</span> <span class="nav-text">tips:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作命令"><span class="nav-number">5.</span> <span class="nav-text">基本操作命令:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启停supervisor"><span class="nav-number">5.1.</span> <span class="nav-text">启停supervisor:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理进程"><span class="nav-number">5.2.</span> <span class="nav-text">管理进程:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入启动项"><span class="nav-number">5.3.</span> <span class="nav-text">加入启动项:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定期重启指定进程方法"><span class="nav-number">6.</span> <span class="nav-text">定期重启指定进程方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">8.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>

@@ -252,6 +252,201 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/14/XSStrike源码-解析输出点位置/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/14/XSStrike源码-解析输出点位置/" itemprop="url">XSStrike源码(二)-潜在注入点检测</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-14T14:36:34+08:00">
+                2019-07-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><hr>
+<h1 id="潜在注入点检测"><a href="#潜在注入点检测" class="headerlink" title="潜在注入点检测:"></a>潜在注入点检测:</h1><blockquote>
+<p>潜在注入的检测是<strong>判断输入点是否可以成功把数据注入到页面内容</strong></p>
+<p>对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS；</p>
+<p><strong>在潜在注入点的检测通常使用的是一个随机字符串</strong>，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。</p>
+<p>为什么不直接使用Payload进行判断呢？</p>
+<p>因为Payload里包含了攻击代码，通常很多应用都有防火墙或者过滤机制，Payload中的关键词会被拦截导致提交失败或者不会返回输出在页面，但这种情况不代表不能XSS，因为有可能只是Payload不够好，没有绕过过滤或者其他安全机制，所以采用无害的随机数字字符就可以避免这种情况产生，先验证可注入，再调整Payload去绕过过滤；而随机的目的在于不希望固定字符成为XSS防御黑名单里的关键词。— <a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></p>
+</blockquote>
+<hr>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h1><h2 id="无害字符串替换"><a href="#无害字符串替换" class="headerlink" title="无害字符串替换:"></a>无害字符串替换:</h2><p>XSStrike采用的方式是用了作者自己的名字来作为特殊字符串.</p>
+<blockquote>
+<p>也相当于作者的一个banner信息..</p>
+</blockquote>
+<p><img src="https://i.loli.net/2019/07/16/5d2ca9b1c1b5d72584.png" alt=""></p>
+<ul>
+<li>以<code>v3dm0s</code>去替换参数值</li>
+<li>发包请求,在返回包源码中搜索<code>v3dm0s</code></li>
+<li>如果搜到多个地方有,那么说明可能存在多个输出点</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例:"></a>示例:</h3><p>有一个初始请求url:<code>http://192.168.0.104/xss/level1.php?name=test</code></p>
+<p>将参数值<code>test</code>替换成<code>v3dm0s</code></p>
+<p>替换后的请求url:<code>http://192.168.0.104/xss/level1.php?name=v3dm0s</code></p>
+<p><img src="https://i.loli.net/2019/07/16/5d2caafb10c1587305.png" alt=""></p>
+<p>那么说明这个页面有一个输出点.</p>
+<h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码:"></a>实现代码:</h3><p><img src="https://i.loli.net/2019/07/14/5d2b3fccaa40267676.png" alt=""></p>
+<p>在解析完参数的前提下,进行替换.<br>然后调用<code>htmlParser</code>从返回包原文解析潜在注入点(输出点)的上下文环境.</p>
+<hr>
+<h2 id="解析输出点的上下文环境"><a href="#解析输出点的上下文环境" class="headerlink" title="解析输出点的上下文环境:"></a>解析输出点的上下文环境:</h2><p>每个输出点的环境都作为一个字典<code>occurences</code>存储.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="number">455</span>: &#123;<span class="string">'position'</span>: <span class="number">455</span>, <span class="string">'context'</span>: <span class="string">'attribute'</span>, <span class="string">'details'</span>: &#123;<span class="string">'tag'</span>: <span class="string">'input'</span>, <span class="string">'type'</span>: <span class="string">'value'</span>, <span class="string">'quote'</span>: <span class="string">'"'</span>, <span class="string">'value'</span>: <span class="string">'v3dm0s'</span>, <span class="string">'name'</span>: <span class="string">'value'</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>position</code>:表示输出点在页面中的第几个字符处</li>
+<li><code>context</code>: 输出位置点的执行环境(<code>script</code>,<code>attribute</code>,<code>html</code>,<code>comment</code>等)</li>
+<li><code>details</code>: 执行环境的具体信息<ul>
+<li><code>tag</code>: 输出点在什么标签(<code>div</code>,<code>a</code>,<code>input</code>等)</li>
+<li><code>type</code>: 输出点是参数名还是参数值(<code>name</code>, <code>value</code>)</li>
+<li><code>quote</code>: 输出点是用什么包裹起来的(单引号,双引号,`号)</li>
+<li><code>value</code>: s</li>
+<li><code>name</code>:</li>
+</ul>
+</li>
+</ul>
+<h3 id="输出点在html中"><a href="#输出点在html中" class="headerlink" title="输出点在html中:"></a>输出点在html中:</h3><p>示例:</p>
+<p><img src="https://i.loli.net/2019/07/14/5d2b3c73d09d963919.png" alt=""></p>
+<h3 id="输出点在属性中"><a href="#输出点在属性中" class="headerlink" title="输出点在属性中:"></a>输出点在属性中:</h3><p>示例:</p>
+<p><img src="https://i.loli.net/2019/07/16/5d2ca3e0cec2634464.png" alt=""></p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
+<li><a href="https://www.freebuf.com/articles/web/191003.html" target="_blank" rel="noopener">利用XSStrike Fuzzing XSS漏洞</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/记录-修改Mysql最大连接数/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -758,6 +953,8 @@
 <h2 id="rabbitmq"><a href="#rabbitmq" class="headerlink" title="rabbitmq:"></a>rabbitmq:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
 
 <hr>
 <h1 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置:"></a>初始化配置:</h1><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件:"></a>创建配置文件:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
@@ -1688,6 +1885,13 @@
 <p>后来开源界的大牛建议我用supervisor。尝试之后，简直是如获至宝。作为一个存在了长达10年多的进程管理软件，他已经相当成熟。</p>
 </blockquote>
 <hr>
+<h1 id="Supervisor组成部分"><a href="#Supervisor组成部分" class="headerlink" title="Supervisor组成部分:"></a>Supervisor组成部分:</h1><p>1) <strong>supervisord: 服务守护进程</strong>:
+supervisor服务器的进程名是supervisord。它主要负责在自己的调用中启动子程序，响应客户端的命令，重新启动崩溃或退出的进程，记录其子进程stdout和stderr的输出，以及生成和处理对应于子进程生命周期中的”event”服务器进程使用的配置文件，通常路径存放在/etc/supervisord.confa中。此配置文件是INI格式的配置文件。</p>
+<p>1) <strong>supervisorctl：命令行客户端</strong>:
+supervisor命令行的客户端名称是supervisorctl。它为supervisord提供了一个类似于shell的交互界面。使用supervisorctl，用户可以查看不同的supervisord进程列表，获取控制子进程的状态，如停止和启动子进程</p>
+<p>3) Web Server：提供与supervisorctl功能相当的WEB操作界面<br>一个可以通过Web界面来查看和控制进程的状态，默认监听在9091上。</p>
+<p>4) XML-RPC Interface：XML-RPC接口<br>supervisor用于控制的XML-RPC接口</p>
+<hr>
 <h1 id="安装-amp-初始化"><a href="#安装-amp-初始化" class="headerlink" title="安装&amp;初始化:"></a>安装&amp;初始化:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/pip2.7 install supervisor</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化配置文件</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/echo_supervisord_conf &gt; /xxx/supervisord.conf</span><br></pre></td></tr></table></figure>
@@ -1713,6 +1917,7 @@
 <hr>
 <h2 id="管理进程"><a href="#管理进程" class="headerlink" title="管理进程:"></a>管理进程:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf start program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf restart program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止全部进程</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
 
+<hr>
 <h2 id="加入启动项"><a href="#加入启动项" class="headerlink" title="加入启动项:"></a>加入启动项:</h2><blockquote>
 <p>centos7环境下</p>
 </blockquote>
@@ -1742,6 +1947,8 @@
 <li><a href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/" target="_blank" rel="noopener">Supervisor文档</a></li>
 <li><a href="https://my.oschina.net/goskyblue/blog/380828" target="_blank" rel="noopener">进程管理工具supervisor简介及使用技巧</a></li>
 <li><a href="https://github.com/Supervisor/supervisor/issues/980" target="_blank" rel="noopener">supervisor crash when config command include java “%t %p” variable</a></li>
+<li><a href="https://www.jianshu.com/p/e1c3e6fbae80" target="_blank" rel="noopener">在centos7上使用systemd启动supervisor</a></li>
+<li><a href="https://www.cnblogs.com/kevingrace/p/7525200.html" target="_blank" rel="noopener">Supervisor (进程管理利器) 使用说明 - 运维笔记</a></li>
 </ul>
 
           
@@ -1978,201 +2185,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/暗链案例初探/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/15/暗链案例初探/" itemprop="url">暗链案例初探</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T14:36:34+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="主页被黑被篡改"><a href="#主页被黑被篡改" class="headerlink" title="主页被黑被篡改:"></a>主页被黑被篡改:</h1><h2 id="案例1"><a href="#案例1" class="headerlink" title="案例1:"></a>案例1:</h2><p><code>https://www.and-the-like.com/</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png" alt=""></p>
-<p>无法关键词识别,只有图片</p>
-<hr>
-<h2 id="案例2"><a href="#案例2" class="headerlink" title="案例2:"></a>案例2:</h2><p><code>https://www.daobangedu.com/</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc42c6e127e17972.png" alt=""></p>
-<p>有关键词:时时彩等</p>
-<hr>
-<h2 id="案例3"><a href="#案例3" class="headerlink" title="案例3:"></a>案例3:</h2><p><code>www.lexuedidai.com</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc4339e253695045.png" alt=""></p>
-<p>有图片也有关键字<br>关键词:彩票 赌博 投注</p>
-<p>随便访问里面的js的网站,有个<code>phpinfo</code>呀.<br><code>http://275195.com/index.php</code><br><img src="https://i.loli.net/2019/05/16/5cdc440978f9b52950.png" alt=""></p>
-<hr>
-<h3 id="案例4"><a href="#案例4" class="headerlink" title="案例4:"></a>案例4:</h3><p><code>http://www.fslp1.com/</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc44b187d5914134.png" alt=""></p>
-<p>关键词:彩票,娱乐平台,时时彩</p>
-<hr>
-<h1 id="跳转"><a href="#跳转" class="headerlink" title="跳转:"></a>跳转:</h1><h2 id="案例1-1"><a href="#案例1-1" class="headerlink" title="案例1:"></a>案例1:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var n = Math.floor(Math.random()*3);</span><br><span class="line">if(n==0)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68599.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==1)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68499.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==2)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.131313.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>js的<code>document.writeln</code>重新刷新页面</p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc38bec7e5451537.png" alt=""></p>
-<hr>
-<h2 id="案例2-1"><a href="#案例2-1" class="headerlink" title="案例2:"></a>案例2:</h2><p>url:<code>http://www.wuzuilaojiao.com/</code></p>
-<p>要挂代理才能访问到博彩页面,页面源码没有关键词,只有图片.</p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc3bcc48eb112943.png" alt=""></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;frame name=&quot;main&quot; src=&quot;http://mark.zc.qp891.com&quot; scrolling=&quot;yes&quot;&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>&lt;frame src=&quot;/example/html/frame_b.html&quot;&gt;</code>既是表示当前的框架里面显示src后面这个路径的html页</p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc3f048811515654.png" alt=""></p>
-<hr>
-<h2 id="案例3-1"><a href="#案例3-1" class="headerlink" title="案例3:"></a>案例3:</h2><p>url: <code>www.gzbihua.com</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc471b7c45e43997.png" alt=""></p>
-<p><code>https://www.gzbihua.com/template/pc/skin/js/jquery.tz.js</code></p>
-<p>这个js应该只是打乱了,没有混淆.</p>
-<p><img src="https://i.loli.net/2019/05/16/5cdc476987bd781253.png" alt=""></p>
-<hr>
-<h2 id="案例4-1"><a href="#案例4-1" class="headerlink" title="案例4:"></a>案例4:</h2><p>初始url:<code>http://www.aohougz.com/</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdd75977a49848288.png" alt=""></p>
-<p>第一次跳转到:<code>https://www.mtc39.com/?att=996</code><br>再跳转到:<code>http://www.13145.com/</code></p>
-<p><img src="https://i.loli.net/2019/05/16/5cdd75f55e34e10877.png" alt=""></p>
-<p>最终页面没有敏感词.只有个图片里有文字:彩票</p>
-<blockquote>
-<p>如果在最终页面,再通过敏感字判断也不行.<br>初始url的源码里是有关键字的<code>彩票 , 投注</code><br>那么判断思路,应该是在每个页面都要进行判断.</p>
-</blockquote>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>js的<code>document.writeln</code><br>frame标签的src</p>
-<hr>
-<h1 id="敏感字词库"><a href="#敏感字词库" class="headerlink" title="敏感字词库:"></a>敏感字词库:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">足球</span><br><span class="line">外围</span><br><span class="line">好彩</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>待补充</p>
-</blockquote>
-<hr>
-<h1 id="想法"><a href="#想法" class="headerlink" title="想法:"></a>想法:</h1><p>网上固然有很多别人的文章,但是不如自己切实的去访问,记录一下.<br>毕竟别人的东西,只是看了,最终也不能转化吸收成你的.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2225,7 +2237,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

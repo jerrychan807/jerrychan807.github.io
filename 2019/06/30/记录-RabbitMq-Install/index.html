@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:celery+redis 经常会出现重复任务. 所以打算用rabbitmq替换redis.  下载与安装:erlang:12# 安装erlangyum install erlang -y  rabbitmq:1234567# 安装RabbitMQ# 下载rpmwget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-02T15:13:01.677Z">
+<meta property="og:updated_time" content="2019-07-18T09:06:33.309Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-RabbitMq-Install">
 <meta name="twitter:description" content="Pre:celery+redis 经常会出现重复任务. 所以打算用rabbitmq替换redis.  下载与安装:erlang:12# 安装erlangyum install erlang -y  rabbitmq:1234567# 安装RabbitMQ# 下载rpmwget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbi">
@@ -351,6 +351,8 @@
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置:"></a>初始化配置:</h1><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件:"></a>创建配置文件:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
 
@@ -497,7 +499,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
