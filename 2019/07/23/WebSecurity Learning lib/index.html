@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="SecurityTools,">
+  <meta name="keywords" content="Learning,">
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="gitHack工作原理:寻找测试目标:google hack &amp;quot;index of /.git&amp;quot; 解析元数据:/.git/index的作用:  The index is a single, large, binary file in /.git/index, which lists all files in the current branch, their sha1 check">
-<meta name="keywords" content="SecurityTools">
+<meta name="description" content="看雪知识库【干货分享】Web安全漏洞深入分析及其安全编码 xss: 跨站的艺术 - XSS Fuzzing 的技巧 XSStrike源码阅读（1）——目录结构与大体架构 XSStrike源码阅读（2）——四种模式 XSStrike源码阅读（3）——核心函数  sqli: sqlmap作者ppt合集 Sqlmap中文手册 SQLMap用户手册【超详细】 sqlmap 内核分析 I: 基础流程 sql">
+<meta name="keywords" content="Learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git源码泄露exploit">
-<meta property="og:url" content="http://yoursite.com/2019/01/08/git源码泄露exploit/index.html">
+<meta property="og:title" content="WebSecurity Learning lib">
+<meta property="og:url" content="http://yoursite.com/2019/07/23/WebSecurity Learning lib/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="gitHack工作原理:寻找测试目标:google hack &amp;quot;index of /.git&amp;quot; 解析元数据:/.git/index的作用:  The index is a single, large, binary file in /.git/index, which lists all files in the current branch, their sha1 check">
+<meta property="og:description" content="看雪知识库【干货分享】Web安全漏洞深入分析及其安全编码 xss: 跨站的艺术 - XSS Fuzzing 的技巧 XSStrike源码阅读（1）——目录结构与大体架构 XSStrike源码阅读（2）——四种模式 XSStrike源码阅读（3）——核心函数  sqli: sqlmap作者ppt合集 Sqlmap中文手册 SQLMap用户手册【超详细】 sqlmap 内核分析 I: 基础流程 sql">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d70f29f95.jpg">
-<meta property="og:updated_time" content="2019-04-25T15:49:35.230Z">
+<meta property="og:updated_time" content="2019-07-23T06:16:25.443Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="git源码泄露exploit">
-<meta name="twitter:description" content="gitHack工作原理:寻找测试目标:google hack &amp;quot;index of /.git&amp;quot; 解析元数据:/.git/index的作用:  The index is a single, large, binary file in /.git/index, which lists all files in the current branch, their sha1 check">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d70f29f95.jpg">
+<meta name="twitter:title" content="WebSecurity Learning lib">
+<meta name="twitter:description" content="看雪知识库【干货分享】Web安全漏洞深入分析及其安全编码 xss: 跨站的艺术 - XSS Fuzzing 的技巧 XSStrike源码阅读（1）——目录结构与大体架构 XSStrike源码阅读（2）——四种模式 XSStrike源码阅读（3）——核心函数  sqli: sqlmap作者ppt合集 Sqlmap中文手册 SQLMap用户手册【超详细】 sqlmap 内核分析 I: 基础流程 sql">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/08/git源码泄露exploit/">
+  <link rel="canonical" href="http://yoursite.com/2019/07/23/WebSecurity Learning lib/">
 
 
 
 
 
-  <title>git源码泄露exploit | Black House</title>
+  <title>WebSecurity Learning lib | Black House</title>
   
 
 
@@ -255,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/git源码泄露exploit/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/WebSecurity Learning lib/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -272,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">git源码泄露exploit</h1>
+          <h1 class="post-title" itemprop="name headline">WebSecurity Learning lib</h1>
         
 
         <div class="post-meta">
@@ -284,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T17:37:44+08:00">
-                2019-01-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
+                2019-07-23
               </time>
             
 
@@ -307,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
+                  <a href="/categories/Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Learning</span>
                   </a>
                 </span>
 
@@ -344,27 +342,32 @@
       
 
       
-        <h1 id="gitHack工作原理"><a href="#gitHack工作原理" class="headerlink" title="gitHack工作原理:"></a>gitHack工作原理:</h1><h2 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h2><p>google hack <code>&quot;index of /.git&quot;</code></p>
-<h2 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h2><p><code>/.git/index</code>的作用:</p>
-<blockquote>
-<p>The index is a single, large, binary file in <baseofrepo>/.git/index, which lists all files in the current branch, their sha1 checksums, time stamps and the file name</baseofrepo></p>
-</blockquote>
-<p>通过<code>gin</code>这个工具去解析index文件</p>
-<p>解析结果:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70f29f95.jpg" alt=""></p>
-<h2 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件:"></a>下载文件:</h2><p>通过上面获得的<code>sha1</code>来构造url:</p>
-<p>.git/objects/<code>sha前两位</code>/<code>sha后两位之后的内容</code></p>
-<p>对返回的数据进行<code>zlib</code>解压就可以下载到文件了</p>
-<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><ul>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
+        <p><a href="https://www.kanxue.com/chm.htm" target="_blank" rel="noopener">看雪知识库</a><br><a href="blog.nsfocus.net/web-vulnerability-analysis-coding-security/">【干货分享】Web安全漏洞深入分析及其安全编码</a></p>
+<h2 id="xss"><a href="#xss" class="headerlink" title="xss:"></a>xss:</h2><ul>
+<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
 </ul>
-<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>对<code>.git</code>目录限制,不对外访问</p>
-<h1 id="漏洞原因"><a href="#漏洞原因" class="headerlink" title="漏洞原因:"></a>漏洞原因:</h1><p>开发人员通常会使用版本控制工具来管理代码,在上线的服务器上的根目录上使用简单的git操作就可以很方便的更新、管理代码。</p>
-<p>版本控制工具在带来便利的同时,由于开发人员的疏忽,导致出现源代码安全的问题</p>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/lijiejie/GitHack" target="_blank" rel="noopener">GitHack</a></li>
-<li><a href="https://www.jianshu.com/p/edae09535ea3" target="_blank" rel="noopener">如何利用.git文件夹下载整个网站泄漏的源码</a></li>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
+<h2 id="sqli"><a href="#sqli" class="headerlink" title="sqli:"></a>sqli:</h2><ul>
+<li><a href="https://www.slideshare.net/stamparm/presentations" target="_blank" rel="noopener">sqlmap作者ppt合集</a></li>
+<li><a href="https://blog.csdn.net/wn314/article/details/78872828" target="_blank" rel="noopener">Sqlmap中文手册</a></li>
+<li><a href="http://www.cnblogs.com/hongfei/p/3872156.html" target="_blank" rel="noopener">SQLMap用户手册【超详细】</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/44157153" target="_blank" rel="noopener">sqlmap 内核分析 II: 核心原理-页面相似度算法实践</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/45291193" target="_blank" rel="noopener">sqlmap 内核分析 III: 核心逻辑</a></li>
+<li><a href="https://x.hacking8.com/post-303.html" target="_blank" rel="noopener">sqlmap 1.0源码解析</a></li>
+<li><a href="https://wooyun.js.org/drops/SQLMAP%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90Part1.%E6%B5%81%E7%A8%8B%E7%AF%87.html" target="_blank" rel="noopener">SQLMAP源码分析Part1.流程篇</a></li>
+<li><a href="https://www.cnblogs.com/zylq-blog/p/6797237.html" target="_blank" rel="noopener">SQLMAP自动注入（二）</a></li>
+<li><a href="https://wps2015.org/drops/drops/sqlmap%E6%94%AF%E6%8C%81%E8%87%AA%E5%8A%A8%E4%BC%AA%E9%9D%99%E6%80%81%E6%89%B9%E9%87%8F%E6%A3%80%E6%B5%8B.html" target="_blank" rel="noopener">sqlmap支持自动伪静态批量检测</a></li>
+</ul>
+<h2 id="port-scan"><a href="#port-scan" class="headerlink" title="port scan:"></a>port scan:</h2><ul>
+<li><a href="https://cloud.tencent.com/developer/article/1180313" target="_blank" rel="noopener">nmap使用指南（终极版）</a></li>
+<li><a href="https://github.com/anvol/micro-honeypot/blob/master/honeypotd.c" target="_blank" rel="noopener">micro-honeypot</a></li>
+<li><a href="https://github.com/joeyism/C-Port-Scanner/blob/e5f6d414b8c9ece197e1f2941c041941d44458df/portscanner.c" target="_blank" rel="noopener">C-Port-Scanner</a></li>
+</ul>
+<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破:"></a>爆破:</h2><ul>
+<li><a href="https://blog.51cto.com/jzking121/1770605" target="_blank" rel="noopener">Hydra使用说明——爆破神器</a></li>
 </ul>
 
       
@@ -383,7 +386,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+            <a href="/tags/Learning/" rel="tag"># Learning</a>
           
         </div>
       
@@ -396,8 +399,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/11/BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析/" rel="next" title="BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析">
-                <i class="fa fa-chevron-left"></i> BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析
+              <a href="/2019/07/19/记录-linux僵死进程排查过程/" rel="next" title="记录-linux僵死进程排查过程">
+                <i class="fa fa-chevron-left"></i> 记录-linux僵死进程排查过程
               </a>
             
           </div>
@@ -405,10 +408,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/10/端口扫描-遇到蜜罐情况/" rel="prev" title="端口扫描-遇到防护设备的情况">
-                端口扫描-遇到防护设备的情况 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -542,7 +541,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gitHack工作原理"><span class="nav-number">1.</span> <span class="nav-text">gitHack工作原理:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#寻找测试目标"><span class="nav-number">1.1.</span> <span class="nav-text">寻找测试目标:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析元数据"><span class="nav-number">1.2.</span> <span class="nav-text">解析元数据:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载文件"><span class="nav-number">1.3.</span> <span class="nav-text">下载文件:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#危害"><span class="nav-number">2.</span> <span class="nav-text">危害:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修复方案"><span class="nav-number">3.</span> <span class="nav-text">修复方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞原因"><span class="nav-number">4.</span> <span class="nav-text">漏洞原因:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#xss"><span class="nav-number">1.</span> <span class="nav-text">xss:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sqli"><span class="nav-number">2.</span> <span class="nav-text">sqli:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port-scan"><span class="nav-number">3.</span> <span class="nav-text">port scan:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#爆破"><span class="nav-number">4.</span> <span class="nav-text">爆破:</span></a></li></ol></div>
             
 
           </div>
