@@ -252,6 +252,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/python-dynamic typing/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/07/python-dynamic typing/" itemprop="url">python-dynamic typing</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T14:36:34+08:00">
+                2019-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><h2 id="Question1"><a href="#Question1" class="headerlink" title="Question1:"></a>Question1:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">&lt;type <span class="string">'int'</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们并没有显示声明<code>a</code>是个变量而且它的类型为<code>int</code></p>
+<p>那么python是怎么知道<code>a</code>是个变量而且知道它的类型的呢?</p>
+<hr>
+<h2 id="Question2"><a href="#Question2" class="headerlink" title="Question2:"></a>Question2:</h2><p>执行以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'string'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">'string'</span></span><br></pre></td></tr></table></figure>
+
+<p>a 的类型怎么发生了变化?</p>
+<hr>
+<p>以上2个问题涉及到python的一个重要的概念:<strong>动态类型(dynamic typing)</strong></p>
+<p>要搞清楚动态类型之前要先搞清楚3个重要的概念及其关系:</p>
+<ul>
+<li>Object 对象</li>
+<li>Reference 引用</li>
+<li>Variable 变量</li>
+</ul>
+<hr>
+<h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
+<p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt=""></p>
+<p>除了告诉解释器它是多少位后,它还要声明类型.</p>
+<p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
+<hr>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>由于我们不能直接接触到存在内存中的对象,能操作的是变量名,所以我们要将变量和对象建立一个关系:引用<code>reference</code></p>
+<p>python的引用跟C语言的指针很像,因为引用就是用指针实现的.</p>
+<hr>
+<h2 id="Variable"><a href="#Variable" class="headerlink" title="Variable:"></a>Variable:</h2><p>建立引用关系之后,我们就可以用变量名来操控对象了.</p>
+<p>所以,变量是对对象的引用的一个符号名。</p>
+<hr>
+<h2 id="三者的关系"><a href="#三者的关系" class="headerlink" title="三者的关系:"></a>三者的关系:</h2><p>变量和对象存储在内存的不同部分中,并链接了起来(由指针).</p>
+<p>实际就是,执行一个赋值语句的时候,python会做三件事:</p>
+<ol>
+<li>创建一个<code>对象</code>代表数值3</li>
+<li>创建一个<code>变量名a</code></li>
+<li>将<code>对象3</code>和<code>变量a</code>关联起来</li>
+</ol>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt=""></p>
+<hr>
+<h1 id="共享引用"><a href="#共享引用" class="headerlink" title="共享引用"></a>共享引用</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt=""></p>
+<p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'spam'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt=""></p>
+<p><code>变量a</code> 改变了指向，指向到了<code>&#39;spam&#39;对象</code></p>
+<p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li>《Studing Learning Python》</li>
+<li><a href="https://realpython.com/python-variables/" target="_blank" rel="noopener">Variables in Python</a></li>
+<li><a href="http://www.cnblogs.com/vamei/archive/2012/07/10/2582795.html" target="_blank" rel="noopener">Python进阶09 动态类型</a></li>
+<li><a href="https://www.youtube.com/watch?v=OE2j6hlU88o&t=2s" target="_blank" rel="noopener">Dynamic Typing in Python</a></li>
+<li><a href="https://eli.thegreenplace.net/2012/03/30/python-objects-types-classes-and-instances-a-glossary" target="_blank" rel="noopener">Python objects, types, classes, and instances - a glossary</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/sqlmap源码-AttribDict/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2171,193 +2368,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/svn源码泄露exploit/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/10/svn源码泄露exploit/" itemprop="url">Svn源码泄露exploit</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T22:36:34+08:00">
-                2019-01-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h1><p>google hack: <code>Index of /.svn</code></p>
-<h1 id="svnExploit工作原理"><a href="#svnExploit工作原理" class="headerlink" title="svnExploit工作原理"></a>svnExploit工作原理</h1><h2 id="判断svn版本号"><a href="#判断svn版本号" class="headerlink" title="判断svn版本号"></a>判断svn版本号</h2><p>通过根目录下的entries文件来判断</p>
-<p>版本号&gt;1.7的话,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73a42af8.jpg" alt=""></p>
-<p>版本号&lt;1.7的话,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73af3f2b.jpg" alt=""></p>
-<h2 id="版本号小于1-7的情况"><a href="#版本号小于1-7的情况" class="headerlink" title="版本号小于1.7的情况:"></a>版本号小于1.7的情况:</h2><h3 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h3><p><code>.svn/entries</code> 包含了项目的文件和文件夹列表。</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73ba78ca.jpg" alt=""></p>
-<p>可以解析这个文件来获取文件列表<code>file_list</code>和路径列表<code>dir_list</code>。</p>
-<h3 id="循环解析元数据"><a href="#循环解析元数据" class="headerlink" title="循环解析元数据:"></a>循环解析元数据:</h3><p>上面收集了文件夹列表,进入每个文件夹继续解析元数据<code>entries</code>文件</p>
-<p>现在有了整个项目结构了</p>
-<h3 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件"></a>下载文件</h3><p>.SVN-BASE files store a base copy of a file</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73c5c73f.jpg" alt=""></p>
-<p>在每个文件后面加上<code>.svn-base</code>,然后请求对应的url就可以下载文件</p>
-<hr>
-<h2 id="版本号大于1-7的情况"><a href="#版本号大于1-7的情况" class="headerlink" title="版本号大于1.7的情况:"></a>版本号大于1.7的情况:</h2><h3 id="下载数据库文件"><a href="#下载数据库文件" class="headerlink" title="下载数据库文件"></a>下载数据库文件</h3><p>下载<code>/.svn/wc.db</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73d53d53.jpg" alt=""></p>
-<h3 id="连接数据库文件"><a href="#连接数据库文件" class="headerlink" title="连接数据库文件"></a>连接数据库文件</h3><p>从<code>Node</code>表中查询出 </p>
-<ul>
-<li>相对路径</li>
-<li>文件类型</li>
-<li>校验值</li>
-</ul>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73e53b2e.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d73f61b38.jpg" alt=""></p>
-<h3 id="下载文件-1"><a href="#下载文件-1" class="headerlink" title="下载文件"></a>下载文件</h3><p>如果一个文件的<code>checksum</code>为 0a781ca8d6e963590f208608e3d80f52307a116d</p>
-<p>那么其对应的url则为: domain/.svn/pristine/<code>checksum前两位数</code>/<code>checksum</code>加上.svn-base    </p>
-<p>即<code>https://domain/.svn/pristine/0a/0a781ca8d6e963590f208608e3d80f52307a116d.svn-base</code></p>
-<hr>
-<h1 id="题外话"><a href="#题外话" class="headerlink" title="题外话:"></a>题外话:</h1><p>在测试<a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a>的时候,发现有点小问题.提了个<a href="https://github.com/admintony/svnExploit/pull/1" target="_blank" rel="noopener">pr</a>.</p>
-<p>优化:</p>
-<ul>
-<li>1.thread-unsafe的Generator改用thread-safe的queue</li>
-<li>2.兼容Py2</li>
-</ul>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><p><a href="https://github.com/admintony/svnExploit" target="_blank" rel="noopener">svnExploit</a></p>
-</li>
-<li><p><a href="https://www.rapid7.com/db/vulnerabilities/spider-svn-entries-disclosure" target="_blank" rel="noopener">Subversion entries file information disclosure</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/20043472/multithreading-why-arent-generators-thread-safe-what-happens-when-it-is-share" target="_blank" rel="noopener">multithreading: Why aren’t generators thread-safe? What happens when it is shared among threads?</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/20042534/python-why-different-threads-get-their-own-series-of-values-from-one-generator" target="_blank" rel="noopener">Python: Why different threads get their own series of values from one generator?</a></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2410,7 +2420,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
