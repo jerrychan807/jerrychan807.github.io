@@ -252,6 +252,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/" itemprop="url">记录-uwsgi+celery+psycopg2 DB连接问题排错过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-30T14:36:34+08:00">
+                2019-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>celery的worker进程中,报错</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/strategies.py"</span>, line <span class="number">106</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> dialect.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/default.py"</span>, line <span class="number">412</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> self.dbapi.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py"</span>, line <span class="number">130</span>, <span class="keyword">in</span> connect</span><br><span class="line">    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)</span><br><span class="line">OperationalError: (psycopg2.OperationalError) could <span class="keyword">not</span> receive data <span class="keyword">from</span> server: Connection timed out</span><br><span class="line"> (Background on this error at: http://sqlalche.me/e/e3q8)</span><br></pre></td></tr></table></figure>
+
+<p>连接超时,无法取得数据.</p>
+<hr>
+<h1 id="Debug思路"><a href="#Debug思路" class="headerlink" title="Debug思路:"></a>Debug思路:</h1><h2 id="1-连接数"><a href="#1-连接数" class="headerlink" title="1.连接数:"></a>1.连接数:</h2><p>看到报错 <code>could not receive data from server: Connection timed out</code></p>
+<p>一开始觉得是最大连接数的问题.</p>
+<p>因为别的正在泡的应用会用<code>pool_size=100</code>的连接池去连接<code>postgresql</code>里的某个数据库,</p>
+<p>查询最大连接数<code>show max_connections;</code></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef801e4f8e874593.png" alt=""></p>
+<blockquote>
+<p>最大连接连接数默认才100,那么<code>pool_size=100</code>的连接池去连接的话会全部占用了吧…</p>
+</blockquote>
+<p>再继续查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> max_conn,used,res_for_super,max_conn-used-res_for_super res_for_normal </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">  (<span class="keyword">select</span> <span class="keyword">count</span>(*) used <span class="keyword">from</span> pg_stat_activity) t1,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> res_for_super <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$superuser_reserved_connections$$) t2,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> max_conn <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$max_connections$$) t3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/05/30/5cef80989906427300.png" alt=""></p>
+<p>实际上,并非连接数被占满了,还是有空余的连接数的.</p>
+<p>既然还有剩余的,那我这个应用把连接池的<code>pool_size</code>改为<code>10</code>,应该能正常连接上吧.</p>
+<p>修改之后,还是报同样的错误不行.</p>
+<hr>
+<p>搜索了一下,然后根据这个链接<a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+<p>继续排错:</p>
+<blockquote>
+<p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
+<p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
+</blockquote>
+<hr>
+<ol>
+<li>你能从服务器ping服务器吗？如果没有，请从故障排除网络开始</li>
+</ol>
+<p><img src="https://i.loli.net/2019/05/30/5cef8390689c218268.png" alt=""></p>
+<blockquote>
+<p>ping 第一个网段的ip 发现会丢包..有点奇怪…</p>
+</blockquote>
+<p>ping另一个网段的ip</p>
+<p><img src="https://i.loli.net/2019/05/30/5cef85fa2890d42171.png" alt=""></p>
+<blockquote>
+<p>不会丢包.难道要用另一个网段的ip来建立数据库连接?</p>
+</blockquote>
+<hr>
+<ol start="2">
+<li>你可以使用相同的端口，IP地址等通过psql连接到服务器吗？如果超时，您可能需要检查防火墙和postgresql配置</li>
+</ol>
+<p>查看postgre 数据库所在的服务器的防火墙设置.发现也正常.</p>
+<p>在客户端写了个简单的脚本,发现也连接正常.<br><img src="https://i.loli.net/2019/05/30/5cef8456dc52c19819.png" alt=""></p>
+<hr>
+<h1 id="真正的问题"><a href="#真正的问题" class="headerlink" title="真正的问题:"></a>真正的问题:</h1><p>最终发现.用来连接数据库的内网ip冲突了…</p>
+<p>omg…</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/xiangnan/p/10051240.html" target="_blank" rel="noopener">科学地增加postgresql最大连接数</a></li>
+</ul>
+<ul>
+<li><p><a href="https://docs.sqlalchemy.org/en/13/core/pooling.html#pool-disconnects" target="_blank" rel="noopener">SQLAlchemy 1.3文档-连接池</a></p>
+</li>
+<li><p><a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+</li>
+<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002080.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
+</li>
+<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002078.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
+</li>
+<li><p><a href="https://github.com/heroku-python/django-postgrespool/issues/3" target="_blank" rel="noopener">Celery jobs throw exceptions #3</a></p>
+</li>
+<li><p><a href="http://jorgenmodin.net/index_html/process-safe-connection-pool-for-psycopg2-postgresql" target="_blank" rel="noopener">rocess safe connection pool for psycopg2 (postgresql)</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/23/记录-Centos7安装py环境/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2156,320 +2364,6 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/sqlmap源码-请求参数的检验和解析(二)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/25/sqlmap源码-请求参数的检验和解析(二)/" itemprop="url">sqlmap源码-请求参数的检验和解析(二)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T14:36:34+08:00">
-                2019-03-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>上篇,讲的解析请求参数函数<code>_setRequestParams()</code>,里面有多处会调用到<code>paramToDict()</code>函数.</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35bb65bd.jpg" alt=""></p>
-<p>如图所示,会调用<code>paramToDict</code>去不同位置的参数:</p>
-<ul>
-<li>Get参数</li>
-<li>Post参数</li>
-<li>Cookie参数</li>
-</ul>
-<hr>
-<h1 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明:"></a>函数说明:</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">paramToDict</span><span class="params">(place, parameters=None)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Split the parameters into names and values, check if these parameters</span></span><br><span class="line"><span class="string">    are within the testable parameters and return in a dictionary. </span></span><br><span class="line"><span class="string">    """</span></span><br></pre></td></tr></table></figure>
-
-<p>作用:</p>
-<ol>
-<li>将参数名和参数值分开</li>
-<li>判断给的参数在不在这里面</li>
-</ol>
-<h1 id="paramToDict的主要流程"><a href="#paramToDict的主要流程" class="headerlink" title="paramToDict的主要流程"></a>paramToDict的主要流程</h1><h2 id="去除html编码"><a href="#去除html编码" class="headerlink" title="去除html编码"></a>去除html编码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parameters = re.sub(<span class="string">r"&amp;(\w&#123;1,4&#125;);"</span>, <span class="string">r"%s\g&lt;1&gt;%s"</span> % (PARAMETER_AMP_MARKER, PARAMETER_SEMICOLON_MARKER), parameters)</span><br></pre></td></tr></table></figure>
-
-<p>参数里可能会包含html编码字符,例如<code>__AMP__</code>, <code>__SEMICOLON__</code><br>如果有的话,将参数提取出来.</p>
-<blockquote>
-<p>算是一种优化的手段吧.</p>
-</blockquote>
-<h2 id="参数分隔"><a href="#参数分隔" class="headerlink" title="参数分隔"></a>参数分隔</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> place == PLACE.COOKIE:</span><br><span class="line">    splitParams = parameters.split(conf.cookieDel <span class="keyword">or</span> DEFAULT_COOKIE_DELIMITER) </span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    splitParams = parameters.split(conf.paramDel <span class="keyword">or</span> DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
-
-<p>如果是<code>Cookie</code>里的参数,一般用<code>;</code>作为分隔符</p>
-<blockquote>
-<p>例子:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; cookie: gdpr-cookie-consent=accepted; _ga=GA1.2.56372231.1535340163; token=5b836e9cc3dcfa1d7812d915%2F0utWy6TvJ8pITwm1G76m7XXgrQBDY5bZ4Jfkqj9ousVXssC2hOyrDeMFs8PFtkWL;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>如果是<code>Get、Post</code>里的参数,一般用<code>&amp;</code>作为分隔符</p>
-<blockquote>
-<p>例子:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; https://www.baidu.com/s?wd=parameter%20&amp;rsv_spt=1&amp;rsv_iqid=0x895d84b600069e8d&amp;issp=1&amp;f=3&amp;rsv_bp=1&amp;rsv_idx=2&amp;ie=utf-8</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>处理后的结果为列表:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[u&apos;wd=parameter &apos;, u&apos;rsv_spt=1&apos;, u&apos;rsv_iqid=0x895d84b600069e8d&apos;, u&apos;issp=1&apos;, u&apos;f=3&apos;, u&apos;rsv_bp=1&apos;, u&apos;rsv_idx=2&apos;, u&apos;ie=utf-8&apos;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="对每个参数进行检验、解析"><a href="#对每个参数进行检验、解析" class="headerlink" title="对每个参数进行检验、解析"></a>对每个参数进行检验、解析</h2><h3 id="参数名和值分隔"><a href="#参数名和值分隔" class="headerlink" title="参数名和值分隔"></a>参数名和值分隔</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> element <span class="keyword">in</span> splitParams:</span><br><span class="line">    element = re.sub(<span class="string">r"%s(.+?)%s"</span> % (PARAMETER_AMP_MARKER, PARAMETER_SEMICOLON_MARKER), <span class="string">r"&amp;\g&lt;1&gt;;"</span>, element) <span class="comment"># 去除html标签</span></span><br><span class="line">    parts = element.split(<span class="string">"="</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> len(parts) &gt;= <span class="number">2</span>:</span><br><span class="line">        parameter = urldecode(parts[<span class="number">0</span>].replace(<span class="string">" "</span>, <span class="string">""</span>)) <span class="comment"># 解码</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> parameter:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> conf.paramDel <span class="keyword">and</span> conf.paramDel == <span class="string">'\n'</span>:</span><br><span class="line">            parts[<span class="number">-1</span>] = parts[<span class="number">-1</span>].rstrip()</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>参数如果含HTML标签,去掉HTML标签</li>
-<li>参数名和值用<code>=</code>分隔</li>
-<li><code>urldecode</code>参数名</li>
-</ul>
-<h3 id="判断是否满足检验的条件"><a href="#判断是否满足检验的条件" class="headerlink" title="判断是否满足检验的条件"></a>判断是否满足检验的条件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">condition = <span class="keyword">not</span> conf.testParameter</span><br><span class="line">condition |= conf.testParameter <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> parameter <span class="keyword">in</span> conf.testParameter</span><br><span class="line">condition |= place == PLACE.COOKIE <span class="keyword">and</span> len(intersect((PLACE.COOKIE,), conf.testParameter, <span class="keyword">True</span>)) &gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
-
-<p>这个条件<code>condition</code>是并列的or判断,满足任意情况即可</p>
-<ul>
-<li>没有指定参数</li>
-<li>指定了参数 同时 该参数在指定的参数范围里</li>
-<li>该参数的位置在cookie 同时 该参数在cookie里</li>
-</ul>
-<hr>
-<h3 id="开始检验参数值-参数值是否异常-被污染"><a href="#开始检验参数值-参数值是否异常-被污染" class="headerlink" title="开始检验参数值-参数值是否异常(被污染)"></a>开始检验参数值-参数值是否异常(被污染)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> condition:</span><br><span class="line">    testableParameters[parameter] = <span class="string">"="</span>.join(parts[<span class="number">1</span>:])</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> conf.multipleTargets <span class="keyword">and</span> <span class="keyword">not</span> (conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I)):</span><br><span class="line">        _ = urldecode(testableParameters[parameter], convall=<span class="keyword">True</span>) <span class="comment"># url解码</span></span><br><span class="line">        <span class="keyword">if</span> (_.endswith(<span class="string">"'"</span>) <span class="keyword">and</span> _.count(<span class="string">"'"</span>) == <span class="number">1</span> <span class="keyword">or</span> re.search(<span class="string">r'\A9&#123;3,&#125;'</span>, _) <span class="keyword">or</span> re.search(<span class="string">r'\A-\d+\Z'</span>, _) <span class="keyword">or</span> re.search(DUMMY_USER_INJECTION, _)) <span class="keyword">and</span> <span class="keyword">not</span> parameter.upper().startswith(GOOGLE_ANALYTICS_COOKIE_PREFIX): <span class="comment"># 正则匹配是否含异常字段</span></span><br><span class="line">            warnMsg = <span class="string">"it appears that you have provided tainted parameter values "</span> <span class="comment"># 提示信息</span></span><br><span class="line">            warnMsg += <span class="string">"('%s') with most likely leftover "</span> % element</span><br><span class="line">            warnMsg += <span class="string">"chars/statements from manual SQL injection test(s). "</span></span><br><span class="line">            warnMsg += <span class="string">"Please, always use only valid parameter values "</span></span><br><span class="line">            warnMsg += <span class="string">"so sqlmap could be able to run properly"</span></span><br><span class="line">            logger.warn(warnMsg)</span><br><span class="line"></span><br><span class="line">            message = <span class="string">"are you really sure that you want to continue (sqlmap could have problems)? [y/N] "</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> readInput(message, default=<span class="string">'N'</span>, boolean=<span class="keyword">True</span>):</span><br><span class="line">                <span class="keyword">raise</span> SqlmapSilentQuitException</span><br><span class="line">        <span class="keyword">elif</span> <span class="keyword">not</span> _:</span><br><span class="line">            warnMsg = <span class="string">"provided value for parameter '%s' is empty. "</span> % parameter</span><br><span class="line">            warnMsg += <span class="string">"Please, always use only valid parameter values "</span></span><br><span class="line">            warnMsg += <span class="string">"so sqlmap could be able to run properly"</span></span><br><span class="line">            logger.warn(warnMsg)</span><br></pre></td></tr></table></figure>
-
-<p>如果同时满足以下情况:</p>
-<ul>
-<li>配置里不是多个检测目标</li>
-<li>没有<code>cstf-token</code></li>
-</ul>
-<p>会尝试检测参数值是否异常(被污染)</p>
-<p>url解码参数值之后,检测出以下情况则认为参数值异常(被污染)</p>
-<ul>
-<li>含有单引号<code>&#39;</code></li>
-<li>开头有3个9或者更多 (不知道为什么)</li>
-<li>含<code>-数字</code> (类似id=2-1 这种payload吧)</li>
-<li>含以下关键词<code>AND</code>、<code>OR</code>、<code>UNION</code>、<code>SELECT</code>、<code>FROM</code>、<code>CONCAT</code>、<code>information_schema</code>、<code>SLEEP</code>、<code>DELAY</code>、<code>FLOOR</code>、<code>(RAND)</code> (常见payload关键字)</li>
-<li>含google分析cookie前缀<code>__UTM</code></li>
-</ul>
-<p>之所以要这样做异常检测,是跟后面sql注入在参数值前后插入<code>payload</code>的动作有关系的</p>
-<p>如果参照值提前含有这些<code>payload</code>字眼,很可能会造成后面的异常.</p>
-<p>所以它会提示你</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">are you really sure that you want to continue (sqlmap could have problems)? [y/N]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="检验Get、Post参数值"><a href="#检验Get、Post参数值" class="headerlink" title="检验Get、Post参数值"></a>检验Get、Post参数值</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> place <span class="keyword">in</span> (PLACE.POST, PLACE.GET):</span><br><span class="line">    <span class="keyword">for</span> regex <span class="keyword">in</span> (<span class="string">r"\A((?:&lt;[^&gt;]+&gt;)+\w+)((?:&lt;[^&gt;]+&gt;)+)\Z"</span>, <span class="string">r"\A([^\w]+.*\w+)([^\w]+)\Z"</span>): </span><br><span class="line">        match = re.search(regex, testableParameters[parameter]) <span class="comment"># 正则匹配</span></span><br><span class="line">        <span class="keyword">if</span> match:</span><br><span class="line">            <span class="comment"># ....</span></span><br></pre></td></tr></table></figure>
-
-<p>通过正则去检验参数值是否特殊,如含特殊的符号.</p>
-<p>这两个正则的意思是:</p>
-<ul>
-<li>参数含有标签 (可能是xml数据)</li>
-<li>参数除了有数字和字母,有其他符号 (可能是json数据)</li>
-</ul>
-<blockquote>
-<p>这两个正则有点难理解.</p>
-</blockquote>
-<hr>
-<h3 id="解析Get、Post参数值"><a href="#解析Get、Post参数值" class="headerlink" title="解析Get、Post参数值"></a>解析Get、Post参数值</h3><p><strong>参数值</strong>如果比较特殊,就会尝试去解析.</p>
-<ul>
-<li>json反序列化</li>
-<li>xml解析</li>
-</ul>
-<h4 id="尝试json反序列化"><a href="#尝试json反序列化" class="headerlink" title="尝试json反序列化"></a>尝试json反序列化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deserialized = json.loads(testableParameters[parameter])</span><br><span class="line">walk(deserialized)</span><br></pre></td></tr></table></figure>
-
-<p>主要是这个walk()函数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">walk</span><span class="params">(head, current=None)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> current <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        current = head</span><br><span class="line">    <span class="keyword">if</span> isListLike(current):</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> current:</span><br><span class="line">            walk(head, _)</span><br><span class="line">    <span class="keyword">elif</span> isinstance(current, dict):</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> current.keys():</span><br><span class="line">            value = current[key]</span><br><span class="line">            <span class="keyword">if</span> isinstance(value, (list, tuple, set, dict)):</span><br><span class="line">                <span class="keyword">if</span> value:</span><br><span class="line">                    walk(head, value)</span><br><span class="line">            <span class="keyword">elif</span> isinstance(value, (bool, int, float, basestring)):</span><br><span class="line">                original = current[key]</span><br><span class="line">                <span class="keyword">if</span> isinstance(value, bool):</span><br><span class="line">                    current[key] = <span class="string">"%s%s"</span> % (getUnicode(value).lower(), BOUNDED_INJECTION_MARKER)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    current[key] = <span class="string">"%s%s"</span> % (value, BOUNDED_INJECTION_MARKER)</span><br><span class="line">                candidates[<span class="string">"%s (%s)"</span> % (parameter, key)] = re.sub(<span class="string">r"\b(%s\s*=\s*)%s"</span> % (re.escape(parameter), re.escape(testableParameters[parameter])), <span class="string">r"\g&lt;1&gt;%s"</span> % json.dumps(deserialized, separators=(<span class="string">','</span>, <span class="string">':'</span>) <span class="keyword">if</span> <span class="string">", "</span> <span class="keyword">not</span> <span class="keyword">in</span> testableParameters[parameter] <span class="keyword">else</span> <span class="keyword">None</span>), parameters)</span><br><span class="line">                current[key] = original</span><br></pre></td></tr></table></figure>
-
-<p>该<code>walk()</code>函数,通过递归的方式,检查json里面的每个值是否是符合某个数据类型.</p>
-<p>如果该参数值能够反序列化,<code>sqlmap</code>会提示说</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xx parameter is JSON deserializable. Do you want to inject inside?</span><br></pre></td></tr></table></figure>
-
-<p>例子:</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35c6d51b.jpg" alt=""></p>
-<p>比如通过表单的方式来传json类型的数据.</p>
-<p>整个包不符合json类型,但是里面的参数值是可以被Json反序列化的.</p>
-<h4 id="尝试xml解析"><a href="#尝试xml解析" class="headerlink" title="尝试xml解析:"></a>尝试xml解析:</h4><p>比如这类的数据包(为了方便看,xml参数已urldecode):</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35d21b7a.jpg" alt=""></p>
-<p>比如通过表单的方式来传xml类型的数据.</p>
-<p>整个包不符合xml类型,但是里面的某个参数值是xml类型的数据.</p>
-<p>解析到该类型数据,<code>sqlmap</code>会提示说</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">it appears that provided value for POST parameter &apos;xml&apos; has boundaries. Do you want to inject inside?</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="结束解析"><a href="#结束解析" class="headerlink" title="结束解析:"></a>结束解析:</h2><h3 id="判断指定的参数有没在可测试的参数字典里面"><a href="#判断指定的参数有没在可测试的参数字典里面" class="headerlink" title="判断指定的参数有没在可测试的参数字典里面."></a>判断指定的参数有没在可测试的参数字典里面.</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 函数开始</span></span><br><span class="line">testableParameters = OrderedDict()</span><br></pre></td></tr></table></figure>
-
-<p>函数开始的一开始,就定义了一个有序字典,用来存放<strong>可测试的参数</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> conf.testParameter: <span class="comment"># 通过-p指定可测试参数,如果给了</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> testableParameters: <span class="comment"># 如果没有可测试参数</span></span><br><span class="line">        paramStr = <span class="string">", "</span>.join(test <span class="keyword">for</span> test <span class="keyword">in</span> conf.testParameter)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> len(conf.testParameter) &gt; <span class="number">1</span>:</span><br><span class="line">            warnMsg = <span class="string">"provided parameters '%s' "</span> % paramStr</span><br><span class="line">            warnMsg += <span class="string">"are not inside the %s"</span> % place</span><br><span class="line">            logger.warn(warnMsg)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            parameter = conf.testParameter[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> intersect(USER_AGENT_ALIASES + REFERER_ALIASES + HOST_ALIASES, parameter, <span class="keyword">True</span>):</span><br><span class="line">                debugMsg = <span class="string">"provided parameter '%s' "</span> % paramStr</span><br><span class="line">                debugMsg += <span class="string">"is not inside the %s"</span> % place</span><br><span class="line">                logger.debug(debugMsg)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> len(conf.testParameter) != len(testableParameters):</span><br><span class="line">        <span class="keyword">for</span> parameter <span class="keyword">in</span> conf.testParameter:</span><br><span class="line">            <span class="keyword">if</span> parameter <span class="keyword">not</span> <span class="keyword">in</span> testableParameters:</span><br><span class="line">                debugMsg = <span class="string">"provided parameter '%s' "</span> % parameter</span><br><span class="line">                debugMsg += <span class="string">"is not inside the %s"</span> % place</span><br><span class="line">                logger.debug(debugMsg)</span><br></pre></td></tr></table></figure>
-
-<p>经过检验和解析后,testableParameters里存放着<code>sqlmap</code>认为可以测试的点.</p>
-<p>例子:</p>
-<p>一个普通的post包:<br><img src="https://i.loli.net/2019/04/26/5cc2e35dbda98.jpg" alt=""></p>
-<p>通过post传过去的参数只有<code>sceneId</code></p>
-<p>但是<code>sqlmap</code>认为可测试的点有很多</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-------testableParameters--------</span><br><span class="line">OrderedDict([(u&apos;JSESSIONID&apos;, u&apos;6006F1BD1A9B669150FBF263483BE49B&apos;), (u&apos;gr_user_id&apos;, u&apos;6f346caa-beb4-49c1-bab6-4c684bb5680a&apos;), (u&apos;ajs_user_id&apos;, u&apos;null&apos;), (u&apos;ajs_group_id&apos;, u&apos;null&apos;), (u&apos;ajs_anonymous_id&apos;, u&apos;%2265b5e8a7-ef15-4279-8897-0cf64a34baaa%22&apos;), (u&apos;zg_did&apos;, u&apos;%7B%22did%22%3A%20%221693241ce78150-0e47fe537c96ac-4c322f7c-144000-1693241ce796db%22%7D&apos;), (u&apos;zg_153e3dce26ad42f2af4ae846edfdc259&apos;, u&apos;%7B%22sid%22%3A%201551335266969%2C%22updated%22%3A%201551335266979%2C%22info%22%3A%201551326367365%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22http%3A%2F%2Fwotubbs.vanke.com%2Fwotuhome_node%2F%23%2F%22%7D&apos;), (u&apos;UM_distinctid&apos;, u&apos;16955f9cc826fe-022ac9d6e823218-4c322f7c-144000-16955f9cc83645&apos;)])</span><br><span class="line">-------testableParameters--------</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>可能就这是自动化工具与手工测试的差别</p>
-</blockquote>
-<hr>
-<h3 id="尝试对参数值解密"><a href="#尝试对参数值解密" class="headerlink" title="尝试对参数值解密:"></a>尝试对参数值解密:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> testableParameters: <span class="comment"># 有可测试的参数</span></span><br><span class="line">    <span class="keyword">for</span> parameter, value <span class="keyword">in</span> testableParameters.items():</span><br><span class="line">        <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> value.isdigit():</span><br><span class="line">            <span class="keyword">for</span> encoding <span class="keyword">in</span> (<span class="string">"hex"</span>, <span class="string">"base64"</span>):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    decoded = value.decode(encoding) <span class="comment"># 尝试解码</span></span><br><span class="line">                    <span class="keyword">if</span> len(decoded) &gt; MIN_ENCODED_LEN_CHECK <span class="keyword">and</span> all(_ <span class="keyword">in</span> string.printable <span class="keyword">for</span> _ <span class="keyword">in</span> decoded): <span class="comment">#</span></span><br><span class="line">                        <span class="comment"># MIN_ENCODED_LEN_CHECK:5</span></span><br><span class="line">                        warnMsg = <span class="string">"provided parameter '%s' "</span> % parameter</span><br><span class="line">                        warnMsg += <span class="string">"appears to be '%s' encoded"</span> % encoding</span><br><span class="line">                        logger.warn(warnMsg)</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">except</span>:</span><br><span class="line">                    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>解密方式:</p>
-<ul>
-<li><code>hex</code></li>
-<li><code>base64</code></li>
-</ul>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li><p>参数里可能会包含html编码字符,例如<code>__AMP__</code>, <code>__SEMICOLON__</code>. 如果有的话,将参数提取出来.</p>
-</li>
-<li><p>参数分隔:</p>
-<ul>
-<li>Cookie里的参数,一般用<code>;</code>作为分隔符</li>
-<li>Get、Post里的参数,一般用<code>&amp;</code>作为分隔符</li>
-</ul>
-</li>
-<li><p>参数如果含HTML标签,去掉HTML标签</p>
-</li>
-<li><p>参数名和值分隔,一般用<code>=</code>分隔</p>
-</li>
-<li><p><code>urldecode</code>参数名</p>
-</li>
-<li><p>检验参数值,<strong>参数值被污染</strong>的情况:</p>
-<ul>
-<li>含有单引号<code>&#39;</code></li>
-<li>开头有3个9或者更多 (不知道为什么)</li>
-<li>含<code>-数字</code> (类似id=2-1 这种payload吧)</li>
-<li>含以下关键词<code>AND</code>、<code>OR</code>、<code>UNION</code>、<code>SELECT</code>、<code>FROM</code>、<code>CONCAT</code>、<code>information_schema</code>、<code>SLEEP</code>、<code>DELAY</code>、<code>FLOOR</code>、<code>(RAND)</code> (常见payload关键字)</li>
-<li>含google分析cookie前缀<code>__UTM</code></li>
-</ul>
-</li>
-<li><p>解析特殊情况的参数值:</p>
-<ul>
-<li>通过表单方式提交的<code>xml</code>数据</li>
-<li>通过表单方式提交的<code>json</code>数据</li>
-</ul>
-</li>
-<li><p>尝试对参数值解密:<code>base64</code>, <code>hex</code></p>
-</li>
-<li><p>自动化工具发现的<strong>可测试的参数</strong>一般比手工测试发现得多.</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2522,7 +2416,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -252,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/XSStrike源码-waf检测/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/30/记录-Mysql无法启动及数据恢复/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -271,7 +271,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/07/23/XSStrike源码-waf检测/" itemprop="url">XSStrike源码-waf检测</a></h1>
+                <a class="post-title-link" href="/2019/07/30/记录-Mysql无法启动及数据恢复/" itemprop="url">记录-Mysql无法启动及数据恢复</a></h1>
         
 
         <div class="post-meta">
@@ -283,8 +283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
-                2019-07-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-30T14:36:34+08:00">
+                2019-07-30
               </time>
             
 
@@ -306,8 +306,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
                   </a>
                 </span>
 
@@ -345,36 +345,75 @@
       
         
           
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><blockquote>
-<p>waf检测是为了之后的bypass.</p>
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Centos7又报io error了.</p>
+<p><img src="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png" alt=""></p>
+<p>然后想着把数据库的数据迁移出来. </p>
+<p>用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用.</p>
+<p>然后上头说尝试恢复下硬盘.</p>
+<hr>
+<h1 id="修复硬盘"><a href="#修复硬盘" class="headerlink" title="修复硬盘:"></a>修复硬盘:</h1><p>按这个链接<a href="https://www.cnblogs.com/itqingtian/p/10469104.html" target="_blank" rel="noopener">Centos 7 LVM xfs文件系统修复</a>尝试了一下,未果.</p>
+<p>因为上次是进不去系统才进行了<code>xfs_repair</code>,这次一断电才开机就又正常了.</p>
+<p>然后以为机器正常了,可是这个时候mysql的服务起不来了.</p>
+<blockquote>
+<p>这个时候没有看mysql的状态和log.不好的习惯.</p>
 </blockquote>
+<p>那只好尝试一下通过文件来迁移数据库<code>Mysql</code>.</p>
 <hr>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码:"></a>源码:</h1><p>该功能比较简单,所以直接贴源码.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> core.requester <span class="keyword">import</span> requester</span><br><span class="line"><span class="keyword">from</span> core.log <span class="keyword">import</span> setup_logger</span><br><span class="line"></span><br><span class="line">logger = setup_logger(__name__)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wafDetector</span><span class="params">(url, params, headers, GET, delay, timeout)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(sys.path[<span class="number">0</span>] + <span class="string">'/db/wafSignatures.json'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> file:</span><br><span class="line">        wafSignatures = json.load(file)</span><br><span class="line">    <span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">    noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">    params[<span class="string">'xss'</span>] = noise</span><br><span class="line">    <span class="comment"># Opens the noise injected payload</span></span><br><span class="line">    response = requester(url, params, headers, GET, delay, timeout)</span><br><span class="line">    page = response.text <span class="comment"># 返回包源码</span></span><br><span class="line">    code = str(response.status_code) <span class="comment"># 状态码</span></span><br><span class="line">    headers = str(response.headers) <span class="comment"># 头部</span></span><br><span class="line">    logger.debug(<span class="string">'Waf Detector code: &#123;&#125;'</span>.format(code))</span><br><span class="line">    logger.debug_json(<span class="string">'Waf Detector headers:'</span>, response.headers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> int(code) &gt;= <span class="number">400</span>:</span><br><span class="line">        bestMatch = [<span class="number">0</span>, <span class="keyword">None</span>]</span><br><span class="line">        <span class="keyword">for</span> wafName, wafSignature <span class="keyword">in</span> wafSignatures.items():</span><br><span class="line">            score = <span class="number">0</span></span><br><span class="line">            pageSign = wafSignature[<span class="string">'page'</span>]</span><br><span class="line">            codeSign = wafSignature[<span class="string">'code'</span>]</span><br><span class="line">            headersSign = wafSignature[<span class="string">'headers'</span>]</span><br><span class="line">            <span class="keyword">if</span> pageSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> codeSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">                    score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line">            <span class="keyword">if</span> headersSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line">            <span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">                <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">                bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br><span class="line">        <span class="keyword">if</span> bestMatch[<span class="number">0</span>] != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> bestMatch[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<h1 id="通过文件迁移数据库"><a href="#通过文件迁移数据库" class="headerlink" title="通过文件迁移数据库:"></a>通过文件迁移数据库:</h1><p>按照<a href="https://www.jianshu.com/p/f36c4f4447e9" target="_blank" rel="noopener">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a> 来传mysql的文件.</p>
+<p>里面提到通过用<code>rsync</code>来传文件.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#后面的路径是目标路径</span></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/</span><br></pre></td></tr></table></figure>
 
+<p>具体用的哪条命令,忘了…</p>
 <hr>
-<h1 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h1><h2 id="发送明显的恶意payload"><a href="#发送明显的恶意payload" class="headerlink" title="发送明显的恶意payload:"></a>发送明显的恶意payload:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">params[<span class="string">'xss'</span>] = noise</span><br><span class="line"><span class="comment"># Opens the noise injected payload</span></span><br><span class="line">response = requester(url, params, headers, GET, delay, timeout)</span><br></pre></td></tr></table></figure>
+<h1 id="查看Log"><a href="#查看Log" class="headerlink" title="查看Log"></a>查看Log</h1><p>迁移完数据库文件后,重启数据库服务,依旧起不来.</p>
+<p>发现状态一直在<code>activating</code>…</p>
+<p>根据<a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html" target="_blank" rel="noopener">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a>,去看mysql的log.</p>
+<p>才找到了问题所在.</p>
+<blockquote>
+<p><strong>看Log的重要性!!!</strong></p>
+<p><strong>看Log的重要性!!!</strong></p>
+<p><strong>看Log的重要性!!!</strong></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">InnoDB: Error: trying to access page number 0 in space 168,</span><br><span class="line">InnoDB: space name okcloud/ok_1_ipscan_task_result,</span><br><span class="line">InnoDB: which is outside the tablespace bounds.</span><br><span class="line">InnoDB: Byte offset 0, len 16384, i/o type 10.</span><br><span class="line">InnoDB: If you get this error at mysqld startup, please check that</span><br><span class="line">InnoDB: your my.cnf matches the ibdata files that you have in the</span><br><span class="line">InnoDB: MySQL server.</span><br><span class="line">2019-07-29 19:23:43 7f2a7946d700  InnoDB: Assertion failure in thread 139820400039680 in file fil0fil.cc line 5666</span><br><span class="line">InnoDB: We intentionally generate a memory trap.</span><br><span class="line">InnoDB: Submit a detailed bug report to http://bugs.mysql.com.</span><br><span class="line">InnoDB: If you get repeated assertion failures or crashes, even</span><br><span class="line">InnoDB: immediately after the mysqld startup, there may be</span><br><span class="line">InnoDB: corruption in the InnoDB tablespace. Please refer to</span><br><span class="line">InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html</span><br><span class="line">InnoDB: about forcing recovery.</span><br></pre></td></tr></table></figure>
 
-<p>发送一段足够明显的xss payload,连参数名都是<code>xss</code>,试图触发server的waf机制.</p>
+<p>访问这个表<code>ok_1_ipscan_task_result</code>出错,可参考<code>forcing recovery</code></p>
 <hr>
-<h2 id="判断逻辑"><a href="#判断逻辑" class="headerlink" title="判断逻辑:"></a>判断逻辑:</h2><p>通过3个指标来<strong>正则匹配</strong>并计算匹配度得分,然后保留一个得分最高的作为最终的判定结果</p>
+<h1 id="恢复数据"><a href="#恢复数据" class="headerlink" title="恢复数据:"></a>恢复数据:</h1><h2 id="Mysql-Forcing-InnoDB-Recovery特性"><a href="#Mysql-Forcing-InnoDB-Recovery特性" class="headerlink" title="Mysql Forcing InnoDB Recovery特性:"></a>Mysql Forcing InnoDB Recovery特性:</h2><blockquote>
+<p>需要做特殊操作，让 MySQL 跳过恢复，启动 MySQL，然后把数据导出来，再重建数据库导入。</p>
+<p>MySQL 有个一个特性：<a href="https://dev.mysql.com/doc/refman/5.7/en/forcing-innodb-recovery.html" target="_blank" rel="noopener">Forcing InnoDB Recovery</a>，启用这个特性需要设置  </p>
+<p>innodb_force_recovery 大于 0。</p>
+<p>innodb_force_recovery 可以设置为 1-6，大的值包含前面所有小于它的值的影响。</p>
 <ol>
-<li><strong>page 返回包源码</strong></li>
-<li><strong>code 状态码</strong></li>
-<li><strong>headers 返回包头部</strong></li>
+<li><p><code>(SRV_FORCE_IGNORE_CORRUPT)</code>: <strong>忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</strong></p>
+</li>
+<li><p><code>(SRV_FORCE_NO_BACKGROUND)</code>: 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_TRX_UNDO)</code>: 不执行事务回滚操作。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_IBUF_MERGE)</code>: 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_UNDO_LOG_SCAN)</code>: 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_LOG_REDO)</code>: 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</p>
+</li>
 </ol>
+</blockquote>
+<p>一般设为1即可,当时没认真看,直接设为了6…</p>
+<p>6可能损坏原有数据库表…</p>
 <hr>
-<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>目前这个版本有66种waf的指纹、特征.</p>
-<p>详细请看.<code>https://github.com/s0md3v/XSStrike/blob/470f138db5fc0943e8a90a0de4052ddb7c03efab/db/wafSignatures.json</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"360 Web Application Firewall (360)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">"493"</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"/wzws-waf-cgi/"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"X-Powered-By-360wzb"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"aeSecure"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"aesecure_denied.png"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"aeSecure-code"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"Airlock (Phion/Ergon)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"AL[_-]?(SESS|LB)"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	.... 省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my.cnf 中添加：</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery = 1</span><br></pre></td></tr></table></figure>
 
+<p>然后重启数据库,用<code>Navicat</code>将数据库转储成sql语句.</p>
+<p>只有在mysql log里报错误的那个表导不出来.不过已经足够了.</p>
+<p>恢复了很多的数据.</p>
 <hr>
-<h3 id="计算匹配度分数"><a href="#计算匹配度分数" class="headerlink" title="计算匹配度分数:"></a>计算匹配度分数:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> pageSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> codeSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">        score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line"><span class="keyword">if</span> headersSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line"><span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">    <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">    bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br></pre></td></tr></table></figure>
-
-<p>分别在返回包源码,状态码,返回包头部里正则匹配.</p>
-<p>其中状态码的得分(权重)最低,因为状态码不是一个特别准确的判断标识</p>
-<p>然后保留一个得分最高的,作为最终结果.</p>
-<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://blog.csdn.net/shushugood/article/details/80226767" target="_blank" rel="noopener">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
+<li><a href="https://www.cnblogs.com/itqingtian/p/10469104.html" target="_blank" rel="noopener">Centos 7 LVM xfs文件系统修复</a></li>
+<li><a href="https://www.jianshu.com/p/f36c4f4447e9" target="_blank" rel="noopener">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a></li>
+<li><a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html" target="_blank" rel="noopener">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a></li>
+<li><a href="https://www.cnblogs.com/glon/p/6728380.html" target="_blank" rel="noopener">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a></li>
+</ul>
 
           
         
@@ -543,6 +582,177 @@
 <h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破:"></a>爆破:</h2><ul>
 <li><a href="https://blog.51cto.com/jzking121/1770605" target="_blank" rel="noopener">Hydra使用说明——爆破神器</a></li>
 </ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/XSStrike源码-waf检测/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/23/XSStrike源码-waf检测/" itemprop="url">XSStrike源码-waf检测</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
+                2019-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><blockquote>
+<p>waf检测是为了之后的bypass.</p>
+</blockquote>
+<hr>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码:"></a>源码:</h1><p>该功能比较简单,所以直接贴源码.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> core.requester <span class="keyword">import</span> requester</span><br><span class="line"><span class="keyword">from</span> core.log <span class="keyword">import</span> setup_logger</span><br><span class="line"></span><br><span class="line">logger = setup_logger(__name__)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wafDetector</span><span class="params">(url, params, headers, GET, delay, timeout)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(sys.path[<span class="number">0</span>] + <span class="string">'/db/wafSignatures.json'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> file:</span><br><span class="line">        wafSignatures = json.load(file)</span><br><span class="line">    <span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">    noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">    params[<span class="string">'xss'</span>] = noise</span><br><span class="line">    <span class="comment"># Opens the noise injected payload</span></span><br><span class="line">    response = requester(url, params, headers, GET, delay, timeout)</span><br><span class="line">    page = response.text <span class="comment"># 返回包源码</span></span><br><span class="line">    code = str(response.status_code) <span class="comment"># 状态码</span></span><br><span class="line">    headers = str(response.headers) <span class="comment"># 头部</span></span><br><span class="line">    logger.debug(<span class="string">'Waf Detector code: &#123;&#125;'</span>.format(code))</span><br><span class="line">    logger.debug_json(<span class="string">'Waf Detector headers:'</span>, response.headers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> int(code) &gt;= <span class="number">400</span>:</span><br><span class="line">        bestMatch = [<span class="number">0</span>, <span class="keyword">None</span>]</span><br><span class="line">        <span class="keyword">for</span> wafName, wafSignature <span class="keyword">in</span> wafSignatures.items():</span><br><span class="line">            score = <span class="number">0</span></span><br><span class="line">            pageSign = wafSignature[<span class="string">'page'</span>]</span><br><span class="line">            codeSign = wafSignature[<span class="string">'code'</span>]</span><br><span class="line">            headersSign = wafSignature[<span class="string">'headers'</span>]</span><br><span class="line">            <span class="keyword">if</span> pageSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> codeSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">                    score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line">            <span class="keyword">if</span> headersSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line">            <span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">                <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">                bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br><span class="line">        <span class="keyword">if</span> bestMatch[<span class="number">0</span>] != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> bestMatch[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h1><h2 id="发送明显的恶意payload"><a href="#发送明显的恶意payload" class="headerlink" title="发送明显的恶意payload:"></a>发送明显的恶意payload:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">params[<span class="string">'xss'</span>] = noise</span><br><span class="line"><span class="comment"># Opens the noise injected payload</span></span><br><span class="line">response = requester(url, params, headers, GET, delay, timeout)</span><br></pre></td></tr></table></figure>
+
+<p>发送一段足够明显的xss payload,连参数名都是<code>xss</code>,试图触发server的waf机制.</p>
+<hr>
+<h2 id="判断逻辑"><a href="#判断逻辑" class="headerlink" title="判断逻辑:"></a>判断逻辑:</h2><p>通过3个指标来<strong>正则匹配</strong>并计算匹配度得分,然后保留一个得分最高的作为最终的判定结果</p>
+<ol>
+<li><strong>page 返回包源码</strong></li>
+<li><strong>code 状态码</strong></li>
+<li><strong>headers 返回包头部</strong></li>
+</ol>
+<hr>
+<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>目前这个版本有66种waf的指纹、特征.</p>
+<p>详细请看.<code>https://github.com/s0md3v/XSStrike/blob/470f138db5fc0943e8a90a0de4052ddb7c03efab/db/wafSignatures.json</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"360 Web Application Firewall (360)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">"493"</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"/wzws-waf-cgi/"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"X-Powered-By-360wzb"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"aeSecure"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"aesecure_denied.png"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"aeSecure-code"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"Airlock (Phion/Ergon)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"AL[_-]?(SESS|LB)"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	.... 省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="计算匹配度分数"><a href="#计算匹配度分数" class="headerlink" title="计算匹配度分数:"></a>计算匹配度分数:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> pageSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> codeSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">        score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line"><span class="keyword">if</span> headersSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line"><span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">    <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">    bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br></pre></td></tr></table></figure>
+
+<p>分别在返回包源码,状态码,返回包头部里正则匹配.</p>
+<p>其中状态码的得分(权重)最低,因为状态码不是一个特别准确的判断标识</p>
+<p>然后保留一个得分最高的,作为最终结果.</p>
+<hr>
 
           
         
@@ -1949,214 +2159,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/" itemprop="url">记录-uwsgi+celery+psycopg2 DB连接问题排错过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-30T14:36:34+08:00">
-                2019-05-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>celery的worker进程中,报错</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/strategies.py"</span>, line <span class="number">106</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> dialect.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/default.py"</span>, line <span class="number">412</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> self.dbapi.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">"/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py"</span>, line <span class="number">130</span>, <span class="keyword">in</span> connect</span><br><span class="line">    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)</span><br><span class="line">OperationalError: (psycopg2.OperationalError) could <span class="keyword">not</span> receive data <span class="keyword">from</span> server: Connection timed out</span><br><span class="line"> (Background on this error at: http://sqlalche.me/e/e3q8)</span><br></pre></td></tr></table></figure>
-
-<p>连接超时,无法取得数据.</p>
-<hr>
-<h1 id="Debug思路"><a href="#Debug思路" class="headerlink" title="Debug思路:"></a>Debug思路:</h1><h2 id="1-连接数"><a href="#1-连接数" class="headerlink" title="1.连接数:"></a>1.连接数:</h2><p>看到报错 <code>could not receive data from server: Connection timed out</code></p>
-<p>一开始觉得是最大连接数的问题.</p>
-<p>因为别的正在泡的应用会用<code>pool_size=100</code>的连接池去连接<code>postgresql</code>里的某个数据库,</p>
-<p>查询最大连接数<code>show max_connections;</code></p>
-<p><img src="https://i.loli.net/2019/05/30/5cef801e4f8e874593.png" alt=""></p>
-<blockquote>
-<p>最大连接连接数默认才100,那么<code>pool_size=100</code>的连接池去连接的话会全部占用了吧…</p>
-</blockquote>
-<p>再继续查询</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> max_conn,used,res_for_super,max_conn-used-res_for_super res_for_normal </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">  (<span class="keyword">select</span> <span class="keyword">count</span>(*) used <span class="keyword">from</span> pg_stat_activity) t1,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> res_for_super <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$superuser_reserved_connections$$) t2,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="built_in">int</span> max_conn <span class="keyword">from</span> pg_settings <span class="keyword">where</span> <span class="keyword">name</span>=$$max_connections$$) t3</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2019/05/30/5cef80989906427300.png" alt=""></p>
-<p>实际上,并非连接数被占满了,还是有空余的连接数的.</p>
-<p>既然还有剩余的,那我这个应用把连接池的<code>pool_size</code>改为<code>10</code>,应该能正常连接上吧.</p>
-<p>修改之后,还是报同样的错误不行.</p>
-<hr>
-<p>搜索了一下,然后根据这个链接<a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
-<p>继续排错:</p>
-<blockquote>
-<p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
-<p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
-</blockquote>
-<hr>
-<ol>
-<li>你能从服务器ping服务器吗？如果没有，请从故障排除网络开始</li>
-</ol>
-<p><img src="https://i.loli.net/2019/05/30/5cef8390689c218268.png" alt=""></p>
-<blockquote>
-<p>ping 第一个网段的ip 发现会丢包..有点奇怪…</p>
-</blockquote>
-<p>ping另一个网段的ip</p>
-<p><img src="https://i.loli.net/2019/05/30/5cef85fa2890d42171.png" alt=""></p>
-<blockquote>
-<p>不会丢包.难道要用另一个网段的ip来建立数据库连接?</p>
-</blockquote>
-<hr>
-<ol start="2">
-<li>你可以使用相同的端口，IP地址等通过psql连接到服务器吗？如果超时，您可能需要检查防火墙和postgresql配置</li>
-</ol>
-<p>查看postgre 数据库所在的服务器的防火墙设置.发现也正常.</p>
-<p>在客户端写了个简单的脚本,发现也连接正常.<br><img src="https://i.loli.net/2019/05/30/5cef8456dc52c19819.png" alt=""></p>
-<hr>
-<h1 id="真正的问题"><a href="#真正的问题" class="headerlink" title="真正的问题:"></a>真正的问题:</h1><p>最终发现.用来连接数据库的内网ip冲突了…</p>
-<p>omg…</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://www.cnblogs.com/xiangnan/p/10051240.html" target="_blank" rel="noopener">科学地增加postgresql最大连接数</a></li>
-</ul>
-<ul>
-<li><p><a href="https://docs.sqlalchemy.org/en/13/core/pooling.html#pool-disconnects" target="_blank" rel="noopener">SQLAlchemy 1.3文档-连接池</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
-</li>
-<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002080.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
-</li>
-<li><p><a href="http://lists.unbit.it/pipermail/uwsgi/2011-May/002078.html" target="_blank" rel="noopener">[uWSGI] Sporadic sqlalchemy errors when using Pylons app with multiple workers</a></p>
-</li>
-<li><p><a href="https://github.com/heroku-python/django-postgrespool/issues/3" target="_blank" rel="noopener">Celery jobs throw exceptions #3</a></p>
-</li>
-<li><p><a href="http://jorgenmodin.net/index_html/process-safe-connection-pool-for-psycopg2-postgresql" target="_blank" rel="noopener">rocess safe connection pool for psycopg2 (postgresql)</a></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2209,7 +2211,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
