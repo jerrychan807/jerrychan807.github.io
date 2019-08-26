@@ -252,6 +252,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/26/Crawler-利用Simhash做URL去重/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/26/Crawler-利用Simhash做URL去重/" itemprop="url">Crawler-利用Simhash做URL去重</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-26T22:36:34+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>为了防止扫重复的url以及提高扫描效率,url去重扫描器的爬虫中必不可少的一部分.</p>
+<hr>
+<h1 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路:"></a>实现思路:</h1><h2 id="第一步：泛化"><a href="#第一步：泛化" class="headerlink" title="第一步：泛化"></a>第一步：泛化</h2><p>解析URL的每个参数，把每个参数的值做泛化.</p>
+<p>例如将参数值里面的字母转化为A，数字转化为N，特殊符号转换为T，其他符号或者字符转化成C</p>
+<p>例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;list=gengduo</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_xiaoyu50</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_50dao100</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_100dao150</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_150dao200</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_200dao500</span><br></pre></td></tr></table></figure>
+
+<p>经过泛化后则为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;list=gengduo</span><br><span class="line">http://tuan.qunar.com/?list=AAAAAAA&amp;in_track=AAAATAAAATAAAAAAA</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_xiaoyu50</span><br><span class="line">http://tuan.qunar.com/?tag=AAAAATAAAAAANN&amp;in_track=AAAATAAAATAAAAAAA</span><br><span class="line">http://tuan.qunar.com/?in_track=home_tuan_content&amp;tag=jiage_50dao100</span><br><span class="line">http://tuan.qunar.com/?tag=AAAAATNNAAANNN&amp;in_track=AAAATAAAATAAAAAAA</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第二步-Simhash"><a href="#第二步-Simhash" class="headerlink" title="第二步: Simhash"></a>第二步: Simhash</h2><p>Simhash是Google处理网页去重的算法.</p>
+<p>Simhash的作用简单来说就是判断两个URL是否相似，如果汉明距离在一定范围内，就可判断两个URL相似。</p>
+<hr>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码:"></a>完整代码:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/8/5 8:41 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : refs: https://docs.ioin.in/writeup/www.noblexu.com/_%E5%88%A9%E7%94%A8Simhash%E5%81%9AURL%E5%8E%BB%E9%87%8D%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F_/index.html</span></span><br><span class="line"><span class="comment"># @File    : filter.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> parse <span class="keyword">as</span> urlparse</span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> unquote</span><br><span class="line"><span class="keyword">from</span> simhash <span class="keyword">import</span> Simhash</span><br><span class="line"></span><br><span class="line">Chars = [<span class="string">','</span>, <span class="string">'-'</span>, <span class="string">'_'</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">url_etl</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    url泛化处理</span></span><br><span class="line"><span class="string">    :param url: 原始url</span></span><br><span class="line"><span class="string">    :return: 处理过后的url</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    params_new = &#123;&#125;</span><br><span class="line">    u = urlparse.urlparse(url)</span><br><span class="line">    query = unquote(u.query)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> query:</span><br><span class="line">        <span class="keyword">return</span> url</span><br><span class="line">    path = unquote(u.path)</span><br><span class="line">    params = urlparse.parse_qsl(query, <span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> params:</span><br><span class="line">        <span class="keyword">if</span> v:</span><br><span class="line">            params_new[k] = etl(v)</span><br><span class="line">    query_new = urllib.parse.urlencode(params_new)</span><br><span class="line">    url_new = urlparse.urlunparse(</span><br><span class="line">        (u.scheme, u.netloc, u.path, u.params, query_new, u.fragment))</span><br><span class="line">    <span class="comment"># print url_new</span></span><br><span class="line">    <span class="keyword">return</span> url_new</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">etl</span><span class="params">(str)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    传入一个字符串，将里面的字母转化为A，数字转化为N，特殊符号转换为T，其他符号或者字符转化成C</span></span><br><span class="line"><span class="string">    :param str: </span></span><br><span class="line"><span class="string">    :return: </span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    chars = <span class="string">""</span></span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> str:</span><br><span class="line">        c = c.lower()</span><br><span class="line">        <span class="keyword">if</span> ord(<span class="string">'a'</span>) &lt;= ord(c) &lt;= ord(<span class="string">'z'</span>):</span><br><span class="line">            chars += <span class="string">'A'</span></span><br><span class="line">        <span class="keyword">elif</span> ord(<span class="string">'0'</span>) &lt;= ord(c) &lt;= ord(<span class="string">'9'</span>):</span><br><span class="line">            chars += <span class="string">'N'</span></span><br><span class="line">        <span class="keyword">elif</span> c <span class="keyword">in</span> Chars:</span><br><span class="line">            chars += <span class="string">'T'</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            chars += <span class="string">'C'</span></span><br><span class="line">    <span class="keyword">return</span> chars</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">url_compare</span><span class="params">(url, link)</span>:</span></span><br><span class="line">    dis = Simhash(url).distance(Simhash(link))</span><br><span class="line">    <span class="keyword">if</span> <span class="number">-2</span> &lt; dis &lt; <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reduce_urls</span><span class="params">(ori_urls)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    对url列表去重</span></span><br><span class="line"><span class="string">    :param ori_urls: 原始url列表</span></span><br><span class="line"><span class="string">    :return: 去重后的url列表</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    etl_urls = []</span><br><span class="line">    result_urls = []</span><br><span class="line">    <span class="keyword">for</span> ori_url <span class="keyword">in</span> ori_urls:</span><br><span class="line">        etl = url_etl(ori_url)</span><br><span class="line">        print(etl)</span><br><span class="line">        score = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> etl_urls:</span><br><span class="line">            <span class="keyword">for</span> etl_url <span class="keyword">in</span> etl_urls:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> url_compare(etl, etl_url):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> score == len(etl_urls):</span><br><span class="line">                result_urls.append(ori_url)</span><br><span class="line">                etl_urls.append(etl)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            etl_urls.append(etl)</span><br><span class="line">            result_urls.append(ori_url)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result_urls</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    test_list = [</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58963'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58964'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58965'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58966'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58967'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58968'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58969'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58970'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58971'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58972'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58973'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58974'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58975'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58976'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58977'</span>,</span><br><span class="line">        <span class="string">'http://xxx.com/_visitcountdisplay?siteId=64&amp;type=3&amp;article=58978'</span>,</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># print(len(test_list))</span></span><br><span class="line">    print(reduce_urls(test_list))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># url = 'http://tuan.qunar.com/ext/sact/RjABVv?in_track=home_tuan_content_lunbo'</span></span><br><span class="line">    <span class="comment"># print(url_etl(url))</span></span><br><span class="line">    <span class="comment"># print(etl(url))</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>基于布尔的sql注入扫描起来需要发比较多的测试payload</p>
+<p>一开始爬虫没对url进行去重,然后遇到咨询类网站的时候.</p>
+<p>就发现前面爬的几十条链接都是几乎一样的,参数也是一样</p>
+<p>但是因为没有去重导致一直重复在扫这个页面的这几个参数.</p>
+<p>效率和效果都非常差,加了过滤之后,需要扫描的url少了很多.效率提高了不少.</p>
+<p>但是这个时候也要注意,要看看有没因过滤而漏掉的url,宁愿重复扫也不要漏扫太多…</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://docs.ioin.in/writeup/www.noblexu.com/_%E5%88%A9%E7%94%A8Simhash%E5%81%9AURL%E5%8E%BB%E9%87%8D%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F_/index.html" target="_blank" rel="noopener">利用Simhash做URL去重的实现方式</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/13/Celery-动态路由/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -632,6 +800,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/WebSecurity Learning lib/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/23/WebSecurity Learning lib/" itemprop="url">WebSecurity Learning lib</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
+                2019-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://www.kanxue.com/chm.htm" target="_blank" rel="noopener">看雪知识库</a><br><a href="blog.nsfocus.net/web-vulnerability-analysis-coding-security/">【干货分享】Web安全漏洞深入分析及其安全编码</a></p>
+<h2 id="xss"><a href="#xss" class="headerlink" title="xss:"></a>xss:</h2><ul>
+<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
+<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
+</ul>
+<h2 id="sqli"><a href="#sqli" class="headerlink" title="sqli:"></a>sqli:</h2><ul>
+<li><a href="https://www.slideshare.net/stamparm/presentations" target="_blank" rel="noopener">sqlmap作者ppt合集</a></li>
+<li><a href="https://blog.csdn.net/wn314/article/details/78872828" target="_blank" rel="noopener">Sqlmap中文手册</a></li>
+<li><a href="http://www.cnblogs.com/hongfei/p/3872156.html" target="_blank" rel="noopener">SQLMap用户手册【超详细】</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/44157153" target="_blank" rel="noopener">sqlmap 内核分析 II: 核心原理-页面相似度算法实践</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/45291193" target="_blank" rel="noopener">sqlmap 内核分析 III: 核心逻辑</a></li>
+<li><a href="https://x.hacking8.com/post-303.html" target="_blank" rel="noopener">sqlmap 1.0源码解析</a></li>
+<li><a href="https://wooyun.js.org/drops/SQLMAP%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90Part1.%E6%B5%81%E7%A8%8B%E7%AF%87.html" target="_blank" rel="noopener">SQLMAP源码分析Part1.流程篇</a></li>
+<li><a href="https://www.cnblogs.com/zylq-blog/p/6797237.html" target="_blank" rel="noopener">SQLMAP自动注入（二）</a></li>
+<li><a href="https://wps2015.org/drops/drops/sqlmap%E6%94%AF%E6%8C%81%E8%87%AA%E5%8A%A8%E4%BC%AA%E9%9D%99%E6%80%81%E6%89%B9%E9%87%8F%E6%A3%80%E6%B5%8B.html" target="_blank" rel="noopener">sqlmap支持自动伪静态批量检测</a></li>
+</ul>
+<h2 id="port-scan"><a href="#port-scan" class="headerlink" title="port scan:"></a>port scan:</h2><ul>
+<li><a href="https://cloud.tencent.com/developer/article/1180313" target="_blank" rel="noopener">nmap使用指南（终极版）</a></li>
+<li><a href="https://github.com/anvol/micro-honeypot/blob/master/honeypotd.c" target="_blank" rel="noopener">micro-honeypot</a></li>
+<li><a href="https://github.com/joeyism/C-Port-Scanner/blob/e5f6d414b8c9ece197e1f2941c041941d44458df/portscanner.c" target="_blank" rel="noopener">C-Port-Scanner</a></li>
+</ul>
+<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破:"></a>爆破:</h2><ul>
+<li><a href="https://blog.51cto.com/jzking121/1770605" target="_blank" rel="noopener">Hydra使用说明——爆破神器</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/XSStrike源码-waf检测/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -755,174 +1091,6 @@
 <p>其中状态码的得分(权重)最低,因为状态码不是一个特别准确的判断标识</p>
 <p>然后保留一个得分最高的,作为最终结果.</p>
 <hr>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/WebSecurity Learning lib/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/23/WebSecurity Learning lib/" itemprop="url">WebSecurity Learning lib</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
-                2019-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://www.kanxue.com/chm.htm" target="_blank" rel="noopener">看雪知识库</a><br><a href="blog.nsfocus.net/web-vulnerability-analysis-coding-security/">【干货分享】Web安全漏洞深入分析及其安全编码</a></p>
-<h2 id="xss"><a href="#xss" class="headerlink" title="xss:"></a>xss:</h2><ul>
-<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
-</ul>
-<h2 id="sqli"><a href="#sqli" class="headerlink" title="sqli:"></a>sqli:</h2><ul>
-<li><a href="https://www.slideshare.net/stamparm/presentations" target="_blank" rel="noopener">sqlmap作者ppt合集</a></li>
-<li><a href="https://blog.csdn.net/wn314/article/details/78872828" target="_blank" rel="noopener">Sqlmap中文手册</a></li>
-<li><a href="http://www.cnblogs.com/hongfei/p/3872156.html" target="_blank" rel="noopener">SQLMap用户手册【超详细】</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/44157153" target="_blank" rel="noopener">sqlmap 内核分析 II: 核心原理-页面相似度算法实践</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/45291193" target="_blank" rel="noopener">sqlmap 内核分析 III: 核心逻辑</a></li>
-<li><a href="https://x.hacking8.com/post-303.html" target="_blank" rel="noopener">sqlmap 1.0源码解析</a></li>
-<li><a href="https://wooyun.js.org/drops/SQLMAP%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90Part1.%E6%B5%81%E7%A8%8B%E7%AF%87.html" target="_blank" rel="noopener">SQLMAP源码分析Part1.流程篇</a></li>
-<li><a href="https://www.cnblogs.com/zylq-blog/p/6797237.html" target="_blank" rel="noopener">SQLMAP自动注入（二）</a></li>
-<li><a href="https://wps2015.org/drops/drops/sqlmap%E6%94%AF%E6%8C%81%E8%87%AA%E5%8A%A8%E4%BC%AA%E9%9D%99%E6%80%81%E6%89%B9%E9%87%8F%E6%A3%80%E6%B5%8B.html" target="_blank" rel="noopener">sqlmap支持自动伪静态批量检测</a></li>
-</ul>
-<h2 id="port-scan"><a href="#port-scan" class="headerlink" title="port scan:"></a>port scan:</h2><ul>
-<li><a href="https://cloud.tencent.com/developer/article/1180313" target="_blank" rel="noopener">nmap使用指南（终极版）</a></li>
-<li><a href="https://github.com/anvol/micro-honeypot/blob/master/honeypotd.c" target="_blank" rel="noopener">micro-honeypot</a></li>
-<li><a href="https://github.com/joeyism/C-Port-Scanner/blob/e5f6d414b8c9ece197e1f2941c041941d44458df/portscanner.c" target="_blank" rel="noopener">C-Port-Scanner</a></li>
-</ul>
-<h2 id="爆破"><a href="#爆破" class="headerlink" title="爆破:"></a>爆破:</h2><ul>
-<li><a href="https://blog.51cto.com/jzking121/1770605" target="_blank" rel="noopener">Hydra使用说明——爆破神器</a></li>
-</ul>
 
           
         
@@ -1980,152 +2148,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/23/Notes-代码之外的功夫:程序员精进之路读后感/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/23/Notes-代码之外的功夫:程序员精进之路读后感/" itemprop="url">Notes-代码之外的功夫:程序员精进之路读后感(上)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-23T22:36:34+08:00">
-                2019-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ReadingNotes/" itemprop="url" rel="index">
-                    <span itemprop="name">ReadingNotes</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          Welcome to my blog, enter password to read.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/06/23/Notes-代码之外的功夫:程序员精进之路读后感/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2178,7 +2200,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-count">43</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
