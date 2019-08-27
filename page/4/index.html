@@ -252,6 +252,399 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/Sqlmap源码-checkSameHost函数的疑问/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/01/Sqlmap源码-checkSameHost函数的疑问/" itemprop="url">Sqlmap源码-checkSameHost函数的疑问</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:36:34+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在看sqlmap源码的时候,看了它的<code>crawler</code>，用到了<code>checkSameHost</code>函数.</p>
+<p>跟进到<code>lib.core.common</code>公共函数里看<code>checkSameHost</code>函数,产生了一些疑问</p>
+<hr>
+<h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSameHost</span><span class="params">(*urls)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target.com/images/page2.php')</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target2.com/images/page2.php')</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">elif</span> len(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_</span><span class="params">(value)</span>:</span> <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r"\A\w+://"</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">"http://%s"</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> all(re.sub(<span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or "").netloc.split(':')[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r"(?i)\Awww\." (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
+<ul>
+<li><code>True</code></li>
+</ul>
+</li>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
+<ul>
+<li><code>False</code></li>
+</ul>
+</li>
+<li><p><code>http://xxx.com</code>,<code>http://www.xxx.com</code></p>
+<ul>
+<li><code>True</code></li>
+</ul>
+</li>
+<li><p><code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code></p>
+<ul>
+<li><code>False</code></li>
+<li>?????</li>
+</ul>
+</li>
+</ul>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h2><p>很多时候,<code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code>这两个子域名是可以解析同一个ip上的,这种情况下<code>sameHost</code>判断应该为<code>True</code>才对,为什么这里为<code>False</code>呢?</p>
+<h2 id="answer"><a href="#answer" class="headerlink" title="answer:"></a>answer:</h2><p>这里的sameHost应该是有歧义<br>严格意义上,是否是sameHost应该通过ip来判断,但是如果url很多的话,都去其解析域名对应的ip,会消耗时间</p>
+<p>广义上看,这里的sameHost应该指的是same website.</p>
+<p>通过域名来判断是否是相同的网站,是ok的.</p>
+<hr>
+<h1 id="域名与ip的关系"><a href="#域名与ip的关系" class="headerlink" title="域名与ip的关系:"></a>域名与ip的关系:</h1><p>常见的情况下,一个域名与一个ip是对应的.</p>
+<p>但是<strong>域名与ip的关系不一定是一对一的关系,可以是多对一或者是一对多的关系</strong>.</p>
+<ul>
+<li><p>多个域名解析到一个ip:</p>
+<ul>
+<li><a href="https://jingyan.baidu.com/article/a24b33cd55c7ba19ff002b4b.html" target="_blank" rel="noopener">IIS中怎么配置虚拟主机</a></li>
+<li><a href="https://segmentfault.com/q/1010000002442790" target="_blank" rel="noopener">IS可否将多个域名配置到同一个IP/端口</a></li>
+</ul>
+</li>
+<li><p>一个域名解析到多个ip:</p>
+<ul>
+<li><a href="https://www.cnblogs.com/cuihongyu3503319/archive/2012/07/09/2583129.html" target="_blank" rel="noopener">负载均衡实现，一个域名对应多个IP地址</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/记录-Centos7 Docker部署漏洞环境/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/27/记录-Centos7 Docker部署漏洞环境/" itemprop="url">记录-Centos7 Docker部署漏洞环境</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27T14:36:34+08:00">
+                2019-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装:"></a>docker安装:</h1><ul>
+<li>查询可用版本</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum list docker-ce --showduplicates | sort -r</span></span><br><span class="line">已加载插件：fastestmirror, langpacks</span><br><span class="line">可安装的软件包</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line">docker-ce.x86_64            3:18.09.2-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            3:18.09.1-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            3:18.09.0-3.el7                     docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.3.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.2.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.1.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.06.0.ce-3.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            18.03.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.12.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.09.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.06.0.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.3.ce-1.el7                    docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.2.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.1.ce-1.el7.centos             docker-ce-stable</span><br><span class="line">docker-ce.x86_64            17.03.0.ce-1.el7.centos             docker-ce-stable</span><br></pre></td></tr></table></figure>
+
+<p>如果使用<code>yum install docker-ce</code>下载下来的docker版本是很有可能是第一个<code>3:18.09.2-3.el7</code>,运行的时候会报错,要指定<code>centos</code>的版本下载才能正常运行.</p>
+<ul>
+<li>安装指定版本</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum install docker-ce-18.03.1.ce-1.el7.centos</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动docker</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试安装结果</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run hello-world                       </span></span><br><span class="line"></span><br><span class="line">Hello from Docker!</span><br><span class="line">This message shows that your installation appears to be working correctly.</span><br><span class="line"></span><br><span class="line">To generate this message, Docker took the following steps:</span><br><span class="line"> 1. The Docker client contacted the Docker daemon.</span><br><span class="line"> 2. The Docker daemon pulled the <span class="string">"hello-world"</span> image from the Docker Hub.</span><br><span class="line">    (amd64)</span><br><span class="line"> 3. The Docker daemon created a new container from that image <span class="built_in">which</span> runs the</span><br><span class="line">    executable that produces the output you are currently reading.</span><br><span class="line"> 4. The Docker daemon streamed that output to the Docker client, <span class="built_in">which</span> sent it</span><br><span class="line">    to your terminal.</span><br><span class="line"></span><br><span class="line">To try something more ambitious, you can run an Ubuntu container with:</span><br><span class="line"> $ docker run -it ubuntu bash</span><br><span class="line"></span><br><span class="line">Share images, automate workflows, and more with a free Docker ID:</span><br><span class="line"> https://hub.docker.com/</span><br><span class="line"></span><br><span class="line">For more examples and ideas, visit:</span><br><span class="line"> https://docs.docker.com/get-started/</span><br></pre></td></tr></table></figure>
+
+<p>无报错,则正常</p>
+<hr>
+<h1 id="漏洞环境下载"><a href="#漏洞环境下载" class="headerlink" title="漏洞环境下载:"></a>漏洞环境下载:</h1><ul>
+<li><a href="https://github.com/vulhub/vulhub" target="_blank" rel="noopener">Pre-Built Vulnerable Environments Based on Docker-Compose</a></li>
+</ul>
+<p>根据readme 安装</p>
+<ul>
+<li><p><a href="https://github.com/Medicean/VulApps" target="_blank" rel="noopener">快速搭建各种漏洞环境(Various vulnerability environment</a></p>
+</li>
+<li><p><a href="https://blog.51cto.com/13767724/2164915?source=dra" target="_blank" rel="noopener">CentOS7下安装Docker-Compose</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/xiaoxianerqq/article/details/80579113" target="_blank" rel="noopener">cannot uninstall a distutils installed project’</a></p>
+</li>
+</ul>
+<hr>
+<h1 id="开机自启"><a href="#开机自启" class="headerlink" title="开机自启:"></a>开机自启:</h1><h2 id="docker-服务开机自启"><a href="#docker-服务开机自启" class="headerlink" title="docker 服务开机自启"></a>docker 服务开机自启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl enable docker.service</span></span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.</span><br></pre></td></tr></table></figure>
+
+<h2 id="漏洞环境容器的开机自启"><a href="#漏洞环境容器的开机自启" class="headerlink" title="漏洞环境容器的开机自启"></a>漏洞环境容器的开机自启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取镜像到本地</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull medicean/vulapps:s_struts2_s2-032</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动环境</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -p 80:8080 medicean/vulapps:s_struts2_s2-032</span></span><br><span class="line">6aa16caac712adcc0f5410dbed2aaa14a303ede2378311f0c2222b1901bcef25</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看CONTAINER ID </span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                            NAMES</span><br><span class="line">6aa16caac712        medicean/vulapps:s_struts2_s2-032   <span class="string">"/usr/local/tomcat/b…"</span>   22 seconds ago      Up 21 seconds       0.0.0.0:80-&gt;8080/tcp             keen_carson</span><br><span class="line">ee8ea1d1acdd        medicean/vulapps:r_redis_1          <span class="string">"/start.sh"</span>              30 minutes ago      Up 4 minutes        22/tcp, 0.0.0.0:6379-&gt;6379/tcp   redisvul</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 参数always:始终重启,更新设为开机自启</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker update --restart=always 6aa16caac712</span></span><br><span class="line">6aa16caac712</span><br></pre></td></tr></table></figure>
+
+<p>重启机子,后允许<code>docker ps</code>查看是否自启成功</p>
+<h1 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令:"></a>其他常用命令:</h1><h2 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器:"></a>删除容器:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有container</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES</span><br><span class="line">e6318265a202        httpd:centos        <span class="string">"/run.sh"</span>           5 minutes ago       Exited (127) 5 minutes ago                       httpd1              </span><br><span class="line">eaf9ee72f448        httpd:centos        <span class="string">"/run.sh"</span>           6 minutes ago                                                        httpd</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># "docker rm 容器id"来删除一个终止状态的容器；若要删除一个运行中的容器，需要加-f参数。</span></span><br><span class="line">root@Linx:~/apache<span class="comment"># docker rm e6318265a202</span></span><br><span class="line">e6318265a202</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像:"></a>删除镜像:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已有的docker镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ubuntu              latest              47b19964fb50        3 weeks ago         88.1MB</span><br><span class="line">hello-world         latest              fce289e99eb9        8 weeks ago         1.84kB</span><br><span class="line">centos              latest              1e1148e4cc2c        2 months ago        202MB</span><br><span class="line">medicean/vulapps    s_struts2_s2-048    14cac47d977d        19 months ago       348MB</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除images，通过image的id来指定删除谁</span></span><br><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>这样就可以使用一台机子来专门安装漏洞环境,方便poc测试、调试。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://github.com/vulhub/vulhub" target="_blank" rel="noopener">Pre-Built Vulnerable Environments Based on Docker-Compose</a></li>
+<li><a href="https://github.com/Medicean/VulApps" target="_blank" rel="noopener">快速搭建各种漏洞环境(Various vulnerability environment</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/23/Breacher-Go并发的管理员后台爆破工具/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1848,356 +2241,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/08/git源码泄露exploit/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/08/git源码泄露exploit/" itemprop="url">git源码泄露exploit</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-08T17:37:44+08:00">
-                2019-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="gitHack工作原理"><a href="#gitHack工作原理" class="headerlink" title="gitHack工作原理:"></a>gitHack工作原理:</h1><h2 id="寻找测试目标"><a href="#寻找测试目标" class="headerlink" title="寻找测试目标:"></a>寻找测试目标:</h2><p>google hack <code>&quot;index of /.git&quot;</code></p>
-<h2 id="解析元数据"><a href="#解析元数据" class="headerlink" title="解析元数据:"></a>解析元数据:</h2><p><code>/.git/index</code>的作用:</p>
-<blockquote>
-<p>The index is a single, large, binary file in <baseofrepo>/.git/index, which lists all files in the current branch, their sha1 checksums, time stamps and the file name</baseofrepo></p>
-</blockquote>
-<p>通过<code>gin</code>这个工具去解析index文件</p>
-<p>解析结果:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70f29f95.jpg" alt=""></p>
-<h2 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件:"></a>下载文件:</h2><p>通过上面获得的<code>sha1</code>来构造url:</p>
-<p>.git/objects/<code>sha前两位</code>/<code>sha后两位之后的内容</code></p>
-<p>对返回的数据进行<code>zlib</code>解压就可以下载到文件了</p>
-<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><ul>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
-</ul>
-<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>对<code>.git</code>目录限制,不对外访问</p>
-<h1 id="漏洞原因"><a href="#漏洞原因" class="headerlink" title="漏洞原因:"></a>漏洞原因:</h1><p>开发人员通常会使用版本控制工具来管理代码,在上线的服务器上的根目录上使用简单的git操作就可以很方便的更新、管理代码。</p>
-<p>版本控制工具在带来便利的同时,由于开发人员的疏忽,导致出现源代码安全的问题</p>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/lijiejie/GitHack" target="_blank" rel="noopener">GitHack</a></li>
-<li><a href="https://www.jianshu.com/p/edae09535ea3" target="_blank" rel="noopener">如何利用.git文件夹下载整个网站泄漏的源码</a></li>
-<li><a href="https://threatpost.com/open-git-directories-leave-390k-websites-vulnerable/137299/" target="_blank" rel="noopener">Open .Git Directories Leave 390K Websites Vulnerable</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/11/BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/11/BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析/" itemprop="url">BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-11T00:49:00+08:00">
-                2018-07-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
-                    <span itemprop="name">VulnAnalysis</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg" alt=""></p>
-<p>方便管理员对模板html文件进行修改</p>
-<hr>
-<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
-<li><code>$_REQUEST</code><ul>
-<li><code>$_REQUEST[&#39;act&#39;]</code></li>
-</ul>
-</li>
-<li><code>$_GET</code><ul>
-<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
-</ul>
-</li>
-<li><code>$_POST</code><ul>
-<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
-</ul>
-</li>
-</ul>
-<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
-<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">elseif($act == &apos;edit&apos;)&#123;</span><br><span class="line">$file = $_GET[&apos;tpl_name&apos;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&apos;templates/default/&apos;.$file, &apos;rb&apos;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&apos;打开目标模板文件失败&apos;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&apos;content&apos;] = fread($handle, filesize(BLUE_ROOT.&apos;templates/default/&apos;.$file)); # 读取文件</span><br><span class="line">$tpl[&apos;content&apos;] = htmlentities($tpl[&apos;content&apos;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&apos;name&apos;] = $file;</span><br><span class="line">template_assign(array(&apos;current_act&apos;, &apos;tpl&apos;), array(&apos;编辑模板&apos;, $tpl));</span><br><span class="line">$smarty-&gt;display(&apos;tpl_info.htm&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg" alt=""></p>
-<p>有什么比较有价值的网站文件吗?</p>
-<p>可以php文件即读到网站源码</p>
-<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg" alt=""></p>
-<hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
-<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg" alt=""></p>
-<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
-<p>怎么攻击呢？</p>
-<p>可以修改网站下的任何源代码，可以</p>
-<ul>
-<li>写入一句话木马</li>
-<li>盗号js</li>
-</ul>
-<p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg" alt=""><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg" alt=""></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
-<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2250,7 +2293,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

