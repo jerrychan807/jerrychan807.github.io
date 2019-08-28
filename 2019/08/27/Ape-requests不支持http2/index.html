@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;  De">
+<meta name="description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;   D">
 <meta name="keywords" content="SecurityTools">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ape-requests不支持http2">
 <meta property="og:url" content="http://yoursite.com/2019/08/27/Ape-requests不支持http2/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;  De">
+<meta property="og:description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;   D">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/08/27/ClB43dsrNnPRQL7.jpg">
-<meta property="og:updated_time" content="2019-08-27T08:34:06.677Z">
+<meta property="og:updated_time" content="2019-08-27T08:44:01.206Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ape-requests不支持http2">
-<meta name="twitter:description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;  De">
+<meta name="twitter:description" content="Pre:在APE(Auto-Pentest)的时候,借鉴了w13scan的大部分代码.里面发包探测都用到了requests模块,时不时会出这种bug 12raise ValueError(&amp;apos;Invalid header name %r&amp;apos; % (header,))ValueError: Invalid header name b&amp;apos;:authority&amp;apos;   D">
 <meta name="twitter:image" content="https://i.loli.net/2019/08/27/ClB43dsrNnPRQL7.jpg">
 
 
@@ -347,6 +347,7 @@
         <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在APE(Auto-Pentest)的时候,借鉴了<code>w13scan</code>的大部分代码.<br>里面发包探测都用到了<code>requests</code>模块,时不时会出这种bug</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">raise ValueError(&apos;Invalid header name %r&apos; % (header,))</span><br><span class="line">ValueError: Invalid header name b&apos;:authority&apos;</span><br></pre></td></tr></table></figure>
 
+<hr>
 <h1 id="Debug"><a href="#Debug" class="headerlink" title="Debug:"></a>Debug:</h1><p>请求了该url:<code>https://www.gstatic.com/proc/meminfo</code></p>
 <p>输出该请求的headers后</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">':authority'</span>: <span class="string">'www.gstatic.com'</span>, <span class="string">'sec-fetch-site'</span>: <span class="string">'none'</span>, <span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'</span>, <span class="string">'accept-encoding'</span>: <span class="string">'gzip, deflate, br'</span>&#125;</span><br></pre></td></tr></table></figure>
