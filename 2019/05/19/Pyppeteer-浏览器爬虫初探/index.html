@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SecurityTools,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="pre:最近打算捣鼓一个黑链扫描器. 当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站. 那么这种情况应该选用什么爬虫的解决方案呢?即技术选型  技术选型:方案一 静态爬虫:在python中最常见的就是用requests,urllib2等库来模拟发包,执行简单的HTTP请求并获取HTML页面. 这种方案比较适合于对特定网站进行简单的爬取,优点是:  在CPU和">
+<meta name="keywords" content="SecurityTools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pyppeteer-浏览器爬虫初探">
+<meta property="og:url" content="http://yoursite.com/2019/05/19/Pyppeteer-浏览器爬虫初探/index.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="pre:最近打算捣鼓一个黑链扫描器. 当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站. 那么这种情况应该选用什么爬虫的解决方案呢?即技术选型  技术选型:方案一 静态爬虫:在python中最常见的就是用requests,urllib2等库来模拟发包,执行简单的HTTP请求并获取HTML页面. 这种方案比较适合于对特定网站进行简单的爬取,优点是:  在CPU和">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png">
+<meta property="og:updated_time" content="2019-05-19T15:39:40.582Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pyppeteer-浏览器爬虫初探">
+<meta name="twitter:description" content="pre:最近打算捣鼓一个黑链扫描器. 当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站. 那么这种情况应该选用什么爬虫的解决方案呢?即技术选型  技术选型:方案一 静态爬虫:在python中最常见的就是用requests,urllib2等库来模拟发包,执行简单的HTTP请求并获取HTML页面. 这种方案比较适合于对特定网站进行简单的爬取,优点是:  在CPU和">
+<meta name="twitter:image" content="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/19/Pyppeteer-浏览器爬虫初探/">
+
+
+
+
+
+  <title>Pyppeteer-浏览器爬虫初探 | Black House</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Black House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/Pyppeteer-浏览器爬虫初探/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Pyppeteer-浏览器爬虫初探</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T22:36:34+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>最近打算捣鼓一个黑链扫描器.</p>
+<p>当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站.</p>
+<p>那么这种情况应该选用什么爬虫的解决方案呢?即技术选型</p>
+<hr>
+<h1 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型:"></a>技术选型:</h1><h2 id="方案一-静态爬虫"><a href="#方案一-静态爬虫" class="headerlink" title="方案一 静态爬虫:"></a>方案一 静态爬虫:</h2><p>在python中最常见的就是用<code>requests</code>,<code>urllib2</code>等库来模拟发包,执行简单的HTTP请求并获取HTML页面.</p>
+<p>这种方案比较适合于对特定网站进行简单的爬取,优点是:</p>
+<ul>
+<li>在CPU和内存消耗方面的开销很低</li>
+<li>开发速度快</li>
+</ul>
+<p>但是缺点也很明显:</p>
+<ul>
+<li>不通用:发包情况千千万,都要模拟请求的话不现实</li>
+<li>无法收集通过JavaScript动态生成的内容</li>
+</ul>
+<p>基于以上两点,果断弃之.</p>
+<hr>
+<h2 id="方案二-动态爬虫"><a href="#方案二-动态爬虫" class="headerlink" title="方案二 动态爬虫:"></a>方案二 动态爬虫:</h2><p>选型1: 使用<code>Selenium</code>等库来驱动Chrome、Firefox或PhantomJS.</p>
+<blockquote>
+<p>在Chrome的Headless模式刚出现不久，我们当时就调研过用作漏洞扫描器爬虫的需求，但由于当时功能不够完善，以及无法达到稳定可靠的要求。举个例子，对于网络请求，无法区分导航请求和其它请求，而本身又不提供navigation lock的功能，所以很难确保页面的处理不被意外跳转中断。同时，不太稳定的CDP经常意外中断和产生Chrome僵尸进程，所以我们之前一直在使用PhantomJS。</p>
+<p>但随着前端的框架使用越来越多，网页内容对爬虫越来越不友好，在不考虑进行服务端渲染的情况下，Vue等框架让静态爬虫彻底失效。同时，由于JS的ES6语法的广泛使用，缺乏维护（创始人宣布归档项目暂停开发）的PhantomJS开始变的力不从心。</p>
+<p>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<p>选型2: <code>pyppeteer</code>+<code>Chromium headless</code></p>
+<blockquote>
+<p>在去年，puppeteer和Chromium项目在经历了不断迭代后，新增了一些关键功能，Headless模式现在已经能大致胜任扫描器爬虫的任务。</p>
+<p>所以我们在去年果断更新了扫描器的动态爬虫，采用Chromium的Headless模式作为网页内容解析引擎<br>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><ul>
+<li><code>Chrome</code>的Headless模式早期不成熟</li>
+<li><code>PhantomJS</code>不再维护了</li>
+<li><code>puppeteer</code>和<code>Chromium</code>项目在不断迭代更新</li>
+</ul>
+<p>综上,就决定使用<code>pyppeteer</code>+<code>Chromium headless</code>这个搭配方案了.</p>
+<p>那么,现在就跑个Demo来试试水.(参考<a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a>)</p>
+<hr>
+<h1 id="Demo"><a href="#Demo" class="headerlink" title="Demo:"></a>Demo:</h1><blockquote>
+<p>原文章里的代码基本可以运行.<br>就是<code>url</code>和需要提取信息的<code>xpath</code>发送了一些变化.稍作修改即可</p>
+</blockquote>
+<hr>
+<h2 id="静态爬虫"><a href="#静态爬虫" class="headerlink" title="静态爬虫:"></a>静态爬虫:</h2><p>先用最原始的方式,确认能够获取得到信息.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> lxml.html</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> request.urlopen(url)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_document</span><span class="params">(response)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> response.read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(document)</span>:</span></span><br><span class="line">    <span class="comment"># Generate document tree</span></span><br><span class="line">    tree = lxml.html.fromstring(document)</span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = tree.xpath(<span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        th, td = element.iterchildren()</span><br><span class="line">        result.update(&#123;</span><br><span class="line">            th.text_content(): td.text_content()</span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line">        <span class="comment"># "Rust": "https://es.wikipedia.org/wiki/Rust_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Java": "https://es.wikipedia.org/wiki/Java_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Javascript": "https://es.wikipedia.org/wiki/JavaScript"</span></span><br><span class="line">    &#125;</span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        response = get_page(url)</span><br><span class="line">        document = read_document(response)</span><br><span class="line">        result.update(&#123;name: extract_data(document)&#125;)</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>预期结果:</p>
+<p><img src="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png" alt=""></p>
+<hr>
+<h2 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer:"></a>puppeteer:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> pyppeteer <span class="keyword">import</span> launch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_browser</span><span class="params">()</span>:</span>  <span class="comment"># 启动浏览器</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> launch(&#123;<span class="string">"headless"</span>: <span class="keyword">False</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(browser, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> browser.newPage()</span><br><span class="line">    <span class="keyword">await</span> page.goto(url)</span><br><span class="line">    <span class="keyword">return</span> page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract</span><span class="params">(browser, name, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> get_page(browser, url)</span><br><span class="line">    <span class="keyword">return</span> &#123;name: <span class="keyword">await</span> extract_data(page)&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(page)</span>:</span>  <span class="comment"># 数据提取</span></span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = <span class="keyword">await</span> page.xpath(</span><br><span class="line">        <span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        title, content = <span class="keyword">await</span> page.evaluate(</span><br><span class="line">            <span class="string">'''(element) =&gt;</span></span><br><span class="line"><span class="string">                [...element.children].map(child =&gt; child.textContent)'''</span>,</span><br><span class="line">            element)</span><br><span class="line">        result.update(&#123;title: content&#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_all</span><span class="params">(languages)</span>:</span>  <span class="comment"># 程序入口</span></span><br><span class="line">    browser = <span class="keyword">await</span> get_browser()  <span class="comment"># 启动浏览器</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        result.update(<span class="keyword">await</span> extract(browser, name, url))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loop = asyncio.get_event_loop()</span><br><span class="line">    result = loop.run_until_complete(extract_all(languages))</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>同样能够获取到和预期一样的结果</p>
+<hr>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h1><p>从Demo出发,再不断改进优化功能.<br>便能慢慢有些雏形出来了.<br>Keeo Moving.</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></li>
+<li><a href="https://antoinevastel.com/crawler/2018/09/17/simple-crawler-puppeteer.html" target="_blank" rel="noopener">A simple crawler using Chrome headless with Puppeteer</a></li>
+<li><a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a></li>
+<li><a href="https://miyakogi.github.io/pyppeteer/" target="_blank" rel="noopener">Pyppeteer文档</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/15/暗链案例初探/" rel="next" title="暗链案例初探">
+                <i class="fa fa-chevron-left"></i> 暗链案例初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/22/记录-supervisor使用/" rel="prev" title="记录-Supervisor使用">
+                记录-Supervisor使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png" alt="Foolisheddy">
+            
+              <p class="site-author-name" itemprop="name">Foolisheddy</p>
+              <p class="site-description motion-element" itemprop="description">nothing to say :)</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pre"><span class="nav-number">1.</span> <span class="nav-text">pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#技术选型"><span class="nav-number">2.</span> <span class="nav-text">技术选型:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方案一-静态爬虫"><span class="nav-number">2.1.</span> <span class="nav-text">方案一 静态爬虫:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方案二-动态爬虫"><span class="nav-number">2.2.</span> <span class="nav-text">方案二 动态爬虫:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.3.</span> <span class="nav-text">总结:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Demo"><span class="nav-number">3.</span> <span class="nav-text">Demo:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态爬虫"><span class="nav-number">3.1.</span> <span class="nav-text">静态爬虫:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#puppeteer"><span class="nav-number">3.2.</span> <span class="nav-text">puppeteer:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结-1"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
