@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="整体流程图  PerFolder (每个目录)xxx  备份文件扫描:原理: 获取来自服务器的原始套接字响应即通过文件头来识别。 12345&amp;gt;&amp;gt;&amp;gt; r = requests.get(&apos;https://api.github.com/events&apos;, stream=True)&amp;gt;&amp;gt;&amp;gt; r.raw&amp;lt;requests.packages.urllib3.respons">
+<meta name="description" content="整体流程图  PerFolder (每个目录)比如有一个url为:http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg 拆解后的目录为: 123456http://10.125.20.39/http://10.125.20.39/imcloud/http://10.125.20.39/imcloud/static/http://10.12">
 <meta name="keywords" content="SourceCodeReading">
 <meta property="og:type" content="article">
 <meta property="og:title" content="w13scan-扫描插件总结-PerFolder">
 <meta property="og:url" content="http://yoursite.com/2019/12/17/w13scan-扫描插件总结-PerFolder/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="整体流程图  PerFolder (每个目录)xxx  备份文件扫描:原理: 获取来自服务器的原始套接字响应即通过文件头来识别。 12345&amp;gt;&amp;gt;&amp;gt; r = requests.get(&apos;https://api.github.com/events&apos;, stream=True)&amp;gt;&amp;gt;&amp;gt; r.raw&amp;lt;requests.packages.urllib3.respons">
+<meta property="og:description" content="整体流程图  PerFolder (每个目录)比如有一个url为:http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg 拆解后的目录为: 123456http://10.125.20.39/http://10.125.20.39/imcloud/http://10.125.20.39/imcloud/static/http://10.12">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png">
 <meta property="og:image" content="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg">
-<meta property="og:updated_time" content="2019-12-18T12:21:40.765Z">
+<meta property="og:updated_time" content="2019-12-19T02:19:23.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="w13scan-扫描插件总结-PerFolder">
-<meta name="twitter:description" content="整体流程图  PerFolder (每个目录)xxx  备份文件扫描:原理: 获取来自服务器的原始套接字响应即通过文件头来识别。 12345&amp;gt;&amp;gt;&amp;gt; r = requests.get(&apos;https://api.github.com/events&apos;, stream=True)&amp;gt;&amp;gt;&amp;gt; r.raw&amp;lt;requests.packages.urllib3.respons">
+<meta name="twitter:description" content="整体流程图  PerFolder (每个目录)比如有一个url为:http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg 拆解后的目录为: 123456http://10.125.20.39/http://10.125.20.39/imcloud/http://10.125.20.39/imcloud/static/http://10.12">
 <meta name="twitter:image" content="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png">
 
 
@@ -347,7 +347,11 @@
       
         <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
 <hr>
-<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>xxx</p>
+<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
+<p>拆解后的目录为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
+
+<p>然后以这些目录url为基础,拼接url去扫描</p>
 <hr>
 <h3 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描:"></a>备份文件扫描:</h3><p>原理:</p>
 <p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
@@ -377,7 +381,11 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/config.inc</span><br><span class="line">/config.php.bak</span><br><span class="line">/db.php.bak</span><br><span class="line">/conf/config.ini</span><br><span class="line">/config.ini</span><br><span class="line">/config/config.ini</span><br><span class="line">/configuration.ini</span><br><span class="line">/configs/application.ini</span><br><span class="line">/settings.ini</span><br><span class="line">/application.ini</span><br><span class="line">/conf.ini</span><br><span class="line">/app.ini</span><br><span class="line">/config.json</span><br><span class="line">/a.out</span><br><span class="line">/key</span><br><span class="line">/keys</span><br><span class="line">/key.txt</span><br><span class="line">/temp.txt</span><br><span class="line">/tmp.txt</span><br><span class="line">/php.ini</span><br><span class="line">/sftp-config.json</span><br><span class="line">/index.php.bak</span><br><span class="line">/.index.php.swp</span><br><span class="line">/index.cgi.bak</span><br><span class="line">/config.inc.php.bak</span><br><span class="line">/.config.inc.php.swp</span><br><span class="line">/config/.config.php.swp</span><br><span class="line">/.config.php.swp</span><br><span class="line">/.settings.php.swp</span><br><span class="line">/.database.php.swp</span><br><span class="line">/.db.php.swp</span><br><span class="line">/.mysql.php.swp</span><br><span class="line">/readme</span><br><span class="line">/README</span><br><span class="line">/readme.md</span><br><span class="line">/readme.html</span><br><span class="line">/changelog.txt</span><br><span class="line">/%e6%9b%b4%e6%96%b0%e6%97%a5%e5%bf%97.txt</span><br><span class="line">/www.log</span><br><span class="line">/error.log</span><br><span class="line">/log.log</span><br><span class="line">/sql.log</span><br><span class="line">/errors.log</span><br><span class="line">/db.log</span><br><span class="line">/data.log</span><br><span class="line">/app.log</span><br><span class="line">/ntunnel_mysql.php</span><br></pre></td></tr></table></figure>
 
 <p>实际上的字典的格式为<code>{&#39;path&#39;: &#39;/config.inc&#39;, &#39;tag&#39;: &#39;&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;html&#39;}</code></p>
-<p>tag: html源码特征<br>content-type: 文件拓展名<br>content-type_no: 文件拓展名黑名单</p>
+<ul>
+<li><code>tag</code>: html源码特征</li>
+<li><code>content-type</code>: 文件拓展名</li>
+<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+</ul>
 <p>原理:</p>
 <p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
 <ol>
@@ -410,9 +418,18 @@
 <p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
 <p>匹配到则认为找到sftp</p>
 <hr>
-<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>xxxx</p>
+<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>规则格式和判定方式和敏感文件扫描一样。</p>
+<p>规则格式:<code>{&#39;path&#39;: &#39;/fckeditor/_samples/default.html&#39;, &#39;tag&#39;: &#39;&lt;title&gt;FCKeditor&#39;, &#39;content-type&#39;: &#39;html&#39;,
+                     &#39;content-type_no&#39;: &#39;&#39;}</code></p>
+<p>原理:</p>
+<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<ol>
+<li>符合html源码特征</li>
+<li>符合文件拓展名</li>
+<li>不在文件拓展名黑名单</li>
+</ol>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md" target="_blank" rel="noopener">w13scan</a></li>
 </ul>
 
@@ -587,7 +604,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程图"><span class="nav-number">1.</span> <span class="nav-text">整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PerFolder-每个目录"><span class="nav-number">1.1.</span> <span class="nav-text">PerFolder (每个目录)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#备份文件扫描"><span class="nav-number">1.1.1.</span> <span class="nav-text">备份文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录遍历"><span class="nav-number">1.1.2.</span> <span class="nav-text">目录遍历:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#敏感文件扫描"><span class="nav-number">1.1.3.</span> <span class="nav-text">敏感文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#idea-工作目录解析"><span class="nav-number">1.1.4.</span> <span class="nav-text">.idea 工作目录解析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpinfo探测解析"><span class="nav-number">1.1.5.</span> <span class="nav-text">phpinfo探测解析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-svn-bzr-hg泄漏"><span class="nav-number">1.1.6.</span> <span class="nav-text">git svn bzr hg泄漏:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sftp探测"><span class="nav-number">1.1.7.</span> <span class="nav-text">Sftp探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WEB编辑器探测"><span class="nav-number">1.1.8.</span> <span class="nav-text">WEB编辑器探测:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">2.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程图"><span class="nav-number">1.</span> <span class="nav-text">整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PerFolder-每个目录"><span class="nav-number">1.1.</span> <span class="nav-text">PerFolder (每个目录)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#备份文件扫描"><span class="nav-number">1.1.1.</span> <span class="nav-text">备份文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录遍历"><span class="nav-number">1.1.2.</span> <span class="nav-text">目录遍历:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#敏感文件扫描"><span class="nav-number">1.1.3.</span> <span class="nav-text">敏感文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#idea-工作目录解析"><span class="nav-number">1.1.4.</span> <span class="nav-text">.idea 工作目录解析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpinfo探测解析"><span class="nav-number">1.1.5.</span> <span class="nav-text">phpinfo探测解析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-svn-bzr-hg泄漏"><span class="nav-number">1.1.6.</span> <span class="nav-text">git svn bzr hg泄漏:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sftp探测"><span class="nav-number">1.1.7.</span> <span class="nav-text">Sftp探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WEB编辑器探测"><span class="nav-number">1.1.8.</span> <span class="nav-text">WEB编辑器探测:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">2.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
             
 
           </div>
