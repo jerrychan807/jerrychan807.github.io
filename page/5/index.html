@@ -252,6 +252,1060 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/23/Breacher-Go并发的管理员后台爆破工具/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/23/Breacher-Go并发的管理员后台爆破工具/" itemprop="url">Breacher-Go高并发管理员后台爆破工具</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-23T14:36:34+08:00">
+                2019-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="preface"><a href="#preface" class="headerlink" title="preface :"></a>preface :</h1><p><a href="https://github.com/s0md3v/Breacher" target="_blank" rel="noopener">Breacher</a>是由python写的多线程管理员后台爆破工具</p>
+<p>出于练手的目的,打算用golang重新造个轮子.</p>
+<p>github:<a href="https://github.com/jerrychan807/Breacher-Go" target="_blank" rel="noopener">Breacher-Go</a></p>
+<h1 id="并发"><a href="#并发" class="headerlink" title="并发:"></a>并发:</h1><p>python里面自然用得多的是多线程.<br>而go里面自然要用到<code>goroutine</code></p>
+<h1 id="go-goroutine"><a href="#go-goroutine" class="headerlink" title="go goroutine"></a>go goroutine</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h2><p>在Go语言中，<strong>每一个并发的执行单元叫作一个<code>goroutine</code></strong></p>
+<p>当一个程序启动时，其主函数即在一个单独的<code>goroutine</code>中运行，我们叫它<code>main goroutine</code>。</p>
+<p>新的<code>goroutine</code>会用<code>go</code>语句来创建。</p>
+<p>在语法上，go语句是一个普通的函数或方法调用前加上<strong>关键字<code>go</code></strong>。</p>
+<p>go语句会使其语句中的函数在一个新创建的<code>goroutine</code>中运行。而go语句本身会迅速地完成。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f()    <span class="comment">// call f(); wait for it to return</span></span><br><span class="line"><span class="keyword">go</span> f() <span class="comment">// create a new goroutine that calls f(); don't wait</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在Go语言中，语言本身就已经实现和支持了并发,所以写起并发来相当方便.</p>
+</blockquote>
+<h2 id="goroutine的优势"><a href="#goroutine的优势" class="headerlink" title="goroutine的优势:"></a>goroutine的优势:</h2><p>gouroutine其实就是一种协程，类似其他语言中的coroutine， 是在编译器或虚拟机层面上的多任务。</p>
+<p>它可以运行在一个或多个线程上，但不同于线程，它是<strong>非抢占式</strong>的，所以协程很轻量。</p>
+<h1 id="简单的并发方案1"><a href="#简单的并发方案1" class="headerlink" title="简单的并发方案1"></a>简单的并发方案1</h1><p>简单的做法:</p>
+<ul>
+<li>将需要处理的Url分成n等份</li>
+<li>开启n个goroutine去消费掉url</li>
+</ul>
+<ol>
+<li>将需要处理的Url分成n等份</li>
+</ol>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">divided</span><span class="params">(links []<span class="keyword">string</span>, goroutineNum <span class="keyword">int</span>)</span> [][]<span class="title">string</span></span> &#123;</span><br><span class="line">	chunkSize := (<span class="built_in">len</span>(links) + goroutineNum - <span class="number">1</span>) / goroutineNum</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dividedPath [][]<span class="keyword">string</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(links); i += chunkSize &#123;</span><br><span class="line">		end := i + chunkSize</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> end &gt; <span class="built_in">len</span>(links) &#123;</span><br><span class="line">			end = <span class="built_in">len</span>(links)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		dividedPath = <span class="built_in">append</span>(dividedPath, links[i:end])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> dividedPath</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.开启n个goroutine去消费掉url</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">dividedLinks := divided(collected_path, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> _, link := <span class="keyword">range</span> dividedLinks &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"%#v\n"</span>, <span class="built_in">len</span>(link))</span><br><span class="line">	wg.Add(<span class="number">1</span>) <span class="comment">// Increment the WaitGroup counter.</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(link []<span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">		<span class="comment">// Launch a goroutine to fetch the link.</span></span><br><span class="line">		scan(start_url, link)</span><br><span class="line">		<span class="comment">// Fetch the link.</span></span><br><span class="line">		wg.Done()</span><br><span class="line">	&#125;(link)</span><br><span class="line">&#125;</span><br><span class="line">wg.Wait() <span class="comment">// Wait for all goroutines to finish.</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="速度比较"><a href="#速度比较" class="headerlink" title="速度比较:"></a>速度比较:</h1><h2 id="自身速度比较"><a href="#自身速度比较" class="headerlink" title="自身速度比较:"></a>自身速度比较:</h2><p>go 不用并发消耗的时间:</p>
+<p>不同网络环境下的消耗时间:</p>
+<ol>
+<li><p><code>elapsed time:  1.951978378s</code> (5个goroutine)</p>
+</li>
+<li><p><code>elapsed time:  11.353934431s</code></p>
+</li>
+<li><p><code>elapsed time:  35.50535812s</code> (5个goroutine)</p>
+</li>
+<li><p><code>elapsed time:  2m32.608078161s</code></p>
+</li>
+</ol>
+<h2 id="与python的速度比较"><a href="#与python的速度比较" class="headerlink" title="与python的速度比较:"></a>与python的速度比较:</h2><p>python:<br>2个线程:<code>74.5581650734s</code></p>
+<p>go:<br>2个goroutine<br><code>elapsed time:  1m10.233281137s</code></p>
+<p>速度几乎是一样的,并非是想象中那样,go会比python快很多.</p>
+<blockquote>
+<p>question: 什么场景下goroutine会比python的thread有优势?</p>
+</blockquote>
+<hr>
+<h1 id="减少误报"><a href="#减少误报" class="headerlink" title="减少误报:"></a>减少误报:</h1><h2 id="最快的方式"><a href="#最快的方式" class="headerlink" title="最快的方式:"></a>最快的方式:</h2><p>最快的方式就是用<code>head</code>请求,然后通过<code>response code</code>判断,如果是<code>200</code>则认为存在.</p>
+<p>但是这样在实际应用过程中,很有可能会产生大量的误报.</p>
+<blockquote>
+<p>使用御剑爆破网站路径的时候,同理也会产生大量的误报.</p>
+</blockquote>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子:"></a>例子:</h2><p>Response code是200</p>
+<p>大量误报:<br><img src="https://i.loli.net/2019/04/25/5cc1d6df955e8.jpg" alt=""></p>
+<p>误报结果:<br><img src="https://i.loli.net/2019/04/25/5cc1d6e0776ac.jpg" alt=""></p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h2><p>暂时能想到的原因有:</p>
+<ul>
+<li>网站本身会自定义错误或者404页面</li>
+<li>网站有防护设备,会自动重定向到别的页面</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>找到管理员的后台的目的,通常是为了暴力破解,尝试用弱密码进入到管理员的后台.</p>
+<p>那么就是有个共同点就是有登录页面</p>
+<p>密码框常用到是<code>input</code>标签的 type属性设为<code>password</code><br><img src="https://i.loli.net/2019/04/25/5cc1d6e141448.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6e1e2da6.jpg" alt=""></p>
+<p>解决方案：</p>
+<ul>
+<li>用<code>get</code>方法获取登录页面源码</li>
+<li>Response code 为200的同时,页面源码含有<code>type=&quot;password&quot;</code></li>
+</ul>
+<p>结果确实是大大减少了误报</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g0j41hdln4j30ou0pewte.jpg" alt=""></p>
+<blockquote>
+<ol>
+<li>大字典的情况下,<code>get</code>方法的速度肯定会比<code>head</code>方法慢很多,哎,速度与准确性常常难以并存啊~</li>
+<li>减少误报的同时,则会产生漏报问题…</li>
+</ol>
+</blockquote>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://studygolang.com/articles/13875" target="_blank" rel="noopener">图解 Go 并发编程</a></li>
+<li><a href="https://www.kancloud.cn/hartnett/gopl-zh/126058" target="_blank" rel="noopener">第八章 Goroutines和Channels</a></li>
+<li><a href="https://juejin.im/entry/5acac667518825619d4d0f44" target="_blank" rel="noopener">Golang并发编程</a></li>
+<li><a href="https://blog.csdn.net/john_f_lau/article/details/50923380" target="_blank" rel="noopener">Go计算运行的时间</a></li>
+<li><a href="https://stackoverflow.com/questions/35179656/slice-chunking-in-go" target="_blank" rel="noopener">Slice chunking in Go</a></li>
+</ul>
+<h1 id="question"><a href="#question" class="headerlink" title="question:"></a>question:</h1><ol>
+<li>什么场景下goroutine会比python的thread有优势?</li>
+<li>减少误报的同时如何减少漏报?</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/22/Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/22/Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析/" itemprop="url">Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T00:49:00+08:00">
+                2019-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
+                    <span itemprop="name">VulnAnalysis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="安装漏洞环境"><a href="#安装漏洞环境" class="headerlink" title="安装漏洞环境:"></a>安装漏洞环境:</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6ea9ebae.jpg" alt=""></p>
+<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现:"></a>漏洞复现:</h1><p>poc:<code>[Host]/admin/login/login_check.php?url_array[]=&lt;script&gt;alert(1)&lt;/script&gt;&amp;url_array[]=a</code></p>
+<p>管理员登录后台-安全与效率,触发xss</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6eb902ff.jpg" alt=""></p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><h2 id="粗略猜测"><a href="#粗略猜测" class="headerlink" title="粗略猜测:"></a>粗略猜测:</h2><p>引入了外部变量,直接修改了数据库该值<br><img src="https://i.loli.net/2019/04/25/5cc1d6ec922f7.jpg" alt=""></p>
+<p><code>/MetInfo6.1.3/app/system/safe/admin/index.class.php</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6ed68069.jpg" alt=""></p>
+<p>查询数据库发现被是加密后的字段:</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6ee20e9c.jpg" alt=""></p>
+<p>解密后应该就是<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+<hr>
+<h2 id="跟踪分析"><a href="#跟踪分析" class="headerlink" title="跟踪分析:"></a>跟踪分析:</h2><h3 id="common-inc-php"><a href="#common-inc-php" class="headerlink" title="common.inc.php"></a>common.inc.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6ef6f74c.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">foreach(array(&apos;_COOKIE&apos;, &apos;_POST&apos;, &apos;_GET&apos;) as $_request) &#123;</span><br><span class="line">	foreach($$_request as $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;0&#125; != &apos;_&apos; &amp;&amp; $$_key = daddslashes($_value,0,0,1);</span><br><span class="line">		$_M[&apos;form&apos;][$_key]=daddslashes($_value,0,0,1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候,引入了外部变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code></p>
+<p>这个循环会遍历全局变量<code>_COOKIE</code>,<code>_POST</code>, <code>_GET</code>，然后对里面的值进行过滤,然后赋值到<code>$_M[form]</code></p>
+<p>进入循环之前,<code>$_M</code>变量的值为</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f01e788.jpg" alt=""></p>
+<p>结束循环时,出现了变量覆盖,<code>$_M</code>变量的值为</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f0e6c11.jpg" alt=""></p>
+<blockquote>
+<p>code mix with data.</p>
+</blockquote>
+<h3 id="login-check-php"><a href="#login-check-php" class="headerlink" title="login_check.php"></a>login_check.php</h3><p><img src="https://i.loli.net/2019/04/25/5cc1d6f2717ec.jpg" alt=""></p>
+<p>payload经过<code>authcode</code>函数加密后.更新入了表<code>met_config</code>里的<code>met_adminfile</code>字段</p>
+<hr>
+<p>攻击者将payload注入到数据库后,管理员访问后台的安全与效率,触发xss时发生了什么?</p>
+<p>### </p>
+<p><code>load_class.php</code> 加载模块</p>
+<p>加载了<code>app/system/index/admin/</code>下的<code>index</code> 类,调用里面的<code>doindex</code>函数</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6f434e32.jpg" alt=""></p>
+<p><code>index</code> 类继承了 <code>admin</code>类</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span> <span class="keyword">extends</span> <span class="title">admin</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>admin</code> 类继承了 <code>common</code>类</p>
+<h3 id="common-class-php"><a href="#common-class-php" class="headerlink" title="common.class.php"></a>common.class.php</h3><p><code>common</code>类 构造函数里面,加载了全站的配置数据</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0ehqbi24wj30u00iatgb.jpg" alt=""></p>
+<p>load_config_global函数,先读取了数据库的配置到<code>$M</code>全局数组中,</p>
+<p>此时的<code>met_adminfile</code>还没解密<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g0ehy76stbj31aq0f87dx.jpg" alt=""></p>
+<p>经过<code>authcode</code>解密函数后,<br><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0ehzt6b3ij323s09kk3c.jpg" alt=""></p>
+<p>可以看到<code>met_adminfile</code>就是我们的payload<br><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ei0nueppj30nc0ee7ah.jpg" alt=""></p>
+<h3 id="admin-class-php"><a href="#admin-class-php" class="headerlink" title="admin.class.php"></a>admin.class.php</h3><p>执行<code>check()</code>函数:</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0ei492hgej31iu0geqd7.jpg" alt=""></p>
+<p>将$M全局数组里的值赋给了<code>$met_adminfile</code></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g0ei5dwdf4j32580e04mv.jpg" alt=""></p>
+<h3 id="加载页面"><a href="#加载页面" class="headerlink" title="加载页面:"></a>加载页面:</h3><p>先加载渲染了侧边栏、头部底部之后,最后才加载渲染<code>/app/system/safe/admin/index.class.php</code></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0eiv8ks2vj328p0u0e81.jpg" alt=""></p>
+<hr>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h2><ul>
+<li><code>login_check.php</code> 10行 包含了<code>../include/common.inc.php</code></li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0egz5zgcwj30h600qaah.jpg" alt=""></p>
+<ul>
+<li><code>common.inc.php</code> 79-84行,循环赋值给<code>$M</code>数组时产生了变量覆盖</li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1g0egzvve8tj3102068791.jpg" alt=""></p>
+<ul>
+<li><code>login_check.php</code> 13-18行,将payload加密后更新入了表<code>met_config</code>里的<code>met_adminfile</code>字段</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g0eh167azuj327e05w124.jpg" alt=""></p>
+<hr>
+<h1 id="others"><a href="#others" class="headerlink" title="others:"></a>others:</h1><p>造成变量覆盖时使用的语法.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$hell=<span class="string">"abc"</span>; $$hell=<span class="string">"def"</span>;等同于$abc=<span class="string">"def"</span></span><br><span class="line"></span><br><span class="line">$_request = _GET</span><br><span class="line">$$_request = $_GET</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这是个trick?</p>
+</blockquote>
+<hr>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考:"></a>思考:</h1><ul>
+<li>善用搜索,加对断点可以加快跟踪调试的速度</li>
+<li>一开始粗略猜测,可以知道大体的思路</li>
+<li>对前端页面进行元素查看,也可以方便加断点,加快速度</li>
+</ul>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://blog.csdn.net/dl425134845/article/details/49616557" target="_blank" rel="noopener">php下session_cache_limiter(private,must-revalidate)–表单填写内容不丢失</a></li>
+<li><a href="https://www.anquanke.com/post/id/169456" target="_blank" rel="noopener">Metinfo 6.x存储型XSS分析（CVE-2018-20486）</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/13/记录-简单的代码离线更新方案/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/13/记录-简单的代码离线更新方案/" itemprop="url">记录-简单的代码离线更新方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">
+                2019-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
+<hr>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
+<p>两者的区别:</p>
+<p><a href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle" target="_blank" rel="noopener">Which is better to use and why? git format-patch or git bundle?</a></p>
+<blockquote>
+<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
+</blockquote>
+<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
+<hr>
+<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
+<ul>
+<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
+<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
+<li>可能你的无线、有线网卡坏掉了。 </li>
+<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
+</ul>
+<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
+<hr>
+<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
+
+<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
+<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
+</blockquote>
+<blockquote>
+<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
+</blockquote>
+<blockquote>
+<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
+</blockquote>
+<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】-n</span><br></pre></td></tr></table></figure>
+
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
+
+<p>某两次提交之间的所有patch:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 id】..【commit sha1 id】</span><br></pre></td></tr></table></figure>
+
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch/diff是否能正常打入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
+<p>打入patch/diff:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
+<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
+<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
+<hr>
+<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
+<li>更新包生成端:<ul>
+<li>分别生成各个项目的<code>bundle</code>文件</li>
+<li>加密压缩成<code>zip</code>文件</li>
+</ul>
+</li>
+<li>更新包使用端:<ul>
+<li>用密钥解密压缩包</li>
+<li>到指定目录移除原来的项目,执行<code>git clone</code> </li>
+</ul>
+</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg" alt=""></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="http://www.mottoin.com/article/network/97143.html" target="_blank" rel="noopener">巡风在隔离网络环境下的离线更新方案</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/33208607" target="_blank" rel="noopener">携程无线离线包增量更新方案实践</a></li>
+<li><a href="https://gitee.com/liujin0506/autopatch" target="_blank" rel="noopener">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
+<li><a href="https://blog.csdn.net/jinweilin/article/details/78356860" target="_blank" rel="noopener">git打两个版本的增量包</a></li>
+<li><a href="https://www.jianshu.com/p/ec04de3f95cc" target="_blank" rel="noopener">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
+<li><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85" target="_blank" rel="noopener">Git 工具 - 打包</a></li>
+<li><a href="https://github.com/an23lm/GitBundlePlus" target="_blank" rel="noopener">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
+<li><a href="https://blog.csdn.net/sinat_20059415/article/details/80598347" target="_blank" rel="noopener">git 打补丁方法总结</a></li>
+<li><a href="https://blog.csdn.net/kangear/article/details/39675421" target="_blank" rel="noopener">Git打补丁常见问题</a></li>
+<li><a href="https://www.cnblogs.com/y041039/articles/2411600.html" target="_blank" rel="noopener">Git的Patch功能</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/16/获取masscan的扫描进度/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/16/获取masscan的扫描进度/" itemprop="url">获取masscan的扫描进度</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-16T10:36:34+08:00">
+                2019-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Preface"><a href="#Preface" class="headerlink" title="Preface:"></a>Preface:</h1><p>一开始打算通过<code>subprocess</code>模块来调用<code>masscan</code>,然后获取它输出的进度。</p>
+<p>但是发现它的进度输出是覆盖刷新输出的。</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d74ccaa35.jpg" alt=""></p>
+<p>这个时候，<code>subprocess</code>就无法获得它的输出了。</p>
+<p>想了下,<code>masscan</code>这个刷新输出应该是优化过的结果,避免打印出太多重复无效的信息。</p>
+<p>这个时候,我们只要修改一下它的输出就可以达到效果.</p>
+<hr>
+<h1 id="修改源码"><a href="#修改源码" class="headerlink" title="修改源码:"></a>修改源码:</h1><p>搜索了一下,参考:<a href="https://blog.csdn.net/zhanghuoding/article/details/52041120" target="_blank" rel="noopener">C语言实现在控制台同一行覆盖刷新输出，以及’\b’退格控制字符的使用</a></p>
+<p>知道<code>printf(&quot;\r&quot;);</code>是可以做到刷新输出的效果的。</p>
+<p>搜索关键字:<code>rate:</code></p>
+<p>定位到<code>main-status.c</code>这个文件</p>
+<p>修改这一行.将覆盖刷新输出改成 换行输出。<br><img src="https://i.loli.net/2019/04/25/5cc1d74dc815b.jpg" alt=""></p>
+<p>重新编译运行.</p>
+<p>可以看到效果:</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d74f398a5.jpg" alt=""></p>
+<hr>
+<h2 id="获取进度百分比"><a href="#获取进度百分比" class="headerlink" title="获取进度百分比:"></a>获取进度百分比:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getPercentageNum</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    正则匹配百分比数字</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    re_pattern = <span class="string">r"(\d&#123;1,2&#125;.\d&#123;1,2&#125;)\%"</span></span><br><span class="line">    num_match_list = re.findall(re_pattern, content)</span><br><span class="line">    <span class="keyword">if</span> num_match_list:</span><br><span class="line">        <span class="keyword">return</span> num_match_list[<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cmd = shlex.split(shell_cmd)</span><br><span class="line"><span class="keyword">print</span> cmd</span><br><span class="line">        </span><br><span class="line">p = subprocess.Popen(cmd, shell=<span class="keyword">False</span>, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)</span><br><span class="line"><span class="keyword">while</span> p.poll() <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    line = p.stdout.readline()</span><br><span class="line">    line = line.strip()</span><br><span class="line">    <span class="keyword">if</span> line:</span><br><span class="line">        print(<span class="string">'percentage: [&#123;&#125;]'</span>.format(line))</span><br><span class="line">        <span class="keyword">print</span> getPercentageNum(line)</span><br></pre></td></tr></table></figure>
+
+<p>通过上面两个函数,就可以获取到 扫描的进度百分比了.</p>
+<h1 id="另一种思路"><a href="#另一种思路" class="headerlink" title="另一种思路:"></a>另一种思路:</h1><p>开启一个msscan,按下回车键的时候,会再次输出进度。</p>
+<p>或许可以与进程通信,然后发送信号,来获取进度信息。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/" itemprop="url">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T22:36:34+08:00">
+                2019-01-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
+                    <span itemprop="name">VulnAnalysis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>未开启debug模式,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg" alt=""></p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析:"></a>漏洞分析:</h1><p>定位关键代码:</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg" alt=""></p>
+<p>第525行: 读取了配置文件的<code>var_method</code>,</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg" alt=""></p>
+<p>并赋值</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
+
+<p>第526行: </p>
+<p>引用了外部变量$POST</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg" alt=""></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;method&#125;($_POST);</span><br></pre></td></tr></table></figure>
+
+<p>执行结果:</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d70444143.jpg" alt=""></p>
+<p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7055332e.jpg" alt=""></p>
+<p>构造函数引入了外部变量,准备创建一个新实例</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d705c5a02.jpg" alt=""></p>
+<p>这个实例的属性</p>
+<ul>
+<li><code>$method</code>被设置成了<code>get</code></li>
+<li><code>$get</code>方法的请求参数被设置成了一个array,值为<code>whoami</code></li>
+<li>全局过滤规则<code>$filter</code>被设置成了一个array,值为<code>system</code></li>
+</ul>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7068e01a.jpg" alt=""></p>
+<p>这个时候实例的初始化完成了。</p>
+<p>跳回到了<code>Route.php</code>检测URL路由的函数<code>check()</code>,这个时候的<code>method</code>值为<code>get</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d707cf7fd.jpg" alt=""></p>
+<p>经过一连串检测之后,</p>
+<p><code>App.php</code>run()函数对请求执行调用分发</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d70872afc.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt=""></p>
+<p>继续跟进，</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt=""></p>
+<p>调用栈:</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt=""></p>
+<ul>
+<li><code>param()</code>获取当前请求的参数</li>
+<li><code>method()</code>当前的请求类型</li>
+<li><code>server()</code>获取server参数</li>
+<li><code>input()</code>获取变量 支持过滤和默认值</li>
+<li><code>getFilter()</code>获取过滤方法</li>
+</ul>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt=""></p>
+<p>这个时候我们之前创建的请求实例的<code>filter</code>方法为<code>system</code></p>
+<p>继续</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt=""></p>
+<ul>
+<li><code>param()</code>获取当前请求的参数</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt=""></p>
+<ul>
+<li><code>get()</code>设置获取GET参数</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt=""></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt=""></p>
+<ul>
+<li><code>input()</code>获取变量 支持过滤和默认值</li>
+</ul>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt=""></p>
+<ul>
+<li><code>array_walk_recursive()</code></li>
+<li><code>filterValue</code>递归过滤给定的值<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt=""></li>
+</ul>
+<p>执行结果:</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt=""></p>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://xz.aliyun.com/t/3845" target="_blank" rel="noopener">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></li>
+<li><a href="https://blog.csdn.net/u012903789/article/details/82433160" target="_blank" rel="noopener">php://input</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/子域名搜集/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1144,703 +2198,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/20/BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析/" itemprop="url">BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T00:49:00+08:00">
-                2018-06-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index">
-                    <span itemprop="name">VulnAnalysis</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="略读代码："><a href="#略读代码：" class="headerlink" title="略读代码："></a>略读代码：</h1><p>开头包含了文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &apos;/include/common.inc.php&apos;);</span><br></pre></td></tr></table></figure>
-
-<p>该文件中,<strong>全局数据转义</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
-
-<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br><img src="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg" alt=""></p>
-<hr>
-<h1 id="转换思路："><a href="#转换思路：" class="headerlink" title="转换思路："></a>转换思路：</h1><blockquote>
-<p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
-</blockquote>
-<p>参考一下：<a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></p>
-<p>可以发现对数据的注入，进行了<strong>加斜杠转义</strong>的操作。那么接下来找注入思路主要有以下3点：</p>
-<ul>
-<li>找<strong>整数型注入</strong></li>
-<li>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong><ul>
-<li><img src="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg" alt="">  </li>
-</ul>
-</li>
-<li><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</li>
-</ul>
-<hr>
-<h1 id="尝试宽字节注入："><a href="#尝试宽字节注入：" class="headerlink" title="尝试宽字节注入："></a>尝试宽字节注入：</h1><ul>
-<li>抓包修改<code>admin_name=%df%27+or+1%3D1%23</code></li>
-<li>明文就是<code>%df&#39; or 1=1#</code></li>
-<li>单引号被转义后变成<code>%df\&#39; or 1=1#</code></li>
-<li>宽字节注入是利用mysql的一个特性,因为gbk是多字节编码，他认为两个字节代表一个汉字，所以<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来，就可以成功闭合sql语句了</li>
-<li>再加上后面的<code>or 1=1 #</code>就构造成了永真语句，可以成功免密登录管理员后台了</li>
-</ul>
-<hr>
-<h1 id="理解宽字节："><a href="#理解宽字节：" class="headerlink" title="理解宽字节："></a>理解宽字节：</h1><p>参考:<a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></p>
-<ul>
-<li><p>本质是如何绕过addslashes函数：</p>
-</li>
-<li><p>addslashes函数产生的效果就是，让<code>’</code>变成<code>\’</code>，让引号变得不再是“单引号”</p>
-</li>
-<li><p>一般绕过方式就是，想办法处理<code>\’</code>前面的<code>\</code></p>
-<ul>
-<li>想办法给\前面再加一个\（或单数个即可），变成<code>\\’</code>，这样<code>\</code>被转义了，<code>’</code>逃出了限制</li>
-<li>想办法把<code>\</code>弄没有。</li>
-</ul>
-</li>
-<li><p>mysql怎么判断一个字符是不是汉字?</p>
-<ul>
-<li>根据gbk编码，第一个字节ascii码大于128，基本上就可以了。比如我们不用<code>%df</code>，用<code>%a1</code>也可以 </li>
-</ul>
-</li>
-<li><p>gb2312和gbk的区别？</p>
-<ul>
-<li>gb2312编码的取值范围。它的高位范围是<code>0xA1~0xF7</code>，低位范围是<code>0xA1~0xFE</code>，而<code>\</code>是<code>0x5c</code>，是不在低位范围中的。</li>
-<li><code>0x5c</code>根本不是gb2312中的编码，所以自然也是不会被吃掉的。 </li>
-</ul>
-</li>
-</ul>
-<p>修复方案1：</p>
-<ul>
-<li><p>先调用mysql_set_charset函数设置连接所使用的字符集为gbk</p>
-</li>
-<li><p>再调用mysql_real_escape_string来过滤用户输入。</p>
-</li>
-<li><p>这个方式是可行的，但有部分老的cms，在多处使用addslashes来过滤字符串，我们不可能去一个一个把addslashes都修改成mysql_real_escape_string。</p>
-</li>
-</ul>
-<p>所以有修复方案2：</p>
-<ul>
-<li>将character_set_client设置为binary（二进制）。</li>
-<li>只需在所有sql语句前指定一下连接的形式是二进制：<br><code>mysql_query(&quot;SET character_set_connection=gbk, character_set_results=gbk,character_set_client=binary&quot;, $conn);</code></li>
-<li>所有数据以二进制的形式传递，就能有效避免宽字符注入。</li>
-</ul>
-<hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><h2 id="requests不进行urldecode："><a href="#requests不进行urldecode：" class="headerlink" title="requests不进行urldecode："></a>requests不进行urldecode：</h2><p>参考：<a href="https://zhidao.baidu.com/question/1510942862655764300.html" target="_blank" rel="noopener">如何在requests post时不做urlencode</a><br>There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
-<p>并且加上<code>headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}</code></p>
-<h2 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h2><p><img src="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg" alt=""></p>
-<p><a href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py" target="_blank" rel="noopener">poc链接</a></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>阅读源码的时候，先看看全局过滤</li>
-<li>gb2312、gbk编码的话，考虑宽字节注入</li>
-<li>宽字节注入的原理是 gbk是<strong>多字节编码</strong>，他认为两个字节代表一个汉字，所以可以用<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来</li>
-</ul>
-<hr>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
-<li><a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/" target="_blank" rel="noopener">【Code Review】bluecms v1.6 Sql Injection 分析</a></li>
-<li><a href="http://www.freebuf.com/articles/web/31537.html" target="_blank" rel="noopener">浅析白盒审计中的字符编码及SQL注入</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/03/记录-日志分析环境搭建/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/03/记录-日志分析环境搭建/" itemprop="url">记录-日志分析环境搭建</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-03T14:36:34+08:00">
-                2018-06-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="下载-amp-安装："><a href="#下载-amp-安装：" class="headerlink" title="下载&amp;安装："></a>下载&amp;安装：</h1><h2 id="java1-8"><a href="#java1-8" class="headerlink" title="java1.8:"></a>java1.8:</h2><p>卸载：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rpm -qa|grep java           ／／ 查看jdk的信息</span><br></pre></td></tr></table></figure>
-
-<p>一般将获得如下信息：<br>java-1.4.2-gcj-compat-1.4.2.0-40jpp.115<br>java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># yum -y remove java java-1.4.2-gcj-compat-1.4.2.0-40jpp.115／／ 卸载  </span><br><span class="line">yum -y remove  java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-cookies --no-check-certificate --header &quot;Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie&quot; &quot;http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm&quot;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="xampp"><a href="#xampp" class="headerlink" title="xampp:"></a>xampp:</h2><p><a href="https://www.cnblogs.com/caicaizi/p/5107834.html" target="_blank" rel="noopener">原创）CentOS6.4下安装xampp（一定要在linux上下载）</a></p>
-<p><a href="zerfew.blog.163.com/blog/static/193810169201511224353649/">RedHat中xampp的lampp开启失败提示“aaa proftpd[48908]:warning: unable to determine IP address of ‘aaa’”解决办法</a></p>
-<hr>
-<p>dvwa环境:<code>http://192.168.199.244:8080/dvwa/index.php</code></p>
-<hr>
-<h2 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch:"></a>Elasticsearch:</h2><p><code>wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.1.rpm</code></p>
-<p><code>sudo rpm --install elasticsearch-5.6.1.rpm</code></p>
-<ul>
-<li><a href="www.cnblogs.com/yswenli/p/6397351.html">centos 7安装es 及异常处理</a></li>
-<li><a href="https://blog.csdn.net/feinifi/article/details/73633235?utm_source=itdadao&utm_medium=referral" target="_blank" rel="noopener">elasticsearch启动错误</a></li>
-</ul>
-<hr>
-<h3 id="ElasticSearch分词器设置"><a href="#ElasticSearch分词器设置" class="headerlink" title="ElasticSearch分词器设置"></a>ElasticSearch分词器设置</h3><p><code>http://192.168.0.38:9200/_template/web_apache_template</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;template&quot;: &quot;web-apache-*&quot;,</span><br><span class="line">  &quot;order&quot;:2,</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;  </span><br><span class="line">      &quot;analyzer&quot;: &#123;   </span><br><span class="line">        &quot;charSplit&quot;: &#123;  </span><br><span class="line">          &quot;type&quot;: &quot;custom&quot;,  </span><br><span class="line">              &quot;tokenizer&quot;: &quot;ngram_tokenizer&quot;  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;,  </span><br><span class="line">     &quot;tokenizer&quot;: &#123;  </span><br><span class="line">           &quot;ngram_tokenizer&quot;: &#123;  </span><br><span class="line">             &quot;type&quot;: &quot;nGram&quot;,  </span><br><span class="line">             &quot;min_gram&quot;: &quot;1&quot;,  </span><br><span class="line">             &quot;max_gram&quot;: &quot;1&quot;,  </span><br><span class="line">             &quot;token_chars&quot;: [  </span><br><span class="line">               &quot;letter&quot;,  </span><br><span class="line">               &quot;digit&quot;,  </span><br><span class="line">               &quot;punctuation&quot;  </span><br><span class="line">             ]  </span><br><span class="line">           &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;  </span><br><span class="line">  &#125;,&quot;mappings&quot;: &#123;</span><br><span class="line"></span><br><span class="line">    &quot;apache-access&quot;: &#123;</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">            &quot;raw_request&quot;: &#123;  </span><br><span class="line">					     &quot;type&quot;: &quot;text&quot;,  </span><br><span class="line">					     &quot;store&quot;: &quot;yes&quot;,  </span><br><span class="line">					     &quot;analyzer&quot;: &quot;charSplit&quot;</span><br><span class="line">					&#125;,  </span><br><span class="line">            &quot;method&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;offset&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;long&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;auth&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;input_type&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">            &quot;http_version&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;float&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;read_timestamp&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;date&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;source&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;type&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;tags&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;@timestamp&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;date&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;bytes&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;long&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;@version&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;beat&quot;: &#123;</span><br><span class="line">                &quot;properties&quot;: &#123;</span><br><span class="line">                    &quot;hostname&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;name&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;version&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;host&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;client_ip&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;status&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash:"></a>Logstash:</h2><p><code>wget https://artifacts.elastic.co/downloads/logstash/logstash-5.6.1.rpm</code></p>
-<p><code>sudo rpm --install logstash-5.6.1.rpm</code></p>
-<hr>
-<h2 id="Kibana"><a href="#Kibana" class="headerlink" title="Kibana:"></a>Kibana:</h2><p><code>wget https://artifacts.elastic.co/downloads/kibana/kibana-5.6.1-x86_64.rpm</code></p>
-<p><code>sudo rpm --install kibana-5.6.1-x86_64.rpm</code></p>
-<p>修改<code>/etc/kibana/kibana.yml</code><br>添加<code>server.host:0.0.0.0</code></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/Celery-任务调度框架实践/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/Celery-任务调度框架实践/" itemprop="url">Celery-任务调度框架实践</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T22:37:44+08:00">
-                2018-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
-<li><p>Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。</p>
-</li>
-<li><p>Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。</p>
-</li>
-<li><p>Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。</p>
-</li>
-<li><p>Producer：调用了Celery提供的API、函数或者装饰器而产生任务并交给任务队列处理的都是任务生产者。</p>
-</li>
-<li><p>Result Backend：任务处理完后保存状态信息和结果，以供查询。Celery默认已支持Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy等方式。</p>
-</li>
-</ol>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg" alt=""></p>
-<hr>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化:"></a>初始化:</h1><h2 id="1-运行celery"><a href="#1-运行celery" class="headerlink" title="1.运行celery"></a>1.运行celery</h2><p>mac环境下的celery一下载就能直接运行。<br>但是centos6.9 环境下好像下载之后并不能直接运行，估计是环境变量没有配好。<br>需要加上celery的安装路径。<br>使用<code>/usr/local/bin/celery -A your_app worker --loglevel=info</code></p>
-<hr>
-<h2 id="2-以守护进程运行celery"><a href="#2-以守护进程运行celery" class="headerlink" title="2.以守护进程运行celery:"></a>2.以守护进程运行celery:</h2><p>需要一个初始化脚本：celeryd</p>
-<ul>
-<li><p>使用方法：/etc/init.d/celeryd {start|stop|restart|status}</p>
-</li>
-<li><p>配置文件:/etc/default/celeryd</p>
-</li>
-</ul>
-<p>参考：</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/14275821/how-to-run-celery-as-a-daemon-in-production" target="_blank" rel="noopener">How to run celery as a daemon in production?</a></li>
-<li><a href="http://blog.csdn.net/happyAnger6/article/details/51626516" target="_blank" rel="noopener">Celery教程————-以守护进程方式运行worker</a></li>
-</ul>
-<hr>
-<h2 id="3-使用redis"><a href="#3-使用redis" class="headerlink" title="3.使用redis:"></a>3.使用redis:</h2><p>mac下安装redis</p>
-<ul>
-<li>brew install redis</li>
-<li>如果需要后台运行 redis 服务，使用命令 brew services start redis</li>
-<li>如果不需要后台服务，则使用命令 redis-server /usr/local/etc/redis.conf。</li>
-<li><a href="https://www.jianshu.com/p/3bdfda703552" target="_blank" rel="noopener">mac os 安装 redis</a></li>
-</ul>
-<p>安装redis后，启动时指定配置文件</p>
-<ul>
-<li><code>redis-server ./redis.conf</code></li>
-</ul>
-<p>检测后台进程是否存在  </p>
-<ul>
-<li><code>ps -ef |grep redis</code></li>
-</ul>
-<p>使用分布式时，其他worker机子无法访问redis去取任务：</p>
-<ul>
-<li>redis默认的安全策略，只准许本地访问。</li>
-<li>需要通过简单配置，完成允许外网访问。</li>
-<li>参考：<a href="http://www.cnblogs.com/likwo/p/5903377.html" target="_blank" rel="noopener">开启redis 允许外网IP 访问</a></li>
-</ul>
-<hr>
-<h1 id="celery基本操作命令："><a href="#celery基本操作命令：" class="headerlink" title="celery基本操作命令："></a>celery基本操作命令：</h1><p>参考：</p>
-<ul>
-<li><a href="http://funhacks.net/explore-python/Third-Party-Modules/celery.html" target="_blank" rel="noopener">Celery基础操作</a></li>
-<li><a href="http://blog.csdn.net/libing_thinking/article/category/7287529" target="_blank" rel="noopener">Celery-4.1 用户指南</a></li>
-</ul>
-<hr>
-<h1 id="celery-worker"><a href="#celery-worker" class="headerlink" title="celery worker:"></a>celery worker:</h1><h2 id="1-启动worker"><a href="#1-启动worker" class="headerlink" title="1.启动worker:"></a>1.启动worker:</h2><ul>
-<li><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></li>
-</ul>
-<hr>
-<h2 id="2-停止worker"><a href="#2-停止worker" class="headerlink" title="2.停止worker:"></a>2.停止worker:</h2><p><code>ps auxww | grep &#39;celery worker&#39; | awk &#39;{print $2}&#39; | xargs kill -9</code></p>
-<hr>
-<h2 id="3-在celery中使用多进程："><a href="#3-在celery中使用多进程：" class="headerlink" title="3.在celery中使用多进程："></a>3.在celery中使用多进程：</h2><p>我用的是<code>from multiprocessing import Pool</code>来实现多进程。<br>但是在运行过程中会直接报出这个错误<br><code>AssertionError: daemonic processes are not allowed to have children</code></p>
-<p>解决方法：</p>
-<ul>
-<li><p>重写一个Mypool<code>https://stackoverflow.com/questions/6974695/python-process-pool-non-daemonic</code></p>
-</li>
-<li><p>设置环境变量<br><code>export PYTHONOPTIMIZE=1</code></p>
-</li>
-</ul>
-<p>由于过段时间就会失效。。所以每次启动worker的时候的时候：<br><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></p>
-<p>以下 的方法没试过：</p>
-<blockquote>
-<p>there are two method to solve this problem ,disable assert：<br>1.where celery starts set export PYTHONOPTIMIZE=1 OR start celery with this parameter -O OPTIMIZATION<br>2.disable python packet multiprocessing process.py line 102:<br>assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes are not allowed to have children’</p>
-</blockquote>
-<hr>
-<h2 id="4-调用worker、添加任务："><a href="#4-调用worker、添加任务：" class="headerlink" title="4.调用worker、添加任务："></a>4.调用worker、添加任务：</h2><p>delay()和apply_async()</p>
-<p>我们之前调用任务使用了”delay()”方法，它其实是对”apply_async()”方法的封装，使得你只要传入任务所需的参数即可。对于特殊的任务调度需求，你需要使用”apply_async()”，其常用的参数有：</p>
-<ul>
-<li>countdown: 指定多少秒后任务才被执行</li>
-<li>eta: 指定任务被调度的时间，参数类型是datetime</li>
-<li>expires: 任务过期时间，参数类型可以是int（秒），也可以是datetime</li>
-<li>retry: 任务发送失败的重试次数</li>
-<li>priority: 任务优先级，范围是0-9</li>
-<li>serializer: 参数和返回值的序列化方式</li>
-</ul>
-<hr>
-<h1 id="celery-beat-定时任务"><a href="#celery-beat-定时任务" class="headerlink" title="celery beat 定时任务"></a>celery beat 定时任务</h1><h2 id="一个时间的Bug："><a href="#一个时间的Bug：" class="headerlink" title="一个时间的Bug："></a>一个时间的Bug：</h2><ul>
-<li>当前使用pip安装的celery，默认是安装的最新版本4.1.0，但是在这个版本中在获取当前时间的逻辑中存在bug，会导致定时任务配置后并不能在指定的时间被执行</li>
-<li>回退版本 到4.0.2才行</li>
-<li><a href="http://axiaoxin.com/article/228/" target="_blank" rel="noopener">celery 4.1.0 版本定时任务执行时间 bug</a></li>
-</ul>
-<p>另一种可行但麻烦的思路：</p>
-<p>celery的定时任务会有一定时间的延迟。比如，我规定模拟登陆新浪微博任务每隔10个小时执行一次，那么定时任务第一次执行就会在开启定时任务之后的10个小时后才会执行。而我抓取微博需要马上执行，需要带上cookie，所以不能等那1个小时。这个没有一个比较好的解决方法，可以使用celery的crontab()来代替schdule做定时，它会在启动的时候就执行。我采用的方法是第一次手动执行该任务，然后再通过schedule执行。</p>
-<hr>
-<h2 id="使用命令："><a href="#使用命令：" class="headerlink" title="使用命令："></a>使用命令：</h2><p>进入到对应your_app对应的目录下：<code>cd /your_dir/your_dir/your_dir</code><br>再执行：<code>/usr/local/bin/celery -A your_app beat -l info</code></p>
-<p>最方便的是，在命令中指定工作目录，一条命令即可：</p>
-<p><code>/usr/local/bin/celery -A your_dir beat -l info --workdir=/your_dir/your_dir/your_dir/</code></p>
-<hr>
-<h2 id="定时任务参数参考表："><a href="#定时任务参数参考表：" class="headerlink" title="定时任务参数参考表："></a>定时任务参数参考表：</h2><p><img src="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg" alt=""></p>
-<hr>
-<h2 id="动态管理定时任务："><a href="#动态管理定时任务：" class="headerlink" title="动态管理定时任务："></a>动态管理定时任务：</h2><p>查过挺多资料，有两种解决方法。跟celery运行的调度器(schedule)息息相关的。</p>
-<ul>
-<li>使用第三方schedule：<br>如django-celery-beat库会将定时任务的规则存入到数据库中，而不用通过配置文件来定义。</li>
-</ul>
-<p>try to install django-celery instead of django-celery-beat. django-celery works with Celery 3 (unlike django-celery-beat). You can then, for example import PeriodicTask from djcelery.models instead of from django_celery_beat.models . This allows you to add/delete/manipulate tasks both dynamically AND PROGRAMMATICALLY (not only from the Django admin site). The drawback to this workaround is that if one doesn’t need django-celery for anything other than this, then it bloats one’s app. Thus, It would be better to have Celery 4.0 included in cookiecutter-django so that django-celery-beat models can be used</p>
-<p><a href="http://www.liuliqiang.info/post/celery-advanced-topic-scheduler-and-priority/" target="_blank" rel="noopener">【celery进阶】定时任务和优先级</a></p>
-<ul>
-<li>使用框架默认schedule</li>
-</ul>
-<p>我使用的是这一种方法。<br>只能管理celery的配置文件了，每次增加或减少定时任务的时候，都要对配置文件进行相应的修改。<br>每次修改完都要重启celerybeat，试过多种方法，发现用supervisor来管理celery beat的进程是比较好的。</p>
-<hr>
-<h2 id="管理celery-beat进程"><a href="#管理celery-beat进程" class="headerlink" title="管理celery beat进程"></a>管理celery beat进程</h2><p>用supervisor来管理celery beat进程。</p>
-<ul>
-<li><p>安装：<code>pip install supervisor</code></p>
-</li>
-<li><p>Supervisor配置</p>
-<ul>
-<li><code>/usr/local/bin/echo_supervisord_conf  &gt; /etc/supervisord.conf</code></li>
-<li><img src="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg" alt=""></li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>操作：<ul>
-<li>开启:<code>supervisord -c /etc/supervisord.conf</code></li>
-<li>重启：<code>supervisorctl -c /etc/supervisord.conf reload</code></li>
-<li>关闭:<code>supervisorctl -c /etc/supervisord.conf shutdown</code></li>
-</ul>
-</li>
-</ul>
-<hr>
-<h1 id="other"><a href="#other" class="headerlink" title="other:"></a>other:</h1><h2 id="分布式："><a href="#分布式：" class="headerlink" title="分布式："></a>分布式：</h2><ul>
-<li><a href="https://www.213.name/archives/1105" target="_blank" rel="noopener">笔记：集群部署celery分布式任务队列</a></li>
-<li><a href="https://www.jianshu.com/p/ee14ed9e4989" target="_blank" rel="noopener">《Python分布式计算》 第4章 Celery分布式应用 （Distributed Computing with Python）</a></li>
-</ul>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg" alt=""></p>
-<hr>
-<h2 id="队列："><a href="#队列：" class="headerlink" title="队列："></a>队列：</h2><ul>
-<li><a href="https://www.jianshu.com/p/1f528c518ab5" target="_blank" rel="noopener">Celery从入门到放弃</a></li>
-<li><a href="http://blog.csdn.net/vintage_1/article/details/47664139" target="_blank" rel="noopener">celery beat实战</a></li>
-</ul>
-<hr>
-<h2 id="flower"><a href="#flower" class="headerlink" title="flower:"></a>flower:</h2><p>图形化管理celery界面：</p>
-<p><code>/usr/local/bin/celery -A celery_app flower --port=5555</code></p>
-<hr>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
-<li><a href="https://www.mkernel.com/?p=117" target="_blank" rel="noopener">Python异步神器-Celery实战之Nmap扫描</a></li>
-<li><a href="https://hk.saowen.com/a/76cb411ce1023c1ee172406691abe47d7939a4b2d8c56a8439aab39f4486df30" target="_blank" rel="noopener">企業安全實踐(基礎建設)之主動分佈式WEB資產掃描</a></li>
-<li><a href="http://blog.csdn.net/junli_chen/article/details/73504343" target="_blank" rel="noopener">Celery 框架学习笔记</a></li>
-<li><a href="http://blog.csdn.net/kk123a/article/details/74549117" target="_blank" rel="noopener">celery配置使用</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1888,7 +2250,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1899,7 +2261,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1910,7 +2272,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
