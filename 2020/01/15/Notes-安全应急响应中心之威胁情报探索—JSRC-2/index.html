@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="SecurityTools,">
+  <meta name="keywords" content="Security,">
 
 
 
@@ -79,23 +79,18 @@
 
 
 
-<meta name="description" content="为什么要搜集子域名? 这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度:对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限. 为">
-<meta name="keywords" content="SecurityTools">
+<meta name="description" content="威胁情报和漏洞的区别:漏洞的概念较明确，而情报比较宽泛。 威胁情报并不是虚的。 其中存在假情报和难追溯的情报。 情报一般分为线索和事件: 我上报了一个黑客组织，可以作为线索； 公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个事件。 威胁情报并不一定是提前预知 作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。 情报分技术型情报和业务型情报 漏洞属于">
+<meta name="keywords" content="Security">
 <meta property="og:type" content="article">
-<meta property="og:title" content="子域名搜集">
-<meta property="og:url" content="http://yoursite.com/2019/01/11/子域名搜集/index.html">
+<meta property="og:title" content="Notes-安全应急响应中心之威胁情报探索—JSRC-2">
+<meta property="og:url" content="http://yoursite.com/2020/01/15/Notes-安全应急响应中心之威胁情报探索—JSRC-2/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="为什么要搜集子域名? 这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度:对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限. 为">
+<meta property="og:description" content="威胁情报和漏洞的区别:漏洞的概念较明确，而情报比较宽泛。 威胁情报并不是虚的。 其中存在假情报和难追溯的情报。 情报一般分为线索和事件: 我上报了一个黑客组织，可以作为线索； 公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个事件。 威胁情报并不一定是提前预知 作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。 情报分技术型情报和业务型情报 漏洞属于">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7443e383.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d74575511.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1g09uim238mj30u00z7npd.jpg">
-<meta property="og:updated_time" content="2020-03-26T04:50:20.000Z">
+<meta property="og:updated_time" content="2020-01-17T02:12:51.285Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="子域名搜集">
-<meta name="twitter:description" content="为什么要搜集子域名? 这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度:对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限. 为">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg">
+<meta name="twitter:title" content="Notes-安全应急响应中心之威胁情报探索—JSRC-2">
+<meta name="twitter:description" content="威胁情报和漏洞的区别:漏洞的概念较明确，而情报比较宽泛。 威胁情报并不是虚的。 其中存在假情报和难追溯的情报。 情报一般分为线索和事件: 我上报了一个黑客组织，可以作为线索； 公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个事件。 威胁情报并不一定是提前预知 作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。 情报分技术型情报和业务型情报 漏洞属于">
 
 
 
@@ -125,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/11/子域名搜集/">
+  <link rel="canonical" href="http://yoursite.com/2020/01/15/Notes-安全应急响应中心之威胁情报探索—JSRC-2/">
 
 
 
 
 
-  <title>子域名搜集 | Black House</title>
+  <title>Notes-安全应急响应中心之威胁情报探索—JSRC-2 | Black House</title>
   
 
 
@@ -258,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/子域名搜集/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/15/Notes-安全应急响应中心之威胁情报探索—JSRC-2/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -275,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">子域名搜集</h1>
+          <h1 class="post-title" itemprop="name headline">Notes-安全应急响应中心之威胁情报探索—JSRC-2</h1>
         
 
         <div class="post-meta">
@@ -287,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-11T22:36:34+08:00">
-                2019-01-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-15T22:36:34+08:00">
+                2020-01-15
               </time>
             
 
@@ -310,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
                   </a>
                 </span>
 
@@ -347,34 +342,76 @@
       
 
       
-        <h1 id="为什么要搜集子域名"><a href="#为什么要搜集子域名" class="headerlink" title="为什么要搜集子域名?"></a>为什么要搜集子域名?</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg" alt=""></p>
-<p>这些子域名都是与<strong>企业的资产</strong>相关联的.发现更多的子域名,意味着发现了更多的企业资产.</p>
-<h2 id="攻击者的角度"><a href="#攻击者的角度" class="headerlink" title="攻击者的角度:"></a>攻击者的角度:</h2><p>对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面<code>attack face</code>,接着选取一个最脆弱的目标进行攻击.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7443e383.jpg" alt=""></p>
-<p>在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限.</p>
-<p>为此他需要先找到一个最脆弱的目标.也就是找到企业资产中最脆弱的一部分来进行攻击.</p>
-<p>而通过对子域名进行搜集,便是发现脆弱资产当中必要的一步.</p>
-<h2 id="防御者的角度"><a href="#防御者的角度" class="headerlink" title="防御者的角度:"></a>防御者的角度:</h2><p>对于防御者来说,意义在于能够对资产进行更好的管理.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d74575511.jpg" alt=""></p>
-<p>企业大部分做的安全工作都是围绕企业的资产来进行的。</p>
-<p>可现状是,由于企业大、业务线多、管理难等问题,很多时候企业会匆忙上线一个新的应用或服务,这样就会造成出现很多“在野资产”.</p>
-<p>这种“在野资产”往往是等到出现安全事件后,去追责才会被发现。</p>
-<p>这种时候,如果能够提前对新增、新上线的资产进行发现的话，就能更好的保障企业的资产安全.</p>
-<p>而通过对子域名进行搜集,便是发现“在野资产”当中必要的一步.</p>
+        <h2 id="威胁情报和漏洞的区别"><a href="#威胁情报和漏洞的区别" class="headerlink" title="威胁情报和漏洞的区别:"></a>威胁情报和漏洞的区别:</h2><p>漏洞的概念较明确，而情报比较宽泛。</p>
+<p>威胁情报并不是虚的。 其中存在假情报和难追溯的情报。</p>
+<p><strong>情报一般分为线索和事件:</strong></p>
+<p>我上报了一个黑客组织，可以作为<strong>线索</strong>；</p>
+<p>公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个<strong>事件</strong>。</p>
+<p>威胁情报并不一定是提前预知</p>
+<p>作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。</p>
+<p><strong>情报分技术型情报和业务型情报</strong></p>
+<p>漏洞属于技术型情报。有的情报很全，有的只能算是线索。</p>
+<p>业务型的最难判定，我们这边也分两个维度，<strong>危害维度</strong>和<strong>完整度维度</strong>。</p>
 <hr>
-<h1 id="搜集途径"><a href="#搜集途径" class="headerlink" title="搜集途径:"></a>搜集途径:</h1><h2 id="外部搜集途径"><a href="#外部搜集途径" class="headerlink" title="外部搜集途径:"></a>外部搜集途径:</h2><p>在外部,可以通过很多方式进行搜集,这张思维导图列出来的已经比较详细了。</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g09uim238mj30u00z7npd.jpg" alt=""></p>
-<p>其他接口:</p>
+<h2 id="获取情报的来源渠道"><a href="#获取情报的来源渠道" class="headerlink" title="获取情报的来源渠道:"></a>获取情报的来源渠道:</h2><p>这个看业务了。</p>
+<p>举个栗子，有的白帽子已经成功混迹在高端游戏玩家群里，黑产卖异常装备的时候，就来举报。</p>
+<p>比较聪明的同学，会<strong>关注黑产变现的渠道</strong>。</p>
+<blockquote>
+<p>whole chain</p>
+</blockquote>
+<hr>
+<h2 id="暂时没用的线索"><a href="#暂时没用的线索" class="headerlink" title="暂时没用的线索:"></a>暂时没用的线索:</h2><p>如果一条线索过来了，只是证明存在但不能做什么事。这种对于平台来说是不是一种成本浪费？</p>
+<p><strong>溯源是一种能力，线索是一种沉淀。</strong></p>
+<p>被证明有价值的情报，是一种线索沉淀，不会是浪费的。</p>
+<p>安全行业内，不管是漏洞还是情报，都是要不断求证的。</p>
+<p>只要<strong>投入产出比可控</strong>即可。</p>
+<p>这其实也是一个二八原则。</p>
+<p>此外，没有产生价值的，可能只是当前没有产生价值，后面业务变化了，可能就会产生相应价值。</p>
+<hr>
+<h2 id="建立威胁情报的目的"><a href="#建立威胁情报的目的" class="headerlink" title="建立威胁情报的目的:"></a>建立威胁情报的目的:</h2><p>无疑是<strong>为了预知未来的风险</strong>！</p>
+<p>个人认为，威胁情报对于各公司来说可以把<strong>风险感知再次往前提</strong>，能够通过各渠道来源，分析后续的破坏行为。</p>
+<hr>
+<h2 id="威胁情报的评定指标"><a href="#威胁情报的评定指标" class="headerlink" title="威胁情报的评定指标:"></a>威胁情报的评定指标:</h2><p>主要看<strong>情报的详细程度和对业务的影响</strong>，来评定情报的等级。</p>
+<p>不过低价值的情报分值不高。大致是看详细程度、涉及业务、目前和潜在的影响.</p>
+<p>有一条就是基于漏洞的情报，不会比按漏洞标准评定低就是了。</p>
+<p>目前来看提交者比较理性，大都是遇到事件了来提交，线索其实没那么多。</p>
+<p>不同公司关注的情报不一样，建议大家在看情报的时候，先看看这个公司关注什么，根据公司实际业务多磨合磨合。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><ul>
+<li><p>情报一般分为线索和事件:</p>
 <ul>
-<li><a href="http://ce.baidu.com/index/getRelatedSites?site_address=bgy.com.cn" target="_blank" rel="noopener">百度云观测接口</a></li>
+<li>我上报了一个黑客组织，可以作为<strong>线索</strong>；</li>
+<li>公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个<strong>事件</strong>。</li>
 </ul>
-<h2 id="内部搜集途径"><a href="#内部搜集途径" class="headerlink" title="内部搜集途径:"></a>内部搜集途径:</h2><p>除了通过互联网,在外部进行必要的搜集以外,也是需要内部对子域名进行搜集来进行补充的.</p>
+</li>
+<li><p>对于暂时没用的线索:</p>
+<ul>
+<li><strong>溯源是一种能力，线索是一种沉淀。</strong></li>
+<li>被证明有价值的情报，是一种线索沉淀，不会是浪费的。</li>
+<li>安全行业内，不管是漏洞还是情报，都是要不断求证的。只要<strong>投入产出比可控</strong>即可。</li>
+</ul>
+</li>
+<li><p>威胁情报的评定指标:</p>
+<ul>
+<li>主要看<strong>情报的详细程度和对业务的影响</strong>，来评定情报的等级。</li>
+</ul>
+</li>
+<li><p>获取情报的来源渠道:</p>
+<ul>
+<li>可重点关注<strong>黑产变现的渠道</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>建立威胁情报的目的:<ul>
+<li>预知未来的风险</li>
+<li>风险感知再次往前提</li>
+</ul>
+</li>
+</ul>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/zdresearch/OWASP-Nettacker/blob/85cbaab94415c8f994250d2f3d2ddb8394853f4d/lib/scan/subdomain/engine.py" target="_blank" rel="noopener">OWASP-Nettacker</a></li>
-<li><a href="https://speakerdeck.com/yamakira/esoteric-sub-domain-enumeration-techniques?slide=8" target="_blank" rel="noopener">esoteric-sub-domain-enumeration-techniques</a></li>
-<li><a href="https://github.com/bit4woo/teemo" target="_blank" rel="noopener">teemo</a></li>
-<li>《Metasploit渗透测试指南》</li>
+<li><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/02-%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E4%B8%AD%E5%BF%83%E4%B9%8B%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%8E%A2%E7%B4%A2.pdf" target="_blank" rel="noopener">安全应急响应中心之威胁情报探索</a></li>
 </ul>
 
       
@@ -393,7 +430,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+            <a href="/tags/Security/" rel="tag"># Security</a>
           
         </div>
       
@@ -406,8 +443,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/10/svn源码泄露exploit/" rel="next" title="Svn源码泄露exploit">
-                <i class="fa fa-chevron-left"></i> Svn源码泄露exploit
+              <a href="/2020/01/03/Notes-Wooyun安卓漏洞库/" rel="next" title="Notes-Wooyun安卓漏洞库">
+                <i class="fa fa-chevron-left"></i> Notes-Wooyun安卓漏洞库
               </a>
             
           </div>
@@ -416,8 +453,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/14/ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析/" rel="prev" title="ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析">
-                ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/01/16/堡垒机的一些知识/" rel="prev" title="堡垒机的一些知识">
+                堡垒机的一些知识 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -552,7 +589,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要搜集子域名"><span class="nav-number">1.</span> <span class="nav-text">为什么要搜集子域名?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#攻击者的角度"><span class="nav-number">1.1.</span> <span class="nav-text">攻击者的角度:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防御者的角度"><span class="nav-number">1.2.</span> <span class="nav-text">防御者的角度:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#搜集途径"><span class="nav-number">2.</span> <span class="nav-text">搜集途径:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#外部搜集途径"><span class="nav-number">2.1.</span> <span class="nav-text">外部搜集途径:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部搜集途径"><span class="nav-number">2.2.</span> <span class="nav-text">内部搜集途径:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#威胁情报和漏洞的区别"><span class="nav-number">1.</span> <span class="nav-text">威胁情报和漏洞的区别:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取情报的来源渠道"><span class="nav-number">2.</span> <span class="nav-text">获取情报的来源渠道:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暂时没用的线索"><span class="nav-number">3.</span> <span class="nav-text">暂时没用的线索:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立威胁情报的目的"><span class="nav-number">4.</span> <span class="nav-text">建立威胁情报的目的:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#威胁情报的评定指标"><span class="nav-number">5.</span> <span class="nav-text">威胁情报的评定指标:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结:</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number"></span> <span class="nav-text">refs:</span></a></li></div>
             
 
           </div>

