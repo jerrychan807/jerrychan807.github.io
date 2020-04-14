@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png">
 <meta property="og:image" content="https://i.loli.net/2019/12/30/TbMXmH87tdzeUQc.png">
-<meta property="og:updated_time" content="2019-12-31T04:14:16.720Z">
+<meta property="og:updated_time" content="2020-03-18T02:31:16.911Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="w13scan-扫描插件总结-PerFile">
 <meta name="twitter:description" content="整体流程图  PerFile (每个文件)序列化参数分析 如果参数中包含反序列化的参数就会被识别出来，反序列化的参数如果没有做好过滤会有很大危害。  里面有3个函数:  isJavaObjectDeserialization()  123# 关键代码if bytes(ret).startswith(bytes.fromhex(&quot;ac ed 00 05&quot;)):        return True">
@@ -519,8 +519,22 @@
 </ul>
 <hr>
 <h3 id="xss注入"><a href="#xss注入" class="headerlink" title="xss注入"></a>xss注入</h3><p>暂只支持Get请求方式</p>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">rndStr = <span class="number">9000</span> + random.randint(<span class="number">1</span>, <span class="number">999</span>)</span><br><span class="line">tag = random_str(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">html_payload = <span class="string">"&lt;&#123;tag&#125;&gt;&#123;randint&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=tag, randint=rndStr)  <span class="comment"># html xss</span></span><br><span class="line"></span><br><span class="line">attr_payload = [</span><br><span class="line">    <span class="string">'" oNsOmeEvent="console.log(233)'</span>,  <span class="comment"># 双引号payload</span></span><br><span class="line">    <span class="string">"' oNsOmeEvent='console.log(2333)"</span>,  <span class="comment"># 单引号payload</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">url_payload = <span class="string">"javascript&amp;colon;&#123;randint&#125;"</span>.format(randint=rndStr)</span><br><span class="line"></span><br><span class="line">javascript_payload = <span class="string">"&#123;randint&#125;"</span>.format(randint=rndStr)</span><br></pre></td></tr></table></figure>
+
+<p>判断是否输出点是否在<code>&lt;script&gt;</code>标签内,</p>
+<p>如果是就使用<code>javascript_payload</code></p>
+<p>如果不是就测试<code>html xss</code>、<code>标签属性xss</code>、<code>url xss</code></p>
+<blockquote>
+<p>需要补充…</p>
+</blockquote>
 <hr>
-<h3 id="crlf注入"><a href="#crlf注入" class="headerlink" title="crlf注入"></a>crlf注入</h3><hr>
+<h3 id="crlf注入"><a href="#crlf注入" class="headerlink" title="crlf注入"></a>crlf注入</h3><p>暂只支持Get请求方式</p>
+<p>payloads:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"\r\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n TestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\rTestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># twitter crlf</span></span><br><span class="line">    <span class="string">"嘊嘍TestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># nodejs crlf</span></span><br><span class="line">    <span class="string">"čĊTestInject: w13scan"</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>发包:</p>
+<hr>
 <h3 id="cookie控制插件"><a href="#cookie控制插件" class="headerlink" title="cookie控制插件"></a>cookie控制插件</h3><hr>
 <h3 id="js漏洞库查找"><a href="#js漏洞库查找" class="headerlink" title="js漏洞库查找"></a>js漏洞库查找</h3><p>检测到当前页面存在过时的含有漏洞的js组件</p>
 <hr>
@@ -561,8 +575,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/20/记录-Android测试初步/" rel="next" title="记录-Android测试初步">
-                <i class="fa fa-chevron-left"></i> 记录-Android测试初步
+              <a href="/2019/12/19/w13scan-扫描插件总结-PerScheme/" rel="next" title="w13scan-扫描插件总结-PerScheme">
+                <i class="fa fa-chevron-left"></i> w13scan-扫描插件总结-PerScheme
               </a>
             
           </div>
@@ -652,7 +666,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -727,7 +741,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

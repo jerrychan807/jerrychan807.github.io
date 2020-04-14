@@ -252,6 +252,898 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/Pyppeteer-浏览器爬虫初探/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/19/Pyppeteer-浏览器爬虫初探/" itemprop="url">Pyppeteer-浏览器爬虫初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T22:36:34+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>最近打算捣鼓一个黑链扫描器.</p>
+<p>当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站.</p>
+<p>那么这种情况应该选用什么爬虫的解决方案呢?即技术选型</p>
+<hr>
+<h1 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型:"></a>技术选型:</h1><h2 id="方案一-静态爬虫"><a href="#方案一-静态爬虫" class="headerlink" title="方案一 静态爬虫:"></a>方案一 静态爬虫:</h2><p>在python中最常见的就是用<code>requests</code>,<code>urllib2</code>等库来模拟发包,执行简单的HTTP请求并获取HTML页面.</p>
+<p>这种方案比较适合于对特定网站进行简单的爬取,优点是:</p>
+<ul>
+<li>在CPU和内存消耗方面的开销很低</li>
+<li>开发速度快</li>
+</ul>
+<p>但是缺点也很明显:</p>
+<ul>
+<li>不通用:发包情况千千万,都要模拟请求的话不现实</li>
+<li>无法收集通过JavaScript动态生成的内容</li>
+</ul>
+<p>基于以上两点,果断弃之.</p>
+<hr>
+<h2 id="方案二-动态爬虫"><a href="#方案二-动态爬虫" class="headerlink" title="方案二 动态爬虫:"></a>方案二 动态爬虫:</h2><p>选型1: 使用<code>Selenium</code>等库来驱动Chrome、Firefox或PhantomJS.</p>
+<blockquote>
+<p>在Chrome的Headless模式刚出现不久，我们当时就调研过用作漏洞扫描器爬虫的需求，但由于当时功能不够完善，以及无法达到稳定可靠的要求。举个例子，对于网络请求，无法区分导航请求和其它请求，而本身又不提供navigation lock的功能，所以很难确保页面的处理不被意外跳转中断。同时，不太稳定的CDP经常意外中断和产生Chrome僵尸进程，所以我们之前一直在使用PhantomJS。</p>
+<p>但随着前端的框架使用越来越多，网页内容对爬虫越来越不友好，在不考虑进行服务端渲染的情况下，Vue等框架让静态爬虫彻底失效。同时，由于JS的ES6语法的广泛使用，缺乏维护（创始人宣布归档项目暂停开发）的PhantomJS开始变的力不从心。</p>
+<p>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<p>选型2: <code>pyppeteer</code>+<code>Chromium headless</code></p>
+<blockquote>
+<p>在去年，puppeteer和Chromium项目在经历了不断迭代后，新增了一些关键功能，Headless模式现在已经能大致胜任扫描器爬虫的任务。</p>
+<p>所以我们在去年果断更新了扫描器的动态爬虫，采用Chromium的Headless模式作为网页内容解析引擎<br>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><ul>
+<li><code>Chrome</code>的Headless模式早期不成熟</li>
+<li><code>PhantomJS</code>不再维护了</li>
+<li><code>puppeteer</code>和<code>Chromium</code>项目在不断迭代更新</li>
+</ul>
+<p>综上,就决定使用<code>pyppeteer</code>+<code>Chromium headless</code>这个搭配方案了.</p>
+<p>那么,现在就跑个Demo来试试水.(参考<a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a>)</p>
+<hr>
+<h1 id="Demo"><a href="#Demo" class="headerlink" title="Demo:"></a>Demo:</h1><blockquote>
+<p>原文章里的代码基本可以运行.<br>就是<code>url</code>和需要提取信息的<code>xpath</code>发送了一些变化.稍作修改即可</p>
+</blockquote>
+<hr>
+<h2 id="静态爬虫"><a href="#静态爬虫" class="headerlink" title="静态爬虫:"></a>静态爬虫:</h2><p>先用最原始的方式,确认能够获取得到信息.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> lxml.html</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> request.urlopen(url)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_document</span><span class="params">(response)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> response.read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(document)</span>:</span></span><br><span class="line">    <span class="comment"># Generate document tree</span></span><br><span class="line">    tree = lxml.html.fromstring(document)</span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = tree.xpath(<span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        th, td = element.iterchildren()</span><br><span class="line">        result.update(&#123;</span><br><span class="line">            th.text_content(): td.text_content()</span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line">        <span class="comment"># "Rust": "https://es.wikipedia.org/wiki/Rust_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Java": "https://es.wikipedia.org/wiki/Java_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Javascript": "https://es.wikipedia.org/wiki/JavaScript"</span></span><br><span class="line">    &#125;</span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        response = get_page(url)</span><br><span class="line">        document = read_document(response)</span><br><span class="line">        result.update(&#123;name: extract_data(document)&#125;)</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>预期结果:</p>
+<p><img src="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png" alt=""></p>
+<hr>
+<h2 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer:"></a>puppeteer:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> pyppeteer <span class="keyword">import</span> launch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_browser</span><span class="params">()</span>:</span>  <span class="comment"># 启动浏览器</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> launch(&#123;<span class="string">"headless"</span>: <span class="keyword">False</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(browser, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> browser.newPage()</span><br><span class="line">    <span class="keyword">await</span> page.goto(url)</span><br><span class="line">    <span class="keyword">return</span> page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract</span><span class="params">(browser, name, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> get_page(browser, url)</span><br><span class="line">    <span class="keyword">return</span> &#123;name: <span class="keyword">await</span> extract_data(page)&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(page)</span>:</span>  <span class="comment"># 数据提取</span></span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = <span class="keyword">await</span> page.xpath(</span><br><span class="line">        <span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        title, content = <span class="keyword">await</span> page.evaluate(</span><br><span class="line">            <span class="string">'''(element) =&gt;</span></span><br><span class="line"><span class="string">                [...element.children].map(child =&gt; child.textContent)'''</span>,</span><br><span class="line">            element)</span><br><span class="line">        result.update(&#123;title: content&#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_all</span><span class="params">(languages)</span>:</span>  <span class="comment"># 程序入口</span></span><br><span class="line">    browser = <span class="keyword">await</span> get_browser()  <span class="comment"># 启动浏览器</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        result.update(<span class="keyword">await</span> extract(browser, name, url))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loop = asyncio.get_event_loop()</span><br><span class="line">    result = loop.run_until_complete(extract_all(languages))</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>同样能够获取到和预期一样的结果</p>
+<hr>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h1><p>从Demo出发,再不断改进优化功能.<br>便能慢慢有些雏形出来了.<br>Keeo Moving.</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></li>
+<li><a href="https://antoinevastel.com/crawler/2018/09/17/simple-crawler-puppeteer.html" target="_blank" rel="noopener">A simple crawler using Chrome headless with Puppeteer</a></li>
+<li><a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a></li>
+<li><a href="https://miyakogi.github.io/pyppeteer/" target="_blank" rel="noopener">Pyppeteer文档</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/暗链案例初探/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/15/暗链案例初探/" itemprop="url">暗链案例初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T14:36:34+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="主页被黑被篡改"><a href="#主页被黑被篡改" class="headerlink" title="主页被黑被篡改:"></a>主页被黑被篡改:</h1><h2 id="案例1"><a href="#案例1" class="headerlink" title="案例1:"></a>案例1:</h2><p><code>https://www.and-the-like.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc41fb5354335400.png" alt=""></p>
+<p>无法关键词识别,只有图片</p>
+<hr>
+<h2 id="案例2"><a href="#案例2" class="headerlink" title="案例2:"></a>案例2:</h2><p><code>https://www.daobangedu.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc42c6e127e17972.png" alt=""></p>
+<p>有关键词:时时彩等</p>
+<hr>
+<h2 id="案例3"><a href="#案例3" class="headerlink" title="案例3:"></a>案例3:</h2><p><code>www.lexuedidai.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc4339e253695045.png" alt=""></p>
+<p>有图片也有关键字<br>关键词:彩票 赌博 投注</p>
+<p>随便访问里面的js的网站,有个<code>phpinfo</code>呀.<br><code>http://275195.com/index.php</code><br><img src="https://i.loli.net/2019/05/16/5cdc440978f9b52950.png" alt=""></p>
+<hr>
+<h3 id="案例4"><a href="#案例4" class="headerlink" title="案例4:"></a>案例4:</h3><p><code>http://www.fslp1.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc44b187d5914134.png" alt=""></p>
+<p>关键词:彩票,娱乐平台,时时彩</p>
+<hr>
+<h1 id="跳转"><a href="#跳转" class="headerlink" title="跳转:"></a>跳转:</h1><h2 id="案例1-1"><a href="#案例1-1" class="headerlink" title="案例1:"></a>案例1:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var n = Math.floor(Math.random()*3);</span><br><span class="line">if(n==0)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68599.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==1)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.68499.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">if(n==2)&#123;</span><br><span class="line">document.writeln(&apos;&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0; url=https://www.131313.com/&quot; /&gt;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>js的<code>document.writeln</code>重新刷新页面</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc38bec7e5451537.png" alt=""></p>
+<hr>
+<h2 id="案例2-1"><a href="#案例2-1" class="headerlink" title="案例2:"></a>案例2:</h2><p>url:<code>http://www.wuzuilaojiao.com/</code></p>
+<p>要挂代理才能访问到博彩页面,页面源码没有关键词,只有图片.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3bcc48eb112943.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;frame name=&quot;main&quot; src=&quot;http://mark.zc.qp891.com&quot; scrolling=&quot;yes&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;frame src=&quot;/example/html/frame_b.html&quot;&gt;</code>既是表示当前的框架里面显示src后面这个路径的html页</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc3f048811515654.png" alt=""></p>
+<hr>
+<h2 id="案例3-1"><a href="#案例3-1" class="headerlink" title="案例3:"></a>案例3:</h2><p>url: <code>www.gzbihua.com</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc471b7c45e43997.png" alt=""></p>
+<p><code>https://www.gzbihua.com/template/pc/skin/js/jquery.tz.js</code></p>
+<p>这个js应该只是打乱了,没有混淆.</p>
+<p><img src="https://i.loli.net/2019/05/16/5cdc476987bd781253.png" alt=""></p>
+<hr>
+<h2 id="案例4-1"><a href="#案例4-1" class="headerlink" title="案例4:"></a>案例4:</h2><p>初始url:<code>http://www.aohougz.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75977a49848288.png" alt=""></p>
+<p>第一次跳转到:<code>https://www.mtc39.com/?att=996</code><br>再跳转到:<code>http://www.13145.com/</code></p>
+<p><img src="https://i.loli.net/2019/05/16/5cdd75f55e34e10877.png" alt=""></p>
+<p>最终页面没有敏感词.只有个图片里有文字:彩票</p>
+<blockquote>
+<p>如果在最终页面,再通过敏感字判断也不行.<br>初始url的源码里是有关键字的<code>彩票 , 投注</code><br>那么判断思路,应该是在每个页面都要进行判断.</p>
+</blockquote>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>js的<code>document.writeln</code><br>frame标签的src</p>
+<hr>
+<h1 id="敏感字词库"><a href="#敏感字词库" class="headerlink" title="敏感字词库:"></a>敏感字词库:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">足球</span><br><span class="line">外围</span><br><span class="line">好彩</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>待补充</p>
+</blockquote>
+<hr>
+<h1 id="想法"><a href="#想法" class="headerlink" title="想法:"></a>想法:</h1><p>网上固然有很多别人的文章,但是不如自己切实的去访问,记录一下.<br>毕竟别人的东西,只是看了,最终也不能转化吸收成你的.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/Python-杀死subprocess进程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/10/Python-杀死subprocess进程/" itemprop="url">Python-杀死subprocess进程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-10T14:36:34+08:00">
+                2019-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在整合第三方工具的时候,我们常常会用<code>subprocess</code>库来调用可执行文件.</p>
+<p>一般情况下,我们会等待这个命令的结束.</p>
+<p>但有时候第三方工具会因为特殊情况而卡死,从而导致整个程序卡死.</p>
+<p>此时,我们可以设置一个最大的超时时间.</p>
+<p>当这个命令超过这个最大时间的时候,我们主动kill掉,以保证程序接下来可以正常运行.</p>
+<hr>
+<h1 id="py3"><a href="#py3" class="headerlink" title="py3:"></a>py3:</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p = subprocess.Popen([cmd],stdout=subprocess.PIPE)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    (stdoutput, erroutput) = p.communicate(timeout=TIMEOUT)  <span class="comment"># 超时时间</span></span><br><span class="line"><span class="keyword">except</span> subprocess.TimeoutExpired:</span><br><span class="line">    p.kill()</span><br><span class="line">    print(<span class="string">"[*] TIMEOUT: %s"</span> % cmd)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>py3的<code>subprocess</code>库原生支持了超时时间的参数.</p>
+<p>过了超时时间的时候,会抛出<code>TimeoutExpired</code>异常.我们只需要<code>catch</code>到再做处理就行了.</p>
+<hr>
+<h1 id="py2"><a href="#py2" class="headerlink" title="py2:"></a>py2:</h1><p>没想到py2的<code>subprocess</code>库还并没有支持<code>timeout</code>参数.只能自己手动计时.到时间kill掉.</p>
+<p>搜索到的实现比较好的示例代码,只需要简单改改就可以用了.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Timer</span><br><span class="line"> </span><br><span class="line">kill = <span class="keyword">lambda</span> process: process.kill()</span><br><span class="line">cmd = [<span class="string">'ping'</span>, <span class="string">'www.google.com'</span>]</span><br><span class="line">ping = subprocess.Popen(</span><br><span class="line">    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line"> </span><br><span class="line">my_timer = Timer(<span class="number">5</span>, kill, [ping])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    my_timer.start()</span><br><span class="line">    stdout, stderr = ping.communicate()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    my_timer.cancel()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="另一种卡死的情况"><a href="#另一种卡死的情况" class="headerlink" title="另一种卡死的情况:"></a>另一种卡死的情况:</h1><blockquote>
+<p>原因是使用<code>Popen.wait()</code>后直接读<code>PIPE.stdout.read()</code>之前，可能缓存已经满了，此时导致了卡死。</p>
+<p>解决办法：使用<code>communicate()</code>,这个方法会把输出放在内存，而不是管道里，所以这时候上限就和内存大小有关了，一般不会有问题。</p>
+</blockquote>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.blog.pythonlibrary.org/2016/05/17/python-101-how-to-timeout-a-subprocess/" target="_blank" rel="noopener">Python 101: How to timeout a subprocess</a></li>
+<li><a href="https://www.cnblogs.com/chybot/p/5176118.html" target="_blank" rel="noopener">python Popen卡死问题</a></li>
+<li><a href="https://www.cnblogs.com/sueris/p/6235861.html" target="_blank" rel="noopener">Python subprocess.Popen communicate() 和wait()使用上的区别</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Dsss源码-100行的SqliScanner-源码分析笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/01/Dsss源码-100行的SqliScanner-源码分析笔记/" itemprop="url">Dsss源码-100行的SqliScanner-源码分析笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
+<blockquote>
+<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
+</blockquote>
+<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
+<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
+<p>原仓库地址:<a href="https://github.com/stamparm/DSSS" target="_blank" rel="noopener">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
+<hr>
+<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png" alt=""></p>
+<hr>
+<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png" alt=""></p>
+<p>亮点:</p>
+<ul>
+<li>TEXT文本的处理</li>
+</ul>
+<hr>
+<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png" alt=""></p>
+<hr>
+<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png" alt=""></p>
+<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8" target="_blank" rel="noopener">issue</a>问作者.</p>
+<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
+<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
+<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-注入的分类/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/01/Sqli-注入的分类/" itemprop="url">Sqli-注入的分类</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="基于从服务器接收到的响应"><a href="#基于从服务器接收到的响应" class="headerlink" title="基于从服务器接收到的响应"></a>基于从服务器接收到的响应</h1><ul>
+<li>基于错误的SQL注入</li>
+<li>联合查询的类型</li>
+<li>堆查询注射</li>
+<li>SQL盲注</li>
+<li>基于布尔SQL盲注</li>
+<li>基于时间的SQL盲注</li>
+<li>基于报错的SQL盲注</li>
+</ul>
+<h1 id="基于如何处理输入的SQL查询-数据类型"><a href="#基于如何处理输入的SQL查询-数据类型" class="headerlink" title="基于如何处理输入的SQL查询(数据类型)"></a>基于如何处理输入的SQL查询(数据类型)</h1><ul>
+<li>基于字符串</li>
+<li>数字或整数为基础</li>
+</ul>
+<h1 id="基于程度和顺序的注入-哪里发生了影响"><a href="#基于程度和顺序的注入-哪里发生了影响" class="headerlink" title="基于程度和顺序的注入(哪里发生了影响)"></a>基于程度和顺序的注入(哪里发生了影响)</h1><ul>
+<li><p>一阶注射</p>
+</li>
+<li><p>二阶注射</p>
+</li>
+</ul>
+<p>一阶注射是指输入的注射语句对WEB直接产生了影响，出现了结果；二阶注入类似存储型XSS，是指输入提交的语句，无法直接对WEB应用程序产生影响，通过其它的辅助间接的对WEB产生危害，这样的就被称为是二阶注入.</p>
+<h1 id="基于注入点的位置上的"><a href="#基于注入点的位置上的" class="headerlink" title="基于注入点的位置上的"></a>基于注入点的位置上的</h1><ul>
+<li>通过用户输入的表单域的注射</li>
+<li>通过cookie注射</li>
+<li>通过服务器变量注射(基于头部信息的注射)</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -306,8 +1198,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
                   </a>
                 </span>
 
@@ -621,172 +1513,6 @@
 <hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-注入的分类/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/01/Sqli-注入的分类/" itemprop="url">Sqli-注入的分类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T14:36:34+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
-                    <span itemprop="name">WebSecurity</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="基于从服务器接收到的响应"><a href="#基于从服务器接收到的响应" class="headerlink" title="基于从服务器接收到的响应"></a>基于从服务器接收到的响应</h1><ul>
-<li>基于错误的SQL注入</li>
-<li>联合查询的类型</li>
-<li>堆查询注射</li>
-<li>SQL盲注</li>
-<li>基于布尔SQL盲注</li>
-<li>基于时间的SQL盲注</li>
-<li>基于报错的SQL盲注</li>
-</ul>
-<h1 id="基于如何处理输入的SQL查询-数据类型"><a href="#基于如何处理输入的SQL查询-数据类型" class="headerlink" title="基于如何处理输入的SQL查询(数据类型)"></a>基于如何处理输入的SQL查询(数据类型)</h1><ul>
-<li>基于字符串</li>
-<li>数字或整数为基础</li>
-</ul>
-<h1 id="基于程度和顺序的注入-哪里发生了影响"><a href="#基于程度和顺序的注入-哪里发生了影响" class="headerlink" title="基于程度和顺序的注入(哪里发生了影响)"></a>基于程度和顺序的注入(哪里发生了影响)</h1><ul>
-<li><p>一阶注射</p>
-</li>
-<li><p>二阶注射</p>
-</li>
-</ul>
-<p>一阶注射是指输入的注射语句对WEB直接产生了影响，出现了结果；二阶注入类似存储型XSS，是指输入提交的语句，无法直接对WEB应用程序产生影响，通过其它的辅助间接的对WEB产生危害，这样的就被称为是二阶注入.</p>
-<h1 id="基于注入点的位置上的"><a href="#基于注入点的位置上的" class="headerlink" title="基于注入点的位置上的"></a>基于注入点的位置上的</h1><ul>
-<li>通过用户输入的表单域的注射</li>
-<li>通过cookie注射</li>
-<li>通过服务器变量注射(基于头部信息的注射)</li>
 </ul>
 
           
@@ -1916,964 +2642,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Sqlmap源码-请求参数的检验和解析(一)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/19/Sqlmap源码-请求参数的检验和解析(一)/" itemprop="url">Sqlmap源码-请求参数的检验和解析(一)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T14:36:34+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用sqlmap的时候,</p>
-<p>一般会直接这样使用:<code>sqlmap -u http://sqlilabs:8888/Less-1/?id=1</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[10:18:54] [INFO] testing if GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] confirming that GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] GET parameter &apos;id&apos; is dynamic</span><br></pre></td></tr></table></figure>
-
-<p>这个时候,sqlmap会自动识别到get请求的有可测试参数<code>id</code><br>那么,sqlmap是如何解析到这个参数的呢?</p>
-<p>重点讲解一下<code>target.py</code>下的解析请求参数函数<code>_setRequestParams()</code></p>
-<h1 id="setRequestParams-函数"><a href="#setRequestParams-函数" class="headerlink" title="_setRequestParams()函数"></a>_setRequestParams()函数</h1><h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明:"></a>函数说明:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Check and set the parameters and perform checks on 'data' option for</span></span><br><span class="line"><span class="string">    HTTP method POST. </span></span><br><span class="line"><span class="string">    """</span></span><br></pre></td></tr></table></figure>
-
-<p>对请求的参数进行检验和解析.</p>
-<p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
-<p>可参考一下,<a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></p>
-<hr>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/08/28/tcHEIpybSNujUT2.jpg" alt=""></p>
-<blockquote>
-<p>画图真累人…</p>
-</blockquote>
-<p>由于代码量实在有点多,下面只能挑一些重点的来讲</p>
-<hr>
-<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/08/28/4XiDBCEASfw2x1v.jpg" alt=""></p>
-<p><code>sqlmap</code>支持这五种数据类型</p>
-<ul>
-<li>XML</li>
-<li>JSON</li>
-<li>JSON_LIKE</li>
-<li>MULTIPART</li>
-<li>ARRAY_LIKE</li>
-</ul>
-<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r"(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r'(?s)\A(\s*\[)*\s*\&#123;.*"[^"]+"\s*:\s*("[^"]*"|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r"(?s)\A(\s*\[)*\s*\&#123;.*'[^']+'\s*:\s*('[^']+'|\d+).*\&#125;\s*(\]\s*)*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r"(?i)Content-Disposition:[^;]+;\s*name="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r"(\A|%s)(\w+)\[\]=.+%s\2\[\]="</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
-
-<h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
-<p><img src="https://i.loli.net/2019/08/28/wtYPzdE9TKfQXZc.jpg" alt=""></p>
-<p>关键是这3个正则表达式,分别解析3种模式的数据</p>
-<p>简单理解为:</p>
-<ul>
-<li>模式<code>&quot;&quot;:&quot;&quot;</code></li>
-<li>模式<code>&quot;&quot;:数字</code></li>
-<li>模式<code>&quot;&quot;:true false null类型</code></li>
-</ul>
-<p>然后调用<code>process()</code>去解析出它的<code>参数名</code>和<code>整个参数</code>.</p>
-<p><img src="https://i.loli.net/2019/08/28/yE3h29wS4ibY7G8.jpg" alt=""></p>
-<p>解析到的数据会添加到<code>hintNames列表</code></p>
-<p>举2个实例方便理解.</p>
-<h3 id="例子1-json数据"><a href="#例子1-json数据" class="headerlink" title="例子1:json数据"></a>例子1:json数据</h3><p>比如现在有一段json数据.</p>
-<p><img src="https://i.loli.net/2019/08/28/T7bmUAf3IpM5co9.jpg" alt=""></p>
-<p>经过解析后:</p>
-<p><img src="https://i.loli.net/2019/08/28/sWjDgcXxN4O6YVH.jpg" alt=""></p>
-<p>简单的说就是,经过解析处理后,整段的json数据已经分割开来了,变成了一个个<strong>可测试的参数</strong></p>
-<h3 id="例子2-MULTIPART数据"><a href="#例子2-MULTIPART数据" class="headerlink" title="例子2:MULTIPART数据:"></a>例子2:MULTIPART数据:</h3><p>比如现在有一段MULTIPART类型的数据.</p>
-<p><img src="https://i.loli.net/2019/08/28/cEn4RwWdaOiKMCj.jpg" alt=""></p>
-<p>经过解析后，也变成了一个可测试的参数.</p>
-<p><img src="https://i.loli.net/2019/08/28/nYZNQceMXvaWois.jpg" alt=""></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.</p>
-<hr>
-<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/08/28/w7KulXg9TW3AILv.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/zX3Ga42xeBpt5R7.jpg" alt=""></p>
-<p>通过正则匹配<code>url</code>是否符合<code>uri注入</code>的模式.</p>
-<p>正则表达式:<code>r&quot;//[^/]*/([^\.*?]+)\Z&quot;</code></p>
-<p>符合的情况:</p>
-<ul>
-<li><code>http://www.site.com/id82</code></li>
-<li><code>http://www.site.com/article</code></li>
-</ul>
-<p>不符合的情况:</p>
-<ul>
-<li><code>http://www.qqq.com</code></li>
-<li><code>http://www.site.com/article.php?id=1</code></li>
-</ul>
-<p>如果符合<code>uri注入</code>的模式,会提示你是否尝试进行<code>uri注入</code></p>
-<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h3><p>我之前简单以为<code>url</code>有参数才存在注入的可能性.</p>
-<p>其实,<strong>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在sqli.</strong></p>
-<p>refs:<a href="https://www.secpulse.com/archives/49018.html" target="_blank" rel="noopener">同花顺某站一处URI注入</a></p>
-<p><img src="https://i.loli.net/2019/08/28/BAprsZDNHaKjPqz.jpg" alt=""></p>
-<hr>
-<h2 id="解析cookie"><a href="#解析cookie" class="headerlink" title="解析cookie:"></a>解析cookie:</h2><p><img src="https://i.loli.net/2019/08/28/JMjVPST9nOByQUf.jpg" alt=""></p>
-<p>解析<code>cookie</code>会调用到<code>paramToDict()</code>这个函数(把参数转换为可测试参数字典),这个函数也是个大函数,就不具体讲了.可能要写一篇文章才会详细讲到.</p>
-<p>比较重要的点有,<strong>一般会用<code>;</code>符号去分割解析<code>cookie</code>里面的参数.</strong></p>
-<p><img src="https://i.loli.net/2019/08/28/eUmhpauV8rtE2Mx.jpg" alt=""></p>
-<p>然后形成可测试参数列表.</p>
-<blockquote>
-<p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.cookie里的每个参数都不放过.</p>
-</blockquote>
-<hr>
-<h2 id="解析header"><a href="#解析header" class="headerlink" title="解析header:"></a>解析header:</h2><p><img src="https://i.loli.net/2019/08/28/KliaP9SxsOIX7Wn.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/uXmTcNrst43kaI7.jpg" alt=""></p>
-<p><code>header</code>中可测试的点可能有:</p>
-<ul>
-<li><code>user-agent</code></li>
-<li><code>referer</code></li>
-<li><code>host</code></li>
-<li><code>cookie</code></li>
-</ul>
-<p>比如有一段数据:</p>
-<p><img src="https://i.loli.net/2019/08/28/9VNkWtMmTFX3z7h.jpg" alt=""></p>
-<p>解析后的<code>header</code>中可测试的参数为</p>
-<p><img src="https://i.loli.net/2019/08/28/zoQvSrAnghPCs8u.jpg" alt=""></p>
-<hr>
-<h2 id="识别csrf-token"><a href="#识别csrf-token" class="headerlink" title="识别csrf-token:"></a>识别csrf-token:</h2><p><img src="https://i.loli.net/2019/08/28/nPFXazfGiUDNMoT.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/kTpLFKgwV59AQOE.jpg" alt=""></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Infixes used for automatic recognition of parameters carrying anti-CSRF tokens</span></span><br><span class="line">CSRF_TOKEN_PARAMETER_INFIXES = (<span class="string">"csrf"</span>, <span class="string">"xsrf"</span>, <span class="string">"token"</span>)</span><br></pre></td></tr></table></figure>
-
-<p>尝试在<code>header</code>数据中寻找有无<code>cstf-token</code>标记的字眼,如果有认为无法注入.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elif</span> conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I):</span><br><span class="line">    testSqlInj = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-
-<p>refs:<a href="https://www.360zhijia.com/360anquanke/178754.html" target="_blank" rel="noopener">【技术分享】使用burp macros和sqlmap绕过csrf防护进行sql注入</a></p>
-<blockquote>
-<p>然而，一些像CSRF、tokens或者简单的的反自动化技术如在一个表单中包含一个隐藏值就能够阻止自动化工具正确的工作</p>
-</blockquote>
-<hr>
-<h1 id="总结-2"><a href="#总结-2" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>sqlmap支持5种数据类型的Post数据:<code>XML</code>、<code>JSON</code>、<code>JSON_LIKE</code>、<code>MULTIPART</code>、<code>ARRAY_LIKE</code></li>
-<li>sqlmap会尽可能找出你的Post数据中所有可测试参数.</li>
-<li>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在注入,可以考虑<code>uri注入</code></li>
-<li><code>header</code>中可以测试的点为:- <code>user-agent</code>、<code>referer</code>、<code>host</code>、<code>cookie</code></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/Python-dynamic typing/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/07/Python-dynamic typing/" itemprop="url">Python-dynamic typing</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T14:36:34+08:00">
-                2019-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><h2 id="Question1"><a href="#Question1" class="headerlink" title="Question1:"></a>Question1:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">&lt;type <span class="string">'int'</span>&gt;</span><br></pre></td></tr></table></figure>
-
-<p>我们并没有显示声明<code>a</code>是个变量而且它的类型为<code>int</code></p>
-<p>那么python是怎么知道<code>a</code>是个变量而且知道它的类型的呢?</p>
-<hr>
-<h2 id="Question2"><a href="#Question2" class="headerlink" title="Question2:"></a>Question2:</h2><p>执行以下代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'string'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">'string'</span></span><br></pre></td></tr></table></figure>
-
-<p>a 的类型怎么发生了变化?</p>
-<hr>
-<p>以上2个问题涉及到python的一个重要的概念:<strong>动态类型(dynamic typing)</strong></p>
-<p>要搞清楚动态类型之前要先搞清楚3个重要的概念及其关系:</p>
-<ul>
-<li>Object 对象</li>
-<li>Reference 引用</li>
-<li>Variable 变量</li>
-</ul>
-<hr>
-<h1 id="三个重要的概念"><a href="#三个重要的概念" class="headerlink" title="三个重要的概念:"></a>三个重要的概念:</h1><h2 id="Object"><a href="#Object" class="headerlink" title="Object:"></a>Object:</h2><p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
-<p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt=""></p>
-<p>除了告诉解释器它是多少位后,它还要声明类型.</p>
-<p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
-<hr>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p>由于我们不能直接接触到存在内存中的对象,能操作的是变量名,所以我们要将变量和对象建立一个关系:引用<code>reference</code></p>
-<p>python的引用跟C语言的指针很像,因为引用就是用指针实现的.</p>
-<hr>
-<h2 id="Variable"><a href="#Variable" class="headerlink" title="Variable:"></a>Variable:</h2><p>建立引用关系之后,我们就可以用变量名来操控对象了.</p>
-<p>所以,变量是对对象的引用的一个符号名。</p>
-<hr>
-<h2 id="三者的关系"><a href="#三者的关系" class="headerlink" title="三者的关系:"></a>三者的关系:</h2><p>变量和对象存储在内存的不同部分中,并链接了起来(由指针).</p>
-<p>实际就是,执行一个赋值语句的时候,python会做三件事:</p>
-<ol>
-<li>创建一个<code>对象</code>代表数值3</li>
-<li>创建一个<code>变量名a</code></li>
-<li>将<code>对象3</code>和<code>变量a</code>关联起来</li>
-</ol>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt=""></p>
-<hr>
-<h1 id="共享引用"><a href="#共享引用" class="headerlink" title="共享引用"></a>共享引用</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt=""></p>
-<p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'spam'</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt=""></p>
-<p><code>变量a</code> 改变了指向，指向到了<code>&#39;spam&#39;对象</code></p>
-<p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li>《Studing Learning Python》</li>
-<li><a href="https://realpython.com/python-variables/" target="_blank" rel="noopener">Variables in Python</a></li>
-<li><a href="http://www.cnblogs.com/vamei/archive/2012/07/10/2582795.html" target="_blank" rel="noopener">Python进阶09 动态类型</a></li>
-<li><a href="https://www.youtube.com/watch?v=OE2j6hlU88o&t=2s" target="_blank" rel="noopener">Dynamic Typing in Python</a></li>
-<li><a href="https://eli.thegreenplace.net/2012/03/30/python-objects-types-classes-and-instances-a-glossary" target="_blank" rel="noopener">Python objects, types, classes, and instances - a glossary</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/Sqlmap源码-AttribDict/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/05/Sqlmap源码-AttribDict/" itemprop="url">Sqlmap源码-AttribDict属性字典</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-05T14:36:34+08:00">
-                2019-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>sqlmap在处理数据的时候大量使用了自定义的<code>AttribDict</code>属性字典这个数据类型.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sqlmap paths</span></span><br><span class="line">paths = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store original command line options</span></span><br><span class="line">cmdLineOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store merged options (command line, configuration file and default options)</span></span><br><span class="line">mergedOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes command</span></span><br><span class="line"><span class="comment"># line options and settings</span></span><br><span class="line">conf = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes results</span></span><br><span class="line">kb = AttribDict()</span><br></pre></td></tr></table></figure>
-
-<p>所以有必要看看<code>AttribDict</code>这个类.</p>
-<p>顺便总结一下自己不熟悉的相关知识点.</p>
-<hr>
-<h1 id="AttribDict组成"><a href="#AttribDict组成" class="headerlink" title="AttribDict组成:"></a><code>AttribDict</code>组成:</h1><p>这个类通过override了几个<code>super method</code>.</p>
-<p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt=""></p>
-<hr>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
-
-<p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br>现在的自定义字典的用法:<code>dict1.key</code></p>
-<hr>
-<h2 id="init-初始化"><a href="#init-初始化" class="headerlink" title="__init__ 初始化"></a><code>__init__</code> 初始化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, indict=None, attribute=None)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> indict <span class="keyword">is</span> <span class="keyword">None</span>: </span><br><span class="line">        indict = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Set any attributes here - before initialisation</span></span><br><span class="line">    <span class="comment"># these remain as normal attributes   在初始化之前设置通用属性</span></span><br><span class="line">    self.attribute = attribute</span><br><span class="line">    dict.__init__(self, indict)</span><br><span class="line">    self.__initialised = <span class="keyword">True</span> <span class="comment"># 初始化标志</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># After initialisation, setting attributes</span></span><br><span class="line">    <span class="comment"># is the same as setting an item  初始化之后</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="setattr-对一个属性赋值"><a href="#setattr-对一个属性赋值" class="headerlink" title="__setattr__ 对一个属性赋值"></a><code>__setattr__</code> 对一个属性赋值</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, item, value)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Maps attributes to values</span></span><br><span class="line"><span class="string">    Only if we are initialised   只对初始化过的实例赋值</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># This test allows attributes to be set in the __init__ method</span></span><br><span class="line">    <span class="comment"># 允许在初始化的时候设置属性</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">"_AttribDict__initialised"</span> <span class="keyword">not</span> <span class="keyword">in</span> self.__dict__:</span><br><span class="line">        <span class="keyword">return</span> dict.__setattr__(self, item, value)</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Any normal attributes are handled normally</span></span><br><span class="line">    <span class="keyword">elif</span> item <span class="keyword">in</span> self.__dict__: <span class="comment"># 如果已经设置过了</span></span><br><span class="line">        dict.__setattr__(self, item, value)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>: <span class="comment"># 没设置过的</span></span><br><span class="line">        self.__setitem__(item, value)</span><br></pre></td></tr></table></figure>
-
-<p>例如执行以下代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line">kb.a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p><code>kb = AttribDict()</code>执行完,也就初始化完<code>kb</code>这个实例了,对象的属性储存在对象的<code>__dict__</code>属性中,这个时候它的<code>__dict__</code>为</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'_AttribDict__initialised'</span>: <span class="keyword">True</span>, <span class="string">'attribute'</span>: <span class="keyword">None</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行<code>kb.a=1</code>即对实例的属性赋值的时候,就会隐式调用到<code>__setattr__</code>这个super method.</p>
-<p>首先会在<code>__dict__</code>搜索是否初始化过的标志属性</p>
-<ul>
-<li><p>如果未初始化过的话,返回一个<code>dict</code>.</p>
-</li>
-<li><p>如果初始化过的实例,会根据<code>key</code>在<code>__dict__</code>搜索</p>
-<ul>
-<li><p>如果这个属性已经设置过的话,会调用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dict.__setattr__(self, item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self.itme = value`,对一个属性赋值(覆盖已有属性)</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果这个属性没设置过的话,会调用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.__setitem__(item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self[key] = val`,对新索引值赋值</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="getattr-访问一个不存在的属性"><a href="#getattr-访问一个不存在的属性" class="headerlink" title="__getattr__ 访问一个不存在的属性"></a><code>__getattr__</code> 访问一个不存在的属性</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, item)</span>:</span></span><br><span class="line">    <span class="string">""" </span></span><br><span class="line"><span class="string">    Maps values to attributes</span></span><br><span class="line"><span class="string">    Only called if there *is NOT* an attribute with this name </span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> self.__getitem__(item) <span class="comment"># 通过key获取value</span></span><br><span class="line">    <span class="keyword">except</span> KeyError:</span><br><span class="line">        <span class="keyword">raise</span> AttributeError(<span class="string">"unable to access item '%s'"</span> % item)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line"><span class="keyword">print</span> kb.a</span><br></pre></td></tr></table></figure>
-
-<p>执行<code>print kb.a</code>的时候,访问一个不存在的属性的时候,会隐式调用<code>__getattr__</code>这个super method.</p>
-<p>当属性不存在的时候,<code>__getattr__</code>会raise an AttributeError exception.</p>
-<ul>
-<li><p>默认的<code>__getattr__</code>的报错:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &apos;AttribDict&apos; object has no attribute &apos;a&apos;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改过的<code>__getattr__</code>的报错:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: unable to access item &apos;a&apos;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>额,效果只是让错误输出更友好而已….</p>
-<hr>
-<h2 id="getstate-序列化"><a href="#getstate-序列化" class="headerlink" title="__getstate__ 序列化"></a><code>__getstate__</code> 序列化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getstate__</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self.__dict__</span><br></pre></td></tr></table></figure>
-
-<p>代替对象的<strong>dict</strong>属性被保存。</p>
-<p>当对象pickled，你可返回一个自定义的状态被保存。<br>当对象unpickled时，这个状态将会被<code>__setstate__</code>使用。</p>
-<hr>
-<h2 id="setstate-序列化"><a href="#setstate-序列化" class="headerlink" title="__setstate__ 序列化"></a><code>__setstate__</code> 序列化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setstate__</span><span class="params">(self, dict)</span>:</span></span><br><span class="line">    self.__dict__ = dict</span><br></pre></td></tr></table></figure>
-
-<p>对象unpickled时，如果<code>__setstate__</code>定义对象状态会传递来代替用对象的<strong>dict</strong>属性。</p>
-<p>这正好跟<code>__getstate__</code>手牵手：当二者都被定义了，你可以描述对象的pickled状态，任何你想要的。</p>
-<hr>
-<h2 id="deepcopy-深复制"><a href="#deepcopy-深复制" class="headerlink" title="__deepcopy__ 深复制"></a><code>__deepcopy__</code> 深复制</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__deepcopy__</span><span class="params">(self, memo)</span>:</span></span><br><span class="line">    retVal = self.__class__()</span><br><span class="line">    memo[id(self)] = retVal</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> attr <span class="keyword">in</span> dir(self):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> attr.startswith(<span class="string">'_'</span>):</span><br><span class="line">            value = getattr(self, attr)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> isinstance(value, (types.BuiltinFunctionType, types.FunctionType, types.MethodType)):</span><br><span class="line">                setattr(retVal, attr, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> self.items():</span><br><span class="line">        retVal.__setitem__(key, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> retVal</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>对于简单的 object，用 shallow copy 和 deep copy 没区别</p>
-</blockquote>
-<blockquote>
-<p>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</p>
-</blockquote>
-<p>嵌套的复杂object,为了保证数据的独立性,要尽量的使用deepcopy.</p>
-<hr>
-<h1 id="好处"><a href="#好处" class="headerlink" title="好处:"></a>好处:</h1><p>kb作为一个全局的字典,保留了相关的配置信息,很多代码里都会用到这个全局的字典,暂时能想到这样的好处就是</p>
-<ul>
-<li>大篇幅代码都用到的话,<code>dict1.key</code>比<code>dict1[&quot;key&quot;]</code>看起来更简洁.更pythonic.</li>
-<li>可以自定义更加友好的错误输出提示信息.</li>
-<li>扫描中断需要继续的话,可以自定义序列化的内容,便于自己保存对象.</li>
-</ul>
-<hr>
-<h1 id="相关知识点"><a href="#相关知识点" class="headerlink" title="相关知识点:"></a>相关知识点:</h1><h2 id="special-method"><a href="#special-method" class="headerlink" title="special method:"></a>special method:</h2><h3 id="特殊之处在哪呢"><a href="#特殊之处在哪呢" class="headerlink" title="特殊之处在哪呢?"></a>特殊之处在哪呢?</h3><p>它的特殊之处在于:</p>
-<p>如果把Python当成一个<code>framework</code>的话，这些预留的特殊方法相当于接口<code>interface</code>.</p>
-<p>你可以通过这些接口,使得<code>your-object</code>就跟<code>built-in object</code>高度一致,也能复用到<code>built in-object</code>原有的强大的功能.</p>
-<hr>
-<h2 id="有哪些类型的接口呢"><a href="#有哪些类型的接口呢" class="headerlink" title="有哪些类型的接口呢?"></a>有哪些类型的接口呢?</h2><p>可以在以下这些方面定制你自己的类:</p>
-<ol>
-<li>构造和初始化</li>
-<li>控制属性访问</li>
-<li>创建自定义容器</li>
-<li>反射</li>
-<li>可调用的对象</li>
-<li>上下文管理</li>
-<li>创建对象描述器</li>
-<li>复制</li>
-</ol>
-<hr>
-<h3 id="什么时候会用到特殊方法呢"><a href="#什么时候会用到特殊方法呢" class="headerlink" title="什么时候会用到特殊方法呢?"></a>什么时候会用到特殊方法呢?</h3><p><strong>原有的数据类型的功能不能满足你的要求.</strong></p>
-<p>例子:</p>
-<ol>
-<li>你可以像sqlmap这里的<code>AttribDict</code>在原生字典的基础上构造自己符合自己项目的数据类型.</li>
-<li>自带的<code>dict</code>是无序的,如果你想用有序的字典.你可以用<code>collections</code>模块的<code>OrderedDict</code>.而这个<code>OrderedDict</code>就是在<code>dict</code>的基础上拓展来的.</li>
-</ol>
-<hr>
-<h2 id="dict-对象的属性系统"><a href="#dict-对象的属性系统" class="headerlink" title="__dict__ 对象的属性系统:"></a><code>__dict__</code> 对象的属性系统:</h2><ul>
-<li>对象的属性储存在对象的<code>__dict__</code>属性中</li>
-<li><code>__dict__</code>为一个词典，键为属性名，对应的值为属性本身.</li>
-</ul>
-<p>来源:</p>
-<ul>
-<li><code>类属性(class attribute)</code>: 类定义 or 根据类定义继承来的</li>
-<li><code>对象属性(object attribute)</code>: 对象实例定义的</li>
-</ul>
-<p>例子:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">bird</span><span class="params">(object)</span>:</span></span><br><span class="line">    feather = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">chicken</span><span class="params">(bird)</span>:</span></span><br><span class="line">    fly = <span class="keyword">False</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, age)</span>:</span></span><br><span class="line">        self.age = age</span><br><span class="line"></span><br><span class="line">summer = chicken(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">print(bird.__dict__)</span><br><span class="line">print(chicken.__dict__)</span><br><span class="line">print(summer.__dict__)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bird对象属性 比如feather</span></span><br><span class="line">&#123;<span class="string">'__dict__'</span>: &lt;attribute <span class="string">'__dict__'</span> of <span class="string">'bird'</span> objects&gt;, <span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'__weakref__'</span>: &lt;attribute <span class="string">'__weakref__'</span> of <span class="string">'bird'</span> objects&gt;, <span class="string">'feather'</span>: <span class="keyword">True</span>, <span class="string">'__doc__'</span>: <span class="keyword">None</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># chicken对象属性 比如fly和__init__方法</span></span><br><span class="line">&#123;<span class="string">'fly'</span>: <span class="keyword">False</span>, <span class="string">'__module__'</span>: <span class="string">'__main__'</span>, <span class="string">'__doc__'</span>: <span class="keyword">None</span>, <span class="string">'__init__'</span>: &lt;function __init__ at <span class="number">0x2b91db476d70</span>&gt;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># summer对象属性 比如age</span></span><br><span class="line">&#123;<span class="string">'age'</span>: <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>有一些属性，比如<code>__doc__</code>，并不是由我们定义的，而是由Python自动生成。</p>
-<p>此外，bird类也有父类，是object类(正如我们的bird定义，<code>class bird(object)</code>)。</p>
-<p>这个object类是Python中所有类的父类。</p>
-<p>可以看到，<strong>Python中的属性是分层定义的</strong>，比如这里分为<code>object/bird/chicken/summer</code>这四层。</p>
-<p><strong>当我们需要调用某个属性的时候，Python会一层层向上遍历，直到找到那个属性。</strong>(某个属性可能出现再不同的层被重复定义，Python向上的过程中，会选取先遇到的那一个，也就是比较低层的属性定义)。</p>
-<p>当我们有一个summer对象的时候，分别查询summer对象、chicken类、bird类以及object类的属性，就可以知道summer对象所有的<code>__dict__</code>，就可以找到通过对象summer可以调用和修改的所有属性了.</p>
-<p>refs: <a href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html" target="_blank" rel="noopener">Python深入03 对象的属性</a></p>
-<hr>
-<h2 id="deep-copy和shadow-copy"><a href="#deep-copy和shadow-copy" class="headerlink" title="deep copy和shadow copy:"></a>deep copy和shadow copy:</h2><blockquote>
-<ul>
-<li>我们寻常意义的复制就是深复制，即将被复制对象完全再复制一遍作为独立的新个体单独存在。所以改变原有被复制对象不会对已经复制出来的新对象产生影响。 </li>
-<li>而浅复制并不会产生一个独立的对象单独存在，他只是将原有的数据块打上一个新标签，所以当其中一个标签被改变的时候，数据块就会发生变化，另一个标签也会随之改变。这就和我们寻常意义上的复制有所不同了。</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>对于简单的 object，用 shallow copy 和 deep copy 没区别</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</li>
-</ul>
-</blockquote>
-<p>refs: <a href="https://www.cnblogs.com/hokky/p/8476698.html" target="_blank" rel="noopener">Python-copy()与deepcopy()区别</a></p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><p><a href="https://stackoverflow.com/questions/2033150/subclassing-dict-should-dict-init-be-called" target="_blank" rel="noopener">Subclassing dict: should dict.<strong>init</strong>() be called?</a></p>
-</li>
-<li><p><a href="https://blog.csdn.net/yuxinleipp/article/details/7869290" target="_blank" rel="noopener">Python 方法调用机制</a></p>
-</li>
-<li><p><a href="https://stackoverflow.com/questions/12627949/python-override-getstate-and-setstate" target="_blank" rel="noopener">Python, override__getstate__() and <strong>setstate</strong>()</a></p>
-</li>
-<li><p><a href="https://blog.csdn.net/codingwithme/article/details/41675679" target="_blank" rel="noopener">sqlmap源码阅读之基础(dict,sys)</a></p>
-</li>
-<li><p><a href="http://python.jobbole.com/88367/" target="_blank" rel="noopener">Python 魔术方法 - Magic Method</a></p>
-</li>
-<li><p><a href="https://pycoders-weekly-chinese.readthedocs.io/en/latest/issue6/a-guide-to-pythons-magic-methods.html#id13" target="_blank" rel="noopener">Python 魔术方法指南</a></p>
-</li>
-<li><p><a href="https://docs.python.org/2/reference/datamodel.html#customizing-attribute-access" target="_blank" rel="noopener">3. Data model</a></p>
-</li>
-<li><p><a href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html" target="_blank" rel="noopener">Python深入03 对象的属性</a></p>
-</li>
-<li><p><a href="https://www.cnblogs.com/blackmatrix/p/5630515.html" target="_blank" rel="noopener">Python新式类与经典类的区别</a></p>
-</li>
-<li><p><a href="https://www.peterbe.com/plog/must__deepcopy__" target="_blank" rel="noopener">When to <strong>deepcopy</strong> classes in Python</a></p>
-</li>
-<li><p><a href="https://www.cnblogs.com/hokky/p/8476698.html" target="_blank" rel="noopener">Python-copy()与deepcopy()区别</a></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/Sqlmap源码-checkSameHost函数的疑问/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/01/Sqlmap源码-checkSameHost函数的疑问/" itemprop="url">Sqlmap源码-checkSameHost函数的疑问</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-01T14:36:34+08:00">
-                2019-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在看sqlmap源码的时候,看了它的<code>crawler</code>，用到了<code>checkSameHost</code>函数.</p>
-<p>跟进到<code>lib.core.common</code>公共函数里看<code>checkSameHost</code>函数,产生了一些疑问</p>
-<hr>
-<h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSameHost</span><span class="params">(*urls)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target.com/images/page2.php')</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost('http://www.target.com/page1.php?id=1', 'http://www.target2.com/images/page2.php')</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">elif</span> len(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_</span><span class="params">(value)</span>:</span> <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r"\A\w+://"</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">"http://%s"</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> all(re.sub(<span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r"(?i)\Awww\."</span>, <span class="string">""</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">""</span>).netloc.split(<span class="string">':'</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or "").netloc.split(':')[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r"(?i)\Awww\." (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
-<ul>
-<li><code>False</code></li>
-</ul>
-</li>
-<li><p><code>http://xxx.com</code>,<code>http://www.xxx.com</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code></p>
-<ul>
-<li><code>False</code></li>
-<li>?????</li>
-</ul>
-</li>
-</ul>
-<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h2><p>很多时候,<code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code>这两个子域名是可以解析同一个ip上的,这种情况下<code>sameHost</code>判断应该为<code>True</code>才对,为什么这里为<code>False</code>呢?</p>
-<h2 id="answer"><a href="#answer" class="headerlink" title="answer:"></a>answer:</h2><p>这里的sameHost应该是有歧义<br>严格意义上,是否是sameHost应该通过ip来判断,但是如果url很多的话,都去其解析域名对应的ip,会消耗时间</p>
-<p>广义上看,这里的sameHost应该指的是same website.</p>
-<p>通过域名来判断是否是相同的网站,是ok的.</p>
-<hr>
-<h1 id="域名与ip的关系"><a href="#域名与ip的关系" class="headerlink" title="域名与ip的关系:"></a>域名与ip的关系:</h1><p>常见的情况下,一个域名与一个ip是对应的.</p>
-<p>但是<strong>域名与ip的关系不一定是一对一的关系,可以是多对一或者是一对多的关系</strong>.</p>
-<ul>
-<li><p>多个域名解析到一个ip:</p>
-<ul>
-<li><a href="https://jingyan.baidu.com/article/a24b33cd55c7ba19ff002b4b.html" target="_blank" rel="noopener">IIS中怎么配置虚拟主机</a></li>
-<li><a href="https://segmentfault.com/q/1010000002442790" target="_blank" rel="noopener">IS可否将多个域名配置到同一个IP/端口</a></li>
-</ul>
-</li>
-<li><p>一个域名解析到多个ip:</p>
-<ul>
-<li><a href="https://www.cnblogs.com/cuihongyu3503319/archive/2012/07/09/2583129.html" target="_blank" rel="noopener">负载均衡实现，一个域名对应多个IP地址</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2926,7 +2694,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2937,7 +2705,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2948,7 +2716,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

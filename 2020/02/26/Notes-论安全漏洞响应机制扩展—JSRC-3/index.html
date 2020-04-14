@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Security,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="如何看待待企业的安全工作建设安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。 被动方面: 比如说进行针对性的培训，加强规范。 需要明确的是，安全团队是在帮助业务部门防范风险； 主动方面: 应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。 漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审">
+<meta name="keywords" content="Security">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notes-论安全漏洞响应机制扩展—JSRC-3">
+<meta property="og:url" content="http://yoursite.com/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/index.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="如何看待待企业的安全工作建设安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。 被动方面: 比如说进行针对性的培训，加强规范。 需要明确的是，安全团队是在帮助业务部门防范风险； 主动方面: 应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。 漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-18T02:16:52.888Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Notes-论安全漏洞响应机制扩展—JSRC-3">
+<meta name="twitter:description" content="如何看待待企业的安全工作建设安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。 被动方面: 比如说进行针对性的培训，加强规范。 需要明确的是，安全团队是在帮助业务部门防范风险； 主动方面: 应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。 漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/">
+
+
+
+
+
+  <title>Notes-论安全漏洞响应机制扩展—JSRC-3 | Black House</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Black House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Notes-论安全漏洞响应机制扩展—JSRC-3</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-26T22:36:34+08:00">
+                2020-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="如何看待待企业的安全工作建设"><a href="#如何看待待企业的安全工作建设" class="headerlink" title="如何看待待企业的安全工作建设"></a>如何看待待企业的安全工作建设</h2><p>安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。</p>
+<p>被动方面:</p>
+<p>比如说进行针对性的培训，加强规范。 <strong>需要明确的是，安全团队是在帮助业务部门防范风险；</strong></p>
+<p>主动方面:</p>
+<p>应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。</p>
+<p>漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审，安全评审等来筛选项目是否够上线的条件。</p>
+<p>上线前充分筛查，上线后出现问题，基本都可控。</p>
+<blockquote>
+<p>现状是,还会发现一些在野资产。都不知道什么时候就上线了。</p>
+</blockquote>
+<p>另外，上线流程过程中可以开发一些黑盒、白盒扫描工具，提供给开发人员，让开发人员去自查，如果有问题再找安全部门，这样开发人员也会对安全越来越了解。只要解决开发部门的自我驱动，所有问题都迎刃而解。</p>
+<blockquote>
+<p>让开发人员自查,这个难度有点大</p>
+</blockquote>
+<hr>
+<h2 id="安全响应机制整个流程的结束点？"><a href="#安全响应机制整个流程的结束点？" class="headerlink" title="安全响应机制整个流程的结束点？"></a>安全响应机制整个流程的结束点？</h2><p>白帽子提交漏洞，<strong>企业应该按照白帽子提供的方法结合自己的业务去查是否还有类似的问题，白帽子的漏洞提交只是事件处理的开始。处理完相同类型的漏洞，才能算是结束。</strong></p>
+<blockquote>
+<p>举一反三, 一个地方有问题，那么其他地方出现同样问题的概率很大。</p>
+</blockquote>
+<hr>
+<h2 id="跨部门协作配合修复漏洞的问题"><a href="#跨部门协作配合修复漏洞的问题" class="headerlink" title="跨部门协作配合修复漏洞的问题:"></a>跨部门协作配合修复漏洞的问题:</h2><p>有些漏洞不一定能及时修复,但这不会影响我们对漏洞的评级。 </p>
+<p>在企业中，越大的企业越会出现漏洞修复推进困难的情况。</p>
+<blockquote>
+<p>漏洞的修复情况,看这几个因素:</p>
+<ol>
+<li>具体的漏洞</li>
+<li>这个漏洞会影响的业务</li>
+<li>业务方的配合程度</li>
+<li>有没有合适贴切的解决方案</li>
+</ol>
+</blockquote>
+<p>“提升安全能力”不在应急止损的关注范围内，可以包括在后续安全建设中。 跨部门修复方面主要分 <strong>“产品线重视自觉寻求帮助”</strong> 和 <strong>“上级推动”</strong> 两类。</p>
+<p>定制漏洞修复事件dead line，如果不修，逐级上报。</p>
+<p>还可制定不同级别漏洞对应不同修复时间的要求， 严格执行考核。 超期系统自动邮件抄处理人的上一级领导， 时间越长，抄送级别越高，直到超送到技术副总裁。</p>
+<hr>
+<h2 id="一个业务部门如果多次出现同类型问题，-有相应的响应机制么？"><a href="#一个业务部门如果多次出现同类型问题，-有相应的响应机制么？" class="headerlink" title="一个业务部门如果多次出现同类型问题， 有相应的响应机制么？"></a>一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</h2><p>需要看是什么类型问题，是工作态度问题还是技术能力不够，如果是前者要找他们leader去沟通，如果是后者，安全部门需要组织交流培训，提升业务部门的安全意识和技术能力。</p>
+<hr>
+<h2 id="安全应急响应机制"><a href="#安全应急响应机制" class="headerlink" title="安全应急响应机制:"></a>安全应急响应机制:</h2><p>建立安全接口人，协助产品线培养免疫力。</p>
+<p>阶梯性的做安全培训，后续让产品线他们自己重视培训，提升安全意识与能力。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/03-%E8%AE%BA%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%89%A9%E5%B1%95.pdf" target="_blank" rel="noopener">论安全漏洞响应机制扩展</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Security/" rel="tag"># Security</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/16/堡垒机的一些知识/" rel="next" title="堡垒机的一些知识">
+                <i class="fa fa-chevron-left"></i> 堡垒机的一些知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/03/sqlmap源码-参数动态性检测/" rel="prev" title="sqlmap源码-参数动态性检测">
+                sqlmap源码-参数动态性检测 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png" alt="Foolisheddy">
+            
+              <p class="site-author-name" itemprop="name">Foolisheddy</p>
+              <p class="site-description motion-element" itemprop="description">nothing to say :)</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何看待待企业的安全工作建设"><span class="nav-number">1.</span> <span class="nav-text">如何看待待企业的安全工作建设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全响应机制整个流程的结束点？"><span class="nav-number">2.</span> <span class="nav-text">安全响应机制整个流程的结束点？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨部门协作配合修复漏洞的问题"><span class="nav-number">3.</span> <span class="nav-text">跨部门协作配合修复漏洞的问题:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个业务部门如果多次出现同类型问题，-有相应的响应机制么？"><span class="nav-number">4.</span> <span class="nav-text">一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全应急响应机制"><span class="nav-number">5.</span> <span class="nav-text">安全应急响应机制:</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number"></span> <span class="nav-text">refs:</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

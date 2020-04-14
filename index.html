@@ -252,6 +252,587 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/浅谈越权自动化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/06/浅谈越权自动化/" itemprop="url">浅谈越权自动化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-06T22:36:34+08:00">
+                2020-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>自己拍脑袋写了个idor_auto脚本去扫描越权漏洞。发现效果还可以。</p>
+<p>上网查下资料整理下思路。</p>
+<hr>
+<h1 id="越权漏洞"><a href="#越权漏洞" class="headerlink" title="越权漏洞"></a>越权漏洞</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>定义: 增、删、改、查，缺乏权限鉴定或者鉴定不严</p>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类:"></a>分类:</h2><ul>
+<li>未授权访问</li>
+<li>水平越权</li>
+<li>垂直越权</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154039.png" alt="20200406154039"></p>
+<hr>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例:"></a>案例:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154235.png" alt="20200406154235"></p>
+<hr>
+<h2 id="越权漏洞的痛点"><a href="#越权漏洞的痛点" class="headerlink" title="越权漏洞的痛点:"></a>越权漏洞的痛点:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154303.png" alt="20200406154303"></p>
+<hr>
+<h1 id="工具的设计思路"><a href="#工具的设计思路" class="headerlink" title="工具的设计思路:"></a>工具的设计思路:</h1><h2 id="第一版"><a href="#第一版" class="headerlink" title="第一版:"></a>第一版:</h2><p><a href="https://jerrychan807.github.io/2019/12/29/%E8%B6%8A%E6%9D%83%E5%8D%8A%E8%87%AA%E5%8A%A8%E5%8C%96%E6%8F%92%E4%BB%B6%E7%9A%84%E5%B0%9D%E8%AF%95/" target="_blank" rel="noopener">越权半自动化插件的尝试</a></p>
+<p>缺点在于要自己先找到某个包的某个参数是存在越权漏洞的,不够自动化。</p>
+<hr>
+<h2 id="第二版"><a href="#第二版" class="headerlink" title="第二版:"></a>第二版:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406165919.png" alt="20200406165919"></p>
+<p>输出的结果:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406173351.png" alt="20200406173351"></p>
+<p>相对第一版来说,更通用。<br>自动化程度更高</p>
+<p>缺点:需要2个账户在登录下，尽可能多的点击相同的功能点,触发请求，效率有点低。</p>
+<p>存在误报的情况:</p>
+<p>比如公共接口:</p>
+<p>用两个账户的token去请求链接可以得到同样的响应结果,但是该页面本身没有数据操作的功能。</p>
+<p>可以理解为这类结果为公共接口，例如 获取地区省市县的接口，获取最新更新包的下载地址接口。</p>
+<p>不管用谁的token获取的结果都是一样的。</p>
+<hr>
+<h1 id="参考别人的思路"><a href="#参考别人的思路" class="headerlink" title="参考别人的思路:"></a>参考别人的思路:</h1><h2 id="ele"><a href="#ele" class="headerlink" title="ele:"></a>ele:</h2><h3 id="思路设计1-Request重放"><a href="#思路设计1-Request重放" class="headerlink" title="思路设计1:Request重放"></a>思路设计1:Request重放</h3><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406155039.png" alt="20200406155039"></p>
+<p>缺乏鉴权的部分,图中的用法是单纯替换token,而我的工具的做法是,替换整个请求body。</p>
+<p>单纯替换token的粒度更低,相比我的方案可以发现更多:在url上的越权,一些头部字段的越权，这感觉效果更好。</p>
+<p>而且,可以只需要用单一用户点击功能，触发请求就可以了。相比我的方案(两个账户触发请求)来说，效率更高。</p>
+<p>修改ID的部分,感觉不能单纯的对数字加一减一,效果不好，比如说订单号order_id,加一减一之后不一定是真实存在的订单号。</p>
+<p>过滤部分，过滤掉本身无需鉴权的请求,这一点可以大大减少误报。</p>
+<hr>
+<h3 id="思路设计2-Response比对"><a href="#思路设计2-Response比对" class="headerlink" title="思路设计2:Response比对"></a>思路设计2:Response比对</h3><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406175758.png" alt="20200406175758"></p>
+<p>比较body的内容是否完全一样,这样会漏报。因为有些response里面含有一些随机值。</p>
+<p>比较body length的话,可能会误报,但是总比漏报好。</p>
+<p>比较好的比对方案是: status code + body length</p>
+<hr>
+<h2 id="中通scr"><a href="#中通scr" class="headerlink" title="中通scr:"></a>中通scr:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406182126.png" alt="20200406182126"></p>
+<p>开发了浏览器插件供QA人员使用,触发请求部分不需要由安全的同事来做,这一点很赞。</p>
+<blockquote>
+<p>首先我们来看，越权漏洞的本质是服务方没有正确地进行鉴权，如果能够准确无误地执行了鉴权的动作，那就不会存在越权漏洞。这里有一个前提就是合理的权限设定，判断是否正确地执行了鉴权，其实就是判断真实的响应结果是否和规划的权限设定里测试用例的预期结果是否一致，如果一致那就不存在越权漏洞，反之则存在，以上是整个方案的基础原理。</p>
+</blockquote>
+<blockquote>
+<p>其次在工程上如何实现呢？要获取真实的响应结果和规划的权限设定，需要六个实体的参与：<strong>安全测试人员、检测应用、部署检测应用的设备、统一认证中心、统一权限中心、统一资源中心</strong>，关键点在于自动化地安全认证（安全测试人员登录检测应用的身份认证和检测应用作为独立身份与其它实体的应用间的认证）<strong>、自动化地获取被测系统包含的所有权限列表并授权（检测应用从统一权限中心拉取后以安全测试人员的身份请求权限中心进行逐一授权）</strong>、自动化地获取被测系统的所有对外服务及对应的包含预期结果的测试用例（服务及测试用例作为资源被自动化地解析到统一资源中心，检测应用从统一资源中心自动拉取），检测应用在通过相关认证和授权后可以自动化地按照拉取的服务列表执行对应的测试用例并进行判断，然后自动化地取消上一个授权获取下一个授权直到结束。</p>
+</blockquote>
+<blockquote>
+<p>由于自动化授权的敏感性，可以由检测应用和部署检测应用的设备结合成网络代理并且由安全测试人员提供TOTP满足信任要求，另外测试用例要做到生产环境的无害性，这样也可以直接部署到生产环境进行定期自动化测试。接下来对部分细节作简要阐述，在传统开发模式中，系统规划的权限设定通常存在开发人员的大脑和服务的鉴权代码中，这样非常不利于上线前权限设计的合理性和正确性的评审以及上线后鉴权逻辑实现正确性的核查，也是越权漏洞频发的根因，我们需要在服务开发之初就文档化下来，包括服务的定义、安全测试用例及预期的结果，在开发实现方面，我们可以借助流行的IDL接口描述语言的一些特性，如protobuf的descriptor或option，IDL用来定义服务，其中的一些特性用来定义安全测试用例及预期的结果，结合起来可以支持非常复杂的场景，服务方面既可以提供RPC也可以提供RESTful形式，意味着既可以支持中台对外服务也可以支持对内的微服务（对内的微服务作为独立的身份实体），安全测试用例方面既可以支持行为、菜单等权限，也可以支持数据权限，整个的定义如proto文件需要自动化地解析到资源中心并且和应用标识关联起来。另外在统一权限中心的设计方面，我们需要将应用所有的权限集中配置和使用，并且做到配置项和服务的关联，这样可以实现任意权限模型的支持，如RBAC、ABAC等。</p>
+</blockquote>
+<p>这个零信任安全架构下的全新思路有点东西。。。</p>
+<hr>
+<h1 id="构思-另一种更好的方案"><a href="#构思-另一种更好的方案" class="headerlink" title="构思:另一种更好的方案:"></a>构思:另一种更好的方案:</h1><p>半自动化的原因是因为触发请求的部分最好是由人来触发。这样能保证请求的真实、多和全。</p>
+<p>甲方的话可以通过查询api的日志来做到这一点。</p>
+<p>api日志里面的请求是完整的,真实的，是由用户触发的。</p>
+<p>比如查询最近10分钟的api日志,就可以拿到多个用户的有效的真实请求。</p>
+<p>然后进行测试，首先这样就做到了在收集数据包方面的自动化，不需要再一个个的去点了。</p>
+<p>但是这样的话，有个需要考虑的点：如果是在生产环境，很容易出现给其他用户写入脏数据</p>
+<p>怎么样保证无害化？又是一个值得考虑的点。比如用生产环境的日志(生产环境的日志可能又不够全)。</p>
+<hr>
+<h1 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题:"></a>其他问题:</h1><h2 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h2><p>查是最容易实现的，那么增删改呢？</p>
+<h2 id="没有数据"><a href="#没有数据" class="headerlink" title="没有数据"></a>没有数据</h2><p>有些接口,如果你的2个测试账户都是没有数据的话，往往测试账号都是没有什么信息的。</p>
+<p>那么不管怎么测，他们的结果都是空的，没有什么意义的数据。</p>
+<p>这个时候在实际的渗透测试中,比如phone参数,你会用特制的手机号列表去遍历，直到一个length特别不同的包出现，这个时候才能真正的证明这个接口是有越权的。</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="http://www.doc88.com/p-3939514860099.html" target="_blank" rel="noopener">一种Web应用越权漏洞自动化检测实现</a></li>
+<li><a href="https://wenku.baidu.com/view/f9cb775ccdbff121dd36a32d7375a417866fc1b7.html" target="_blank" rel="noopener">越权半自动化检测实践</a></li>
+<li><a href="https://www.secrss.com/articles/7531" target="_blank" rel="noopener">中通分布式被动安全扫描实践</a></li>
+<li><a href="https://www.secrss.com/articles/13426" target="_blank" rel="noopener">中通安全开源项目之越权漏洞自动化检测</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/03/sqlmap源码-参数动态性检测/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/03/sqlmap源码-参数动态性检测/" itemprop="url">sqlmap源码-参数动态性检测</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T14:36:34+08:00">
+                2020-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="参数动态性检测"><a href="#参数动态性检测" class="headerlink" title="参数动态性检测:"></a>参数动态性检测:</h1><p>直接抄一下别人的流程图:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/024A031F-AB6F-4E2F-BFD3-7FEB419DA68A.png" alt=""></p>
+<p>其实很简单,简而言之</p>
+<ul>
+<li>将请求参数值替换成一个随机的四位数，发包获取结果</li>
+<li>结果与原始页面做相似度的对比</li>
+<li>如果不相似,那么这个参数具有动态性(这个参数的变化导致了页面的变化)</li>
+</ul>
+<hr>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码:"></a>代码:</h1><p>实际的代码也是很少。(如果在理解了页面相似度这个概念的前提下)</p>
+<p>在开始检测的sql注入的<code>start()</code>函数有调用到<code>checkDynParam</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/7653A023-2E37-4DAA-953B-2D704694060A.png" alt=""></p>
+<p>经过这个检测参数动态性的函数之后,就可以看到熟悉的提示了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[23:16:00] [INFO] testing if GET parameter &apos;id&apos; is dynamic</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkDynParam</span><span class="params">(place, parameter, value)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    This function checks if the URL parameter is dynamic. If it is</span></span><br><span class="line"><span class="string">    dynamic, the content of the page differs, otherwise the</span></span><br><span class="line"><span class="string">    dynamicity might depend on another parameter.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> kb.redirectChoice:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    kb.matchRatio = <span class="keyword">None</span></span><br><span class="line">    dynResult = <span class="keyword">None</span></span><br><span class="line">    randInt = randomInt() <span class="comment"># 生成一个四位随机数</span></span><br><span class="line"></span><br><span class="line">    paramType = conf.method <span class="keyword">if</span> conf.method <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">None</span>, HTTPMETHOD.GET, HTTPMETHOD.POST) <span class="keyword">else</span> place <span class="comment"># paramType:'GET'</span></span><br><span class="line"></span><br><span class="line">    infoMsg = <span class="string">"testing if %s parameter '%s' is dynamic"</span> % (paramType, parameter)</span><br><span class="line">    logger.info(infoMsg) <span class="comment"># 输出提示信息</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        payload = agent.payload(place, parameter, value, getUnicode(randInt)) <span class="comment"># payload: u'id=__PAYLOAD_DELIMITER__1412__PAYLOAD_DELIMITER__'</span></span><br><span class="line">        dynResult = Request.queryPage(payload, place, raise404=<span class="keyword">False</span>) <span class="comment"># 这里面会发包,并且判断相似度</span></span><br><span class="line">    <span class="keyword">except</span> SqlmapConnectionException:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    result = <span class="keyword">None</span> <span class="keyword">if</span> dynResult <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">else</span> <span class="keyword">not</span> dynResult</span><br><span class="line">    kb.dynamicParameter = result</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+<p>函数功能注释也解释了。</p>
+<p>这个函数用于测试参数是否是动态的。如果它是动态的话，(替换成一个新的值之后)那么页面的内容会发生变化。</p>
+<p>如果这个参数不是动态的，那么动态性可能要取决于别的参数。</p>
+<hr>
+<h1 id="inspire"><a href="#inspire" class="headerlink" title="inspire:"></a>inspire:</h1><p>在实际的渗透测试时，用brupsuite抓包的时候，会有这种感觉。</p>
+<p>不知道对哪个参数下手，不知道对哪个参数的值替换成payload进行测试。</p>
+<p>如果随机测了某个，又不知道其他的参数会不会漏。</p>
+<p>但是如果了解了 <strong>参数动态性</strong> 这个概念之后,实际上这个问题可以转化为</p>
+<p>这个数据包里面的哪些参数是动态的，也就是我修改了这个参数之后，服务端会拿对这个变化的参数进行处理，以致于页面(返回包)会发送变化。</p>
+<p>那么很大可能性是 我这个参数影响到了某个sql语句的查询或者执行了。</p>
+<p>那么这个参数就很有可能存在注入。</p>
+<p><strong>总结一下，一个参数存在注入的前提是 这个参数具有动态性。</strong></p>
+<blockquote>
+<p>那么是不是可以编写一个brupsuite插件或者一个小工具，对数据包的参数批量的先检测它是否具有动态性,毕竟这个是注入的前提之一。</p>
+</blockquote>
+<hr>
+<h1 id="refs："><a href="#refs：" class="headerlink" title="refs："></a>refs：</h1><ul>
+<li><a href="https://paper.seebug.org/729/" target="_blank" rel="noopener">sqlmap 检测剖析</a></li>
+</ul>
+<blockquote>
+<p>根据这篇文章提出的关键概念点,可以比较好的作为了解sqlmap的路径。</p>
+</blockquote>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/45291193" target="_blank" rel="noopener">sqlmap 内核分析 III: 核心逻辑</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/" itemprop="url">Notes-论安全漏洞响应机制扩展—JSRC-3</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-26T22:36:34+08:00">
+                2020-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index">
+                    <span itemprop="name">Security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="如何看待待企业的安全工作建设"><a href="#如何看待待企业的安全工作建设" class="headerlink" title="如何看待待企业的安全工作建设"></a>如何看待待企业的安全工作建设</h2><p>安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。</p>
+<p>被动方面:</p>
+<p>比如说进行针对性的培训，加强规范。 <strong>需要明确的是，安全团队是在帮助业务部门防范风险；</strong></p>
+<p>主动方面:</p>
+<p>应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。</p>
+<p>漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审，安全评审等来筛选项目是否够上线的条件。</p>
+<p>上线前充分筛查，上线后出现问题，基本都可控。</p>
+<blockquote>
+<p>现状是,还会发现一些在野资产。都不知道什么时候就上线了。</p>
+</blockquote>
+<p>另外，上线流程过程中可以开发一些黑盒、白盒扫描工具，提供给开发人员，让开发人员去自查，如果有问题再找安全部门，这样开发人员也会对安全越来越了解。只要解决开发部门的自我驱动，所有问题都迎刃而解。</p>
+<blockquote>
+<p>让开发人员自查,这个难度有点大</p>
+</blockquote>
+<hr>
+<h2 id="安全响应机制整个流程的结束点？"><a href="#安全响应机制整个流程的结束点？" class="headerlink" title="安全响应机制整个流程的结束点？"></a>安全响应机制整个流程的结束点？</h2><p>白帽子提交漏洞，<strong>企业应该按照白帽子提供的方法结合自己的业务去查是否还有类似的问题，白帽子的漏洞提交只是事件处理的开始。处理完相同类型的漏洞，才能算是结束。</strong></p>
+<blockquote>
+<p>举一反三, 一个地方有问题，那么其他地方出现同样问题的概率很大。</p>
+</blockquote>
+<hr>
+<h2 id="跨部门协作配合修复漏洞的问题"><a href="#跨部门协作配合修复漏洞的问题" class="headerlink" title="跨部门协作配合修复漏洞的问题:"></a>跨部门协作配合修复漏洞的问题:</h2><p>有些漏洞不一定能及时修复,但这不会影响我们对漏洞的评级。 </p>
+<p>在企业中，越大的企业越会出现漏洞修复推进困难的情况。</p>
+<blockquote>
+<p>漏洞的修复情况,看这几个因素:</p>
+<ol>
+<li>具体的漏洞</li>
+<li>这个漏洞会影响的业务</li>
+<li>业务方的配合程度</li>
+<li>有没有合适贴切的解决方案</li>
+</ol>
+</blockquote>
+<p>“提升安全能力”不在应急止损的关注范围内，可以包括在后续安全建设中。 跨部门修复方面主要分 <strong>“产品线重视自觉寻求帮助”</strong> 和 <strong>“上级推动”</strong> 两类。</p>
+<p>定制漏洞修复事件dead line，如果不修，逐级上报。</p>
+<p>还可制定不同级别漏洞对应不同修复时间的要求， 严格执行考核。 超期系统自动邮件抄处理人的上一级领导， 时间越长，抄送级别越高，直到超送到技术副总裁。</p>
+<hr>
+<h2 id="一个业务部门如果多次出现同类型问题，-有相应的响应机制么？"><a href="#一个业务部门如果多次出现同类型问题，-有相应的响应机制么？" class="headerlink" title="一个业务部门如果多次出现同类型问题， 有相应的响应机制么？"></a>一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</h2><p>需要看是什么类型问题，是工作态度问题还是技术能力不够，如果是前者要找他们leader去沟通，如果是后者，安全部门需要组织交流培训，提升业务部门的安全意识和技术能力。</p>
+<hr>
+<h2 id="安全应急响应机制"><a href="#安全应急响应机制" class="headerlink" title="安全应急响应机制:"></a>安全应急响应机制:</h2><p>建立安全接口人，协助产品线培养免疫力。</p>
+<p>阶梯性的做安全培训，后续让产品线他们自己重视培训，提升安全意识与能力。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/03-%E8%AE%BA%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%89%A9%E5%B1%95.pdf" target="_blank" rel="noopener">论安全漏洞响应机制扩展</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/16/堡垒机的一些知识/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1236,8 +1817,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/ReadingNotes/" itemprop="url" rel="index">
-                    <span itemprop="name">ReadingNotes</span>
+                  <a href="/categories/Learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Learning</span>
                   </a>
                 </span>
 
@@ -1328,7 +1909,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/19/w13scan-扫描插件总结-PerScheme/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/23/w13scan-扫描插件总结-PerFile/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -1347,7 +1928,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/12/19/w13scan-扫描插件总结-PerScheme/" itemprop="url">w13scan-扫描插件总结-PerScheme</a></h1>
+                <a class="post-title-link" href="/2019/12/23/w13scan-扫描插件总结-PerFile/" itemprop="url">w13scan-扫描插件总结-PerFile</a></h1>
         
 
         <div class="post-meta">
@@ -1359,8 +1940,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-19T14:36:34+08:00">
-                2019-12-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-23T14:36:34+08:00">
+                2019-12-23
               </time>
             
 
@@ -1423,666 +2004,203 @@
           
             <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
 <hr>
-<h2 id="PerScheme-每个域名"><a href="#PerScheme-每个域名" class="headerlink" title="PerScheme (每个域名)"></a>PerScheme (每个域名)</h2><p>如有url:<code>www.baidu.com/aaa/a.php</code></p>
-<p>取其中的域名<code>www.baidu.com</code>为基础</p>
-<p>其实就是相当于web的根目录</p>
-<hr>
-<h3 id="基于域名备份文件"><a href="#基于域名备份文件" class="headerlink" title="基于域名备份文件:"></a>基于域名备份文件:</h3><p>原理:</p>
-<p>以域名的信息作为构造备份文件url的基础.</p>
-<p>例如url: <code>www.baidu.com</code></p>
-<p>则会构造出以下url去发包:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www.baidu.com/www.rar</span><br><span class="line">www.baidu.com/www.zip</span><br><span class="line">www.baidu.com/baidu.rar</span><br><span class="line">www.baidu.com/baidu.zip</span><br><span class="line">www.baidu.com/com.rar</span><br><span class="line">www.baidu.com/com.zip</span><br></pre></td></tr></table></figure>
-
-<p>判定方式为 文件头特征。</p>
-<hr>
-<h3 id="通用敏感文件扫描"><a href="#通用敏感文件扫描" class="headerlink" title="通用敏感文件扫描:"></a>通用敏感文件扫描:</h3><p>字典收集自BBScan的插件,如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">/core</span><br><span class="line">/crossdomain.xml</span><br><span class="line">/debug.txt</span><br><span class="line">/.bash_history</span><br><span class="line">/.rediscli_history</span><br><span class="line">/.bashrc</span><br><span class="line">/.bash_profile</span><br><span class="line">/.bash_logout</span><br><span class="line">/.vimrc</span><br><span class="line">/.DS_Store</span><br><span class="line">/.history</span><br><span class="line">/.htaccess</span><br><span class="line">/htaccess.bak</span><br><span class="line">/.htpasswd</span><br><span class="line">/.htpasswd.bak</span><br><span class="line">/htpasswd.bak</span><br><span class="line">/nohup.out</span><br><span class="line">/.mysql_history</span><br><span class="line">/httpd.conf</span><br><span class="line">/web.config</span><br><span class="line">/server-status</span><br><span class="line">/solr/</span><br><span class="line">/examples/</span><br><span class="line">/examples/servlets/servlet/SessionExample</span><br><span class="line">/config/database.yml</span><br><span class="line">/database.yml</span><br><span class="line">/db.conf</span><br><span class="line">/db.ini</span><br><span class="line">/jmx-console/HtmlAdaptor</span><br><span class="line">/cacti/</span><br><span class="line">/zabbix/</span><br><span class="line">/jenkins/static/f3a41d2f/css/style.css</span><br><span class="line">/static/f3a41d2f/css/style.css</span><br><span class="line">/script</span><br><span class="line">/jenkins/script</span><br><span class="line">/exit</span><br><span class="line">/memadmin/index.php</span><br><span class="line">/phpmyadmin/index.php</span><br><span class="line">/phpMyAdmin/index.php</span><br><span class="line">/_phpmyadmin/index.php</span><br><span class="line">/pma/index.php</span><br><span class="line">/ganglia/</span><br><span class="line">/resin-doc/resource/tutorial/jndi-appconfig/test?inputFile=/etc/profile</span><br><span class="line">/resin-doc/viewfile/?contextpath=/&amp;servletpath=&amp;file=index.jsp</span><br><span class="line">/resin-admin/</span><br><span class="line">/.ssh/known_hosts</span><br><span class="line">/.ssh/id_rsa</span><br><span class="line">/id_rsa</span><br><span class="line">/.ssh/id_rsa.pub</span><br><span class="line">/.ssh/id_dsa</span><br><span class="line">/id_dsa</span><br><span class="line">/.ssh/id_dsa.pub</span><br><span class="line">/.ssh/authorized_keys</span><br><span class="line">/data.txt</span><br><span class="line">/install.txt</span><br><span class="line">/INSTALL.TXT</span><br><span class="line">/upload.do</span><br><span class="line">/upload.jsp</span><br><span class="line">/upload.php</span><br><span class="line">/upfile.php</span><br><span class="line">/upload.html</span><br></pre></td></tr></table></figure>
-
-<p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>{&#39;path&#39;: &#39;/core&#39;, &#39;tag&#39;: &#39;ELF&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;&#39;}</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
-</ul>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h3 id="目录穿越扫描"><a href="#目录穿越扫描" class="headerlink" title="目录穿越扫描:"></a>目录穿越扫描:</h3><p>字典收集自BBScan的插件,如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/etc/passwd</span><br><span class="line">/proc/meminfo</span><br><span class="line">/etc/profile</span><br><span class="line">/file:///etc/passwd</span><br><span class="line">/../../../../../../../../../../../../../etc/passwd</span><br><span class="line"></span><br><span class="line">/../../../../../../../../../../../../../etc/profile</span><br><span class="line"></span><br><span class="line">//././././././././././././././././././././././././../../../../../../../../etc/profile</span><br><span class="line"></span><br><span class="line">/aa/../../cc/../../bb/../../dd/../../aa/../../cc/../../bb/../../dd/../../bb/../../dd/../../bb/../../dd/../../bb/../../dd/../../ee/../../etc/profile</span><br><span class="line"></span><br><span class="line">/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/profile</span><br><span class="line"></span><br><span class="line">/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd</span><br><span class="line"></span><br><span class="line">/..%252F..%252F..%252F..%252F..%252F..%252F..%252F..%252F..%252Fetc%252Fpasswd</span><br><span class="line"></span><br><span class="line">/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd</span><br><span class="line"></span><br><span class="line">/resource/tutorial/jndi-appconfig/test?inputFile=/etc/passwd</span><br></pre></td></tr></table></figure>
-
-<p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>{&#39;path&#39;: &#39;/etc/passwd&#39;, &#39;tag&#39;: &#39;root:x:&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;&#39;}</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
-</ul>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h3 id="dz-xss探测"><a href="#dz-xss探测" class="headerlink" title="dz xss探测:"></a>dz xss探测:</h3><p>路径:<code>static/image/common/flvplayer.swf?file=1.flv&amp;linkfromdisplay=true&amp;link=javascript:alert(document.cookie);</code></p>
-<p>判定依据: 状态码200 且 源码含<code>CWS</code>这个字符串</p>
-<p>路径:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">payloads = [<span class="string">'config/config_ucenter.php.bak'</span>,</span><br><span class="line">                <span class="string">'config/.config_ucenter.php.swp'</span>,</span><br><span class="line">                <span class="string">'config/.config_global.php.swp'</span>,</span><br><span class="line">                <span class="string">'config/config_global.php.1'</span>,</span><br><span class="line">                <span class="string">'uc_server/data/config.inc.php.bak'</span>,</span><br><span class="line">                <span class="string">'config/config_global.php.bak'</span>,</span><br><span class="line">                <span class="string">'include/config.inc.php.tmp'</span>]</span><br></pre></td></tr></table></figure>
-
-<p>判定依据: 状态码200或206 且 源码含<code>&lt;?php</code>这个字符串</p>
-<p>路径:<code>static/image/admincp/getcolor.htm&#39;</code></p>
-<p>判定依据:源码含<code>if(fun) eval(&#39;parent.&#39;+fun+&#39;</code></p>
-<hr>
-<h3 id="错误页面信息泄漏"><a href="#错误页面信息泄漏" class="headerlink" title="错误页面信息泄漏:"></a>错误页面信息泄漏:</h3><p>访问一个不存在的错误页面，可以从这个页面中获取一些信息</p>
-<p>随机生成一个url: <code>www.xxxx.com/随机字符串.jsp</code>,去访问</p>
-<p>然后去正则匹配看是以下哪一类:</p>
-<ul>
-<li><code>ASPNETPathDisclosure</code></li>
-<li><code>Struts2DevMod</code></li>
-<li><code>Django DEBUG MODEL</code></li>
-<li><code>RailsDevMode</code></li>
-<li><code>RequiredParameter</code></li>
-<li><code>Thinkphp3 Debug</code></li>
-</ul>
-<p>正则规则如下:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">re_list = &#123;</span><br><span class="line">    <span class="string">"ASPNETPathDisclosure"</span>: <span class="string">"&lt;title&gt;Invalid\sfile\sname\sfor\smonitoring:\s'([^']*)'\.\sFile\snames\sfor\smonitoring\smust\shave\sabsolute\spaths\,\sand\sno\swildcards\.&lt;\/title&gt;"</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">"Struts2DevMod"</span>: <span class="string">"You are seeing this page because development mode is enabled.  Development mode, or devMode, enables extra"</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">"Django DEBUG MODEL"</span>: <span class="string">"You're seeing this error because you have &lt;code&gt;DEBUG = True&lt;\/code&gt; in"</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">"RailsDevMode"</span>: <span class="string">"&lt;title&gt;Action Controller: Exception caught&lt;\/title&gt;"</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">"RequiredParameter"</span>: <span class="string">"Required\s\w+\sparameter\s'([^']+?)'\sis\snot\spresent"</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">"Thinkphp3 Debug"</span>: <span class="string">'&lt;p class="face"&gt;:\(&lt;/p&gt;'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="flash-xss探测"><a href="#flash-xss探测" class="headerlink" title="flash xss探测:"></a>flash xss探测:</h3><p>文件字典如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">common/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">adminsoft/js/swfupload.swf</span><br><span class="line"></span><br><span class="line">statics/js/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">images/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">js/upload/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">addons/theme/stv1/_static/js/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">admin/kindeditor/plugins/multiimage/images/swfupload.swf</span><br><span class="line"></span><br><span class="line">includes/js/upload.swf</span><br><span class="line">js/swfupload/swfupload.swf</span><br><span class="line">Plus/swfupload/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">e/incs/fckeditor/editor/plugins/swfupload/js/swfupload.swf</span><br><span class="line"></span><br><span class="line">include/lib/js/uploadify/uploadify.swf</span><br><span class="line">lib/swf/swfupload.swf</span><br></pre></td></tr></table></figure>
-
-<p>最终url为 <code>www.xxx.com/xxx.swf?movieName=%22]%29}catch%28e%29{if%28!window.x%29{window.x=1;alert%28%22xss%22%29}}//</code></p>
-<p>访问,再通过md5来判断.</p>
-<hr>
-<h3 id="iis解析漏洞"><a href="#iis解析漏洞" class="headerlink" title="iis解析漏洞:"></a>iis解析漏洞:</h3><p>url : <code>domain/robots.txt/.php</code></p>
-<p>判定依据: <code>user-agent</code>在源码 和 <code>Content-Type</code>不含<code>text/plain</code></p>
-<hr>
-<h3 id="java-web目录探测"><a href="#java-web目录探测" class="headerlink" title="java web目录探测"></a>java web目录探测</h3><p>路径字典:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">/WEB-INF/web.xml</span><br><span class="line">/WEB-INF/web.xml.bak</span><br><span class="line">/WEB-INF/applicationContext.xml</span><br><span class="line">/WEB-INF/config.xml</span><br><span class="line">/WEB-INF/spring.xml</span><br><span class="line">/WEB-INF/struts-config.xml</span><br><span class="line">/WEB-INF/struts-front-config.xml</span><br><span class="line">/WEB-INF/struts/struts-config.xml</span><br><span class="line">/WEB-INF/classes/spring.xml</span><br><span class="line">/WEB-INF/classes/struts.xml</span><br><span class="line">/WEB-INF/classes/struts_manager.xml</span><br><span class="line">/WEB-INF/classes/conf/datasource.xml</span><br><span class="line">/WEB-INF/classes/data.xml</span><br><span class="line">/WEB-INF/classes/config/applicationContext.xml</span><br><span class="line">/WEB-INF/classes/applicationContext.xml</span><br><span class="line">/WEB-INF/classes/conf/spring/applicationContext-datasource.xml</span><br><span class="line">/WEB-INF/config/db/dataSource.xml</span><br><span class="line">/WEB-INF/spring-cfg/applicationContext.xml</span><br><span class="line">/WEB-INF/dwr.xml</span><br><span class="line">/WEB-INF/classes/hibernate.cfg.xml</span><br><span class="line">/WEB-INF/classes/rabbitmq.xml</span><br><span class="line">/WEB-INF/conf/activemq.xml</span><br><span class="line">/server.xml</span><br><span class="line">/config/database.yml</span><br><span class="line">/configprops</span><br><span class="line">/WEB-INF/database.properties</span><br><span class="line">/WEB-INF/web.properties</span><br><span class="line">/WEB-INF/log4j.properties</span><br><span class="line">/WEB-INF/classes/dataBase.properties</span><br><span class="line">/WEB-INF/classes/application.properties</span><br><span class="line">/WEB-INF/classes/jdbc.properties</span><br><span class="line">/WEB-INF/classes/db.properties</span><br><span class="line">/WEB-INF/classes/conf/jdbc.properties</span><br><span class="line">/WEB-INF/classes/security.properties</span><br><span class="line">/WEB-INF/conf/database_config.properties</span><br><span class="line">/WEB-INF/config/dbconfig</span><br></pre></td></tr></table></figure>
-
-<p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>{&#39;path&#39;: &#39;/WEB-INF/web.xml&#39;, &#39;tag&#39;: &#39;&lt;?xml&#39;, &#39;content-type&#39;: &#39;xml&#39;, &#39;content-type_no&#39;: &#39;&#39;</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
-</ul>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h3 id="敏感目录探测"><a href="#敏感目录探测" class="headerlink" title="敏感目录探测"></a>敏感目录探测</h3><p>字典:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">folders = [<span class="string">'/admin'</span>, <span class="string">'/bak'</span>, <span class="string">'/backup'</span>, <span class="string">'/conf'</span>, <span class="string">'/config'</span>, <span class="string">'/db'</span>, <span class="string">'/debug'</span>, <span class="string">'/data'</span>, <span class="string">'/database'</span>, <span class="string">'/deploy'</span>,</span><br><span class="line">                <span class="string">'/WEB-INF'</span>,</span><br><span class="line">                <span class="string">'/install'</span>, <span class="string">'/manage'</span>, <span class="string">'/manager'</span>, <span class="string">'/monitor'</span>, <span class="string">'/tmp'</span>, <span class="string">'/temp'</span>, <span class="string">'/test'</span>]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="wordpress-备份文件"><a href="#wordpress-备份文件" class="headerlink" title="wordpress 备份文件"></a>wordpress 备份文件</h3><p>字典</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url_lst = [<span class="string">'/wp-config.php.inc'</span>,</span><br><span class="line">                  <span class="string">'/wp-config.inc'</span>,</span><br><span class="line">                  <span class="string">'/wp-config.bak'</span>,</span><br><span class="line">                  <span class="string">'/wp-config.php~'</span>,</span><br><span class="line">                  <span class="string">'/.wp-config.php.swp'</span>,</span><br><span class="line">                  <span class="string">'/wp-config.php.bak'</span>]</span><br></pre></td></tr></table></figure>
-
-<p>判定依据: 状态码为200且 源码含<code>&lt;?php</code></p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md" target="_blank" rel="noopener">w13scan</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/17/w13scan-扫描插件总结-PerFolder/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/17/w13scan-扫描插件总结-PerFolder/" itemprop="url">w13scan-扫描插件总结-PerFolder</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-17T14:36:34+08:00">
-                2019-12-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
-<hr>
-<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
-<p>拆解后的目录为:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
-
-<p>然后以这些目录url为基础,拼接url去扫描</p>
-<hr>
-<h3 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描:"></a>备份文件扫描:</h3><p>原理:</p>
-<p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'https://api.github.com/events'</span>, stream=<span class="keyword">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw</span><br><span class="line">&lt;requests.packages.urllib3.response.HTTPResponse object at <span class="number">0x101194810</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw.read(<span class="number">10</span>)</span><br><span class="line"><span class="string">'\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'</span></span><br></pre></td></tr></table></figure>
-
-<p>上网找了一个rar,试了一下输出的文件头是<code>b&#39;PK\x03\x04\x14\x00\x00\x00\x08\x00&#39;</code></p>
-<p>插件里的注释</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">* rar:526172211a0700cf9073</span><br><span class="line">* zip:504b0304140000000800</span><br><span class="line">* gz：1f8b080000000000000b</span><br><span class="line">* tar.gz: 1f8b0800</span><br></pre></td></tr></table></figure>
-
-<p>不同后缀的文件有不同的文件头特征.</p>
-<p>有一份简单的备份文件的字典列表,<code>&#39;bak.rar&#39;, &#39;bak.zip&#39;, &#39;backup.rar&#39;, &#39;backup.zip&#39;, &#39;www.zip&#39;, &#39;www.rar&#39;, &#39;web.rar&#39;, &#39;web.zip&#39;,
-                    &#39;wwwroot.rar&#39;,
-                    &#39;wwwroot.zip&#39;, &#39;log.zip&#39;, &#39;log.rar&#39;</code></p>
-<blockquote>
-<p>字典这玩意可大可小</p>
+<h2 id="PerFile-每个文件"><a href="#PerFile-每个文件" class="headerlink" title="PerFile (每个文件)"></a>PerFile (每个文件)</h2><h3 id="序列化参数分析"><a href="#序列化参数分析" class="headerlink" title="序列化参数分析"></a>序列化参数分析</h3><blockquote>
+<p>如果参数中包含反序列化的参数就会被识别出来，反序列化的参数如果没有做好过滤会有很大危害。</p>
 </blockquote>
-<p>通过拼接url,如果<code>status_code</code>是200而且文件头符合,则判断为扫出了备份文件。</p>
-<hr>
-<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历:"></a>目录遍历:</h3><p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg" alt=""></p>
-<p>找出一些常见的目录遍历的页面,html源码中有这些特征</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;directory listing for&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;title&gt;directory&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;head&gt;&lt;title&gt;index of&quot;</span><br><span class="line"></span><br><span class="line">&apos;&lt;table summary=&quot;directory listing&quot;&apos;</span><br><span class="line"></span><br><span class="line">&apos;last modified&lt;/a&gt;&apos;</span><br></pre></td></tr></table></figure>
-
-<p>如果在返回包的源码中发现这些特征,则判断这个页面有目录遍历漏洞。</p>
-<hr>
-<h3 id="敏感文件扫描"><a href="#敏感文件扫描" class="headerlink" title="敏感文件扫描:"></a>敏感文件扫描:</h3><p>敏感文件字典采集于bbscan</p>
-<p>总的敏感文件有以下这些</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/config.inc</span><br><span class="line">/config.php.bak</span><br><span class="line">/db.php.bak</span><br><span class="line">/conf/config.ini</span><br><span class="line">/config.ini</span><br><span class="line">/config/config.ini</span><br><span class="line">/configuration.ini</span><br><span class="line">/configs/application.ini</span><br><span class="line">/settings.ini</span><br><span class="line">/application.ini</span><br><span class="line">/conf.ini</span><br><span class="line">/app.ini</span><br><span class="line">/config.json</span><br><span class="line">/a.out</span><br><span class="line">/key</span><br><span class="line">/keys</span><br><span class="line">/key.txt</span><br><span class="line">/temp.txt</span><br><span class="line">/tmp.txt</span><br><span class="line">/php.ini</span><br><span class="line">/sftp-config.json</span><br><span class="line">/index.php.bak</span><br><span class="line">/.index.php.swp</span><br><span class="line">/index.cgi.bak</span><br><span class="line">/config.inc.php.bak</span><br><span class="line">/.config.inc.php.swp</span><br><span class="line">/config/.config.php.swp</span><br><span class="line">/.config.php.swp</span><br><span class="line">/.settings.php.swp</span><br><span class="line">/.database.php.swp</span><br><span class="line">/.db.php.swp</span><br><span class="line">/.mysql.php.swp</span><br><span class="line">/readme</span><br><span class="line">/README</span><br><span class="line">/readme.md</span><br><span class="line">/readme.html</span><br><span class="line">/changelog.txt</span><br><span class="line">/%e6%9b%b4%e6%96%b0%e6%97%a5%e5%bf%97.txt</span><br><span class="line">/www.log</span><br><span class="line">/error.log</span><br><span class="line">/log.log</span><br><span class="line">/sql.log</span><br><span class="line">/errors.log</span><br><span class="line">/db.log</span><br><span class="line">/data.log</span><br><span class="line">/app.log</span><br><span class="line">/ntunnel_mysql.php</span><br></pre></td></tr></table></figure>
-
-<p>实际上的字典的格式为<code>{&#39;path&#39;: &#39;/config.inc&#39;, &#39;tag&#39;: &#39;&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;html&#39;}</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
-</ul>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<p>里面有3个函数:</p>
 <ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
+<li><code>isJavaObjectDeserialization()</code></li>
 </ol>
-<hr>
-<h3 id="idea-工作目录解析"><a href="#idea-工作目录解析" class="headerlink" title=".idea 工作目录解析:"></a>.idea 工作目录解析:</h3><p>原理:</p>
-<p>url拼接上<code>/.idea/workspace.xml</code></p>
-<p>如果返回包源码中能正则匹配到<code>&lt;project version=&quot;\w+&quot;&gt;</code>，正则匹配版本号,则判定为 JetBrans .idea 泄漏.</p>
-<hr>
-<h3 id="phpinfo探测解析"><a href="#phpinfo探测解析" class="headerlink" title="phpinfo探测解析:"></a>phpinfo探测解析:</h3><p>字典为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;phpinfo.php&quot;,</span><br><span class="line">&quot;pi.php&quot;,</span><br><span class="line">&quot;php.php&quot;,</span><br><span class="line">&quot;i.php&quot;,</span><br><span class="line">&quot;test.php&quot;,</span><br><span class="line">&quot;temp.php&quot;,</span><br><span class="line">&quot;info.php&quot;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="keyword">if</span> bytes(ret).startswith(bytes.fromhex(<span class="string">"ac ed 00 05"</span>)):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
 
+<blockquote>
+<p>在识别Java序列化特征时，人们经常说要寻找4字节的特征序列：<code>0xAC ED 00 05</code>，事实上某些IDS规则也是根据这个特征来识别此类攻击。</p>
+</blockquote>
+<ol start="2">
+<li><code>isPHPObjectDeserialization()</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="keyword">if</span> value.startswith(<span class="string">"O:"</span>) <span class="keyword">or</span> value.startswith(<span class="string">"a:"</span>):</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">'^[O]:\d+:"[^"]+":\d+:&#123;.*&#125;'</span>, value) <span class="keyword">or</span> re.match(<span class="string">'^a:\d+:&#123;(s:\d:"[^"]+";|i:\d+;).*&#125;'</span>, value):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"><span class="keyword">elif</span> (value.startswith(<span class="string">"Tz"</span>) <span class="keyword">or</span> value.startswith(<span class="string">"YT"</span>)) <span class="keyword">and</span> is_base64(value):</span><br><span class="line">    ret = is_base64(value)</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">'^[O]:\d+:"[^"]+":\d+:&#123;.*&#125;'</span>, value) <span class="keyword">or</span> re.match(<span class="string">'^a:\d+:&#123;(s:\d:"[^"]+";|i:\d+;).*&#125;'</span>, ret):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>isPythonObjectDeserialization</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="comment"># pickle binary</span></span><br><span class="line"><span class="keyword">if</span> value.startswith(<span class="string">"g"</span>):</span><br><span class="line">    <span class="keyword">if</span> bytes(ret).startswith(bytes.fromhex(<span class="string">"8003"</span>)) <span class="keyword">and</span> ret.endswith(<span class="string">"."</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pickle text versio</span></span><br><span class="line"><span class="keyword">elif</span> value.startswith(<span class="string">"K"</span>):</span><br><span class="line">    <span class="keyword">if</span> (ret.startswith(<span class="string">"(dp1"</span>) <span class="keyword">or</span> ret.startswith(<span class="string">"(lp1"</span>)) <span class="keyword">and</span> ret.endswith(<span class="string">"."</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Python 的序列化和反序列化是将一个类对象向字节流转化从而进行存储和传输，然后使用的时候再将字节流转化回原始的对象的一个过程。</p>
+</blockquote>
+<p>原理:根据序列化后参数的<strong>字节的特征序列</strong></p>
+<hr>
+<h3 id="asp代码执行"><a href="#asp代码执行" class="headerlink" title="asp代码执行"></a>asp代码执行</h3><p>暂只支持Get请求方式和回显型的ASP代码注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">'response.write(&#123;&#125;*&#123;&#125;)'</span>.format(randint1, randint2),</span><br><span class="line">    <span class="string">'\'+response.write(&#123;&#125;*&#123;&#125;)+\''</span>.format(randint1, randint2),</span><br><span class="line">    <span class="string">'"response.write(&#123;&#125;*&#123;&#125;)+"'</span>.format(randint1, randint2),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><code>response.write()</code>函数相当于<code>print()</code>,上面的payload就是输出随机字符</p>
 <p>原理:</p>
-<p>拼接Url,发包访问,如果返回包中含<code>&lt;title&gt;phpinfo()&lt;/title&gt;</code>, 则判定为存在phpinfo文件</p>
+<p>某个参数点如果能执行我们payload里的输出函数,输出一个我们自己定义的随机字符，则认为有代码注入</p>
 <hr>
-<h3 id="git-svn-bzr-hg泄漏"><a href="#git-svn-bzr-hg泄漏" class="headerlink" title="git svn bzr hg泄漏:"></a>git svn bzr hg泄漏:</h3><p>字典为</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flag = &#123;</span><br><span class="line">    <span class="string">"/.svn/all-wcprops"</span>: <span class="string">"svn:wc:ra_dav:version-url"</span>,</span><br><span class="line">    <span class="string">"/.git/config"</span>: <span class="string">'repositoryformatversion[\s\S]*'</span>,</span><br><span class="line">    <span class="string">"/.bzr/README"</span>: <span class="string">'This\sis\sa\sBazaar[\s\S]'</span>,</span><br><span class="line">    <span class="string">'/CVS/Root'</span>: <span class="string">':pserver:[\s\S]*?:[\s\S]*'</span>,</span><br><span class="line">    <span class="string">'/.hg/requires'</span>: <span class="string">'^revlogv1.*'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="php代码执行"><a href="#php代码执行" class="headerlink" title="php代码执行"></a>php代码执行</h3><p>暂只支持Get请求方式和回显型的PHP代码注入以及cookie中的代码注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"print(md5(&#123;&#125;));"</span>,</span><br><span class="line">    <span class="string">";print(md5(&#123;&#125;));"</span>,</span><br><span class="line">    <span class="string">"';print(md5(&#123;&#125;));$a='"</span>,</span><br><span class="line">    <span class="string">"\";print(md5(&#123;&#125;));$a=\""</span>,</span><br><span class="line">    <span class="string">"$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;"</span>,</span><br><span class="line">    <span class="string">"$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;\\"</span>,</span><br><span class="line">    <span class="string">"'.print(md5(&#123;&#125;)).'"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
-<p>键为文件路径,值为正则匹配规则。</p>
-<p>拼接url, 正则匹配返回包内容,匹配成功则判定为目录下有仓库源码泄漏漏洞</p>
+<p>原理:同上</p>
 <hr>
-<h3 id="Sftp探测"><a href="#Sftp探测" class="headerlink" title="Sftp探测:"></a>Sftp探测:</h3><p>字典:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/sftp-config.json</span><br><span class="line">/recentservers.xml</span><br></pre></td></tr></table></figure>
+<h3 id="系统命令执行"><a href="#系统命令执行" class="headerlink" title="系统命令执行"></a>系统命令执行</h3><p>测试系统命令注入，支持Windows/Linux,暂只支持Get请求方式和回显型的命令注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">url_flag = &#123;</span><br><span class="line">            <span class="string">"set|set&amp;set"</span>: [</span><br><span class="line">                <span class="string">'Path=[\s\S]*?PWD='</span>,</span><br><span class="line">                <span class="string">'Path=[\s\S]*?PATHEXT='</span>,</span><br><span class="line">                <span class="string">'Path=[\s\S]*?SHELL='</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?PWD\x3d'</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?PATHEXT\x3d'</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?SHELL\x3d'</span>,</span><br><span class="line">                <span class="string">'SERVER_SIGNATURE=[\s\S]*?SERVER_SOFTWARE='</span>,</span><br><span class="line">                <span class="string">'SERVER_SIGNATURE\x3d[\s\S]*?SERVER_SOFTWARE\x3d'</span>,</span><br><span class="line">                <span class="string">'Non-authoritative\sanswer:\s+Name:\s*'</span>,</span><br><span class="line">                <span class="string">'Server:\s*.*?\nAddress:\s*'</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"echo `echo 6162983|base64`6162983"</span>.format(randint): [</span><br><span class="line">                <span class="string">"NjE2Mjk4Mwo=6162983"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 
+<p>key<code>&quot;set|set&amp;set&quot;</code>这个是payload是系统的一个命令</p>
+<blockquote>
+<p>set指令能设置所使用shell的执行方式，可依照不同的需求来做设置。</p>
+</blockquote>
+<p>value<code>&#39;Path=[\s\S]*?PWD=&#39;</code>这个是正则表达式。</p>
+<hr>
+<h3 id="cors检测"><a href="#cors检测" class="headerlink" title="cors检测"></a>cors检测</h3><p>寻找CORS能否利用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">"access-control-allow-origin"</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">"access-control-allow-origin"</span>] == <span class="string">"*"</span>:</span><br><span class="line">   <span class="keyword">if</span> <span class="string">"access-control-allow-credentials"</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">"access-control-allow-credentials"</span>].lower() == <span class="string">'true'</span>:</span><br><span class="line">       out.success(url, self.name, payload=str(data), method=method)</span><br></pre></td></tr></table></figure>
+
+<p>原理:识别返回包header中的特征</p>
+<hr>
+<h3 id="目录穿越"><a href="#目录穿越" class="headerlink" title="目录穿越"></a>目录穿越</h3><p>通过url特征判断系统的指纹</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">".aspx"</span>) <span class="keyword">or</span> filepath.endswith(<span class="string">".asp"</span>): <span class="comment"># 有.aspx和.asp</span></span><br><span class="line">    isunix = <span class="number">2</span>   <span class="comment"># 不是unix</span></span><br><span class="line">    iswin = <span class="number">1</span>    <span class="comment"># 肯定是win</span></span><br><span class="line">    isjava = <span class="number">2</span>   <span class="comment"># 不是java</span></span><br><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">".jsp"</span>):<span class="comment"># 有.jsp</span></span><br><span class="line">    isjava = <span class="number">1</span>   <span class="comment"># 肯定是java</span></span><br></pre></td></tr></table></figure>
+
+<p>根据不同平台来发包的字典:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isunix &gt;= <span class="number">0</span>:  <span class="comment"># Unix平台</span></span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../etc/passwd"</span>)</span><br><span class="line">    payloads.append(<span class="string">"/etc/passwd"</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../etc/passwd"</span>)</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(</span><br><span class="line">            unquote(<span class="string">"%00"</span>) + default_extension))</span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(unquote(<span class="string">"%00"</span>)))</span><br><span class="line">    payloads.append(</span><br><span class="line">        <span class="string">"../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(unquote(<span class="string">"%00"</span>)) + default_extension)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= iswin &gt;= <span class="number">0</span>:   <span class="comment"># wins平台</span></span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../windows/win.ini"</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../windows/win.ini"</span>)</span><br><span class="line">    payloads.append(<span class="string">"C:\\WINDOWS\\system32\\drivers\\etc\\hosts"</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isjava &gt;= <span class="number">0</span>:  <span class="comment"># java语言</span></span><br><span class="line">    payloads.append(<span class="string">"/WEB-INF/web.xml"</span>)</span><br><span class="line">    payloads.append(<span class="string">"../../WEB-INF/web.xml"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>判断返回包有目录穿越的规则:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">plainArray = [     <span class="comment"># 字符串特征</span></span><br><span class="line">    <span class="string">"; for 16-bit app support"</span>,</span><br><span class="line">    <span class="string">"[MCI Extensions.BAK]"</span>,</span><br><span class="line">    <span class="string">"# This is a sample HOSTS file used by Microsoft TCP/IP for Windows."</span>,</span><br><span class="line">    <span class="string">"# localhost name resolution is handled within DNS itself."</span>,</span><br><span class="line">    <span class="string">"[boot loader]"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">regexArray = [      <span class="comment"># 正则表达式</span></span><br><span class="line">    <span class="string">'(Linux+\sversion\s+[\d\.\w\-_\+]+\s+\([^)]+\)\s+\(gcc\sversion\s[\d\.\-_]+\s)'</span>,</span><br><span class="line">    <span class="string">'(root:.*:.*:)'</span>,</span><br><span class="line">    <span class="string">"System\.IO\.FileNotFoundException: Could not find file\s'\w:"</span>,</span><br><span class="line">    <span class="string">"System\.IO\.DirectoryNotFoundException: Could not find a part of the path\s'\w:"</span>,</span><br><span class="line">    <span class="string">"&lt;b&gt;Warning&lt;\/b&gt;:\s\sDOMDocument::load\(\)\s\[&lt;a\shref='domdocument.load'&gt;domdocument.load&lt;\/a&gt;\]:\s(Start tag expected|I\/O warning : failed to load external entity).*(Windows\/win.ini|\/etc\/passwd).*\sin\s&lt;b&gt;.*?&lt;\/b&gt;\son\sline\s&lt;b&gt;\d+&lt;\/b&gt;"</span>,</span><br><span class="line">    <span class="string">"(&lt;web-app[\s\S]+&lt;\/web-app&gt;)"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="模板表达式注入"><a href="#模板表达式注入" class="headerlink" title="模板表达式注入"></a>模板表达式注入</h3><p>服务端模板注入SSTI,对GET请求参数进行相关测试</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = &#123;</span><br><span class="line">                <span class="string">"&#123;ranstr&#125;$&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;"</span>.format(ranstr=randstr, int1=randint1, int2=randint2),</span><br><span class="line">                <span class="string">"&#123;ranstr&#125;#&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;"</span>.format(ranstr=randstr, int1=randint1, int2=randint2)</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 Twig 模板引擎里,   除了可以输出传递的变量以外,还能<strong>执行一些基本的表达式然后将其结果作为该模板变量的值</strong>,例如这里用户输入 name=20 ,则在服务端拼接的模版内容为:<br><img src="https://i.loli.net/2019/12/30/TbMXmH87tdzeUQc.png" alt="20191230202751.png"></p>
+</blockquote>
+<p>原理:</p>
+<ul>
+<li>利用模板引擎能执行一些基本的表达式</li>
+<li>前后加随机字符串是为了减少误报</li>
+</ul>
+<hr>
+<h3 id="js敏感文件探测"><a href="#js敏感文件探测" class="headerlink" title="js敏感文件探测"></a>js敏感文件探测</h3><p>从返回js的包中匹配敏感内容</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">regx = (</span><br><span class="line">        <span class="comment"># 匹配url</span></span><br><span class="line">        <span class="string">r'(\b|\'|")(?:http:|https:)(?:[\w/\.]+)?(?:[a-zA-Z0-9_\-\.]&#123;1,&#125;)\.(?:php|asp|ashx|jspx|aspx|jsp|json|action|html|txt|xml|do)(\b|\'|")'</span>,</span><br><span class="line">        <span class="comment"># 匹配邮箱</span></span><br><span class="line">        <span class="string">r'[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+'</span>,</span><br><span class="line">        <span class="comment"># 匹配token或者密码泄露</span></span><br><span class="line">        <span class="comment"># 例如token = xxxxxxxx, 或者"apikey" : "xssss"</span></span><br><span class="line">        <span class="string">r'\b(?:secret|secret_key|token|secret_token|auth_token|access_token|username|password|aws_access_key_id|aws_secret_access_key|secretkey|authtoken|accesstoken|access-token|authkey|client_secret|bucket|email|HEROKU_API_KEY|SF_USERNAME|PT_TOKEN|id_dsa|clientsecret|client-secret|encryption-key|pass|encryption_key|encryptionkey|secretkey|secret-key|bearer|JEKYLL_GITHUB_TOKEN|HOMEBREW_GITHUB_API_TOKEN|api_key|api_secret_key|api-key|private_key|client_key|client_id|sshkey|ssh_key|ssh-key|privatekey|DB_USERNAME|oauth_token|irc_pass|dbpasswd|xoxa-2|xoxrprivate-key|private_key|consumer_key|consumer_secret|access_token_secret|SLACK_BOT_TOKEN|slack_api_token|api_token|ConsumerKey|ConsumerSecret|SESSION_TOKEN|session_key|session_secret|slack_token|slack_secret_token|bot_access_token|passwd|api|eid|sid|api_key|apikey|userid|user_id|user-id)["\s]*(?::|=|=:|=&gt;)["\s]*[a-z0-9A-Z]&#123;8,64&#125;"?'</span>,</span><br><span class="line">        <span class="comment"># 匹配IP地址</span></span><br><span class="line">        <span class="string">r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)&#123;3&#125;(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'</span>,</span><br><span class="line">        <span class="comment"># 匹配云泄露</span></span><br><span class="line">        <span class="string">r'[\w]+\.cloudfront\.net'</span>,</span><br><span class="line">        <span class="string">r'[\w\-.]+\.appspot\.com'</span>,</span><br><span class="line">        <span class="string">r'[\w\-.]*s3[\w\-.]*\.?amazonaws\.com\/?[\w\-.]*'</span>,</span><br><span class="line">        <span class="string">r'([\w\-.]*\.?digitaloceanspaces\.com\/?[\w\-.]*)'</span>,</span><br><span class="line">        <span class="string">r'(storage\.cloud\.google\.com\/[\w\-.]+)'</span>,</span><br><span class="line">        <span class="string">r'([\w\-.]*\.?storage.googleapis.com\/?[\w\-.]*)'</span>,</span><br><span class="line">        <span class="comment"># 匹配手机号</span></span><br><span class="line">        <span class="string">r'(?:139|138|137|136|135|134|147|150|151|152|157|158|159|178|182|183|184|187|188|198|130|131|132|155|156|166|185|186|145|175|176|133|153|177|173|180|181|189|199|170|171)[0-9]&#123;8&#125;'</span></span><br><span class="line">        <span class="comment"># 匹配域名</span></span><br><span class="line">        <span class="string">r'((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]&#123;0,61&#125;[a-zA-Z0-9])?\.)+(?:biz|cc|club|cn|com|co|edu|fun|group|info|ink|kim|link|live|ltd|mobi|net|online|org|pro|pub|red|ren|shop|site|store|tech|top|tv|vip|wang|wiki|work|xin|xyz|me))'</span></span><br><span class="line"></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="jsonp探测"><a href="#jsonp探测" class="headerlink" title="jsonp探测"></a>jsonp探测</h3><hr>
+<h3 id="通用敏感文件探测"><a href="#通用敏感文件探测" class="headerlink" title="通用敏感文件探测"></a>通用敏感文件探测</h3><p>从返回包中搜集通用的敏感信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># phpinfo</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">"&lt;title&gt;phpinfo()&lt;/title&gt;"</span> <span class="keyword">in</span> resp_str:</span><br><span class="line">    info = get_phpinfo(resp_str)</span><br><span class="line">    out.success(url, self.name, info=info)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="php真实路径检测"><a href="#php真实路径检测" class="headerlink" title="php真实路径检测"></a>php真实路径检测</h3><p>对于一些php网站，将正常参数替换为<code>[]</code>可能造成真实信息泄漏</p>
+<p>篡改:正常参数替换为<code>[]</code></p>
+<p>判断:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">"Warning"</span> <span class="keyword">in</span> r.text <span class="keyword">and</span> <span class="string">"array given"</span> <span class="keyword">in</span> r.text:</span><br><span class="line">    path = get_middle_text(r.text, <span class="string">'array given in '</span>, <span class="string">' on line'</span>)</span><br><span class="line">    out.success(_, self.name, path=path, raw=r.raw)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="重定向插件"><a href="#重定向插件" class="headerlink" title="重定向插件"></a>重定向插件</h3><p>支持检查 html meta 跳转、30x 跳转、JavaScript跳转等等</p>
+<hr>
+<h3 id="sql注入-基于报错"><a href="#sql注入-基于报错" class="headerlink" title="sql注入 (基于报错)"></a>sql注入 (基于报错)</h3><p>支持GET、COOKIE、HEADER头注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = <span class="string">'鎈\'"\('</span></span><br></pre></td></tr></table></figure>
+
+<p>这是sqli测试最简单的一种,就是用某个字符尝试去引起sql报错，然后回显在页面。</p>
+<p>接着用正则去匹配不同数据库的错误信息。</p>
+<hr>
+<h3 id="sql注入-布尔盲注"><a href="#sql注入-布尔盲注" class="headerlink" title="sql注入(布尔盲注)"></a>sql注入(布尔盲注)</h3><p>布尔盲注利用前提:</p>
+<p>页面没有显示位，没有输出SQL语句执行错误信息，只能通过页面返回正常不正常来判断是否存在注入。</p>
+<p>发包:</p>
+<ul>
+<li>源request</li>
+<li>true page的request(<code>AND 110=110</code>)</li>
+<li>false page的request(<code>AND 110=109</code>)</li>
+</ul>
+<p>对返回的content处理(优化手段): </p>
+<ul>
+<li><code>removeDynamicContent()</code>,目的是减少无关的内容的干扰,比如广告什么的。</li>
+<li><code>getFilteredPageContent()</code>，去掉html标签,提取页面文本,例如<code>&#39;&lt;html&gt;&lt;title&gt;foobar&lt;/title&gt;&lt;body&gt;test&lt;/body&gt;&lt;/html&gt;&#39;</code>处理完会变成<code>foobar test</code></li>
+</ul>
+<p>判断漏洞:</p>
+<p>以页面相似度作为依据,原始请求 ≈ 预期为真请求 ≠ 预期与假请求</p>
+<blockquote>
+<p>有空还需要再认真看一下这部分的代码</p>
+</blockquote>
+<blockquote>
+<p>原作者的说明:<br>首先访问一次网页，和原网页对比，若相似度小于0.98则动态去除网页中不同的部分。<br>访问一次False页面，得到False页面与原页面的相似度 <code>ratio_false</code><br>访问一次True页面，得到True页面与原页面的相似度 <code>ratio_true</code><br><code>ratio_true</code> &gt; 0.88 and <code>ratio_true</code> - <code>ratio_false</code> &gt; 0.05 and <code>ratio_false</code> &lt; 0.98 即可判断为sql注入<br>否则按照换行符分隔原始页面，True页面，False页面获得<code>originSet</code>,<code>trueSet</code>,<code>falseSet</code>集合。<br><code>originSet</code> 对 <code>trueSet</code>的差集小于2并且 <code>trueSet</code> != <code>falseSet</code> 并且 <code>trueSet</code> 对<code>falseSet</code>差集大于0 即可判断为注入。</p>
+</blockquote>
+<hr>
+<h3 id="sql注入-基于时间"><a href="#sql注入-基于时间" class="headerlink" title="sql注入(基于时间)"></a>sql注入(基于时间)</h3><p>这部分内容我不太懂,直接copy原作者的描述好了。。。</p>
+<p>基于时间的探测方式，会因为一些网络的波动，影响最后的判断结果。sqlmap的时间盲注会先发送30个请求来建立模型，但对扫描器来说，这样的效率太低了，所以就采用了awvs的时间盲注检测方法。</p>
+<ul>
+<li><p>延时长度</p>
+<ul>
+<li><p>awvs将延时分为了四种类型，0延时<code>ZeroDelay</code>,长延时<code>LongDelay</code>，非常长延时<code>VeryLongDelay</code>,中间延时<code>MidDelay</code>，顾名思义，每种类型延时的时间不一样。</p>
+</li>
+<li><p>这些时间延时类型的判断依据只靠两个参数<code>longDuration</code>,<code>shortDuration</code></p>
+</li>
+<li><p>这两个参数由下面算法计算</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> internal_ip:</span><br><span class="line">self.longDuration = <span class="number">6</span></span><br><span class="line">self.shortDuration = <span class="number">2</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">self.longDuration = <span class="number">3</span></span><br><span class="line">self.shortDuration = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">r1 = requests.get(self.url, headers=self.headers)</span><br><span class="line">time1 = r1.elapsed.total_seconds()</span><br><span class="line">r2 = requests.get(self.url, headers=self.headers) </span><br><span class="line">time2 = r2.elapsed.total_seconds()</span><br><span class="line"></span><br><span class="line">_min = min(time1, time2)</span><br><span class="line">_max = max(time1, time2)</span><br><span class="line"></span><br><span class="line">self.shortDuration = max(self.shortDuration, _max) + <span class="number">1</span></span><br><span class="line">self.longDuration = self.shortDuration * <span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看到内外网不同判断的参数也不一样</p>
+</li>
+</ul>
+</li>
+<li><p>随机延时测试</p>
+<ul>
+<li>接下来就是随机选取一种延时的类型来判断是否达到了延时需要的时间。</li>
+<li>awvs至少会进行8次这样的随机延时测试，测试成功即可判断存在注入</li>
+<li>当然，误差的容错也是有的，可以直接看代码。这种方式虽然暴力了点但是似乎没有其他好的办法了。</li>
+</ul>
+</li>
+</ul>
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = [</span><br><span class="line">        &apos;/**/aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn+sElect+1)&apos;,</span><br><span class="line">        &quot;&apos;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&apos;&quot;,</span><br><span class="line">        &apos;&quot;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&quot;&apos;,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<p>比较精妙之处在于多次发包，再判断。</p>
+<p>此处缺一个图。</p>
+<hr>
+<h3 id="被动子域名搜索"><a href="#被动子域名搜索" class="headerlink" title="被动子域名搜索"></a>被动子域名搜索</h3><p>从返回包中搜集子域名</p>
 <p>正则匹配</p>
-<p><code>(&quot;type&quot;:[\s\S]*?&quot;host&quot;:[\s\S]*?&quot;user&quot;:[\s\S]*?</code></p>
-<p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
-<p>匹配到则认为找到sftp</p>
 <hr>
-<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>规则格式和判定方式和敏感文件扫描一样。</p>
-<p>规则格式:<code>{&#39;path&#39;: &#39;/fckeditor/_samples/default.html&#39;, &#39;tag&#39;: &#39;&lt;title&gt;FCKeditor&#39;, &#39;content-type&#39;: &#39;html&#39;,
-                     &#39;content-type_no&#39;: &#39;&#39;}</code></p>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md" target="_blank" rel="noopener">w13scan</a></li>
-</ul>
+<h3 id="xpath-注入"><a href="#xpath-注入" class="headerlink" title="xpath 注入"></a>xpath 注入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"'\""</span>,</span><br><span class="line">    <span class="string">"&lt;!--"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/26/Diary-2018.9/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/26/Diary-2018.9/" itemprop="url">Diary-2019.9</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-26T14:36:34+08:00">
-                2019-09-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Diary/" itemprop="url" rel="index">
-                    <span itemprop="name">Diary</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          Welcome to my blog, enter password to read.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/09/26/Diary-2018.9/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/27/Ape-requests不支持http2/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/27/Ape-requests不支持http2/" itemprop="url">Ape-requests不支持http2</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-27T22:36:34+08:00">
-                2019-08-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在APE(Auto-Pentest)的时候,借鉴了<code>w13scan</code>的大部分代码.<br>里面发包探测都用到了<code>requests</code>模块,时不时会出这种bug</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">raise ValueError(&apos;Invalid header name %r&apos; % (header,))</span><br><span class="line">ValueError: Invalid header name b&apos;:authority&apos;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Debug"><a href="#Debug" class="headerlink" title="Debug:"></a>Debug:</h1><p>请求了该url:<code>https://www.gstatic.com/proc/meminfo</code></p>
-<p>输出该请求的headers后</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">':authority'</span>: <span class="string">'www.gstatic.com'</span>, <span class="string">'sec-fetch-site'</span>: <span class="string">'none'</span>, <span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'</span>, <span class="string">'accept-encoding'</span>: <span class="string">'gzip, deflate, br'</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>发现header中有个参数多了个冒号.</p>
-<hr>
-<h1 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h1><p>goole了一下,参考了<a href="https://segmentfault.com/q/1010000007424047" target="_blank" rel="noopener">http中的header为什么有这些部分？冒号的是什么</a></p>
-<p>发现原来这些请求是用了<code>HTTP2</code>协议.而不是常见的<code>HTTP1.1</code></p>
-<hr>
-<h1 id="HTTP2的简单介绍"><a href="#HTTP2的简单介绍" class="headerlink" title="HTTP2的简单介绍:"></a>HTTP2的简单介绍:</h1><p>HTTP2 为什么要出现,又解决了HTTP1.1不能解决的什么事情呢？</p>
-<p>简而言之就是</p>
+<p>篡改发包:</p>
 <ul>
-<li><strong>H2是一个二进制协议而,H1是超文本协议.传输的内容都不是一样的</strong></li>
-<li>H2遵循多路复用即,代替同一host下的内容,只建立一次连接. H1不是</li>
-<li>H2可以使用HPACK进行头部的压缩,H1则不论什么请求都会发送</li>
-<li>H2允许服务器,预先将网页所需要的资源PUSH到浏览器的内存当中.</li>
+<li>遍历参数,在参数值后面加上payload即可</li>
+<li>在response包用2种规则匹配。</li>
+</ul>
+<p>两种判断规则:</p>
+<ul>
+<li><p>字符串特征:</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">plainArray = [</span><br><span class="line">    <span class="string">'MS.Internal.Xml.'</span>,</span><br><span class="line">    <span class="string">'Unknown error in XPath'</span>,</span><br><span class="line">    <span class="string">'org.apache.xpath.XPath'</span>,</span><br><span class="line">    <span class="string">'A closing bracket expected in'</span>,</span><br><span class="line">    <span class="string">'An operand in Union Expression does not produce a node-set'</span>,</span><br><span class="line">    <span class="string">'Cannot convert expression to a number'</span>,</span><br><span class="line">    <span class="string">'Document Axis does not allow any context Location Steps'</span>,</span><br><span class="line">    <span class="string">'Empty Path Expression'</span>,</span><br><span class="line">    <span class="string">'Empty Relative Location Path'</span>,</span><br><span class="line">    <span class="string">'Empty Union Expression'</span>,</span><br><span class="line">    <span class="string">'Expected node test or name specification after axis operator'</span>,</span><br><span class="line">    <span class="string">'Incompatible XPath key'</span>,</span><br><span class="line">    <span class="string">'Incorrect Variable Binding'</span>,</span><br><span class="line">    <span class="string">'libxml2 library function failed'</span>,</span><br><span class="line">    <span class="string">'A document must contain exactly one root element.'</span>,</span><br><span class="line">    <span class="string">'&lt;font face="Arial" size=2&gt;Expression must evaluate to a node-set.'</span>,</span><br><span class="line">    <span class="string">'Expected token \'\]\''</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>正则:</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">regexArray = [</span><br><span class="line">    <span class="string">"(Invalid (predicate|expression|type) in .*?\son line)"</span>,</span><br><span class="line">    <span class="string">"(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\s'.*'\shas\san\sinvalid\stoken\.&lt;br&gt;&lt;br&gt;)"</span>,</span><br><span class="line">    <span class="string">"(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\sThis\sis\san\sunclosed\sstring\.&lt;br&gt;&lt;br&gt;)"</span>,</span><br><span class="line">    <span class="string">"(System.Xml.XPath.XPathException\:)"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+</li>
 </ul>
 <hr>
-<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法:"></a>解决办法:</h1><h2 id="思路1"><a href="#思路1" class="headerlink" title="思路1:"></a>思路1:</h2><p>第一反应是看看<code>requests</code>支不支持HTTP2,发现是不支持的.<br><a href="https://stackoverflow.com/questions/44931070/does-python-requests-support-http2-and-asynchronous-calls" target="_blank" rel="noopener">Does python-requests support HTTP2 and asynchronous calls?</a></p>
-<p><img src="https://i.loli.net/2019/08/27/ClB43dsrNnPRQL7.jpg" alt=""></p>
-<hr>
-<h2 id="思路2"><a href="#思路2" class="headerlink" title="思路2:"></a>思路2:</h2><p>HTTP2应该还不是很普及,那就只能简单粗暴的暂时把<code>headers</code>中含冒号给替换成空字符.</p>
+<h3 id="xss注入"><a href="#xss注入" class="headerlink" title="xss注入"></a>xss注入</h3><p>暂只支持Get请求方式</p>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">rndStr = <span class="number">9000</span> + random.randint(<span class="number">1</span>, <span class="number">999</span>)</span><br><span class="line">tag = random_str(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">html_payload = <span class="string">"&lt;&#123;tag&#125;&gt;&#123;randint&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=tag, randint=rndStr)  <span class="comment"># html xss</span></span><br><span class="line"></span><br><span class="line">attr_payload = [</span><br><span class="line">    <span class="string">'" oNsOmeEvent="console.log(233)'</span>,  <span class="comment"># 双引号payload</span></span><br><span class="line">    <span class="string">"' oNsOmeEvent='console.log(2333)"</span>,  <span class="comment"># 单引号payload</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">url_payload = <span class="string">"javascript&amp;colon;&#123;randint&#125;"</span>.format(randint=rndStr)</span><br><span class="line"></span><br><span class="line">javascript_payload = <span class="string">"&#123;randint&#125;"</span>.format(randint=rndStr)</span><br></pre></td></tr></table></figure>
+
+<p>判断是否输出点是否在<code>&lt;script&gt;</code>标签内,</p>
+<p>如果是就使用<code>javascript_payload</code></p>
+<p>如果不是就测试<code>html xss</code>、<code>标签属性xss</code>、<code>url xss</code></p>
 <blockquote>
-<p>或许应该在日志里把这类请求给记录下来,随便看看HTTP2用得多不多</p>
+<p>需要补充…</p>
 </blockquote>
 <hr>
+<h3 id="crlf注入"><a href="#crlf注入" class="headerlink" title="crlf注入"></a>crlf注入</h3><p>暂只支持Get请求方式</p>
+<p>payloads:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"\r\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n TestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\rTestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># twitter crlf</span></span><br><span class="line">    <span class="string">"嘊嘍TestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># nodejs crlf</span></span><br><span class="line">    <span class="string">"čĊTestInject: w13scan"</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>发包:</p>
+<hr>
+<h3 id="cookie控制插件"><a href="#cookie控制插件" class="headerlink" title="cookie控制插件"></a>cookie控制插件</h3><hr>
+<h3 id="js漏洞库查找"><a href="#js漏洞库查找" class="headerlink" title="js漏洞库查找"></a>js漏洞库查找</h3><p>检测到当前页面存在过时的含有漏洞的js组件</p>
+<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://segmentfault.com/q/1010000007424047" target="_blank" rel="noopener">http中的header为什么有这些部分？冒号的是什么</a></li>
-<li><a href="https://stackoverflow.com/questions/44931070/does-python-requests-support-http2-and-asynchronous-calls" target="_blank" rel="noopener">Does python-requests support HTTP2 and asynchronous calls?</a></li>
-<li><a href="https://www.cnblogs.com/etoah/p/5891285.html" target="_blank" rel="noopener">HTTP2特性预览和抓包分析</a></li>
+<li><a href="https://www.anquanke.com/post/id/86641" target="_blank" rel="noopener">【技术分享】如何攻击Java反序列化过程</a></li>
+<li><a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">Python Pickle的任意代码执行漏洞实践和Payload构造</a></li>
+<li><a href="https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BPython%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#1-%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%EF%BC%9A" target="_blank" rel="noopener">一篇文章带你理解漏洞之 Python 反序列化漏洞</a></li>
+<li><a href="https://www.jianshu.com/p/aef2ae0498df" target="_blank" rel="noopener">SSTI模板注入</a></li>
+<li><a href="https://x.hacking8.com/post-356.html" target="_blank" rel="noopener">写在w13scan第一阶段</a></li>
 </ul>
 
           
@@ -2171,7 +2289,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">54</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2182,7 +2300,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2193,7 +2311,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
