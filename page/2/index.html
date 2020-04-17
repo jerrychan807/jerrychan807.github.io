@@ -252,6 +252,347 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/23/w13scan-扫描插件总结-PerFile/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/23/w13scan-扫描插件总结-PerFile/" itemprop="url">w13scan-扫描插件总结-PerFile</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-23T14:36:34+08:00">
+                2019-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
+<hr>
+<h2 id="PerFile-每个文件"><a href="#PerFile-每个文件" class="headerlink" title="PerFile (每个文件)"></a>PerFile (每个文件)</h2><h3 id="序列化参数分析"><a href="#序列化参数分析" class="headerlink" title="序列化参数分析"></a>序列化参数分析</h3><blockquote>
+<p>如果参数中包含反序列化的参数就会被识别出来，反序列化的参数如果没有做好过滤会有很大危害。</p>
+</blockquote>
+<p>里面有3个函数:</p>
+<ol>
+<li><code>isJavaObjectDeserialization()</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="keyword">if</span> bytes(ret).startswith(bytes.fromhex(<span class="string">"ac ed 00 05"</span>)):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在识别Java序列化特征时，人们经常说要寻找4字节的特征序列：<code>0xAC ED 00 05</code>，事实上某些IDS规则也是根据这个特征来识别此类攻击。</p>
+</blockquote>
+<ol start="2">
+<li><code>isPHPObjectDeserialization()</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="keyword">if</span> value.startswith(<span class="string">"O:"</span>) <span class="keyword">or</span> value.startswith(<span class="string">"a:"</span>):</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">'^[O]:\d+:"[^"]+":\d+:&#123;.*&#125;'</span>, value) <span class="keyword">or</span> re.match(<span class="string">'^a:\d+:&#123;(s:\d:"[^"]+";|i:\d+;).*&#125;'</span>, value):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"><span class="keyword">elif</span> (value.startswith(<span class="string">"Tz"</span>) <span class="keyword">or</span> value.startswith(<span class="string">"YT"</span>)) <span class="keyword">and</span> is_base64(value):</span><br><span class="line">    ret = is_base64(value)</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">'^[O]:\d+:"[^"]+":\d+:&#123;.*&#125;'</span>, value) <span class="keyword">or</span> re.match(<span class="string">'^a:\d+:&#123;(s:\d:"[^"]+";|i:\d+;).*&#125;'</span>, ret):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>isPythonObjectDeserialization</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关键代码</span></span><br><span class="line"><span class="comment"># pickle binary</span></span><br><span class="line"><span class="keyword">if</span> value.startswith(<span class="string">"g"</span>):</span><br><span class="line">    <span class="keyword">if</span> bytes(ret).startswith(bytes.fromhex(<span class="string">"8003"</span>)) <span class="keyword">and</span> ret.endswith(<span class="string">"."</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pickle text versio</span></span><br><span class="line"><span class="keyword">elif</span> value.startswith(<span class="string">"K"</span>):</span><br><span class="line">    <span class="keyword">if</span> (ret.startswith(<span class="string">"(dp1"</span>) <span class="keyword">or</span> ret.startswith(<span class="string">"(lp1"</span>)) <span class="keyword">and</span> ret.endswith(<span class="string">"."</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Python 的序列化和反序列化是将一个类对象向字节流转化从而进行存储和传输，然后使用的时候再将字节流转化回原始的对象的一个过程。</p>
+</blockquote>
+<p>原理:根据序列化后参数的<strong>字节的特征序列</strong></p>
+<hr>
+<h3 id="asp代码执行"><a href="#asp代码执行" class="headerlink" title="asp代码执行"></a>asp代码执行</h3><p>暂只支持Get请求方式和回显型的ASP代码注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">'response.write(&#123;&#125;*&#123;&#125;)'</span>.format(randint1, randint2),</span><br><span class="line">    <span class="string">'\'+response.write(&#123;&#125;*&#123;&#125;)+\''</span>.format(randint1, randint2),</span><br><span class="line">    <span class="string">'"response.write(&#123;&#125;*&#123;&#125;)+"'</span>.format(randint1, randint2),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><code>response.write()</code>函数相当于<code>print()</code>,上面的payload就是输出随机字符</p>
+<p>原理:</p>
+<p>某个参数点如果能执行我们payload里的输出函数,输出一个我们自己定义的随机字符，则认为有代码注入</p>
+<hr>
+<h3 id="php代码执行"><a href="#php代码执行" class="headerlink" title="php代码执行"></a>php代码执行</h3><p>暂只支持Get请求方式和回显型的PHP代码注入以及cookie中的代码注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"print(md5(&#123;&#125;));"</span>,</span><br><span class="line">    <span class="string">";print(md5(&#123;&#125;));"</span>,</span><br><span class="line">    <span class="string">"';print(md5(&#123;&#125;));$a='"</span>,</span><br><span class="line">    <span class="string">"\";print(md5(&#123;&#125;));$a=\""</span>,</span><br><span class="line">    <span class="string">"$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;"</span>,</span><br><span class="line">    <span class="string">"$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;\\"</span>,</span><br><span class="line">    <span class="string">"'.print(md5(&#123;&#125;)).'"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>原理:同上</p>
+<hr>
+<h3 id="系统命令执行"><a href="#系统命令执行" class="headerlink" title="系统命令执行"></a>系统命令执行</h3><p>测试系统命令注入，支持Windows/Linux,暂只支持Get请求方式和回显型的命令注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">url_flag = &#123;</span><br><span class="line">            <span class="string">"set|set&amp;set"</span>: [</span><br><span class="line">                <span class="string">'Path=[\s\S]*?PWD='</span>,</span><br><span class="line">                <span class="string">'Path=[\s\S]*?PATHEXT='</span>,</span><br><span class="line">                <span class="string">'Path=[\s\S]*?SHELL='</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?PWD\x3d'</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?PATHEXT\x3d'</span>,</span><br><span class="line">                <span class="string">'Path\x3d[\s\S]*?SHELL\x3d'</span>,</span><br><span class="line">                <span class="string">'SERVER_SIGNATURE=[\s\S]*?SERVER_SOFTWARE='</span>,</span><br><span class="line">                <span class="string">'SERVER_SIGNATURE\x3d[\s\S]*?SERVER_SOFTWARE\x3d'</span>,</span><br><span class="line">                <span class="string">'Non-authoritative\sanswer:\s+Name:\s*'</span>,</span><br><span class="line">                <span class="string">'Server:\s*.*?\nAddress:\s*'</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"echo `echo 6162983|base64`6162983"</span>.format(randint): [</span><br><span class="line">                <span class="string">"NjE2Mjk4Mwo=6162983"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>key<code>&quot;set|set&amp;set&quot;</code>这个是payload是系统的一个命令</p>
+<blockquote>
+<p>set指令能设置所使用shell的执行方式，可依照不同的需求来做设置。</p>
+</blockquote>
+<p>value<code>&#39;Path=[\s\S]*?PWD=&#39;</code>这个是正则表达式。</p>
+<hr>
+<h3 id="cors检测"><a href="#cors检测" class="headerlink" title="cors检测"></a>cors检测</h3><p>寻找CORS能否利用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">"access-control-allow-origin"</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">"access-control-allow-origin"</span>] == <span class="string">"*"</span>:</span><br><span class="line">   <span class="keyword">if</span> <span class="string">"access-control-allow-credentials"</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">"access-control-allow-credentials"</span>].lower() == <span class="string">'true'</span>:</span><br><span class="line">       out.success(url, self.name, payload=str(data), method=method)</span><br></pre></td></tr></table></figure>
+
+<p>原理:识别返回包header中的特征</p>
+<hr>
+<h3 id="目录穿越"><a href="#目录穿越" class="headerlink" title="目录穿越"></a>目录穿越</h3><p>通过url特征判断系统的指纹</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">".aspx"</span>) <span class="keyword">or</span> filepath.endswith(<span class="string">".asp"</span>): <span class="comment"># 有.aspx和.asp</span></span><br><span class="line">    isunix = <span class="number">2</span>   <span class="comment"># 不是unix</span></span><br><span class="line">    iswin = <span class="number">1</span>    <span class="comment"># 肯定是win</span></span><br><span class="line">    isjava = <span class="number">2</span>   <span class="comment"># 不是java</span></span><br><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">".jsp"</span>):<span class="comment"># 有.jsp</span></span><br><span class="line">    isjava = <span class="number">1</span>   <span class="comment"># 肯定是java</span></span><br></pre></td></tr></table></figure>
+
+<p>根据不同平台来发包的字典:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isunix &gt;= <span class="number">0</span>:  <span class="comment"># Unix平台</span></span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../etc/passwd"</span>)</span><br><span class="line">    payloads.append(<span class="string">"/etc/passwd"</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../etc/passwd"</span>)</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(</span><br><span class="line">            unquote(<span class="string">"%00"</span>) + default_extension))</span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(unquote(<span class="string">"%00"</span>)))</span><br><span class="line">    payloads.append(</span><br><span class="line">        <span class="string">"../../../../../../../../../../etc/passwd&#123;&#125;"</span>.format(unquote(<span class="string">"%00"</span>)) + default_extension)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= iswin &gt;= <span class="number">0</span>:   <span class="comment"># wins平台</span></span><br><span class="line">    payloads.append(<span class="string">"../../../../../../../../../../windows/win.ini"</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">"/../../../../../../../../../../windows/win.ini"</span>)</span><br><span class="line">    payloads.append(<span class="string">"C:\\WINDOWS\\system32\\drivers\\etc\\hosts"</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isjava &gt;= <span class="number">0</span>:  <span class="comment"># java语言</span></span><br><span class="line">    payloads.append(<span class="string">"/WEB-INF/web.xml"</span>)</span><br><span class="line">    payloads.append(<span class="string">"../../WEB-INF/web.xml"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>判断返回包有目录穿越的规则:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">plainArray = [     <span class="comment"># 字符串特征</span></span><br><span class="line">    <span class="string">"; for 16-bit app support"</span>,</span><br><span class="line">    <span class="string">"[MCI Extensions.BAK]"</span>,</span><br><span class="line">    <span class="string">"# This is a sample HOSTS file used by Microsoft TCP/IP for Windows."</span>,</span><br><span class="line">    <span class="string">"# localhost name resolution is handled within DNS itself."</span>,</span><br><span class="line">    <span class="string">"[boot loader]"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">regexArray = [      <span class="comment"># 正则表达式</span></span><br><span class="line">    <span class="string">'(Linux+\sversion\s+[\d\.\w\-_\+]+\s+\([^)]+\)\s+\(gcc\sversion\s[\d\.\-_]+\s)'</span>,</span><br><span class="line">    <span class="string">'(root:.*:.*:)'</span>,</span><br><span class="line">    <span class="string">"System\.IO\.FileNotFoundException: Could not find file\s'\w:"</span>,</span><br><span class="line">    <span class="string">"System\.IO\.DirectoryNotFoundException: Could not find a part of the path\s'\w:"</span>,</span><br><span class="line">    <span class="string">"&lt;b&gt;Warning&lt;\/b&gt;:\s\sDOMDocument::load\(\)\s\[&lt;a\shref='domdocument.load'&gt;domdocument.load&lt;\/a&gt;\]:\s(Start tag expected|I\/O warning : failed to load external entity).*(Windows\/win.ini|\/etc\/passwd).*\sin\s&lt;b&gt;.*?&lt;\/b&gt;\son\sline\s&lt;b&gt;\d+&lt;\/b&gt;"</span>,</span><br><span class="line">    <span class="string">"(&lt;web-app[\s\S]+&lt;\/web-app&gt;)"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="模板表达式注入"><a href="#模板表达式注入" class="headerlink" title="模板表达式注入"></a>模板表达式注入</h3><p>服务端模板注入SSTI,对GET请求参数进行相关测试</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = &#123;</span><br><span class="line">                <span class="string">"&#123;ranstr&#125;$&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;"</span>.format(ranstr=randstr, int1=randint1, int2=randint2),</span><br><span class="line">                <span class="string">"&#123;ranstr&#125;#&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;"</span>.format(ranstr=randstr, int1=randint1, int2=randint2)</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 Twig 模板引擎里,   除了可以输出传递的变量以外,还能<strong>执行一些基本的表达式然后将其结果作为该模板变量的值</strong>,例如这里用户输入 name=20 ,则在服务端拼接的模版内容为:<br><img src="https://i.loli.net/2019/12/30/TbMXmH87tdzeUQc.png" alt="20191230202751.png"></p>
+</blockquote>
+<p>原理:</p>
+<ul>
+<li>利用模板引擎能执行一些基本的表达式</li>
+<li>前后加随机字符串是为了减少误报</li>
+</ul>
+<hr>
+<h3 id="js敏感文件探测"><a href="#js敏感文件探测" class="headerlink" title="js敏感文件探测"></a>js敏感文件探测</h3><p>从返回js的包中匹配敏感内容</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">regx = (</span><br><span class="line">        <span class="comment"># 匹配url</span></span><br><span class="line">        <span class="string">r'(\b|\'|")(?:http:|https:)(?:[\w/\.]+)?(?:[a-zA-Z0-9_\-\.]&#123;1,&#125;)\.(?:php|asp|ashx|jspx|aspx|jsp|json|action|html|txt|xml|do)(\b|\'|")'</span>,</span><br><span class="line">        <span class="comment"># 匹配邮箱</span></span><br><span class="line">        <span class="string">r'[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+'</span>,</span><br><span class="line">        <span class="comment"># 匹配token或者密码泄露</span></span><br><span class="line">        <span class="comment"># 例如token = xxxxxxxx, 或者"apikey" : "xssss"</span></span><br><span class="line">        <span class="string">r'\b(?:secret|secret_key|token|secret_token|auth_token|access_token|username|password|aws_access_key_id|aws_secret_access_key|secretkey|authtoken|accesstoken|access-token|authkey|client_secret|bucket|email|HEROKU_API_KEY|SF_USERNAME|PT_TOKEN|id_dsa|clientsecret|client-secret|encryption-key|pass|encryption_key|encryptionkey|secretkey|secret-key|bearer|JEKYLL_GITHUB_TOKEN|HOMEBREW_GITHUB_API_TOKEN|api_key|api_secret_key|api-key|private_key|client_key|client_id|sshkey|ssh_key|ssh-key|privatekey|DB_USERNAME|oauth_token|irc_pass|dbpasswd|xoxa-2|xoxrprivate-key|private_key|consumer_key|consumer_secret|access_token_secret|SLACK_BOT_TOKEN|slack_api_token|api_token|ConsumerKey|ConsumerSecret|SESSION_TOKEN|session_key|session_secret|slack_token|slack_secret_token|bot_access_token|passwd|api|eid|sid|api_key|apikey|userid|user_id|user-id)["\s]*(?::|=|=:|=&gt;)["\s]*[a-z0-9A-Z]&#123;8,64&#125;"?'</span>,</span><br><span class="line">        <span class="comment"># 匹配IP地址</span></span><br><span class="line">        <span class="string">r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)&#123;3&#125;(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'</span>,</span><br><span class="line">        <span class="comment"># 匹配云泄露</span></span><br><span class="line">        <span class="string">r'[\w]+\.cloudfront\.net'</span>,</span><br><span class="line">        <span class="string">r'[\w\-.]+\.appspot\.com'</span>,</span><br><span class="line">        <span class="string">r'[\w\-.]*s3[\w\-.]*\.?amazonaws\.com\/?[\w\-.]*'</span>,</span><br><span class="line">        <span class="string">r'([\w\-.]*\.?digitaloceanspaces\.com\/?[\w\-.]*)'</span>,</span><br><span class="line">        <span class="string">r'(storage\.cloud\.google\.com\/[\w\-.]+)'</span>,</span><br><span class="line">        <span class="string">r'([\w\-.]*\.?storage.googleapis.com\/?[\w\-.]*)'</span>,</span><br><span class="line">        <span class="comment"># 匹配手机号</span></span><br><span class="line">        <span class="string">r'(?:139|138|137|136|135|134|147|150|151|152|157|158|159|178|182|183|184|187|188|198|130|131|132|155|156|166|185|186|145|175|176|133|153|177|173|180|181|189|199|170|171)[0-9]&#123;8&#125;'</span></span><br><span class="line">        <span class="comment"># 匹配域名</span></span><br><span class="line">        <span class="string">r'((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]&#123;0,61&#125;[a-zA-Z0-9])?\.)+(?:biz|cc|club|cn|com|co|edu|fun|group|info|ink|kim|link|live|ltd|mobi|net|online|org|pro|pub|red|ren|shop|site|store|tech|top|tv|vip|wang|wiki|work|xin|xyz|me))'</span></span><br><span class="line"></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="jsonp探测"><a href="#jsonp探测" class="headerlink" title="jsonp探测"></a>jsonp探测</h3><hr>
+<h3 id="通用敏感文件探测"><a href="#通用敏感文件探测" class="headerlink" title="通用敏感文件探测"></a>通用敏感文件探测</h3><p>从返回包中搜集通用的敏感信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># phpinfo</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">"&lt;title&gt;phpinfo()&lt;/title&gt;"</span> <span class="keyword">in</span> resp_str:</span><br><span class="line">    info = get_phpinfo(resp_str)</span><br><span class="line">    out.success(url, self.name, info=info)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="php真实路径检测"><a href="#php真实路径检测" class="headerlink" title="php真实路径检测"></a>php真实路径检测</h3><p>对于一些php网站，将正常参数替换为<code>[]</code>可能造成真实信息泄漏</p>
+<p>篡改:正常参数替换为<code>[]</code></p>
+<p>判断:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">"Warning"</span> <span class="keyword">in</span> r.text <span class="keyword">and</span> <span class="string">"array given"</span> <span class="keyword">in</span> r.text:</span><br><span class="line">    path = get_middle_text(r.text, <span class="string">'array given in '</span>, <span class="string">' on line'</span>)</span><br><span class="line">    out.success(_, self.name, path=path, raw=r.raw)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="重定向插件"><a href="#重定向插件" class="headerlink" title="重定向插件"></a>重定向插件</h3><p>支持检查 html meta 跳转、30x 跳转、JavaScript跳转等等</p>
+<hr>
+<h3 id="sql注入-基于报错"><a href="#sql注入-基于报错" class="headerlink" title="sql注入 (基于报错)"></a>sql注入 (基于报错)</h3><p>支持GET、COOKIE、HEADER头注入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = <span class="string">'鎈\'"\('</span></span><br></pre></td></tr></table></figure>
+
+<p>这是sqli测试最简单的一种,就是用某个字符尝试去引起sql报错，然后回显在页面。</p>
+<p>接着用正则去匹配不同数据库的错误信息。</p>
+<hr>
+<h3 id="sql注入-布尔盲注"><a href="#sql注入-布尔盲注" class="headerlink" title="sql注入(布尔盲注)"></a>sql注入(布尔盲注)</h3><p>布尔盲注利用前提:</p>
+<p>页面没有显示位，没有输出SQL语句执行错误信息，只能通过页面返回正常不正常来判断是否存在注入。</p>
+<p>发包:</p>
+<ul>
+<li>源request</li>
+<li>true page的request(<code>AND 110=110</code>)</li>
+<li>false page的request(<code>AND 110=109</code>)</li>
+</ul>
+<p>对返回的content处理(优化手段): </p>
+<ul>
+<li><code>removeDynamicContent()</code>,目的是减少无关的内容的干扰,比如广告什么的。</li>
+<li><code>getFilteredPageContent()</code>，去掉html标签,提取页面文本,例如<code>&#39;&lt;html&gt;&lt;title&gt;foobar&lt;/title&gt;&lt;body&gt;test&lt;/body&gt;&lt;/html&gt;&#39;</code>处理完会变成<code>foobar test</code></li>
+</ul>
+<p>判断漏洞:</p>
+<p>以页面相似度作为依据,原始请求 ≈ 预期为真请求 ≠ 预期与假请求</p>
+<blockquote>
+<p>有空还需要再认真看一下这部分的代码</p>
+</blockquote>
+<blockquote>
+<p>原作者的说明:<br>首先访问一次网页，和原网页对比，若相似度小于0.98则动态去除网页中不同的部分。<br>访问一次False页面，得到False页面与原页面的相似度 <code>ratio_false</code><br>访问一次True页面，得到True页面与原页面的相似度 <code>ratio_true</code><br><code>ratio_true</code> &gt; 0.88 and <code>ratio_true</code> - <code>ratio_false</code> &gt; 0.05 and <code>ratio_false</code> &lt; 0.98 即可判断为sql注入<br>否则按照换行符分隔原始页面，True页面，False页面获得<code>originSet</code>,<code>trueSet</code>,<code>falseSet</code>集合。<br><code>originSet</code> 对 <code>trueSet</code>的差集小于2并且 <code>trueSet</code> != <code>falseSet</code> 并且 <code>trueSet</code> 对<code>falseSet</code>差集大于0 即可判断为注入。</p>
+</blockquote>
+<hr>
+<h3 id="sql注入-基于时间"><a href="#sql注入-基于时间" class="headerlink" title="sql注入(基于时间)"></a>sql注入(基于时间)</h3><p>这部分内容我不太懂,直接copy原作者的描述好了。。。</p>
+<p>基于时间的探测方式，会因为一些网络的波动，影响最后的判断结果。sqlmap的时间盲注会先发送30个请求来建立模型，但对扫描器来说，这样的效率太低了，所以就采用了awvs的时间盲注检测方法。</p>
+<ul>
+<li><p>延时长度</p>
+<ul>
+<li><p>awvs将延时分为了四种类型，0延时<code>ZeroDelay</code>,长延时<code>LongDelay</code>，非常长延时<code>VeryLongDelay</code>,中间延时<code>MidDelay</code>，顾名思义，每种类型延时的时间不一样。</p>
+</li>
+<li><p>这些时间延时类型的判断依据只靠两个参数<code>longDuration</code>,<code>shortDuration</code></p>
+</li>
+<li><p>这两个参数由下面算法计算</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> internal_ip:</span><br><span class="line">self.longDuration = <span class="number">6</span></span><br><span class="line">self.shortDuration = <span class="number">2</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">self.longDuration = <span class="number">3</span></span><br><span class="line">self.shortDuration = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">r1 = requests.get(self.url, headers=self.headers)</span><br><span class="line">time1 = r1.elapsed.total_seconds()</span><br><span class="line">r2 = requests.get(self.url, headers=self.headers) </span><br><span class="line">time2 = r2.elapsed.total_seconds()</span><br><span class="line"></span><br><span class="line">_min = min(time1, time2)</span><br><span class="line">_max = max(time1, time2)</span><br><span class="line"></span><br><span class="line">self.shortDuration = max(self.shortDuration, _max) + <span class="number">1</span></span><br><span class="line">self.longDuration = self.shortDuration * <span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以看到内外网不同判断的参数也不一样</p>
+</li>
+</ul>
+</li>
+<li><p>随机延时测试</p>
+<ul>
+<li>接下来就是随机选取一种延时的类型来判断是否达到了延时需要的时间。</li>
+<li>awvs至少会进行8次这样的随机延时测试，测试成功即可判断存在注入</li>
+<li>当然，误差的容错也是有的，可以直接看代码。这种方式虽然暴力了点但是似乎没有其他好的办法了。</li>
+</ul>
+</li>
+</ul>
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = [</span><br><span class="line">        &apos;/**/aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn+sElect+1)&apos;,</span><br><span class="line">        &quot;&apos;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&apos;&quot;,</span><br><span class="line">        &apos;&quot;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&quot;&apos;,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
+
+<p>比较精妙之处在于多次发包，再判断。</p>
+<p>此处缺一个图。</p>
+<hr>
+<h3 id="被动子域名搜索"><a href="#被动子域名搜索" class="headerlink" title="被动子域名搜索"></a>被动子域名搜索</h3><p>从返回包中搜集子域名</p>
+<p>正则匹配</p>
+<hr>
+<h3 id="xpath-注入"><a href="#xpath-注入" class="headerlink" title="xpath 注入"></a>xpath 注入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"'\""</span>,</span><br><span class="line">    <span class="string">"&lt;!--"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>篡改发包:</p>
+<ul>
+<li>遍历参数,在参数值后面加上payload即可</li>
+<li>在response包用2种规则匹配。</li>
+</ul>
+<p>两种判断规则:</p>
+<ul>
+<li><p>字符串特征:</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">plainArray = [</span><br><span class="line">    <span class="string">'MS.Internal.Xml.'</span>,</span><br><span class="line">    <span class="string">'Unknown error in XPath'</span>,</span><br><span class="line">    <span class="string">'org.apache.xpath.XPath'</span>,</span><br><span class="line">    <span class="string">'A closing bracket expected in'</span>,</span><br><span class="line">    <span class="string">'An operand in Union Expression does not produce a node-set'</span>,</span><br><span class="line">    <span class="string">'Cannot convert expression to a number'</span>,</span><br><span class="line">    <span class="string">'Document Axis does not allow any context Location Steps'</span>,</span><br><span class="line">    <span class="string">'Empty Path Expression'</span>,</span><br><span class="line">    <span class="string">'Empty Relative Location Path'</span>,</span><br><span class="line">    <span class="string">'Empty Union Expression'</span>,</span><br><span class="line">    <span class="string">'Expected node test or name specification after axis operator'</span>,</span><br><span class="line">    <span class="string">'Incompatible XPath key'</span>,</span><br><span class="line">    <span class="string">'Incorrect Variable Binding'</span>,</span><br><span class="line">    <span class="string">'libxml2 library function failed'</span>,</span><br><span class="line">    <span class="string">'A document must contain exactly one root element.'</span>,</span><br><span class="line">    <span class="string">'&lt;font face="Arial" size=2&gt;Expression must evaluate to a node-set.'</span>,</span><br><span class="line">    <span class="string">'Expected token \'\]\''</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>正则:</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">regexArray = [</span><br><span class="line">    <span class="string">"(Invalid (predicate|expression|type) in .*?\son line)"</span>,</span><br><span class="line">    <span class="string">"(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\s'.*'\shas\san\sinvalid\stoken\.&lt;br&gt;&lt;br&gt;)"</span>,</span><br><span class="line">    <span class="string">"(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\sThis\sis\san\sunclosed\sstring\.&lt;br&gt;&lt;br&gt;)"</span>,</span><br><span class="line">    <span class="string">"(System.Xml.XPath.XPathException\:)"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h3 id="xss注入"><a href="#xss注入" class="headerlink" title="xss注入"></a>xss注入</h3><p>暂只支持Get请求方式</p>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">rndStr = <span class="number">9000</span> + random.randint(<span class="number">1</span>, <span class="number">999</span>)</span><br><span class="line">tag = random_str(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">html_payload = <span class="string">"&lt;&#123;tag&#125;&gt;&#123;randint&#125;&lt;/&#123;tag&#125;&gt;"</span>.format(tag=tag, randint=rndStr)  <span class="comment"># html xss</span></span><br><span class="line"></span><br><span class="line">attr_payload = [</span><br><span class="line">    <span class="string">'" oNsOmeEvent="console.log(233)'</span>,  <span class="comment"># 双引号payload</span></span><br><span class="line">    <span class="string">"' oNsOmeEvent='console.log(2333)"</span>,  <span class="comment"># 单引号payload</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">url_payload = <span class="string">"javascript&amp;colon;&#123;randint&#125;"</span>.format(randint=rndStr)</span><br><span class="line"></span><br><span class="line">javascript_payload = <span class="string">"&#123;randint&#125;"</span>.format(randint=rndStr)</span><br></pre></td></tr></table></figure>
+
+<p>判断是否输出点是否在<code>&lt;script&gt;</code>标签内,</p>
+<p>如果是就使用<code>javascript_payload</code></p>
+<p>如果不是就测试<code>html xss</code>、<code>标签属性xss</code>、<code>url xss</code></p>
+<blockquote>
+<p>需要补充…</p>
+</blockquote>
+<hr>
+<h3 id="crlf注入"><a href="#crlf注入" class="headerlink" title="crlf注入"></a>crlf注入</h3><p>暂只支持Get请求方式</p>
+<p>payloads:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">"\r\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\n TestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\r\tTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\nTestInject: w13scan"</span>,</span><br><span class="line">    <span class="string">"\rTestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># twitter crlf</span></span><br><span class="line">    <span class="string">"嘊嘍TestInject: w13scan"</span>,</span><br><span class="line">    <span class="comment"># nodejs crlf</span></span><br><span class="line">    <span class="string">"čĊTestInject: w13scan"</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>发包:</p>
+<hr>
+<h3 id="cookie控制插件"><a href="#cookie控制插件" class="headerlink" title="cookie控制插件"></a>cookie控制插件</h3><hr>
+<h3 id="js漏洞库查找"><a href="#js漏洞库查找" class="headerlink" title="js漏洞库查找"></a>js漏洞库查找</h3><p>检测到当前页面存在过时的含有漏洞的js组件</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://www.anquanke.com/post/id/86641" target="_blank" rel="noopener">【技术分享】如何攻击Java反序列化过程</a></li>
+<li><a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">Python Pickle的任意代码执行漏洞实践和Payload构造</a></li>
+<li><a href="https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BPython%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#1-%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%EF%BC%9A" target="_blank" rel="noopener">一篇文章带你理解漏洞之 Python 反序列化漏洞</a></li>
+<li><a href="https://www.jianshu.com/p/aef2ae0498df" target="_blank" rel="noopener">SSTI模板注入</a></li>
+<li><a href="https://x.hacking8.com/post-356.html" target="_blank" rel="noopener">写在w13scan第一阶段</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/19/w13scan-扫描插件总结-PerScheme/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1931,177 +2272,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/XSStrike源码-waf检测/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/23/XSStrike源码-waf检测/" itemprop="url">XSStrike源码-waf检测</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T14:36:34+08:00">
-                2019-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><blockquote>
-<p>waf检测是为了之后的bypass.</p>
-</blockquote>
-<hr>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码:"></a>源码:</h1><p>该功能比较简单,所以直接贴源码.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> core.requester <span class="keyword">import</span> requester</span><br><span class="line"><span class="keyword">from</span> core.log <span class="keyword">import</span> setup_logger</span><br><span class="line"></span><br><span class="line">logger = setup_logger(__name__)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wafDetector</span><span class="params">(url, params, headers, GET, delay, timeout)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(sys.path[<span class="number">0</span>] + <span class="string">'/db/wafSignatures.json'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> file:</span><br><span class="line">        wafSignatures = json.load(file)</span><br><span class="line">    <span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">    noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">    params[<span class="string">'xss'</span>] = noise</span><br><span class="line">    <span class="comment"># Opens the noise injected payload</span></span><br><span class="line">    response = requester(url, params, headers, GET, delay, timeout)</span><br><span class="line">    page = response.text <span class="comment"># 返回包源码</span></span><br><span class="line">    code = str(response.status_code) <span class="comment"># 状态码</span></span><br><span class="line">    headers = str(response.headers) <span class="comment"># 头部</span></span><br><span class="line">    logger.debug(<span class="string">'Waf Detector code: &#123;&#125;'</span>.format(code))</span><br><span class="line">    logger.debug_json(<span class="string">'Waf Detector headers:'</span>, response.headers)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> int(code) &gt;= <span class="number">400</span>:</span><br><span class="line">        bestMatch = [<span class="number">0</span>, <span class="keyword">None</span>]</span><br><span class="line">        <span class="keyword">for</span> wafName, wafSignature <span class="keyword">in</span> wafSignatures.items():</span><br><span class="line">            score = <span class="number">0</span></span><br><span class="line">            pageSign = wafSignature[<span class="string">'page'</span>]</span><br><span class="line">            codeSign = wafSignature[<span class="string">'code'</span>]</span><br><span class="line">            headersSign = wafSignature[<span class="string">'headers'</span>]</span><br><span class="line">            <span class="keyword">if</span> pageSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> codeSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">                    score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line">            <span class="keyword">if</span> headersSign:</span><br><span class="line">                <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">                    score += <span class="number">1</span></span><br><span class="line">            <span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line">            <span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">                <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">                bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br><span class="line">        <span class="keyword">if</span> bestMatch[<span class="number">0</span>] != <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> bestMatch[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h1><h2 id="发送明显的恶意payload"><a href="#发送明显的恶意payload" class="headerlink" title="发送明显的恶意payload:"></a>发送明显的恶意payload:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># a payload which is noisy enough to provoke the WAF</span></span><br><span class="line">noise = <span class="string">'&lt;script&gt;alert("XSS")&lt;/script&gt;'</span> <span class="comment"># 明显的payload</span></span><br><span class="line">params[<span class="string">'xss'</span>] = noise</span><br><span class="line"><span class="comment"># Opens the noise injected payload</span></span><br><span class="line">response = requester(url, params, headers, GET, delay, timeout)</span><br></pre></td></tr></table></figure>
-
-<p>发送一段足够明显的xss payload,连参数名都是<code>xss</code>,试图触发server的waf机制.</p>
-<hr>
-<h2 id="判断逻辑"><a href="#判断逻辑" class="headerlink" title="判断逻辑:"></a>判断逻辑:</h2><p>通过3个指标来<strong>正则匹配</strong>并计算匹配度得分,然后保留一个得分最高的作为最终的判定结果</p>
-<ol>
-<li><strong>page 返回包源码</strong></li>
-<li><strong>code 状态码</strong></li>
-<li><strong>headers 返回包头部</strong></li>
-</ol>
-<hr>
-<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>目前这个版本有66种waf的指纹、特征.</p>
-<p>详细请看.<code>https://github.com/s0md3v/XSStrike/blob/470f138db5fc0943e8a90a0de4052ddb7c03efab/db/wafSignatures.json</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"360 Web Application Firewall (360)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">"493"</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"/wzws-waf-cgi/"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"X-Powered-By-360wzb"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"aeSecure"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">"aesecure_denied.png"</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"aeSecure-code"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"Airlock (Phion/Ergon)"</span> : &#123;</span><br><span class="line">		<span class="string">"code"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"page"</span> : <span class="string">""</span>,</span><br><span class="line">		<span class="string">"headers"</span> : <span class="string">"AL[_-]?(SESS|LB)"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	.... 省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="计算匹配度分数"><a href="#计算匹配度分数" class="headerlink" title="计算匹配度分数:"></a>计算匹配度分数:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> pageSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(pageSign, page, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> codeSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(codeSign, code, re.I):</span><br><span class="line">        score += <span class="number">0.5</span>  <span class="comment"># increase the overall score by a smaller amount because http codes aren't strong indicators         # 状态码权重较低,因为不是一个特别准确的判断标识</span></span><br><span class="line"><span class="keyword">if</span> headersSign:</span><br><span class="line">    <span class="keyword">if</span> re.search(headersSign, headers, re.I):</span><br><span class="line">        score += <span class="number">1</span></span><br><span class="line"><span class="comment"># if the overall score of the waf is higher than the previous one</span></span><br><span class="line"><span class="keyword">if</span> score &gt; bestMatch[<span class="number">0</span>]: <span class="comment"># 保留权重最高的</span></span><br><span class="line">    <span class="keyword">del</span> bestMatch[:]  <span class="comment"># delete the previous one</span></span><br><span class="line">    bestMatch.extend([score, wafName])  <span class="comment"># and add this one</span></span><br></pre></td></tr></table></figure>
-
-<p>分别在返回包源码,状态码,返回包头部里正则匹配.</p>
-<p>其中状态码的得分(权重)最低,因为状态码不是一个特别准确的判断标识</p>
-<p>然后保留一个得分最高的,作为最终结果.</p>
-<hr>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2154,7 +2324,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">59</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
