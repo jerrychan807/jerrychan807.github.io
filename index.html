@@ -252,6 +252,227 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/17/JSON Web Token(JWT)攻击探究(二)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/17/JSON Web Token(JWT)攻击探究(二)/" itemprop="url">JSON Web Token(JWT)攻击探究(二)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-17T14:36:34+08:00">
+                2020-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="JWT-攻击面"><a href="#JWT-攻击面" class="headerlink" title="JWT 攻击面:"></a>JWT 攻击面:</h1><h2 id="敏感信息泄露"><a href="#敏感信息泄露" class="headerlink" title="敏感信息泄露:"></a>敏感信息泄露:</h2><p>当服务端的秘钥泄密的时候，JWT的伪造就变得非常简单容易。对此，服务端应该妥善保管好私钥，以免被他人窃取。</p>
+<p>header和payload部分实际上只是进行了base64编码</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143359.png" alt="20200417143359"></p>
+<hr>
+<h2 id="alg-None签名绕过"><a href="#alg-None签名绕过" class="headerlink" title="alg=None签名绕过:"></a>alg=None签名绕过:</h2><p>签名算法确保恶意用户在传输过程中不会修改JWT。</p>
+<p>但是标题中的alg字段可以更改为none。</p>
+<p>一些JWT库支持无算法，即没有签名算法。当alg为none时，后端将不执行签名验证。将alg更改为none后，从JWT中删除签名数据（仅标题+’.’+ payload +’.’）并将其提交给服务器</p>
+<p>例子:</p>
+<p><code>http://demo.sjoerdlangkemper.nl/jwtdemo/hs256.php</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">b64urlencode</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> base64.b64encode(data).replace(<span class="string">'+'</span>, <span class="string">'-'</span>).replace(<span class="string">'/'</span>, <span class="string">'_'</span>).replace(<span class="string">'='</span>, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">result = b64urlencode(<span class="string">"&#123;\"typ\":\"JWT\",\"alg\":\"none\"&#125;"</span>) + \</span><br><span class="line">         <span class="string">'.'</span> + b64urlencode(<span class="string">"&#123;\"data\":\"test\"&#125;"</span>) + <span class="string">'.'</span></span><br><span class="line"></span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出</span></span><br><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143748.png" alt="20200417143748"></p>
+<p>server源码:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># https://github.com/Sjord/jwtdemo/blob/master/MishalHS256.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/vendor/autoload.php'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Jwt</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Algorithm</span>\<span class="title">NoneAlgorithm</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Algorithm</span>\<span class="title">HS256Algorithm</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MishalHS256</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;algorithms = [</span><br><span class="line">            <span class="string">'none'</span> =&gt; <span class="keyword">new</span> NoneAlgorithm(),</span><br><span class="line">            <span class="string">'HS256'</span> =&gt; <span class="keyword">new</span> HS256Algorithm(<span class="string">'secret'</span>),</span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">encodeJwt</span><span class="params">($tokenObj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Jwt::encode($tokenObj, <span class="keyword">$this</span>-&gt;algorithms[<span class="string">'HS256'</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">decodeJwt</span><span class="params">($token)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JWT::decode($token, [<span class="string">'algorithm'</span> =&gt; array_values(<span class="keyword">$this</span>-&gt;algorithms)]); <span class="comment"># header部分中指定加密方法为none方法,服务端也用none方法来解密。</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>加密方法是读取JWT的header部分吗?</p>
+</blockquote>
+<hr>
+<h2 id="将签名算法从非对称类型改为对称类型"><a href="#将签名算法从非对称类型改为对称类型" class="headerlink" title="将签名算法从非对称类型改为对称类型:"></a>将签名算法从非对称类型改为对称类型:</h2><p>使用非对称加密算法（主要基于RSA、ECDSA，如S256）分发JWT的过程是使用私钥（private）加密生成JWT，使用公钥（public）解密验证。</p>
+<p>使用对称加密算法（主要基于HMAC，如HS256）分发JWT的过程是使用同一个密钥（secret）生成和验证JWT。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FirebaseRS256</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;private_key = file_get_contents(<span class="string">'private.pem'</span>);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;public_key = file_get_contents(<span class="string">'public.pem'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">encodeJwt</span><span class="params">($tokenObj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JWT::encode($tokenObj, <span class="keyword">$this</span>-&gt;private_key, <span class="string">'RS256'</span>); <span class="comment">// 私钥加密作为签名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">decodeJwt</span><span class="params">($token)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Explicitly configured to be vulnerable:</span></span><br><span class="line">        <span class="comment">// we expect a RS256 signature, but also accept a HS256 signature.</span></span><br><span class="line">        <span class="keyword">return</span> JWT::decode($token, <span class="keyword">$this</span>-&gt;public_key, [<span class="string">'RS256'</span>, <span class="string">'HS256'</span>]); <span class="comment">// HS256对称加密方式 用公钥作为秘钥</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一开始的流程是,服务端用私钥加密作为签名，然后用公钥进行验证。</p>
+<p>由于我们很难知道私钥，所以我们想自己构造数据的话,没法用相同的私钥签名回去。</p>
+<p>但解密时支持<code>HS256</code>这种对称加密方式的话,它只有一个秘钥，如图是公钥。</p>
+<p>也就是说我们只要找到公钥,就能篡改数据后,再把数据签名回去，这样能通过延签的部分。</p>
+<hr>
+<h2 id="HS256（对称加密）密钥破解"><a href="#HS256（对称加密）密钥破解" class="headerlink" title="HS256（对称加密）密钥破解:"></a>HS256（对称加密）密钥破解:</h2><p>如果HS256密钥强度较弱，则可以直接强制使用，通过爆破 HS256的秘钥可以完成该操作。</p>
+<p>不过对 JWT 的密钥爆破需要在一定的前提下进行：</p>
+<ul>
+<li>知悉JWT使用的加密算法</li>
+<li>一段有效的、已签名的token</li>
+<li>签名用的密钥不复杂（弱密钥）</li>
+</ul>
+<p>所以其实JWT密钥爆破的局限性很大。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418113805.png" alt="20200418113805"></p>
+<p>可以看到简单的字母数字组合都是可以爆破的，但是密钥位数稍微长一点或者更复杂一点的话，爆破时间就会需要很久。</p>
+<hr>
+<h2 id="修改KID参数"><a href="#修改KID参数" class="headerlink" title="修改KID参数:"></a>修改KID参数:</h2><p><code>kid</code>是<code>jwt header</code>中的一个可选参数，全称是<code>key ID</code>，它用于指定加密算法的密钥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;alg&quot; : &quot;HS256&quot;,</span><br><span class="line">    &quot;typ&quot; : &quot;jwt&quot;,</span><br><span class="line">    &quot;kid&quot; : &quot;/home/jwt/.ssh/pem&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为该参数可以由用户输入，所以也可能造成一些安全问题。</p>
+<h3 id="任意文件读取"><a href="#任意文件读取" class="headerlink" title="任意文件读取:"></a>任意文件读取:</h3><p><code>kid</code>参数用于读取密钥文件，但系统并不会知道用户想要读取的到底是不是密钥文件，所以，如果在没有对参数进行过滤的前提下，攻击者是可以读取到系统的任意文件的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;alg&quot; : &quot;HS256&quot;,</span><br><span class="line">    &quot;typ&quot; : &quot;jwt&quot;,</span><br><span class="line">    &quot;kid&quot; : &quot;/etc/passwd&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入:"></a>SQL注入:</h3><p><code>kid</code>也可以从数据库中提取数据，这时候就有可能造成SQL注入攻击，通过构造SQL语句来获取数据或者是绕过<code>signature</code>的验证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;alg&quot; : &quot;HS256&quot;,</span><br><span class="line">    &quot;typ&quot; : &quot;jwt&quot;,</span><br><span class="line">    &quot;kid&quot; : &quot;key11111111&apos; || union select &apos;secretkey&apos; -- &quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="命令注入"><a href="#命令注入" class="headerlink" title="命令注入"></a>命令注入</h3><p>对<code>kid</code>参数过滤不严也可能会出现命令注入问题，但是利用条件比较苛刻。如果服务器后端使用的是Ruby，在读取密钥文件时使用了<code>open</code>函数，通过构造参数就可能造成命令注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;/path/to/key_file|whoami&quot;</span><br></pre></td></tr></table></figure>
+
+<p>对于其他的语言，例如php，如果代码中使用的是<code>exec</code>或者是<code>system</code>来读取密钥文件，那么同样也可以造成命令注入，当然这个可能性就比较小了。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><p>与许多其他方面一样，JWT基本上是安全的，但某些实现则不是。</p>
+<p>该应用程序可能在JWT中存储敏感信息，允许更改签名算法，或者签名中使用的密钥强度不足、kid参数可控。</p>
+<hr>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他:"></a>其他:</h2><p>RSA的公钥和私钥区别</p>
+<p>公钥和私钥是成对的，它们互相解密。</p>
+<p>公钥加密，私钥解密。</p>
+<p>私钥数字签名，公钥验证。</p>
+<blockquote>
+<ul>
+<li>A 要给 B 发信息要用 B 的公钥加密，B 用自己的私钥解密。</li>
+<li>A 发布了一篇文章，说这是我发的，我用自己的私钥签名了。由于之前 A 已经发布了他的公钥，所以其它人可以用这个公钥去验证。因为知道 A 私钥的只可能是 A 自己。</li>
+</ul>
+</blockquote>
+<p>这样的话：加密是保护数据，签名是核对身份，解决的是不同需求。<br>那么我的理解：不应该是需要解决什么问题就用什么吗？<br>不希望第三方收到内容就加密，不希望第三方冒充发布就签名，或者同时使用。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.freebuf.com/articles/web/181261.html" target="_blank" rel="noopener">深入了解Json Web Token之实战篇</a></li>
+<li><a href="https://github.com/Sjord/jwtdemo" target="_blank" rel="noopener">jwtdemo</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/71672282" target="_blank" rel="noopener">从SCTF看JWT安全 (附SCTF web writeup)</a></li>
+<li><a href="https://xz.aliyun.com/t/6776" target="_blank" rel="noopener">攻击JWT的一些方法</a></li>
+<li><a href="https://www.sjoerdlangkemper.nl/2016/09/28/attacking-jwt-authentication/" target="_blank" rel="noopener">Attacking JWT authentication</a></li>
+<li><a href="https://blog.csdn.net/ddonking/article/details/82492206" target="_blank" rel="noopener">RSA的公钥和私钥区别</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/16/JSON Web Token(JWT)攻击探究(一)/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -346,6 +567,7 @@
         
           
             <h1 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h1><p>用户认证的方式通常有两种，传统的session认证 和 基于token方式。</p>
+<hr>
 <h2 id="传统的session认证"><a href="#传统的session认证" class="headerlink" title="传统的session认证"></a>传统的session认证</h2><h3 id="sessionID的生成方式"><a href="#sessionID的生成方式" class="headerlink" title="sessionID的生成方式:"></a>sessionID的生成方式:</h3><p>浏览器第一次访问服务器时，服务器创建一个<code>session</code>，同时生成一个唯一的会话key，即<code>sessionID</code>。</p>
 <p>接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送给浏览器，浏览器下次访问服务器时直接携带上cookie中的sessionID，服务器再根据sessionID找到对应的session进行匹配</p>
 <p>这里我们注意到两点：</p>
@@ -399,14 +621,222 @@
 <h1 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h1><p><a href="https://jwt.io/" target="_blank" rel="noopener">解jwt的</a></p>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><p><a href="https://segmentfault.com/a/1190000015881055" target="_blank" rel="noopener">token与sessionId的区别——学习笔记</a></p>
+<li><a href="https://segmentfault.com/a/1190000015881055" target="_blank" rel="noopener">token与sessionId的区别——学习笔记</a></li>
+<li><a href="http://blog.leapoahead.com/2015/09/07/user-authentication-with-jwt/" target="_blank" rel="noopener">八幅漫画理解使用JSON Web Token设计单点登录系统</a></li>
+</ul>
+<ul>
+<li><a href="http://blog.leapoahead.com/2015/09/06/understanding-jwt/" target="_blank" rel="noopener">JSON Web Token - 在Web应用间安全地传递信息</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/15/webpack带来的安全风险/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/15/webpack带来的安全风险/" itemprop="url">webpack带来的安全风险</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-15T14:36:34+08:00">
+                2020-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="webpack"><a href="#webpack" class="headerlink" title="webpack:"></a>webpack:</h1><h2 id="什么是webpack"><a href="#什么是webpack" class="headerlink" title="什么是webpack:"></a>什么是webpack:</h2><p><strong>webpack用于编译JavaScript模块。</strong></p>
+<p>关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export/require/import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6/JSX语法，开发和线上不能保持一致，这就为WebPack类的自动化代码转换工具的出现提供了需求。</p>
+<p><strong>WebPack可以看做是模块打包机：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。</strong></p>
+<p>按照官网的说法，webpack可以打包一切资源/图片/样式/依赖等等，webpack默认只支持js模块打包，对于其他文件就需要用loader解析器，比如在vue中，直观的效果就是使用webpack可以将使用的vue，css，图片等打包成一个js。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414114758.png" alt="20200414114758"></p>
+<hr>
+<h1 id="Source-Map"><a href="#Source-Map" class="headerlink" title="Source Map:"></a>Source Map:</h1><p>部署前端之前，开发者通常会对代码进行打包压缩，这样可以减少代码大小，从而有效提高访问速度。然而，压缩代码的报错信息是很难Debug的，因为它的行号和列号已经失真。这时就需要Source Map来还原真实的出错位置了。</p>
+<h2 id="为啥变换代码"><a href="#为啥变换代码" class="headerlink" title="为啥变换代码?"></a>为啥变换代码?</h2><p>前端代码越来越复杂的情况下，开发者通常会使用webpack、UglifyJS2等工具对代码进行打包变换，这样可以减少代码大小，有效提高访问速度。关于变换代码的原因，这里不妨引用一下大神阮一峰的JavaScript Source Map 详解:</p>
+<blockquote>
+<ul>
+<li>压缩，减小体积。比如jQuery 1.9的源码，压缩前是252KB，压缩后是32KB。</li>
+<li>多个文件合并，减少HTTP请求数。</li>
+<li>其他语言编译成JavaScript。最常见的例子就是CoffeeScript。</li>
+</ul>
+</blockquote>
+<h2 id="如何变换代码"><a href="#如何变换代码" class="headerlink" title="如何变换代码?"></a>如何变换代码?</h2><p>下面是一个简单的“hello World”程序hello.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sayHello</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">"Fundebug"</span>;</span><br><span class="line">    <span class="keyword">var</span> greeting = <span class="string">"Hello, "</span> + Name;</span><br><span class="line">    <span class="built_in">console</span>.log(greeting);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sayHello();</span><br></pre></td></tr></table></figure>
+
+<p>使用UglifyJS2对源代码进行压缩变换:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uglifyjs hello.js \</span><br><span class="line">         -m toplevel=<span class="literal">true</span> \</span><br><span class="line">         -c unused=<span class="literal">true</span>,collapse_vars=<span class="literal">true</span> \</span><br><span class="line">         -o hello.min.js</span><br></pre></td></tr></table></figure>
+
+<p>压缩后的代码<strong>hello.min.js</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">o</span>(<span class="params"></span>)</span>&#123;<span class="keyword">var</span> o=<span class="string">"Hello, "</span>+Name;<span class="built_in">console</span>.log(o)&#125;o();</span><br></pre></td></tr></table></figure>
+
+<h2 id="为啥需要Source-Map"><a href="#为啥需要Source-Map" class="headerlink" title="为啥需要Source Map?"></a>为啥需要Source Map?</h2><p>使用Firefox执行<strong>hello.js</strong>的报错信息是这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ReferenceError: Name is not defined</span><br><span class="line">	sayHello file:///Users/fundebug/sourcemap-tutorial/hello.js:4:9</span><br><span class="line">	&lt;匿名&gt; file:///Users/fundebug/sourcemap-tutorial/hello.js:8:1</span><br></pre></td></tr></table></figure>
+
+<p>而<strong>hello.min.js</strong>的报错信息是这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ReferenceError: Name is not defined</span><br><span class="line">	o file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:18</span><br><span class="line">	&lt;匿名&gt; file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:59</span><br></pre></td></tr></table></figure>
+
+<p>对比压缩前后的出错信息，我们会发现，错误行号和列号已经失真，且函数名也经过了变换。而对于真实的前端项目，开发者会将数十个源文件压缩为一个文件，这时，错误的列号可能多达数千，且出错的真实文件名也是很难确定的，这样的话，压缩代码的报错信息是很难Debug的。</p>
+<p>而Source Map则可以用于还原真实的出错位置，帮助开发者更快的Debug。</p>
+<hr>
+<p>webpack 是一个现代 JavaScript 应用程序的静态模块打包器(module bundler)。</p>
+<p>source-map文件，这个文件是编译过程中变量与方法的映射表。</p>
+<hr>
+<h1 id="VUE-REACT开发场景"><a href="#VUE-REACT开发场景" class="headerlink" title="VUE/REACT开发场景"></a>VUE/REACT开发场景</h1><p>在VUE/REACT开发场景下 ，前端开发会引入如模块化等诸多新特性，前端开发不再是几个简单的js文件，开发完成后会通过webpack等打包工具打包生成部署使用的js文件，但是如果我们直接分析该编译的js，很难看懂。</p>
+<p>比如某页面下的app.bundle.js,反正我是看不懂写的是啥，这个js文件就是webpack打包后的结果，但是由于我是开启了source-map调试模式，如果你是用chrome浏览器打开的，打开devtools-sources，应该可以看到一个<code>webpack://</code>，这个就是chrome对source-map调试的支持，点开src目录下就可以看到js代码源文件。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414115217.png" alt="20200414115217"></p>
+<h2 id="为什么会有这类问题"><a href="#为什么会有这类问题" class="headerlink" title="为什么会有这类问题?"></a>为什么会有这类问题?</h2><p>大多数开发人员没有意识到的是，这些源映射<code>source-map</code>实际上包含了其前端源代码的全部。</p>
+<p>是的，他们知道可以进行映射，但是源映射后的文件几乎为乱码，更不用说理解了。由于这种误解，发现开发团队在其Webpack配置中将JavaScript源映射留在生产环境中是相对常见的。</p>
+<hr>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>修改<code>config/index.js</code>中的<code>build</code>对象<code>productionSourceMap: false</code>即可</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418144413.png" alt="20200418144413"></p>
+<hr>
+<h1 id="渗透思路or危害"><a href="#渗透思路or危害" class="headerlink" title="渗透思路or危害:"></a>渗透思路or危害:</h1><ul>
+<li><p>通过<code>source-map</code>可以获取前端源码,也就是说从黑盒变成了灰盒。</p>
 </li>
-<li><p><a href="http://blog.leapoahead.com/2015/09/07/user-authentication-with-jwt/" target="_blank" rel="noopener">八幅漫画理解使用JSON Web Token设计单点登录系统</a></p>
+<li><p>泄露的各种信息如网站路径、API、加密算法、管理员邮箱、内部功能等等。</p>
 </li>
-<li><p><a href="https://zhuanlan.zhihu.com/p/71672282" target="_blank" rel="noopener">从SCTF看JWT安全 (附SCTF web writeup)</a></p>
+<li><p>很多vue应用都是先渲染页面再判断是否登陆，根据这个小缺陷，我们首先可以查看相关功能</p>
 </li>
-<li><p><a href="http://blog.leapoahead.com/2015/09/06/understanding-jwt/" target="_blank" rel="noopener">JSON Web Token - 在Web应用间安全地传递信息</a></p>
+<li><p>前端源码被人copy走</p>
 </li>
+</ul>
+<hr>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h1><p><a href="https://github.com/rarecoil/unwebpack-sourcemap" target="_blank" rel="noopener">unwebpack-sourcemap</a></p>
+<p>通过查看浏览器中包含的JavaScript文件并提取捆绑的JavaScript文件底部存在的sourceMappingURL来获取源地图。</p>
+<p>原理:</p>
+<p>在页面正则匹配 <code>regex = &quot;\\/\\/#\s*sourceMappingURL=(.*)$&quot;</code></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.secpulse.com/archives/96416.html" target="_blank" rel="noopener">webpack带来的安全风险</a></li>
+<li><a href="https://www.cnblogs.com/fundebug/p/source_map_tutorial.html" target="_blank" rel="noopener">Source Map入门教程</a></li>
+<li><a href="https://www.freebuf.com/articles/web/193230.html" target="_blank" rel="noopener">前端打包编译时代来临对漏洞挖掘的影响</a></li>
+<li><a href="https://blog.csdn.net/cuixiping/article/details/8592823" target="_blank" rel="noopener">压缩版JS的调试利器JavaScript Source Map基本介绍</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/26033573" target="_blank" rel="noopener">谈谈我是如何获得知乎的前端源码的</a></li>
+<li><a href="https://medium.com/@rarecoil/spa-source-code-recovery-by-un-webpacking-source-maps-ef830fc2351d" target="_blank" rel="noopener">SPA source code recovery by un-Webpacking source maps</a></li>
+<li><a href="https://wangdaodao.com/20190724/webpack-sources-vue.html" target="_blank" rel="noopener">Webpack打包后禁止Sources查看VUE源码</a></li>
 </ul>
 
           
@@ -1745,366 +2175,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/29/越权半自动化插件的尝试/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/29/越权半自动化插件的尝试/" itemprop="url">越权半自动化插件的尝试</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-29T22:36:34+08:00">
-                2019-12-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
-                    <span itemprop="name">SecurityTools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>当一个事情变得枯燥时，就该考虑自动化了。</p>
-<p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
-<p>可是又要全测一边会觉得累，不测又会觉得漏。<br>那这个时候就可以考虑下自动化，半自动化了。</p>
-<p>我就尝试在<a href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN" target="_blank" rel="noopener">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
-<hr>
-<h1 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h1><h2 id="第一步-手工测试找vuln-parameter"><a href="#第一步-手工测试找vuln-parameter" class="headerlink" title="第一步:手工测试找vuln_parameter"></a>第一步:手工测试找vuln_parameter</h2><p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
-<p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
-<h2 id="第二步-以vuln-parameter做路由"><a href="#第二步-以vuln-parameter做路由" class="headerlink" title="第二步:以vuln_parameter做路由"></a>第二步:以vuln_parameter做路由</h2><p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
-<h2 id="第三步-确定payload"><a href="#第三步-确定payload" class="headerlink" title="第三步:确定payload"></a>第三步:确定payload</h2><p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
-<p>确定payload: <code>{&quot;phone&quot;:134xxxxxx}</code></p>
-<h2 id="第四步-篡改request包"><a href="#第四步-篡改request包" class="headerlink" title="第四步:篡改request包"></a>第四步:篡改request包</h2><p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
-<h2 id="第五步-发包-权衡判断条件"><a href="#第五步-发包-权衡判断条件" class="headerlink" title="第五步:发包,权衡判断条件"></a>第五步:发包,权衡判断条件</h2><p>判断我感觉比较麻烦:</p>
-<p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
-<p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
-<ul>
-<li>正向特征:</li>
-</ul>
-<p>先收集一些请求成功且有返回一定数据的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;msg&apos;:&apos;OK&apos;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>反向特征:</li>
-</ul>
-<p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'msg'</span>:<span class="string">'你没有权限进行此操作'</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'msg'</span>:<span class="string">'不可以越权操作'</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'msg'</span>:<span class="string">'xxxxx'</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
-<p>比如</p>
-<p>正向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">'msg'</span>] == <span class="string">'OK'</span></span><br><span class="line">    print(<span class="string">"vuln"</span>)</span><br></pre></td></tr></table></figure>
-
-<p>反向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">'data'</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    print(<span class="string">"vuln"</span>)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>判断的效果 跟判断条件有很大的关系<br>判断严了,容易漏 判断松了 容易误报<br>那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
-</blockquote>
-<h2 id="大致流程图"><a href="#大致流程图" class="headerlink" title="大致流程图:"></a>大致流程图:</h2><p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt=""></p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt=""></p>
-<p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
-<p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
-<p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>半自动化流程:</li>
-</ul>
-<ol>
-<li>手工测试找<code>vuln_parameter</code></li>
-<li>以<code>vuln_parameter</code>做路由</li>
-<li>确定payload</li>
-<li>篡改request包</li>
-<li>发包,权衡判断条件</li>
-</ol>
-<ul>
-<li><p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
-</li>
-<li><p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
-</li>
-<li><p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/23/Notes-Web安全防护指南基础篇/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/23/Notes-Web安全防护指南基础篇/" itemprop="url">Notes-Web安全防护指南基础篇</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-23T22:36:34+08:00">
-                2019-12-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          Welcome to my blog, enter password to read.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/12/23/Notes-Web安全防护指南基础篇/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2152,7 +2227,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

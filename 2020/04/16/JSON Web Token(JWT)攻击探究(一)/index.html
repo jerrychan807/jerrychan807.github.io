@@ -79,21 +79,21 @@
 
 
 
-<meta name="description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。 传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送">
+<meta name="description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。  传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发">
 <meta name="keywords" content="WebSecurity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JSON Web Token(JWT)攻击探究(一)">
 <meta property="og:url" content="http://yoursite.com/2020/04/16/JSON Web Token(JWT)攻击探究(一)/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。 传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送">
+<meta property="og:description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。  传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110456.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417105901.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110731.png">
-<meta property="og:updated_time" content="2020-04-17T04:16:51.314Z">
+<meta property="og:updated_time" content="2020-04-18T06:26:07.354Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JSON Web Token(JWT)攻击探究(一)">
-<meta name="twitter:description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。 传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送">
+<meta name="twitter:description" content="来源用户认证的方式通常有两种，传统的session认证 和 基于token方式。  传统的session认证sessionID的生成方式:浏览器第一次访问服务器时，服务器创建一个session，同时生成一个唯一的会话key，即sessionID。 接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110456.png">
 
 
@@ -347,6 +347,7 @@
 
       
         <h1 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h1><p>用户认证的方式通常有两种，传统的session认证 和 基于token方式。</p>
+<hr>
 <h2 id="传统的session认证"><a href="#传统的session认证" class="headerlink" title="传统的session认证"></a>传统的session认证</h2><h3 id="sessionID的生成方式"><a href="#sessionID的生成方式" class="headerlink" title="sessionID的生成方式:"></a>sessionID的生成方式:</h3><p>浏览器第一次访问服务器时，服务器创建一个<code>session</code>，同时生成一个唯一的会话key，即<code>sessionID</code>。</p>
 <p>接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送给浏览器，浏览器下次访问服务器时直接携带上cookie中的sessionID，服务器再根据sessionID找到对应的session进行匹配</p>
 <p>这里我们注意到两点：</p>
@@ -400,14 +401,11 @@
 <h1 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h1><p><a href="https://jwt.io/" target="_blank" rel="noopener">解jwt的</a></p>
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><p><a href="https://segmentfault.com/a/1190000015881055" target="_blank" rel="noopener">token与sessionId的区别——学习笔记</a></p>
-</li>
-<li><p><a href="http://blog.leapoahead.com/2015/09/07/user-authentication-with-jwt/" target="_blank" rel="noopener">八幅漫画理解使用JSON Web Token设计单点登录系统</a></p>
-</li>
-<li><p><a href="https://zhuanlan.zhihu.com/p/71672282" target="_blank" rel="noopener">从SCTF看JWT安全 (附SCTF web writeup)</a></p>
-</li>
-<li><p><a href="http://blog.leapoahead.com/2015/09/06/understanding-jwt/" target="_blank" rel="noopener">JSON Web Token - 在Web应用间安全地传递信息</a></p>
-</li>
+<li><a href="https://segmentfault.com/a/1190000015881055" target="_blank" rel="noopener">token与sessionId的区别——学习笔记</a></li>
+<li><a href="http://blog.leapoahead.com/2015/09/07/user-authentication-with-jwt/" target="_blank" rel="noopener">八幅漫画理解使用JSON Web Token设计单点登录系统</a></li>
+</ul>
+<ul>
+<li><a href="http://blog.leapoahead.com/2015/09/06/understanding-jwt/" target="_blank" rel="noopener">JSON Web Token - 在Web应用间安全地传递信息</a></li>
 </ul>
 
       
@@ -439,8 +437,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/06/浅谈越权自动化/" rel="next" title="浅谈越权自动化">
-                <i class="fa fa-chevron-left"></i> 浅谈越权自动化
+              <a href="/2020/04/15/webpack带来的安全风险/" rel="next" title="webpack带来的安全风险">
+                <i class="fa fa-chevron-left"></i> webpack带来的安全风险
               </a>
             
           </div>
@@ -448,6 +446,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/17/JSON Web Token(JWT)攻击探究(二)/" rel="prev" title="JSON Web Token(JWT)攻击探究(二)">
+                JSON Web Token(JWT)攻击探究(二) <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -526,7 +528,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
