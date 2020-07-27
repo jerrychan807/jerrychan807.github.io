@@ -252,6 +252,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/30/记录-brup&xray配置使用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/30/记录-brup&xray配置使用/" itemprop="url">记录-brup&xray配置使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-30T14:36:34+08:00">
+                2019-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>配置brupsuite:</p>
+<p>进入 Burp 后，打开 User options 标签页，然后找到 Upstream Proxy Servers 设置。<br>点击 Add 添加上游代理以及作用域，Destination host 处可以使用*匹配多个任意字符串，? 匹配单一任意字符串，而上游代理的地址则填写 xray 的监听地址。</p>
+<p><img src="https://i.loli.net/2019/12/30/RVwlhKFkbuU6caX.png" alt="20191230160454.png"></p>
+<hr>
+<p>xray powershell启动命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入到exe的目录里执行</span></span><br><span class="line"> .\xray_windows_amd64.exe --log_level debug webscan --listen 127.0.0.1:7777 --html-output 1.html</span><br></pre></td></tr></table></figure>
+
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://chaitin.github.io/xray/#/tutorial/introduce" target="_blank" rel="noopener">xray 简介</a></li>
+<li><a href="http://www.onebug.org/sectools/75713.html" target="_blank" rel="noopener">Burpsuite 与 xray 进行联动</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/29/越权半自动化插件的尝试/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2064,175 +2216,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/13/Celery-动态路由/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/13/Celery-动态路由/" itemprop="url">Celery-动态路由</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-13T22:37:44+08:00">
-                2019-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在使用celery的时候,可以根据任务情况(任务类型,任务参数),更灵活的把任务分发到不同的队列里.</p>
-<hr>
-<h1 id="任务的去向"><a href="#任务的去向" class="headerlink" title="任务的去向"></a>任务的去向</h1><p>在Celery中, 任务的目的是由下列因素决定（按顺序）:</p>
-<ol>
-<li>task_routes 中定义的路由 </li>
-<li>Task.apply_async() 方法的路由参数 </li>
-<li>Task 本身定义的路由相关属性</li>
-</ol>
-<p>最佳实践是<strong>不写死这些设置，而是通过 Routers 将它作为配置选项；这是最灵活的方式</strong>，但是合理的默认值仍然可以设置称任务属性。</p>
-<hr>
-<h1 id="手动路由做法"><a href="#手动路由做法" class="headerlink" title="手动路由做法:"></a>手动路由做法:</h1><p>一般都会在celery的配置文件里静态写死队列和路由即默认值.如下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_QUEUES=(Queue(<span class="string">"fingerprint"</span>, Exchange(<span class="string">"fingerprint"</span>),routing_key=<span class="string">"fingerprint"</span>),  <span class="comment"># 指纹识别)</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_ROUTES=&#123; <span class="string">'fingerprint_all_scanner.tasks.startDetectUrl'</span>: &#123;<span class="string">"queue"</span>: <span class="string">"fingerprint"</span>, <span class="string">"routing_key"</span>: <span class="string">"fingerprint"</span>&#125;,&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="动态路由做法"><a href="#动态路由做法" class="headerlink" title="动态路由做法:"></a>动态路由做法:</h1><p>自定义一个Router类</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyRouter</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route_for_task</span><span class="params">(self, task, args=None, kwargs=None)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> task  <span class="comment"># 任务类型</span></span><br><span class="line">        <span class="keyword">print</span> args  <span class="comment"># 列表任务参数</span></span><br><span class="line">        <span class="keyword">print</span> kwargs <span class="comment"># 键值对任务参数</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 在此处可以自定义代码,可以根据任务参数或者任务类型更灵活的将任务发到不同的队列里</span></span><br><span class="line">        <span class="keyword">if</span> task.startswith(<span class="string">'fingerprint_all_scanner'</span>):</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">"queue"</span>: <span class="string">"fingerprint"</span>, <span class="string">"routing_key"</span>: <span class="string">"fingerprint"</span>&#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
-
-<p>然后把配置替换为如下即可</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_ROUTES=(MyRouter(),)</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://blog.csdn.net/zhangfh1990/article/details/77043562" target="_blank" rel="noopener">Celery消息队列—-路由任务</a></li>
-<li><a href="http://docs.jinkan.org/docs/celery/userguide/routing.html#routers" target="_blank" rel="noopener">Routing Tasks</a></li>
-<li><a href="https://www.jianshu.com/p/b3d2c5871bec" target="_blank" rel="noopener">celery路由和交换的相关知识</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2285,7 +2268,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-count">62</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
