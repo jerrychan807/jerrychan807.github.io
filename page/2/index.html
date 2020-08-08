@@ -252,6 +252,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/03/Notes-Wooyun安卓漏洞库/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/03/Notes-Wooyun安卓漏洞库/" itemprop="url">Notes-Wooyun安卓漏洞库</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T14:36:34+08:00">
+                2020-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/AndroidSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">AndroidSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>对安卓的app漏洞不太熟悉,所以看看一些漏洞类型，做些笔记</p>
+<hr>
+<h1 id="案例"><a href="#案例" class="headerlink" title="案例:"></a>案例:</h1><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端:"></a>客户端:</h2><h3 id="设计缺陷-逻辑错误"><a href="#设计缺陷-逻辑错误" class="headerlink" title="设计缺陷/逻辑错误:"></a>设计缺陷/逻辑错误:</h3><ul>
+<li><p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0190106.html" target="_blank" rel="noopener">金山词霸安卓app越权问题（signature算法太弱轻松破解）</a></p>
+<p>  登录后每一个数据包都带signature字段，没有cookie和session认证，那么破解signature后就能自己组包生成signature了，以达到越权的目的。</p>
+<blockquote>
+<p>前段时间也遇到过,app对每个数据包做签名,导致无法进行篡改.</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0132255.html" target="_blank" rel="noopener">聚美优品安卓客户端组件暴露可实现钓鱼</a></p>
+</li>
+<li><p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0135403.html" target="_blank" rel="noopener">去哪儿安卓客户端组件暴露可实现钓鱼</a></p>
+<p>  由于组件暴露问题，第三方应用可以启动应用<br>  这2个应该是看manifest文件<br>  TODOTODO</p>
+</li>
+</ul>
+<hr>
+<h3 id="非授权访问-认证绕过"><a href="#非授权访问-认证绕过" class="headerlink" title="非授权访问/认证绕过:"></a>非授权访问/认证绕过:</h3><ul>
+<li><p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0148550.html" target="_blank" rel="noopener">91金融安卓APP客户端升级过程存在缺陷可被中间人攻击利用植入木马</a></p>
+<p>  拦截回包,修改更新包的地址<br>  升级过程存在缺陷，，校验过程不严格，可被中间人攻击利用植入木马</p>
+</li>
+</ul>
+<hr>
+<h3 id="远程代码执行"><a href="#远程代码执行" class="headerlink" title="远程代码执行"></a>远程代码执行</h3><ul>
+<li><p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0188311.html" target="_blank" rel="noopener">巴士管家安卓app远程代码执行</a></p>
+</li>
+<li><p>[]</p>
+<p>  TODOTODO</p>
+</li>
+</ul>
+<hr>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端:"></a>服务端:</h2><ul>
+<li><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0172231.html" target="_blank" rel="noopener">漫画岛安卓app服务器SQL注入</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/30/记录-brup&xray配置使用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2059,163 +2235,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/20/记录-Centos7下root运行Chrome/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/20/记录-Centos7下root运行Chrome/" itemprop="url">记录-Centos7下root运行Chrome</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-20T14:36:34+08:00">
-                2019-08-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dev/" itemprop="url" rel="index">
-                    <span itemprop="name">Dev</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在Centos7下安装好Chrome浏览器后,root直接运行Chrome的话,会有提示说</p>
-<p><code>Running as root without --no-sandbox is not supported</code></p>
-<h1 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h1><p>修改Chrome的启动脚本即可.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/bin/google-chrome</span><br></pre></td></tr></table></figure>
-
-<p>修改前</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot;</span><br></pre></td></tr></table></figure>
-
-<p>修改后</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot; --no-sandbox --user-data-dir</span><br></pre></td></tr></table></figure>
-
-<p>这个时候就可以用chrome</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://www.itzgeek.com/how-tos/linux/centos-how-tos/how-to-run-google-chrome-as-root-centos-7-rhel-7.html" target="_blank" rel="noopener">How to run Google Chrome as root on CentOS 7 / RHEL 7</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2268,7 +2287,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
