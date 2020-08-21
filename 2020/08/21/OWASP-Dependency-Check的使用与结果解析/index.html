@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta name="description" content="Pre:SDL中使用到Dependency-Check工具对源代码的第三方依赖库进行扫描。  简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-">
 <meta name="keywords" content="SecurityTools">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OWASP-Dependency-Check的使用与结果解析">
 <meta property="og:url" content="http://yoursite.com/2020/08/21/OWASP-Dependency-Check的使用与结果解析/index.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta property="og:description" content="Pre:SDL中使用到Dependency-Check工具对源代码的第三方依赖库进行扫描。  简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821144233.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200819221938.png">
@@ -95,10 +95,10 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821142630.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143026.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143836.png">
-<meta property="og:updated_time" content="2020-08-21T06:51:13.181Z">
+<meta property="og:updated_time" content="2020-08-21T06:55:06.288Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OWASP-Dependency-Check的使用与结果解析">
-<meta name="twitter:description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta name="twitter:description" content="Pre:SDL中使用到Dependency-Check工具对源代码的第三方依赖库进行扫描。  简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821144233.png">
 
 
@@ -351,7 +351,9 @@
       
 
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h1><p>OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。</p>
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>SDL中使用到<code>Dependency-Check</code>工具对源代码的第三方依赖库进行扫描。</p>
+<hr>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h1><p>OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。</p>
 <p>OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。</p>
 <p>Dependency-Check是OWASP（Open Web Application Security Project）的一个实用开源程序，用于识别项目依赖项并检查是否存在任何已知的，公开披露的漏洞。</p>
 <p>目前，已支持<code>Java</code>、<code>.NET</code>、<code>Ruby</code>、<code>PHP</code>、<code>Node.js</code>、<code>Python</code>等语言编写的程序，并为<code>C/C++</code>构建系统（autoconf和cmake）提供了有限的支持。而且该工具还是OWASP Top 10的解决方案的一部分。</p>
@@ -575,7 +577,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现原理"><span class="nav-number">2.</span> <span class="nav-text">实现原理:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令参数"><span class="nav-number">3.</span> <span class="nav-text">命令参数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果解析"><span class="nav-number">4.</span> <span class="nav-text">结果解析:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#json整体结构"><span class="nav-number">4.1.</span> <span class="nav-text">json整体结构:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#报告结构、扫描信息、项目信息"><span class="nav-number">5.</span> <span class="nav-text">报告结构、扫描信息、项目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖信息"><span class="nav-number">6.</span> <span class="nav-text">依赖信息:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#evidenceCollected依据信息"><span class="nav-number">6.1.</span> <span class="nav-text">evidenceCollected依据信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#packages-amp-vulnerabilityIds"><span class="nav-number">6.2.</span> <span class="nav-text">packages&amp;vulnerabilityIds:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vulnerabilities漏洞信息："><span class="nav-number">6.3.</span> <span class="nav-text">vulnerabilities漏洞信息：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现原理"><span class="nav-number">3.</span> <span class="nav-text">实现原理:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令参数"><span class="nav-number">4.</span> <span class="nav-text">命令参数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果解析"><span class="nav-number">5.</span> <span class="nav-text">结果解析:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#json整体结构"><span class="nav-number">5.1.</span> <span class="nav-text">json整体结构:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#报告结构、扫描信息、项目信息"><span class="nav-number">6.</span> <span class="nav-text">报告结构、扫描信息、项目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖信息"><span class="nav-number">7.</span> <span class="nav-text">依赖信息:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#evidenceCollected依据信息"><span class="nav-number">7.1.</span> <span class="nav-text">evidenceCollected依据信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#packages-amp-vulnerabilityIds"><span class="nav-number">7.2.</span> <span class="nav-text">packages&amp;vulnerabilityIds:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vulnerabilities漏洞信息："><span class="nav-number">7.3.</span> <span class="nav-text">vulnerabilities漏洞信息：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">8.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>
