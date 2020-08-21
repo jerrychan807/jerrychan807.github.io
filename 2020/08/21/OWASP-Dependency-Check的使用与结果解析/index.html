@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SecurityTools,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta name="keywords" content="SecurityTools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OWASP-Dependency-Check的使用与结果解析">
+<meta property="og:url" content="http://yoursite.com/2020/08/21/OWASP-Dependency-Check的使用与结果解析/index.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821144233.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200819221938.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200819221957.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821104327.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821110733.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821142630.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143026.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143836.png">
+<meta property="og:updated_time" content="2020-08-21T06:51:13.181Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OWASP-Dependency-Check的使用与结果解析">
+<meta name="twitter:description" content="简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-Check是OWASP（Open Web Application Security Proje">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821144233.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/21/OWASP-Dependency-Check的使用与结果解析/">
+
+
+
+
+
+  <title>OWASP-Dependency-Check的使用与结果解析 | Black House</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Black House</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/21/OWASP-Dependency-Check的使用与结果解析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OWASP-Dependency-Check的使用与结果解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-21T22:36:34+08:00">
+                2020-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h1><p>OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。</p>
+<p>OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。</p>
+<p>Dependency-Check是OWASP（Open Web Application Security Project）的一个实用开源程序，用于识别项目依赖项并检查是否存在任何已知的，公开披露的漏洞。</p>
+<p>目前，已支持<code>Java</code>、<code>.NET</code>、<code>Ruby</code>、<code>PHP</code>、<code>Node.js</code>、<code>Python</code>等语言编写的程序，并为<code>C/C++</code>构建系统（autoconf和cmake）提供了有限的支持。而且该工具还是OWASP Top 10的解决方案的一部分。</p>
+<p>Dependency-Check支持面广（支持多种语言）、可集成性强，作为一款开源工具，在多年来的发展中已经支持和许多主流的软件进行集成，比如：命令行、Ant、Maven、Gradle、Jenkins、Sonar等；具备使用方便，落地简单等优势。</p>
+<hr>
+<h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理:"></a>实现原理:</h1><p>依赖性检查可用于扫描应用程序（及其依赖库），执行检查时会将 <code>Common Platform Enumeration (CPE)</code>美国国家漏洞数据库及<code>NPM Public Advisories</code>库下载到本地，再通过核心引擎中的一系列分析器检查项目依赖性，收集有关依赖项的信息，然后根据收集的依赖项信息与本地的CPE&amp;NPM库数据进行对比，如果检查发现扫描的组件存在已知的易受攻击的漏洞则标识，最后生成报告进行展示。</p>
+<hr>
+<h1 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数:"></a>命令参数:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">.\dependency-check.bat --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">usage: Dependency-Check Core [--advancedHelp] [--enableExperimental]</span><br><span class="line">       [--exclude &lt;pattern&gt;] [-f &lt;format&gt;] [--failOnCVSS &lt;score&gt;] [-h]</span><br><span class="line">       [--junitFailOnCVSS &lt;score&gt;] [-l &lt;file&gt;] [-n] [-o &lt;path&gt;]</span><br><span class="line">       [--prettyPrint] [--project &lt;name&gt;] [-s &lt;path&gt;] [--suppression</span><br><span class="line">       &lt;file&gt;] [-v]</span><br><span class="line"></span><br><span class="line">Dependency-Check Core can be used to identify <span class="keyword">if</span> there are any known CVE</span><br><span class="line">vulnerabilities <span class="keyword">in</span> libraries utilized by an application. Dependency-Check</span><br><span class="line">Core will automatically update required data from the Internet, such as</span><br><span class="line">the CVE and CPE data files from nvd.nist.gov.</span><br><span class="line"></span><br><span class="line">    --advancedHelp              Print the advanced <span class="built_in">help</span> message.</span><br><span class="line">    --enableExperimental        Enables the experimental analyzers.</span><br><span class="line">    --exclude &lt;pattern&gt;         Specify an exclusion pattern. This option</span><br><span class="line">                                can be specified multiple <span class="built_in">times</span> and it</span><br><span class="line">                                accepts Ant style exclusions.</span><br><span class="line"> -f,--format &lt;format&gt;           The report format (HTML, XML, CSV, JSON,</span><br><span class="line">                                JUNIT, or ALL). The default is HTML.</span><br><span class="line">                                Multiple format parameters can be</span><br><span class="line">                                specified.</span><br><span class="line">    --failOnCVSS &lt;score&gt;        Specifies <span class="keyword">if</span> the build should be failed <span class="keyword">if</span></span><br><span class="line">                                a CVSS score above a specified level is</span><br><span class="line">                                identified. The default is 11; since the</span><br><span class="line">                                CVSS scores are 0-10, by default the build</span><br><span class="line">                                will never fail.</span><br><span class="line"> -h,--<span class="built_in">help</span>                      Print this message.</span><br><span class="line">    --junitFailOnCVSS &lt;score&gt;   Specifies the CVSS score that is</span><br><span class="line">                                considered a failure when generating the</span><br><span class="line">                                junit report. The default is 0.</span><br><span class="line"> -l,--<span class="built_in">log</span> &lt;file&gt;                The file path to write verbose logging</span><br><span class="line">                                information.</span><br><span class="line"> -n,--noupdate                  Disables the automatic updating of the CPE</span><br><span class="line">                                data.</span><br><span class="line"> -o,--out &lt;path&gt;                The folder to write reports to. This</span><br><span class="line">                                defaults to the current directory. It is</span><br><span class="line">                                possible to <span class="built_in">set</span> this to a specific file</span><br><span class="line">                                name <span class="keyword">if</span> the format argument is not <span class="built_in">set</span> to</span><br><span class="line">                                ALL.</span><br><span class="line">    --prettyPrint               When specified the JSON and XML report</span><br><span class="line">                                formats will be pretty printed.</span><br><span class="line">    --project &lt;name&gt;            The name of the project being scanned.</span><br><span class="line"> -s,--scan &lt;path&gt;               The path to scan - this option can be</span><br><span class="line">                                specified multiple <span class="built_in">times</span>. Ant style paths</span><br><span class="line">                                are supported (e.g. <span class="string">'path/**/*.jar'</span>); <span class="keyword">if</span></span><br><span class="line">                                using Ant style paths it is highly</span><br><span class="line">                                recommended to quote the argument value.</span><br><span class="line">    --suppression &lt;file&gt;        The file path to the suppression XML file.</span><br><span class="line">                                This can be specified more <span class="keyword">then</span> once to</span><br><span class="line">                                utilize multiple suppression files</span><br><span class="line"> -v,--version                   Print the version information.</span><br></pre></td></tr></table></figure>
+
+<p>我使用的扫描命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -n 是不开启自动更新</span></span><br><span class="line">sh /opt/devsecops/tools/dependency-check/bin/dependency-check.sh -f <span class="string">'JSON'</span> -n --project <span class="string">'dc_check'</span> --scan /opt/xxx/jar_lib --out /opt/xxx/dc.json</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="结果解析"><a href="#结果解析" class="headerlink" title="结果解析:"></a>结果解析:</h1><p>对dc的扫描结果json进行解析</p>
+<h2 id="json整体结构"><a href="#json整体结构" class="headerlink" title="json整体结构:"></a>json整体结构:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="string">"reportSchema"</span>: <span class="string">"1.1"</span>, <span class="comment"># 报告结构</span></span><br><span class="line">   <span class="string">"scanInfo"</span>: &#123;...&#125;, <span class="comment"># 扫描信息</span></span><br><span class="line">   <span class="string">"projectInfo"</span>: &#123;...&#125;, <span class="comment"># 项目信息</span></span><br><span class="line">   <span class="string">"dependencies"</span>: [...],<span class="comment"># 依赖信息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最主要是依赖信息的那一项</p>
+<hr>
+<h1 id="报告结构、扫描信息、项目信息"><a href="#报告结构、扫描信息、项目信息" class="headerlink" title="报告结构、扫描信息、项目信息"></a>报告结构、扫描信息、项目信息</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821144233.png" alt="20200821144233"></p>
+<p>这里面没有什么重要的信息。可略过</p>
+<hr>
+<h1 id="依赖信息"><a href="#依赖信息" class="headerlink" title="依赖信息:"></a>依赖信息:</h1><p>整体结构:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">     <span class="string">"isVirtual"</span>: false,</span><br><span class="line">     <span class="string">"fileName"</span>: <span class="string">"jackson-databind-2.9.0.pr4.jar"</span>, <span class="comment"># 文件名</span></span><br><span class="line">     <span class="string">"filePath"</span>: <span class="string">"\/opt\/devsecops\/logs\/ec-cart_V20200814024805\/jar_lib\/jackson-databind-2.9.0.pr4.jar"</span>, <span class="comment"># 文件路径</span></span><br><span class="line">     <span class="string">"md5"</span>: <span class="string">"a1a9284e812952d15736794ef252dfd9"</span>, <span class="comment"># md5值</span></span><br><span class="line">     <span class="string">"sha1"</span>: <span class="string">"e96baca7953374a502eb995d3901cad7580d3741"</span>,</span><br><span class="line">     <span class="string">"sha256"</span>: <span class="string">"b9f004b868004f84745ff844a9e0f05367cd5b8dc1a69944bebdec035ea00146"</span>,</span><br><span class="line">     <span class="string">"description"</span>: <span class="string">"General data-binding functionality for Jackson: works on core streaming API"</span>, <span class="comment"># 该jar包的作用描述</span></span><br><span class="line">     <span class="string">"license"</span>: <span class="string">"http:\/\/www.apache.org\/licenses\/LICENSE-2.0.txt"</span>,</span><br><span class="line">     <span class="string">"evidenceCollected"</span>: &#123;...&#125;,<span class="comment"># 依据信息</span></span><br><span class="line">     <span class="string">"packages"</span>: [...], <span class="comment"># </span></span><br><span class="line">     <span class="string">"vulnerabilityIds"</span>: [...], <span class="comment"># cpe表达式</span></span><br><span class="line">      <span class="string">"vulnerabilities"</span>: [...],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="evidenceCollected依据信息"><a href="#evidenceCollected依据信息" class="headerlink" title="evidenceCollected依据信息:"></a>evidenceCollected依据信息:</h2><p>结构:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200819221938.png" alt="20200819221938"></p>
+<p>详细内容:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200819221957.png" alt="20200819221957"></p>
+<p>从各种来源来判断这个组件的<code>vendor</code>(供应商)、<code>Product</code>(产品名)、<code>Version</code>(版本号)</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821104327.png" alt="20200821104327"></p>
+<hr>
+<h2 id="packages-amp-vulnerabilityIds"><a href="#packages-amp-vulnerabilityIds" class="headerlink" title="packages&amp;vulnerabilityIds:"></a>packages&amp;vulnerabilityIds:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821110733.png" alt="20200821110733"></p>
+<p>这两项主要是通过<code>pkg</code>、<code>cpe表达式</code>识别标识的信息</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821142630.png" alt="20200821142630"></p>
+<p>其中<code>vulnerabilityIds</code>-&gt;<code>confidence</code>里的是这个风险的可信度</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143026.png" alt="20200821143026"></p>
+<p>为了减少误报,我们一般选择<code>HIGHEST</code>和<code>HIGH</code>的可信度的风险信息。</p>
+<hr>
+<h2 id="vulnerabilities漏洞信息："><a href="#vulnerabilities漏洞信息：" class="headerlink" title="vulnerabilities漏洞信息："></a>vulnerabilities漏洞信息：</h2><p>vulnerabilities是一个漏洞列表，里面包含了某组件当前版本涉及到的所有cve</p>
+<p>以<code>jackson-databind-2.9.0.pr4.jar</code>为例,它的内容如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">         <span class="string">"source"</span>: <span class="string">"NVD"</span>,</span><br><span class="line">         <span class="string">"name"</span>: <span class="string">"CVE-2017-17485"</span>, <span class="comment"># cve编号</span></span><br><span class="line">         <span class="string">"severity"</span>: <span class="string">"CRITICAL"</span>, <span class="comment"># 风险等级</span></span><br><span class="line">         <span class="string">"cvssv2"</span>: &#123;</span><br><span class="line">           <span class="string">"score"</span>: <span class="number">7.5</span>,  <span class="comment"># cvss v2的评分</span></span><br><span class="line">           <span class="string">"accessVector"</span>: <span class="string">"NETWORK"</span>,</span><br><span class="line">           <span class="string">"accessComplexity"</span>: <span class="string">"LOW"</span>,</span><br><span class="line">           <span class="string">"authenticationr"</span>: <span class="string">"NONE"</span>,</span><br><span class="line">           <span class="string">"confidentialImpact"</span>: <span class="string">"PARTIAL"</span>,</span><br><span class="line">           <span class="string">"integrityImpact"</span>: <span class="string">"PARTIAL"</span>,</span><br><span class="line">           <span class="string">"availabilityImpact"</span>: <span class="string">"PARTIAL"</span>,</span><br><span class="line">           <span class="string">"severity"</span>: <span class="string">"HIGH"</span></span><br><span class="line">         &#125;,</span><br><span class="line">         <span class="string">"cvssv3"</span>: &#123;</span><br><span class="line">           <span class="string">"baseScore"</span>: <span class="number">9.8</span>, <span class="comment"># cvss v3的评分</span></span><br><span class="line">           <span class="string">"attackVector"</span>: <span class="string">"NETWORK"</span>,</span><br><span class="line">           <span class="string">"attackComplexity"</span>: <span class="string">"LOW"</span>,</span><br><span class="line">           <span class="string">"privilegesRequired"</span>: <span class="string">"NONE"</span>,</span><br><span class="line">           <span class="string">"userInteraction"</span>: <span class="string">"NONE"</span>,</span><br><span class="line">           <span class="string">"scope"</span>: <span class="string">"UNCHANGED"</span>,</span><br><span class="line">           <span class="string">"confidentialityImpact"</span>: <span class="string">"HIGH"</span>,</span><br><span class="line">           <span class="string">"integrityImpact"</span>: <span class="string">"HIGH"</span>,</span><br><span class="line">           <span class="string">"availabilityImpact"</span>: <span class="string">"HIGH"</span>,</span><br><span class="line">           <span class="string">"baseSeverity"</span>: <span class="string">"CRITICAL"</span></span><br><span class="line">         &#125;,</span><br><span class="line">         <span class="string">"cwes"</span>: [</span><br><span class="line">           <span class="string">"CWE-502"</span></span><br><span class="line">         ],</span><br><span class="line">         <span class="string">"description"</span>: <span class="string">"FasterXML jackson-databind through 2.8.10 and 2.9.x through 2.9.3 allows unauthenticated remote code execution because of an incomplete fix for the CVE-2017-7525 deserialization flaw. This is exploitable by sending maliciously crafted JSON input to the readValue method of the ObjectMapper, bypassing a blacklist that is ineffective if the Spring libraries are available in the classpath."</span>, <span class="comment"># 描述</span></span><br><span class="line">         <span class="string">"notes"</span>: <span class="string">""</span>,</span><br><span class="line">         <span class="string">"references"</span>: [ <span class="comment"># 参考链接</span></span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2019:3149"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2019:3149"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"CONFIRM"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/support.hpe.com\/hpsc\/doc\/public\/display?docLocale=en_US&amp;docId=emr_na-hpesbhf03902en_us"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"https:\/\/support.hpe.com\/hpsc\/doc\/public\/display?docLocale=en_US&amp;docId=emr_na-hpesbhf03902en_us"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:1449"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:1449"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0342"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0342"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"MISC"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/github.com\/irsl\/jackson-rce-via-spel\/"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"https:\/\/github.com\/irsl\/jackson-rce-via-spel\/"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"CONFIRM"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/security.netapp.com\/advisory\/ntap-20180201-0003\/"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"https:\/\/security.netapp.com\/advisory\/ntap-20180201-0003\/"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2019:1782"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2019:1782"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2019:2858"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2019:2858"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0478"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0478"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0481"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0481"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"CONFIRM"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/github.com\/FasterXML\/jackson-databind\/issues\/1855"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"https:\/\/github.com\/FasterXML\/jackson-databind\/issues\/1855"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"BUGTRAQ"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"http:\/\/www.securityfocus.com\/archive\/1\/541652\/100\/0\/threaded"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"20180109 CVE-2017-17485: one more way of rce in jackson-databind when defaultTyping+objects are used"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0480"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0480"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:2930"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:2930"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0116"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0116"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:1447"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:1447"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:1450"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:1450"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2019:3892"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2019:3892"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2019:1797"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2019:1797"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:0479"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:0479"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"DEBIAN"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/www.debian.org\/security\/2018\/dsa-4114"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"DSA-4114"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"OSSINDEX"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/ossindex.sonatype.org\/vuln\/b85a00e3-7d9b-49cf-9b19-b73f8ee60275"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"[CVE-2017-17485]  Improper Control of Generation of Code (\"Code Injection\")"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:1448"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:1448"</span></span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"source"</span>: <span class="string">"REDHAT"</span>,</span><br><span class="line">             <span class="string">"url"</span>: <span class="string">"https:\/\/access.redhat.com\/errata\/RHSA-2018:1451"</span>,</span><br><span class="line">             <span class="string">"name"</span>: <span class="string">"RHSA-2018:1451"</span></span><br><span class="line">           &#125;</span><br><span class="line">         ],</span><br><span class="line">         <span class="string">"vulnerableSoftware"</span>: [ <span class="comment"># 含cve的cpe表达式列表</span></span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:fasterxml:jackson-databind:*:*:*:*:*:*:*:*"</span>,</span><br><span class="line">               <span class="string">"vulnerabilityIdMatched"</span>: <span class="string">"true"</span>,</span><br><span class="line">               <span class="string">"versionStartExcluding"</span>: <span class="string">"2.9.0"</span>,</span><br><span class="line">               <span class="string">"versionEndExcluding"</span>: <span class="string">"2.9.4"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_bpm_suite:6.4.11:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_enterprise_application_platform:6.0.0:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_enterprise_application_platform:6.4.0:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_brms:6.4.10:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_enterprise_application_platform:7.1.0:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:fasterxml:jackson-databind:*:*:*:*:*:*:*:*"</span>,</span><br><span class="line">               <span class="string">"versionStartIncluding"</span>: <span class="string">"2.8.0"</span>,</span><br><span class="line">               <span class="string">"versionEndExcluding"</span>: <span class="string">"2.8.11"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:fasterxml:jackson:*:*:*:*:*:*:*:*"</span>,</span><br><span class="line">               <span class="string">"versionStartIncluding"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">               <span class="string">"versionEndIncluding"</span>: <span class="string">"1.9"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_enterprise_application_platform:6.4.19:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;,</span><br><span class="line">           &#123;</span><br><span class="line">             <span class="string">"software"</span>: &#123;</span><br><span class="line">               <span class="string">"id"</span>: <span class="string">"cpe:2.3:a:redhat:jboss_operations_network:3.3.10:*:*:*:*:*:*:*"</span></span><br><span class="line">             &#125;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
+
+<p>直观点的话,就是html格式里的内容</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143836.png" alt="20200821143836"></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://owasp.org/www-project-dependency-check/" target="_blank" rel="noopener">OWASP Dependency-Check官网</a></li>
+<li><a href="https://jeremylong.github.io/DependencyCheck/dependency-check-cli/arguments.html" target="_blank" rel="noopener">DC_Command Line Arguments</a></li>
+<li><a href="https://www.jianshu.com/p/f1a2f5357d12" target="_blank" rel="noopener">使用OWASP Dependency-Check进行第三方依赖包安全扫描实践</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/08/记录-某产品license破解记录/" rel="next" title="记录-某产品license破解记录">
+                <i class="fa fa-chevron-left"></i> 记录-某产品license破解记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png" alt="Foolisheddy">
+            
+              <p class="site-author-name" itemprop="name">Foolisheddy</p>
+              <p class="site-description motion-element" itemprop="description">nothing to say :)</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现原理"><span class="nav-number">2.</span> <span class="nav-text">实现原理:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令参数"><span class="nav-number">3.</span> <span class="nav-text">命令参数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结果解析"><span class="nav-number">4.</span> <span class="nav-text">结果解析:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#json整体结构"><span class="nav-number">4.1.</span> <span class="nav-text">json整体结构:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#报告结构、扫描信息、项目信息"><span class="nav-number">5.</span> <span class="nav-text">报告结构、扫描信息、项目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖信息"><span class="nav-number">6.</span> <span class="nav-text">依赖信息:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#evidenceCollected依据信息"><span class="nav-number">6.1.</span> <span class="nav-text">evidenceCollected依据信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#packages-amp-vulnerabilityIds"><span class="nav-number">6.2.</span> <span class="nav-text">packages&amp;vulnerabilityIds:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vulnerabilities漏洞信息："><span class="nav-number">6.3.</span> <span class="nav-text">vulnerabilities漏洞信息：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
