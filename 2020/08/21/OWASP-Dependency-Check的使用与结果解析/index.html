@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821142630.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143026.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200821143836.png">
-<meta property="og:updated_time" content="2020-08-21T06:55:06.288Z">
+<meta property="og:updated_time" content="2020-08-24T04:01:36.841Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OWASP-Dependency-Check的使用与结果解析">
 <meta name="twitter:description" content="Pre:SDL中使用到Dependency-Check工具对源代码的第三方依赖库进行扫描。  简介:OWASP是开源的、非盈利的全球性安全组织，致力于应用软件的安全研究。OWASP的使命是使应用软件更加安全，使企业和组织能够对应用安全风险作出更清晰的决策。 OWASP的研究成果被美、欧、日等多个国家的32个政府与行业组织机构引用成为近百项国际法规、标准、指南和行业行为准则。 Dependency-">
@@ -366,6 +366,9 @@
 <p>我使用的扫描命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -n 是不开启自动更新</span></span><br><span class="line">sh /opt/devsecops/tools/dependency-check/bin/dependency-check.sh -f <span class="string">'JSON'</span> -n --project <span class="string">'dc_check'</span> --scan /opt/xxx/jar_lib --out /opt/xxx/dc.json</span><br></pre></td></tr></table></figure>
 
+<p>使用的更新命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仅更新</span></span><br><span class="line">sh /opt/devsecops/tools/dependency-check/bin/dependency-check.sh --updateonly</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="结果解析"><a href="#结果解析" class="headerlink" title="结果解析:"></a>结果解析:</h1><p>对dc的扫描结果json进行解析</p>
 <h2 id="json整体结构"><a href="#json整体结构" class="headerlink" title="json整体结构:"></a>json整体结构:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="string">"reportSchema"</span>: <span class="string">"1.1"</span>, <span class="comment"># 报告结构</span></span><br><span class="line">   <span class="string">"scanInfo"</span>: &#123;...&#125;, <span class="comment"># 扫描信息</span></span><br><span class="line">   <span class="string">"projectInfo"</span>: &#123;...&#125;, <span class="comment"># 项目信息</span></span><br><span class="line">   <span class="string">"dependencies"</span>: [...],<span class="comment"># 依赖信息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -445,6 +448,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/11/10/Unicode RTLO(Right-To-Left Override)字符欺骗/" rel="prev" title="Unicode RTLO(Right-To-Left Override)字符欺骗">
+                Unicode RTLO(Right-To-Left Override)字符欺骗 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -522,7 +529,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

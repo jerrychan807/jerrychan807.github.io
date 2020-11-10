@@ -252,6 +252,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/记录-修改Mysql最大连接数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/02/记录-修改Mysql最大连接数/" itemprop="url">记录-修改Mysql最大连接数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-02T14:36:34+08:00">
+                2019-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index">
+                    <span itemprop="name">Dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>之前常遇到<code>mysql gone away</code>这类错误,由于用的是<code>sqlalchemy</code>里的<code>Null Pool</code>.即不使用连接池。</p>
+<blockquote>
+<p>按道理来说,要选用连接池的,但由于还没找到<code>sqlalchemy</code>连接池与celery多进程的最佳实践,故暂时搁置这个方案…</p>
+</blockquote>
+<p>这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接.</p>
+<p>这样在高并发的情况下会频繁连接数据库，占用很多连接数.</p>
+<p>所以这个时候要适当增大mysql的最大连接数.</p>
+<hr>
+<h1 id="查询"><a href="#查询" class="headerlink" title="查询:"></a>查询:</h1><p>查询最大连接数</p>
+<p><code>show variables like &#39;%max_connections%&#39;;</code></p>
+<p>历史最大连接数量</p>
+<p><code>show global status like &#39;Max_used_connections&#39;;</code></p>
+<hr>
+<h1 id="修改最大连接数"><a href="#修改最大连接数" class="headerlink" title="修改最大连接数:"></a>修改最大连接数:</h1><h2 id="修改mysql配置文件"><a href="#修改mysql配置文件" class="headerlink" title="修改mysql配置文件:"></a>修改mysql配置文件:</h2><blockquote>
+<p>环境:Centos7</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # and set to the amount of RAM for the most important data</span></span><br><span class="line"><span class="comment"># cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.</span></span><br><span class="line"><span class="comment"># innodb_buffer_pool_size = 128M</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to turn on a very important data integrity option: logging</span></span><br><span class="line"><span class="comment"># changes to the binary log between backups.</span></span><br><span class="line"><span class="comment"># log_bin</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to set options mainly useful for reporting servers.</span></span><br><span class="line"><span class="comment"># The server defaults are faster for transactions and fast SELECTs.</span></span><br><span class="line"><span class="comment"># Adjust sizes as needed, experiment to find the optimal values.</span></span><br><span class="line"><span class="comment"># join_buffer_size = 128M</span></span><br><span class="line"><span class="comment"># sort_buffer_size = 2M</span></span><br><span class="line"><span class="comment"># read_rnd_buffer_size = 2M</span></span><br><span class="line"><span class="attr">datadir</span>=/var/lib/mysql</span><br><span class="line"><span class="attr">socket</span>=/var/lib/mysql/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="attr">port</span>=<span class="number">33066</span></span><br><span class="line"></span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">500</span></span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">512</span>M</span><br><span class="line"><span class="comment">#query_cache_limit = 4M</span></span><br><span class="line"><span class="attr">wait_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">interactive_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"></span><br><span class="line"><span class="comment"># Disabling symbolic-links is recommended to prevent assorted security risks</span></span><br><span class="line"><span class="attr">symbolic-links</span>=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Recommended in standard MySQL setup</span></span><br><span class="line"><span class="attr">sql_mode</span>=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld_safe]</span></span><br><span class="line"><span class="attr">log-error</span>=/var/log/mysqld.log</span><br><span class="line"><span class="attr">pid-file</span>=/var/run/mysqld/mysqld.pid</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>第一次只修改了配置文件,也没有及时验证有无修改成功.才发现改了配置文件还不够,还需要继续往下修改.</p>
+</blockquote>
+<hr>
+<h2 id="配置limits-conf"><a href="#配置limits-conf" class="headerlink" title="配置limits.conf:"></a>配置limits.conf:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/security/limits.conf</span><br><span class="line"><span class="comment">#  添加mysql用户配置</span></span><br><span class="line">mysql hard nofile 65535</span><br><span class="line">mysql soft nofile 65535</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="配置mariadb-service"><a href="#配置mariadb-service" class="headerlink" title="配置mariadb.service:"></a>配置mariadb.service:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/lib/systemd/system/mysqld.service</span><br><span class="line"><span class="comment"># 添加参数</span></span><br><span class="line">LimitNOFILE=65535</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重启mysql</span></span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>之前在解决类似的数据库错误的时候,确实是比较难定位到具体的原因.</p>
+<p><a href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server" target="_blank" rel="noopener">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
+<blockquote>
+<p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
+<p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
+</blockquote>
+<p>最好的方法是对涉及到组件(元素)一一去排查原因,不要一直想当然的陷入到代码里.那样会只见树不见林…</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.cnblogs.com/phpper/p/9570792.html" target="_blank" rel="noopener">Mysql 连接数,最大并发数设置</a></li>
+<li><a href="https://blog.csdn.net/u014074757/article/details/80527445" target="_blank" rel="noopener">MySQL配置max_connections无效</a></li>
+<li><a href="https://www.cnblogs.com/langdashu/p/5889352.html" target="_blank" rel="noopener">MySQL配置文件my.cnf的理解</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en" target="_blank" rel="noopener">MySQL 8.0参考手册</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/XSScon源码-Simple XSS Scanner tool/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1343,6 +1533,8 @@
 <p>一些无法或很难安装的包,可以尝试通过复制来迁移</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到第三包的安装路径</span></span><br><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> sys.path</span><br><span class="line"></span><br><span class="line">[<span class="string">''</span>, <span class="string">'/usr/local/lib/python27.zip'</span>, <span class="string">'/usr/local/lib/python2.7'</span>, <span class="string">'/usr/local/lib/python2.7/plat-linux2'</span>, <span class="string">'/usr/local/lib/python2.7/lib-tk'</span>, <span class="string">'/usr/local/lib/python2.7/lib-old'</span>, <span class="string">'/usr/local/lib/python2.7/lib-dynload'</span>, <span class="string">'/usr/local/lib/python2.7/site-packages'</span>]</span><br></pre></td></tr></table></figure>
 
+<h1 id="pip其他使用场景"><a href="#pip其他使用场景" class="headerlink" title="pip其他使用场景:"></a>pip其他使用场景:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip批量安装跳过无法安装的包继续运行</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> requirement; <span class="keyword">do</span> sudo pip3 install <span class="variable">$requirement</span>; <span class="keyword">done</span> &lt; requirement.txt</span><br><span class="line"><span class="comment"># example:</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> requirement; <span class="keyword">do</span> sudo pip2 install <span class="variable">$requirement</span> -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mir</span><br><span class="line">rors.aliyun.com; <span class="keyword">done</span> &lt; py2requirements.log</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://www.cnblogs.com/chillax1314/p/7976839.html" target="_blank" rel="noopener">CentOS6.8安装Python3.6.3</a></li>
@@ -1995,173 +2187,6 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/Python-杀死subprocess进程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/10/Python-杀死subprocess进程/" itemprop="url">Python-杀死subprocess进程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-10T14:36:34+08:00">
-                2019-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在整合第三方工具的时候,我们常常会用<code>subprocess</code>库来调用可执行文件.</p>
-<p>一般情况下,我们会等待这个命令的结束.</p>
-<p>但有时候第三方工具会因为特殊情况而卡死,从而导致整个程序卡死.</p>
-<p>此时,我们可以设置一个最大的超时时间.</p>
-<p>当这个命令超过这个最大时间的时候,我们主动kill掉,以保证程序接下来可以正常运行.</p>
-<hr>
-<h1 id="py3"><a href="#py3" class="headerlink" title="py3:"></a>py3:</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p = subprocess.Popen([cmd],stdout=subprocess.PIPE)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    (stdoutput, erroutput) = p.communicate(timeout=TIMEOUT)  <span class="comment"># 超时时间</span></span><br><span class="line"><span class="keyword">except</span> subprocess.TimeoutExpired:</span><br><span class="line">    p.kill()</span><br><span class="line">    print(<span class="string">"[*] TIMEOUT: %s"</span> % cmd)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>py3的<code>subprocess</code>库原生支持了超时时间的参数.</p>
-<p>过了超时时间的时候,会抛出<code>TimeoutExpired</code>异常.我们只需要<code>catch</code>到再做处理就行了.</p>
-<hr>
-<h1 id="py2"><a href="#py2" class="headerlink" title="py2:"></a>py2:</h1><p>没想到py2的<code>subprocess</code>库还并没有支持<code>timeout</code>参数.只能自己手动计时.到时间kill掉.</p>
-<p>搜索到的实现比较好的示例代码,只需要简单改改就可以用了.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Timer</span><br><span class="line"> </span><br><span class="line">kill = <span class="keyword">lambda</span> process: process.kill()</span><br><span class="line">cmd = [<span class="string">'ping'</span>, <span class="string">'www.google.com'</span>]</span><br><span class="line">ping = subprocess.Popen(</span><br><span class="line">    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line"> </span><br><span class="line">my_timer = Timer(<span class="number">5</span>, kill, [ping])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    my_timer.start()</span><br><span class="line">    stdout, stderr = ping.communicate()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    my_timer.cancel()</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="另一种卡死的情况"><a href="#另一种卡死的情况" class="headerlink" title="另一种卡死的情况:"></a>另一种卡死的情况:</h1><blockquote>
-<p>原因是使用<code>Popen.wait()</code>后直接读<code>PIPE.stdout.read()</code>之前，可能缓存已经满了，此时导致了卡死。</p>
-<p>解决办法：使用<code>communicate()</code>,这个方法会把输出放在内存，而不是管道里，所以这时候上限就和内存大小有关了，一般不会有问题。</p>
-</blockquote>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://www.blog.pythonlibrary.org/2016/05/17/python-101-how-to-timeout-a-subprocess/" target="_blank" rel="noopener">Python 101: How to timeout a subprocess</a></li>
-<li><a href="https://www.cnblogs.com/chybot/p/5176118.html" target="_blank" rel="noopener">python Popen卡死问题</a></li>
-<li><a href="https://www.cnblogs.com/sueris/p/6235861.html" target="_blank" rel="noopener">Python subprocess.Popen communicate() 和wait()使用上的区别</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2214,7 +2239,7 @@ supervisor命令行的客户端名称是supervisorctl。它为supervisord提供�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

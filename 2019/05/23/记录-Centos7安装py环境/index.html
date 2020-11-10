@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/05/23/5ce5ff3a7ce4393926.png">
 <meta property="og:image" content="https://i.loli.net/2019/05/23/5ce61595de84126805.png">
-<meta property="og:updated_time" content="2061-11-26T14:05:40.000Z">
+<meta property="og:updated_time" content="2020-10-26T11:56:26.826Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-Centos7安装py环境">
 <meta name="twitter:description" content="Pre:环境: Centos7 64位  安装py3:py3版本:3.6.3 12# 准备编译环境yum install zlib-devel bzip2-devel openssl-devel ncurses-devel -y  12# 安装编译所需依赖yum install gcc-c++ gcc -y  12# 下载 Python3.6代码包wget https://www.python.o">
@@ -394,6 +394,8 @@
 <p>一些无法或很难安装的包,可以尝试通过复制来迁移</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到第三包的安装路径</span></span><br><span class="line">&gt;&gt;&gt; import sys</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> sys.path</span><br><span class="line"></span><br><span class="line">[<span class="string">''</span>, <span class="string">'/usr/local/lib/python27.zip'</span>, <span class="string">'/usr/local/lib/python2.7'</span>, <span class="string">'/usr/local/lib/python2.7/plat-linux2'</span>, <span class="string">'/usr/local/lib/python2.7/lib-tk'</span>, <span class="string">'/usr/local/lib/python2.7/lib-old'</span>, <span class="string">'/usr/local/lib/python2.7/lib-dynload'</span>, <span class="string">'/usr/local/lib/python2.7/site-packages'</span>]</span><br></pre></td></tr></table></figure>
 
+<h1 id="pip其他使用场景"><a href="#pip其他使用场景" class="headerlink" title="pip其他使用场景:"></a>pip其他使用场景:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip批量安装跳过无法安装的包继续运行</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> requirement; <span class="keyword">do</span> sudo pip3 install <span class="variable">$requirement</span>; <span class="keyword">done</span> &lt; requirement.txt</span><br><span class="line"><span class="comment"># example:</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> requirement; <span class="keyword">do</span> sudo pip2 install <span class="variable">$requirement</span> -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mir</span><br><span class="line">rors.aliyun.com; <span class="keyword">done</span> &lt; py2requirements.log</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://www.cnblogs.com/chillax1314/p/7976839.html" target="_blank" rel="noopener">CentOS6.8安装Python3.6.3</a></li>
@@ -521,7 +523,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -576,7 +578,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py3"><span class="nav-number">2.</span> <span class="nav-text">安装py3:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py2"><span class="nav-number">3.</span> <span class="nav-text">安装py2:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#包的迁移"><span class="nav-number">4.</span> <span class="nav-text">包的迁移:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py3"><span class="nav-number">2.</span> <span class="nav-text">安装py3:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py2"><span class="nav-number">3.</span> <span class="nav-text">安装py2:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#包的迁移"><span class="nav-number">4.</span> <span class="nav-text">包的迁移:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pip其他使用场景"><span class="nav-number">5.</span> <span class="nav-text">pip其他使用场景:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>

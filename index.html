@@ -252,6 +252,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/10/Unicode RTLO(Right-To-Left Override)字符欺骗/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/10/Unicode RTLO(Right-To-Left Override)字符欺骗/" itemprop="url">Unicode RTLO(Right-To-Left Override)字符欺骗</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-10T14:36:34+08:00">
+                2020-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什么是RTLO"><a href="#什么是RTLO" class="headerlink" title="什么是RTLO:"></a>什么是RTLO:</h1><p>RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： <a href="http://www.codetable.net/decimal/8238" target="_blank" rel="noopener">http://www.codetable.net/decimal/8238</a></p>
+<p>可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制</p>
+<hr>
+<h1 id="创建欺骗文件"><a href="#创建欺骗文件" class="headerlink" title="创建欺骗文件:"></a>创建欺骗文件:</h1><p>1.使用名称<code>TestingRTLO[U+202E]xcod.txt</code>创建一个文件</p>
+<p>2.windows自带的character map软件中,找到对应的字符.</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103632.png" alt="20201110103632"></p>
+<p>3.复制替换<code>[U + 202E]</code>字符,保存.</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103755.png" alt="20201110103755"></p>
+<p>在软件中发送过去</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103830.png" alt="20201110103830"></p>
+<p>下载来是</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103914.png" alt="20201110103914"></p>
+<p>同理可制作一个exe结尾的。</p>
+<p>发过去是log结尾</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104003.png" alt="20201110104003"></p>
+<p>下载到本地,实际上是exe结尾的。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104018.png" alt="20201110104018"></p>
+<hr>
+<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><p>可制作以下后缀名的文件:</p>
+<ul>
+<li>.bat</li>
+<li>.exe</li>
+<li>.cmd</li>
+<li>.com</li>
+<li>.lnk</li>
+<li>.pif</li>
+<li>.scr</li>
+<li>.vb</li>
+<li>.vbe</li>
+<li>.vbs</li>
+<li>.wsh</li>
+</ul>
+<hr>
+<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>参考:<a href="https://github.com/nextcloud/server/pull/10030" target="_blank" rel="noopener">https://github.com/nextcloud/server/pull/10030</a></p>
+<p>把该Unicode字符过滤掉</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104540.png" alt="20201110104540"></p>
+<hr>
+<h1 id="漏洞案例"><a href="#漏洞案例" class="headerlink" title="漏洞案例:"></a>漏洞案例:</h1><p><a href="https://hackerone.com/reports/229170" target="_blank" rel="noopener">RTLO character allowed in shared files</a><br><a href="https://hackerone.com/reports/196222" target="_blank" rel="noopener">RTLO char allowed in chat</a></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/#:~:text=What%20is%20RTLO%3F,right%2Dto%2Dleft%20order." target="_blank" rel="noopener">Spoof Using Right to Left Override (RTLO) Technique</a><br><a href="http://www.lijiejie.com/unicode-rtlo-right-to-left-override-issue/" target="_blank" rel="noopener">Unicode RTLO(Right-To-Left Override) Security ISSUE</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/21/OWASP-Dependency-Check的使用与结果解析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -359,6 +540,9 @@
 
 <p>我使用的扫描命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -n 是不开启自动更新</span></span><br><span class="line">sh /opt/devsecops/tools/dependency-check/bin/dependency-check.sh -f <span class="string">'JSON'</span> -n --project <span class="string">'dc_check'</span> --scan /opt/xxx/jar_lib --out /opt/xxx/dc.json</span><br></pre></td></tr></table></figure>
+
+<p>使用的更新命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 仅更新</span></span><br><span class="line">sh /opt/devsecops/tools/dependency-check/bin/dependency-check.sh --updateonly</span><br></pre></td></tr></table></figure>
 
 <hr>
 <h1 id="结果解析"><a href="#结果解析" class="headerlink" title="结果解析:"></a>结果解析:</h1><p>对dc的扫描结果json进行解析</p>
@@ -2086,190 +2270,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/26/Notes-论安全漏洞响应机制扩展—JSRC-3/" itemprop="url">Notes-论安全漏洞响应机制扩展—JSRC-3</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-26T22:36:34+08:00">
-                2020-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Security/" itemprop="url" rel="index">
-                    <span itemprop="name">Security</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="如何看待待企业的安全工作建设"><a href="#如何看待待企业的安全工作建设" class="headerlink" title="如何看待待企业的安全工作建设"></a>如何看待待企业的安全工作建设</h2><p>安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。</p>
-<p>被动方面:</p>
-<p>比如说进行针对性的培训，加强规范。 <strong>需要明确的是，安全团队是在帮助业务部门防范风险；</strong></p>
-<p>主动方面:</p>
-<p>应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。</p>
-<p>漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审，安全评审等来筛选项目是否够上线的条件。</p>
-<p>上线前充分筛查，上线后出现问题，基本都可控。</p>
-<blockquote>
-<p>现状是,还会发现一些在野资产。都不知道什么时候就上线了。</p>
-</blockquote>
-<p>另外，上线流程过程中可以开发一些黑盒、白盒扫描工具，提供给开发人员，让开发人员去自查，如果有问题再找安全部门，这样开发人员也会对安全越来越了解。只要解决开发部门的自我驱动，所有问题都迎刃而解。</p>
-<blockquote>
-<p>让开发人员自查,这个难度有点大</p>
-</blockquote>
-<hr>
-<h2 id="安全响应机制整个流程的结束点？"><a href="#安全响应机制整个流程的结束点？" class="headerlink" title="安全响应机制整个流程的结束点？"></a>安全响应机制整个流程的结束点？</h2><p>白帽子提交漏洞，<strong>企业应该按照白帽子提供的方法结合自己的业务去查是否还有类似的问题，白帽子的漏洞提交只是事件处理的开始。处理完相同类型的漏洞，才能算是结束。</strong></p>
-<blockquote>
-<p>举一反三, 一个地方有问题，那么其他地方出现同样问题的概率很大。</p>
-</blockquote>
-<hr>
-<h2 id="跨部门协作配合修复漏洞的问题"><a href="#跨部门协作配合修复漏洞的问题" class="headerlink" title="跨部门协作配合修复漏洞的问题:"></a>跨部门协作配合修复漏洞的问题:</h2><p>有些漏洞不一定能及时修复,但这不会影响我们对漏洞的评级。 </p>
-<p>在企业中，越大的企业越会出现漏洞修复推进困难的情况。</p>
-<blockquote>
-<p>漏洞的修复情况,看这几个因素:</p>
-<ol>
-<li>具体的漏洞</li>
-<li>这个漏洞会影响的业务</li>
-<li>业务方的配合程度</li>
-<li>有没有合适贴切的解决方案</li>
-</ol>
-</blockquote>
-<p>“提升安全能力”不在应急止损的关注范围内，可以包括在后续安全建设中。 跨部门修复方面主要分 <strong>“产品线重视自觉寻求帮助”</strong> 和 <strong>“上级推动”</strong> 两类。</p>
-<p>定制漏洞修复事件dead line，如果不修，逐级上报。</p>
-<p>还可制定不同级别漏洞对应不同修复时间的要求， 严格执行考核。 超期系统自动邮件抄处理人的上一级领导， 时间越长，抄送级别越高，直到超送到技术副总裁。</p>
-<hr>
-<h2 id="一个业务部门如果多次出现同类型问题，-有相应的响应机制么？"><a href="#一个业务部门如果多次出现同类型问题，-有相应的响应机制么？" class="headerlink" title="一个业务部门如果多次出现同类型问题， 有相应的响应机制么？"></a>一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</h2><p>需要看是什么类型问题，是工作态度问题还是技术能力不够，如果是前者要找他们leader去沟通，如果是后者，安全部门需要组织交流培训，提升业务部门的安全意识和技术能力。</p>
-<hr>
-<h2 id="安全应急响应机制"><a href="#安全应急响应机制" class="headerlink" title="安全应急响应机制:"></a>安全应急响应机制:</h2><p>建立安全接口人，协助产品线培养免疫力。</p>
-<p>阶梯性的做安全培训，后续让产品线他们自己重视培训，提升安全意识与能力。</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/03-%E8%AE%BA%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%89%A9%E5%B1%95.pdf" target="_blank" rel="noopener">论安全漏洞响应机制扩展</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2322,7 +2322,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
