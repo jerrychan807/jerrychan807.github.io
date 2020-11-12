@@ -252,6 +252,234 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/17/w13scan-扫描插件总结-PerFolder/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/17/w13scan-扫描插件总结-PerFolder/" itemprop="url">w13scan-扫描插件总结-PerFolder</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-17T14:36:34+08:00">
+                2019-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
+                    <span itemprop="name">SourceCodeReading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
+<hr>
+<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
+<p>拆解后的目录为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
+
+<p>然后以这些目录url为基础,拼接url去扫描</p>
+<hr>
+<h3 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描:"></a>备份文件扫描:</h3><p>原理:</p>
+<p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">'https://api.github.com/events'</span>, stream=<span class="keyword">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw</span><br><span class="line">&lt;requests.packages.urllib3.response.HTTPResponse object at <span class="number">0x101194810</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw.read(<span class="number">10</span>)</span><br><span class="line"><span class="string">'\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'</span></span><br></pre></td></tr></table></figure>
+
+<p>上网找了一个rar,试了一下输出的文件头是<code>b&#39;PK\x03\x04\x14\x00\x00\x00\x08\x00&#39;</code></p>
+<p>插件里的注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">* rar:526172211a0700cf9073</span><br><span class="line">* zip:504b0304140000000800</span><br><span class="line">* gz：1f8b080000000000000b</span><br><span class="line">* tar.gz: 1f8b0800</span><br></pre></td></tr></table></figure>
+
+<p>不同后缀的文件有不同的文件头特征.</p>
+<p>有一份简单的备份文件的字典列表,<code>&#39;bak.rar&#39;, &#39;bak.zip&#39;, &#39;backup.rar&#39;, &#39;backup.zip&#39;, &#39;www.zip&#39;, &#39;www.rar&#39;, &#39;web.rar&#39;, &#39;web.zip&#39;,
+                    &#39;wwwroot.rar&#39;,
+                    &#39;wwwroot.zip&#39;, &#39;log.zip&#39;, &#39;log.rar&#39;</code></p>
+<blockquote>
+<p>字典这玩意可大可小</p>
+</blockquote>
+<p>通过拼接url,如果<code>status_code</code>是200而且文件头符合,则判断为扫出了备份文件。</p>
+<hr>
+<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历:"></a>目录遍历:</h3><p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg" alt=""></p>
+<p>找出一些常见的目录遍历的页面,html源码中有这些特征</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;directory listing for&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;title&gt;directory&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;head&gt;&lt;title&gt;index of&quot;</span><br><span class="line"></span><br><span class="line">&apos;&lt;table summary=&quot;directory listing&quot;&apos;</span><br><span class="line"></span><br><span class="line">&apos;last modified&lt;/a&gt;&apos;</span><br></pre></td></tr></table></figure>
+
+<p>如果在返回包的源码中发现这些特征,则判断这个页面有目录遍历漏洞。</p>
+<hr>
+<h3 id="敏感文件扫描"><a href="#敏感文件扫描" class="headerlink" title="敏感文件扫描:"></a>敏感文件扫描:</h3><p>敏感文件字典采集于bbscan</p>
+<p>总的敏感文件有以下这些</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/config.inc</span><br><span class="line">/config.php.bak</span><br><span class="line">/db.php.bak</span><br><span class="line">/conf/config.ini</span><br><span class="line">/config.ini</span><br><span class="line">/config/config.ini</span><br><span class="line">/configuration.ini</span><br><span class="line">/configs/application.ini</span><br><span class="line">/settings.ini</span><br><span class="line">/application.ini</span><br><span class="line">/conf.ini</span><br><span class="line">/app.ini</span><br><span class="line">/config.json</span><br><span class="line">/a.out</span><br><span class="line">/key</span><br><span class="line">/keys</span><br><span class="line">/key.txt</span><br><span class="line">/temp.txt</span><br><span class="line">/tmp.txt</span><br><span class="line">/php.ini</span><br><span class="line">/sftp-config.json</span><br><span class="line">/index.php.bak</span><br><span class="line">/.index.php.swp</span><br><span class="line">/index.cgi.bak</span><br><span class="line">/config.inc.php.bak</span><br><span class="line">/.config.inc.php.swp</span><br><span class="line">/config/.config.php.swp</span><br><span class="line">/.config.php.swp</span><br><span class="line">/.settings.php.swp</span><br><span class="line">/.database.php.swp</span><br><span class="line">/.db.php.swp</span><br><span class="line">/.mysql.php.swp</span><br><span class="line">/readme</span><br><span class="line">/README</span><br><span class="line">/readme.md</span><br><span class="line">/readme.html</span><br><span class="line">/changelog.txt</span><br><span class="line">/%e6%9b%b4%e6%96%b0%e6%97%a5%e5%bf%97.txt</span><br><span class="line">/www.log</span><br><span class="line">/error.log</span><br><span class="line">/log.log</span><br><span class="line">/sql.log</span><br><span class="line">/errors.log</span><br><span class="line">/db.log</span><br><span class="line">/data.log</span><br><span class="line">/app.log</span><br><span class="line">/ntunnel_mysql.php</span><br></pre></td></tr></table></figure>
+
+<p>实际上的字典的格式为<code>{&#39;path&#39;: &#39;/config.inc&#39;, &#39;tag&#39;: &#39;&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;html&#39;}</code></p>
+<ul>
+<li><code>tag</code>: html源码特征</li>
+<li><code>content-type</code>: 文件拓展名</li>
+<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+</ul>
+<p>原理:</p>
+<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<ol>
+<li>符合html源码特征</li>
+<li>符合文件拓展名</li>
+<li>不在文件拓展名黑名单</li>
+</ol>
+<hr>
+<h3 id="idea-工作目录解析"><a href="#idea-工作目录解析" class="headerlink" title=".idea 工作目录解析:"></a>.idea 工作目录解析:</h3><p>原理:</p>
+<p>url拼接上<code>/.idea/workspace.xml</code></p>
+<p>如果返回包源码中能正则匹配到<code>&lt;project version=&quot;\w+&quot;&gt;</code>，正则匹配版本号,则判定为 JetBrans .idea 泄漏.</p>
+<hr>
+<h3 id="phpinfo探测解析"><a href="#phpinfo探测解析" class="headerlink" title="phpinfo探测解析:"></a>phpinfo探测解析:</h3><p>字典为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;phpinfo.php&quot;,</span><br><span class="line">&quot;pi.php&quot;,</span><br><span class="line">&quot;php.php&quot;,</span><br><span class="line">&quot;i.php&quot;,</span><br><span class="line">&quot;test.php&quot;,</span><br><span class="line">&quot;temp.php&quot;,</span><br><span class="line">&quot;info.php&quot;,</span><br></pre></td></tr></table></figure>
+
+<p>原理:</p>
+<p>拼接Url,发包访问,如果返回包中含<code>&lt;title&gt;phpinfo()&lt;/title&gt;</code>, 则判定为存在phpinfo文件</p>
+<hr>
+<h3 id="git-svn-bzr-hg泄漏"><a href="#git-svn-bzr-hg泄漏" class="headerlink" title="git svn bzr hg泄漏:"></a>git svn bzr hg泄漏:</h3><p>字典为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flag = &#123;</span><br><span class="line">    <span class="string">"/.svn/all-wcprops"</span>: <span class="string">"svn:wc:ra_dav:version-url"</span>,</span><br><span class="line">    <span class="string">"/.git/config"</span>: <span class="string">'repositoryformatversion[\s\S]*'</span>,</span><br><span class="line">    <span class="string">"/.bzr/README"</span>: <span class="string">'This\sis\sa\sBazaar[\s\S]'</span>,</span><br><span class="line">    <span class="string">'/CVS/Root'</span>: <span class="string">':pserver:[\s\S]*?:[\s\S]*'</span>,</span><br><span class="line">    <span class="string">'/.hg/requires'</span>: <span class="string">'^revlogv1.*'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>键为文件路径,值为正则匹配规则。</p>
+<p>拼接url, 正则匹配返回包内容,匹配成功则判定为目录下有仓库源码泄漏漏洞</p>
+<hr>
+<h3 id="Sftp探测"><a href="#Sftp探测" class="headerlink" title="Sftp探测:"></a>Sftp探测:</h3><p>字典:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/sftp-config.json</span><br><span class="line">/recentservers.xml</span><br></pre></td></tr></table></figure>
+
+<p>正则匹配</p>
+<p><code>(&quot;type&quot;:[\s\S]*?&quot;host&quot;:[\s\S]*?&quot;user&quot;:[\s\S]*?</code></p>
+<p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
+<p>匹配到则认为找到sftp</p>
+<hr>
+<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>规则格式和判定方式和敏感文件扫描一样。</p>
+<p>规则格式:<code>{&#39;path&#39;: &#39;/fckeditor/_samples/default.html&#39;, &#39;tag&#39;: &#39;&lt;title&gt;FCKeditor&#39;, &#39;content-type&#39;: &#39;html&#39;,
+                     &#39;content-type_no&#39;: &#39;&#39;}</code></p>
+<p>原理:</p>
+<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<ol>
+<li>符合html源码特征</li>
+<li>符合文件拓展名</li>
+<li>不在文件拓展名黑名单</li>
+</ol>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md" target="_blank" rel="noopener">w13scan</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/26/Diary-2018.9/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1791,275 +2019,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/14/XSStrike源码-潜在注入点检测/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/14/XSStrike源码-潜在注入点检测/" itemprop="url">XSStrike源码-潜在注入点检测</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-14T14:36:34+08:00">
-                2019-07-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><hr>
-<h1 id="潜在注入点检测"><a href="#潜在注入点检测" class="headerlink" title="潜在注入点检测:"></a>潜在注入点检测:</h1><blockquote>
-<p>潜在注入的检测是<strong>判断输入点是否可以成功把数据注入到页面内容</strong></p>
-<p>对于提交数据内容但是不输出到页面的输入点是没有必要进行Fuzzing的，因为即使可以提交攻击代码，也不会产生XSS；</p>
-<p><strong>在潜在注入点的检测通常使用的是一个随机字符串</strong>，比如随机6位数字，再判断这6位数字是否返回输出在页面，以此来进行判断。</p>
-<p>为什么不直接使用Payload进行判断呢？</p>
-<p>因为Payload里包含了攻击代码，通常很多应用都有防火墙或者过滤机制，Payload中的关键词会被拦截导致提交失败或者不会返回输出在页面，但这种情况不代表不能XSS，因为有可能只是Payload不够好，没有绕过过滤或者其他安全机制</p>
-<p><strong>所以采用无害的随机数字字符就可以避免这种情况产生，先验证可注入，再调整Payload去绕过过滤；而随机的目的在于不希望固定字符成为XSS防御黑名单里的关键词</strong>。</p>
-<p>— <a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></p>
-</blockquote>
-<hr>
-<h1 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h1><h2 id="无害字符串替换"><a href="#无害字符串替换" class="headerlink" title="无害字符串替换:"></a>无害字符串替换:</h2><p>XSStrike采用的方式是用了作者自己的名字来作为特殊字符串.</p>
-<blockquote>
-<p>也相当于作者的一个banner信息..</p>
-</blockquote>
-<p><img src="https://i.loli.net/2019/07/16/5d2ca9b1c1b5d72584.png" alt=""></p>
-<ul>
-<li>以<code>v3dm0s</code>去替换参数值</li>
-<li>发包请求,在返回包源码中搜索<code>v3dm0s</code></li>
-<li>如果搜到多个地方有,那么说明可能存在多个输出点</li>
-</ul>
-<hr>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例:"></a>示例:</h3><p>有一个初始请求url:<code>http://192.168.0.104/xss/level1.php?name=test</code></p>
-<p>将参数值<code>test</code>替换成<code>v3dm0s</code></p>
-<p>替换后的请求url:<code>http://192.168.0.104/xss/level1.php?name=v3dm0s</code></p>
-<p><img src="https://i.loli.net/2019/07/16/5d2caafb10c1587305.png" alt=""></p>
-<p>那么说明这个页面有一个输出点.</p>
-<hr>
-<h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码:"></a>实现代码:</h3><p><img src="https://i.loli.net/2019/07/14/5d2b3fccaa40267676.png" alt=""></p>
-<p>在解析完参数的前提下,进行替换.<br>然后调用<code>htmlParser</code>从返回包原文解析潜在注入点(输出点)的上下文环境.</p>
-<hr>
-<h2 id="解析输出点的上下文环境"><a href="#解析输出点的上下文环境" class="headerlink" title="解析输出点的上下文环境:"></a>解析输出点的上下文环境:</h2><p>每个输出点的环境都作为一个字典<code>occurences</code>存储.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="number">455</span>: &#123;<span class="string">'position'</span>: <span class="number">455</span>, <span class="string">'context'</span>: <span class="string">'attribute'</span>, <span class="string">'details'</span>: &#123;<span class="string">'tag'</span>: <span class="string">'input'</span>, <span class="string">'type'</span>: <span class="string">'value'</span>, <span class="string">'quote'</span>: <span class="string">'"'</span>, <span class="string">'value'</span>: <span class="string">'v3dm0s'</span>, <span class="string">'name'</span>: <span class="string">'value'</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>position</code>:表示输出点在页面中的第几个字符处</li>
-<li><code>context</code>: 输出位置点的执行环境(<code>script</code>,<code>attribute</code>,<code>html</code>,<code>comment</code>等)</li>
-<li><code>details</code>: 执行环境的具体信息<ul>
-<li><code>tag</code>: 输出点在什么标签(<code>div</code>,<code>a</code>,<code>input</code>等)</li>
-<li><code>type</code>: 输出点是参数名还是参数值(<code>name</code>, <code>value</code>)</li>
-<li><code>quote</code>: 输出点是用什么包裹起来的(单引号,双引号,`号)</li>
-<li><code>value</code>: 参数值</li>
-<li><code>name</code>: 参数名</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="输出点在script标签中"><a href="#输出点在script标签中" class="headerlink" title="输出点在script标签中:"></a>输出点在script标签中:</h3><h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例:"></a>示例:</h4><p><img src="https://i.loli.net/2019/07/26/5d3a726768a9a13593.png" alt=""></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(reflections):  <span class="comment"># 遍历输出点</span></span><br><span class="line">    occurence = re.search(<span class="string">r'(?i)(?s)&lt;script[^&gt;]*&gt;.*?(%s).*?&lt;/script&gt;'</span> % xsschecker, script_checkable)</span><br><span class="line">    <span class="comment"># 1.判断xsschecker是否在script标签对里面</span></span><br><span class="line">    <span class="keyword">if</span> occurence:</span><br><span class="line">        thisPosition = occurence.start(<span class="number">1</span>) <span class="comment"># Return the index of the start of the substring matched by group.</span></span><br><span class="line">        <span class="comment"># 2.返回注入点在返回包原文的位置</span></span><br><span class="line">        position_and_context[thisPosition] = <span class="string">'script'</span>  <span class="comment"># script标签</span></span><br><span class="line">        environment_details[thisPosition] = &#123;&#125;</span><br><span class="line">        environment_details[thisPosition][<span class="string">'details'</span>] = &#123;<span class="string">'quote'</span>: <span class="string">''</span>&#125;</span><br><span class="line">        print(<span class="string">'￥￥￥￥￥￥￥￥￥￥￥'</span>)</span><br><span class="line">        print(occurence.group())  <span class="comment"># eq: &lt;script&gt;v3dm0s&lt;/script&gt;</span></span><br><span class="line">        print(<span class="string">'￥￥￥￥￥￥￥￥￥￥￥'</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(occurence.group())):   <span class="comment"># eq: &lt;script&gt;v3dm0s&lt;/script&gt; 3.遍历每一个字符 判断输出点是由什么包裹起来的</span></span><br><span class="line">            currentChar = occurence.group()[i]</span><br><span class="line">            <span class="keyword">if</span> currentChar <span class="keyword">in</span> (<span class="string">'\''</span>, <span class="string">'`'</span>, <span class="string">'"'</span>) <span class="keyword">and</span> <span class="keyword">not</span> escaped(i, occurence.group()):  <span class="comment">#  在(单引号,双引号,顿号)里  且未被转义</span></span><br><span class="line">                environment_details[thisPosition][<span class="string">'details'</span>][<span class="string">'quote'</span>] = currentChar</span><br><span class="line">            <span class="keyword">elif</span> currentChar <span class="keyword">in</span> (<span class="string">')'</span>, <span class="string">']'</span>, <span class="string">'&#125;'</span>, <span class="string">'&#125;'</span>) <span class="keyword">and</span> <span class="keyword">not</span> escaped(i, occurence.group()):</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        script_checkable = script_checkable.replace(xsschecker, <span class="string">''</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h4><p>主要做的就是:</p>
-<ol>
-<li>判断输出点是否在script标签对里面</li>
-<li>返回输出点在返回包原文的位置</li>
-<li>判断输出点是用什么包裹起来的(单引号,双引号,`号)</li>
-</ol>
-<hr>
-<h3 id="输出点在属性中"><a href="#输出点在属性中" class="headerlink" title="输出点在属性中:"></a>输出点在属性中:</h3><h4 id="示例-2"><a href="#示例-2" class="headerlink" title="示例:"></a>示例:</h4><p><img src="https://i.loli.net/2019/07/16/5d2ca3e0cec2634464.png" alt=""></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> len(position_and_context) &lt; reflections:</span><br><span class="line">    attribute_context = re.finditer(<span class="string">r'&lt;[^&gt;]*?(%s)[^&gt;]*?&gt;'</span> % xsschecker, clean_response) <span class="comment"># 1.找出xsschecker所在的标签</span></span><br><span class="line">    <span class="keyword">for</span> occurence <span class="keyword">in</span> attribute_context:</span><br><span class="line">        match = occurence.group(<span class="number">0</span>) <span class="comment"># eq: match: '&lt;input name=keyword  value="v3dm0s"&gt;'</span></span><br><span class="line">        thisPosition = occurence.start(<span class="number">1</span>)</span><br><span class="line">        parts = re.split(<span class="string">r'\s'</span>, match) <span class="comment"># eq: parts: '&lt;class 'list'&gt;: ['&lt;input', 'name=keyword', '', 'value="v3dm0s"&gt;']'</span></span><br><span class="line">        tag = parts[<span class="number">0</span>][<span class="number">1</span>:] <span class="comment"># tag: 'input'</span></span><br><span class="line">        <span class="keyword">for</span> part <span class="keyword">in</span> parts:</span><br><span class="line">            <span class="keyword">if</span> xsschecker <span class="keyword">in</span> part: <span class="comment"># xsschecker参数所在的部分</span></span><br><span class="line">                Type, quote, name, value = <span class="string">''</span>, <span class="string">''</span>, <span class="string">''</span>, <span class="string">''</span></span><br><span class="line">                <span class="keyword">if</span> <span class="string">'='</span> <span class="keyword">in</span> part:</span><br><span class="line">                    quote = re.search(<span class="string">r'=([\'`"])?'</span>, part).group(<span class="number">1</span>) <span class="comment"># 由什么包裹</span></span><br><span class="line">                    name_and_value = part.split(<span class="string">'='</span>)[<span class="number">0</span>], <span class="string">'='</span>.join(part.split(<span class="string">'='</span>)[<span class="number">1</span>:])</span><br><span class="line">                    <span class="keyword">if</span> xsschecker == name_and_value[<span class="number">0</span>]: <span class="comment"># 注入点的类型是什么?</span></span><br><span class="line">                        Type = <span class="string">'name'</span> <span class="comment"># 注入点的类型是参数名</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        Type = <span class="string">'value'</span> <span class="comment"># 注入点的类型是参数值</span></span><br><span class="line">                    name = name_and_value[<span class="number">0</span>]</span><br><span class="line">                    value = name_and_value[<span class="number">1</span>].rstrip(<span class="string">'&gt;'</span>).rstrip(quote).lstrip(quote)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    Type = <span class="string">'flag'</span></span><br><span class="line">                position_and_context[thisPosition] = <span class="string">'attribute'</span>  <span class="comment"># 属性</span></span><br><span class="line">                environment_details[thisPosition] = &#123;&#125;</span><br><span class="line">                environment_details[thisPosition][<span class="string">'details'</span>] = &#123;<span class="string">'tag'</span>: tag, <span class="string">'type'</span>: Type, <span class="string">'quote'</span>: quote,</span><br><span class="line">                                                                <span class="string">'value'</span>: value, <span class="string">'name'</span>: name&#125;</span><br><span class="line">                <span class="comment"># eq: &#123;'details': &#123;'tag': 'input', 'type': 'value', 'quote': '"', 'value': 'v3dm0s', 'name': 'value'&#125;&#125;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结:"></a>小结:</h4><p>主要做的就是:</p>
-<ol>
-<li>判断输出点是否在标签里面,找出xsschecker所在的标签  如<code>&lt;input name=keyword  value=&quot;v3dm0s&quot;&gt;</code></li>
-<li>遍历标签 如 <code>[&#39;&lt;input&#39;, &#39;name=keyword&#39;, &#39;&#39;, &#39;value=&quot;v3dm0s&quot;&gt;&#39;]&#39;</code></li>
-<li>找出输出点的环境信息:<ul>
-<li>是在什么标签里 (如<code>input</code>)</li>
-<li>由什么符号包裹 (单引号、双引号、顿号)</li>
-<li>输出点的类型是什么?(参数名or参数值)</li>
-</ul>
-</li>
-</ol>
-<hr>
-<h3 id="输出点在html中"><a href="#输出点在html中" class="headerlink" title="输出点在html中:"></a>输出点在html中:</h3><p>示例:</p>
-<p><img src="https://i.loli.net/2019/07/14/5d2b3c73d09d963919.png" alt=""></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> len(position_and_context) &lt; reflections:</span><br><span class="line">    html_context = re.finditer(xsschecker, clean_response)</span><br><span class="line">    <span class="keyword">for</span> occurence <span class="keyword">in</span> html_context:</span><br><span class="line">        thisPosition = occurence.start()</span><br><span class="line">        <span class="keyword">if</span> thisPosition <span class="keyword">not</span> <span class="keyword">in</span> position_and_context:</span><br><span class="line">            position_and_context[occurence.start()] = <span class="string">'html'</span> <span class="comment"># html</span></span><br><span class="line">            environment_details[thisPosition] = &#123;&#125;</span><br><span class="line">            environment_details[thisPosition][<span class="string">'details'</span>] = &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>无过多处理,就是个正则匹配</p>
-<hr>
-<h3 id="输出点在注释中"><a href="#输出点在注释中" class="headerlink" title="输出点在注释中:"></a>输出点在注释中:</h3><p>示例:</p>
-<p>无</p>
-<p>源码:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> len(position_and_context) &lt; reflections:</span><br><span class="line">    comment_context = re.finditer(<span class="string">r'&lt;!--(?![.\s\S]*--&gt;)[.\s\S]*(%s)[.\s\S]*?--&gt;'</span> % xsschecker, response)</span><br><span class="line">    <span class="keyword">for</span> occurence <span class="keyword">in</span> comment_context:</span><br><span class="line">        thisPosition = occurence.start(<span class="number">1</span>)</span><br><span class="line">        position_and_context[thisPosition] = <span class="string">'comment'</span>  <span class="comment"># 注释</span></span><br><span class="line">        environment_details[thisPosition] = &#123;&#125;</span><br><span class="line">        environment_details[thisPosition][<span class="string">'details'</span>] = &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>无过多处理,就是个正则匹配</p>
-<hr>
-<h3 id="标记无法执行的环境"><a href="#标记无法执行的环境" class="headerlink" title="标记无法执行的环境:"></a>标记无法执行的环境:</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">bad_contexts = re.finditer(</span><br><span class="line">    <span class="string">r'(?s)(?i)&lt;(style|template|textarea|title|noembed|noscript)&gt;[.\s\S]*(%s)[.\s\S]*&lt;/\1&gt;'</span> % xsschecker, response) <span class="comment"># 正则匹配 标记无法执行的输出</span></span><br><span class="line">non_executable_contexts = []</span><br><span class="line"><span class="keyword">for</span> each <span class="keyword">in</span> bad_contexts:</span><br><span class="line">    non_executable_contexts.append([each.start(), each.end(), each.group(<span class="number">1</span>)])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> non_executable_contexts:</span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> database.keys():</span><br><span class="line">        position = database[key][<span class="string">'position'</span>]</span><br><span class="line">        badTag = isBadContext(position, non_executable_contexts)</span><br><span class="line">        <span class="keyword">if</span> badTag:</span><br><span class="line">            database[key][<span class="string">'details'</span>][<span class="string">'badTag'</span>] = badTag</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            database[key][<span class="string">'details'</span>][<span class="string">'badTag'</span>] = <span class="string">''</span></span><br><span class="line"><span class="keyword">return</span> database</span><br></pre></td></tr></table></figure>
-
-<p>在以下标签内,为不可执行的环境.</p>
-<ul>
-<li><code>style</code></li>
-<li><code>template</code></li>
-<li><code>textarea</code></li>
-<li><code>title</code></li>
-<li><code>noembed</code></li>
-<li><code>noscript</code></li>
-</ul>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>解析请求参数(前提)</li>
-<li>对参数值进行无害字符串替换,发包</li>
-<li>在返回包源码中搜索输出点</li>
-<li>标记输出点的上下文环境</li>
-</ul>
-<p>上下文环境实例:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="number">455</span>: &#123;<span class="string">'position'</span>: <span class="number">455</span>, <span class="string">'context'</span>: <span class="string">'attribute'</span>, <span class="string">'details'</span>: &#123;<span class="string">'tag'</span>: <span class="string">'input'</span>, <span class="string">'type'</span>: <span class="string">'value'</span>, <span class="string">'quote'</span>: <span class="string">'"'</span>, <span class="string">'value'</span>: <span class="string">'v3dm0s'</span>, <span class="string">'name'</span>: <span class="string">'value'</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>position</code>:表示输出点在页面中的第几个字符处</li>
-<li><code>context</code>: 输出位置点的执行环境(<code>script</code>,<code>attribute</code>,<code>html</code>,<code>comment</code>等)</li>
-<li><code>details</code>: 执行环境的具体信息<ul>
-<li><code>tag</code>: 输出点在什么标签(<code>div</code>,<code>a</code>,<code>input</code>等)</li>
-<li><code>type</code>: 输出点是参数名还是参数值(<code>name</code>, <code>value</code>)</li>
-<li><code>quote</code>: 输出点是用什么包裹起来的(单引号,双引号,`号)</li>
-<li><code>value</code>: 参数值</li>
-<li><code>name</code>: 参数名</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://juejin.im/entry/58f43b0c61ff4b0058fd734d" target="_blank" rel="noopener">跨站的艺术 - XSS Fuzzing 的技巧</a></li>
-<li><a href="https://www.freebuf.com/articles/web/191003.html" target="_blank" rel="noopener">利用XSStrike Fuzzing XSS漏洞</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84593067" target="_blank" rel="noopener">XSStrike源码阅读（1）——目录结构与大体架构</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84660755" target="_blank" rel="noopener">XSStrike源码阅读（2）——四种模式</a></li>
-<li><a href="https://blog.csdn.net/he_and/article/details/84886282" target="_blank" rel="noopener">XSStrike源码阅读（3）——核心函数</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2112,7 +2071,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

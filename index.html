@@ -252,6 +252,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/12/goby配置socks5代理进行扫描/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/12/goby配置socks5代理进行扫描/" itemprop="url">goby配置socks5代理进行扫描</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-12T22:36:34+08:00">
+                2020-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>需求:需要从办公网和测试网段出发，去扫描生产的es 9200端口,看是否有未授权访问的问题</p>
+<p>为了方便，打算通过配置代理的方式，用办公机去进行扫描</p>
+<hr>
+<h1 id="配置代理"><a href="#配置代理" class="headerlink" title="配置代理:"></a>配置代理:</h1><p>在一台测试网段的服务器上,确认了80端口是和我的办公网电脑通的。</p>
+<p>利用该端口进行代理</p>
+<hr>
+<h2 id="socks5服务端配置"><a href="#socks5服务端配置" class="headerlink" title="socks5服务端配置:"></a>socks5服务端配置:</h2><p>在服务端上配置socks5服务端:</p>
+<p><a href="https://github.com/woodyxiong/TinySocks5" target="_blank" rel="noopener">TinySocks5</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python main.py -p 80</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="goby配置"><a href="#goby配置" class="headerlink" title="goby配置:"></a>goby配置:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201112112541.png" alt="20201112112541"></p>
+<p>然后就可以进行扫描了</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/10/Unicode RTLO(Right-To-Left Override)字符欺骗/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2087,189 +2241,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/03/sqlmap源码-参数动态性检测/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/03/sqlmap源码-参数动态性检测/" itemprop="url">sqlmap源码-参数动态性检测</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T14:36:34+08:00">
-                2020-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="参数动态性检测"><a href="#参数动态性检测" class="headerlink" title="参数动态性检测:"></a>参数动态性检测:</h1><p>直接抄一下别人的流程图:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/024A031F-AB6F-4E2F-BFD3-7FEB419DA68A.png" alt=""></p>
-<p>其实很简单,简而言之</p>
-<ul>
-<li>将请求参数值替换成一个随机的四位数，发包获取结果</li>
-<li>结果与原始页面做相似度的对比</li>
-<li>如果不相似,那么这个参数具有动态性(这个参数的变化导致了页面的变化)</li>
-</ul>
-<hr>
-<h1 id="代码"><a href="#代码" class="headerlink" title="代码:"></a>代码:</h1><p>实际的代码也是很少。(如果在理解了页面相似度这个概念的前提下)</p>
-<p>在开始检测的sql注入的<code>start()</code>函数有调用到<code>checkDynParam</code>函数</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/7653A023-2E37-4DAA-953B-2D704694060A.png" alt=""></p>
-<p>经过这个检测参数动态性的函数之后,就可以看到熟悉的提示了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[23:16:00] [INFO] testing if GET parameter &apos;id&apos; is dynamic</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkDynParam</span><span class="params">(place, parameter, value)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    This function checks if the URL parameter is dynamic. If it is</span></span><br><span class="line"><span class="string">    dynamic, the content of the page differs, otherwise the</span></span><br><span class="line"><span class="string">    dynamicity might depend on another parameter.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> kb.redirectChoice:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    kb.matchRatio = <span class="keyword">None</span></span><br><span class="line">    dynResult = <span class="keyword">None</span></span><br><span class="line">    randInt = randomInt() <span class="comment"># 生成一个四位随机数</span></span><br><span class="line"></span><br><span class="line">    paramType = conf.method <span class="keyword">if</span> conf.method <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">None</span>, HTTPMETHOD.GET, HTTPMETHOD.POST) <span class="keyword">else</span> place <span class="comment"># paramType:'GET'</span></span><br><span class="line"></span><br><span class="line">    infoMsg = <span class="string">"testing if %s parameter '%s' is dynamic"</span> % (paramType, parameter)</span><br><span class="line">    logger.info(infoMsg) <span class="comment"># 输出提示信息</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        payload = agent.payload(place, parameter, value, getUnicode(randInt)) <span class="comment"># payload: u'id=__PAYLOAD_DELIMITER__1412__PAYLOAD_DELIMITER__'</span></span><br><span class="line">        dynResult = Request.queryPage(payload, place, raise404=<span class="keyword">False</span>) <span class="comment"># 这里面会发包,并且判断相似度</span></span><br><span class="line">    <span class="keyword">except</span> SqlmapConnectionException:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    result = <span class="keyword">None</span> <span class="keyword">if</span> dynResult <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">else</span> <span class="keyword">not</span> dynResult</span><br><span class="line">    kb.dynamicParameter = result</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
-
-<p>函数功能注释也解释了。</p>
-<p>这个函数用于测试参数是否是动态的。如果它是动态的话，(替换成一个新的值之后)那么页面的内容会发生变化。</p>
-<p>如果这个参数不是动态的，那么动态性可能要取决于别的参数。</p>
-<hr>
-<h1 id="inspire"><a href="#inspire" class="headerlink" title="inspire:"></a>inspire:</h1><p>在实际的渗透测试时，用brupsuite抓包的时候，会有这种感觉。</p>
-<p>不知道对哪个参数下手，不知道对哪个参数的值替换成payload进行测试。</p>
-<p>如果随机测了某个，又不知道其他的参数会不会漏。</p>
-<p>但是如果了解了 <strong>参数动态性</strong> 这个概念之后,实际上这个问题可以转化为</p>
-<p>这个数据包里面的哪些参数是动态的，也就是我修改了这个参数之后，服务端会拿对这个变化的参数进行处理，以致于页面(返回包)会发送变化。</p>
-<p>那么很大可能性是 我这个参数影响到了某个sql语句的查询或者执行了。</p>
-<p>那么这个参数就很有可能存在注入。</p>
-<p><strong>总结一下，一个参数存在注入的前提是 这个参数具有动态性。</strong></p>
-<blockquote>
-<p>那么是不是可以编写一个brupsuite插件或者一个小工具，对数据包的参数批量的先检测它是否具有动态性,毕竟这个是注入的前提之一。</p>
-</blockquote>
-<hr>
-<h1 id="refs："><a href="#refs：" class="headerlink" title="refs："></a>refs：</h1><ul>
-<li><a href="https://paper.seebug.org/729/" target="_blank" rel="noopener">sqlmap 检测剖析</a></li>
-</ul>
-<blockquote>
-<p>根据这篇文章提出的关键概念点,可以比较好的作为了解sqlmap的路径。</p>
-</blockquote>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/45291193" target="_blank" rel="noopener">sqlmap 内核分析 III: 核心逻辑</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2322,7 +2293,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
