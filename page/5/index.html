@@ -252,6 +252,206 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/Pyppeteer-浏览器爬虫初探/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/19/Pyppeteer-浏览器爬虫初探/" itemprop="url">Pyppeteer-浏览器爬虫初探</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T22:36:34+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index">
+                    <span itemprop="name">SecurityTools</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>最近打算捣鼓一个黑链扫描器.</p>
+<p>当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站.</p>
+<p>那么这种情况应该选用什么爬虫的解决方案呢?即技术选型</p>
+<hr>
+<h1 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型:"></a>技术选型:</h1><h2 id="方案一-静态爬虫"><a href="#方案一-静态爬虫" class="headerlink" title="方案一 静态爬虫:"></a>方案一 静态爬虫:</h2><p>在python中最常见的就是用<code>requests</code>,<code>urllib2</code>等库来模拟发包,执行简单的HTTP请求并获取HTML页面.</p>
+<p>这种方案比较适合于对特定网站进行简单的爬取,优点是:</p>
+<ul>
+<li>在CPU和内存消耗方面的开销很低</li>
+<li>开发速度快</li>
+</ul>
+<p>但是缺点也很明显:</p>
+<ul>
+<li>不通用:发包情况千千万,都要模拟请求的话不现实</li>
+<li>无法收集通过JavaScript动态生成的内容</li>
+</ul>
+<p>基于以上两点,果断弃之.</p>
+<hr>
+<h2 id="方案二-动态爬虫"><a href="#方案二-动态爬虫" class="headerlink" title="方案二 动态爬虫:"></a>方案二 动态爬虫:</h2><p>选型1: 使用<code>Selenium</code>等库来驱动Chrome、Firefox或PhantomJS.</p>
+<blockquote>
+<p>在Chrome的Headless模式刚出现不久，我们当时就调研过用作漏洞扫描器爬虫的需求，但由于当时功能不够完善，以及无法达到稳定可靠的要求。举个例子，对于网络请求，无法区分导航请求和其它请求，而本身又不提供navigation lock的功能，所以很难确保页面的处理不被意外跳转中断。同时，不太稳定的CDP经常意外中断和产生Chrome僵尸进程，所以我们之前一直在使用PhantomJS。</p>
+<p>但随着前端的框架使用越来越多，网页内容对爬虫越来越不友好，在不考虑进行服务端渲染的情况下，Vue等框架让静态爬虫彻底失效。同时，由于JS的ES6语法的广泛使用，缺乏维护（创始人宣布归档项目暂停开发）的PhantomJS开始变的力不从心。</p>
+<p>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<p>选型2: <code>pyppeteer</code>+<code>Chromium headless</code></p>
+<blockquote>
+<p>在去年，puppeteer和Chromium项目在经历了不断迭代后，新增了一些关键功能，Headless模式现在已经能大致胜任扫描器爬虫的任务。</p>
+<p>所以我们在去年果断更新了扫描器的动态爬虫，采用Chromium的Headless模式作为网页内容解析引擎<br>—-<a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><ul>
+<li><code>Chrome</code>的Headless模式早期不成熟</li>
+<li><code>PhantomJS</code>不再维护了</li>
+<li><code>puppeteer</code>和<code>Chromium</code>项目在不断迭代更新</li>
+</ul>
+<p>综上,就决定使用<code>pyppeteer</code>+<code>Chromium headless</code>这个搭配方案了.</p>
+<p>那么,现在就跑个Demo来试试水.(参考<a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a>)</p>
+<hr>
+<h1 id="Demo"><a href="#Demo" class="headerlink" title="Demo:"></a>Demo:</h1><blockquote>
+<p>原文章里的代码基本可以运行.<br>就是<code>url</code>和需要提取信息的<code>xpath</code>发送了一些变化.稍作修改即可</p>
+</blockquote>
+<hr>
+<h2 id="静态爬虫"><a href="#静态爬虫" class="headerlink" title="静态爬虫:"></a>静态爬虫:</h2><p>先用最原始的方式,确认能够获取得到信息.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> lxml.html</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> request.urlopen(url)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_document</span><span class="params">(response)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> response.read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(document)</span>:</span></span><br><span class="line">    <span class="comment"># Generate document tree</span></span><br><span class="line">    tree = lxml.html.fromstring(document)</span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = tree.xpath(<span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        th, td = element.iterchildren()</span><br><span class="line">        result.update(&#123;</span><br><span class="line">            th.text_content(): td.text_content()</span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line">        <span class="comment"># "Rust": "https://es.wikipedia.org/wiki/Rust_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Java": "https://es.wikipedia.org/wiki/Java_(lenguaje_de_programaci%C3%B3n)",</span></span><br><span class="line">        <span class="comment"># "Javascript": "https://es.wikipedia.org/wiki/JavaScript"</span></span><br><span class="line">    &#125;</span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        response = get_page(url)</span><br><span class="line">        document = read_document(response)</span><br><span class="line">        result.update(&#123;name: extract_data(document)&#125;)</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>预期结果:</p>
+<p><img src="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png" alt=""></p>
+<hr>
+<h2 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer:"></a>puppeteer:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> pyppeteer <span class="keyword">import</span> launch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_browser</span><span class="params">()</span>:</span>  <span class="comment"># 启动浏览器</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> launch(&#123;<span class="string">"headless"</span>: <span class="keyword">False</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">get_page</span><span class="params">(browser, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> browser.newPage()</span><br><span class="line">    <span class="keyword">await</span> page.goto(url)</span><br><span class="line">    <span class="keyword">return</span> page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract</span><span class="params">(browser, name, url)</span>:</span></span><br><span class="line">    page = <span class="keyword">await</span> get_page(browser, url)</span><br><span class="line">    <span class="keyword">return</span> &#123;name: <span class="keyword">await</span> extract_data(page)&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_data</span><span class="params">(page)</span>:</span>  <span class="comment"># 数据提取</span></span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = <span class="keyword">await</span> page.xpath(</span><br><span class="line">        <span class="string">'//*[@id="mw-content-text"]/div/table[1]/tbody/tr[th and td]'</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        title, content = <span class="keyword">await</span> page.evaluate(</span><br><span class="line">            <span class="string">'''(element) =&gt;</span></span><br><span class="line"><span class="string">                [...element.children].map(child =&gt; child.textContent)'''</span>,</span><br><span class="line">            element)</span><br><span class="line">        result.update(&#123;title: content&#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">extract_all</span><span class="params">(languages)</span>:</span>  <span class="comment"># 程序入口</span></span><br><span class="line">    browser = <span class="keyword">await</span> get_browser()  <span class="comment"># 启动浏览器</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        result.update(<span class="keyword">await</span> extract(browser, name, url))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">"python"</span>: <span class="string">"https://en.wikipedia.org/wiki/Python_(programming_language)"</span>,</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loop = asyncio.get_event_loop()</span><br><span class="line">    result = loop.run_until_complete(extract_all(languages))</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br></pre></td></tr></table></figure>
+
+<p>同样能够获取到和预期一样的结果</p>
+<hr>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h1><p>从Demo出发,再不断改进优化功能.<br>便能慢慢有些雏形出来了.<br>Keeo Moving.</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.anquanke.com/post/id/178339" target="_blank" rel="noopener">漏扫动态爬虫实践</a></li>
+<li><a href="https://antoinevastel.com/crawler/2018/09/17/simple-crawler-puppeteer.html" target="_blank" rel="noopener">A simple crawler using Chrome headless with Puppeteer</a></li>
+<li><a href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19" target="_blank" rel="noopener">Pyppeteer, the snake charmer</a></li>
+<li><a href="https://miyakogi.github.io/pyppeteer/" target="_blank" rel="noopener">Pyppeteer文档</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/暗链案例初探/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2442,262 +2642,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/Sqlmap源码-请求参数的检验和解析(一)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/19/Sqlmap源码-请求参数的检验和解析(一)/" itemprop="url">Sqlmap源码-请求参数的检验和解析(一)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T14:36:34+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index">
-                    <span itemprop="name">SourceCodeReading</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用sqlmap的时候,</p>
-<p>一般会直接这样使用:<code>sqlmap -u http://sqlilabs:8888/Less-1/?id=1</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[10:18:54] [INFO] testing if GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] confirming that GET parameter &apos;id&apos; is dynamic</span><br><span class="line">[10:18:54] [INFO] GET parameter &apos;id&apos; is dynamic</span><br></pre></td></tr></table></figure>
-
-<p>这个时候,sqlmap会自动识别到get请求的有可测试参数<code>id</code><br>那么,sqlmap是如何解析到这个参数的呢?</p>
-<p>重点讲解一下<code>target.py</code>下的解析请求参数函数<code>_setRequestParams()</code></p>
-<h1 id="setRequestParams-函数"><a href="#setRequestParams-函数" class="headerlink" title="_setRequestParams()函数"></a>_setRequestParams()函数</h1><h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明:"></a>函数说明:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Check and set the parameters and perform checks on 'data' option for</span></span><br><span class="line"><span class="string">    HTTP method POST. </span></span><br><span class="line"><span class="string">    """</span></span><br></pre></td></tr></table></figure>
-
-<p>对请求的参数进行检验和解析.</p>
-<p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
-<p>可参考一下,<a href="https://zhuanlan.zhihu.com/p/43242220" target="_blank" rel="noopener">sqlmap 内核分析 I: 基础流程</a></p>
-<hr>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/08/28/tcHEIpybSNujUT2.jpg" alt=""></p>
-<blockquote>
-<p>画图真累人…</p>
-</blockquote>
-<p>由于代码量实在有点多,下面只能挑一些重点的来讲</p>
-<hr>
-<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/08/28/4XiDBCEASfw2x1v.jpg" alt=""></p>
-<p><code>sqlmap</code>支持这五种数据类型</p>
-<ul>
-<li>XML</li>
-<li>JSON</li>
-<li>JSON_LIKE</li>
-<li>MULTIPART</li>
-<li>ARRAY_LIKE</li>
-</ul>
-<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r"(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r'(?s)\A(\s*\[)*\s*\&#123;.*"[^"]+"\s*:\s*("[^"]*"|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r"(?s)\A(\s*\[)*\s*\&#123;.*'[^']+'\s*:\s*('[^']+'|\d+).*\&#125;\s*(\]\s*)*\Z"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r"(?i)Content-Disposition:[^;]+;\s*name="</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r"(\A|%s)(\w+)\[\]=.+%s\2\[\]="</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
-
-<h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
-<p><img src="https://i.loli.net/2019/08/28/wtYPzdE9TKfQXZc.jpg" alt=""></p>
-<p>关键是这3个正则表达式,分别解析3种模式的数据</p>
-<p>简单理解为:</p>
-<ul>
-<li>模式<code>&quot;&quot;:&quot;&quot;</code></li>
-<li>模式<code>&quot;&quot;:数字</code></li>
-<li>模式<code>&quot;&quot;:true false null类型</code></li>
-</ul>
-<p>然后调用<code>process()</code>去解析出它的<code>参数名</code>和<code>整个参数</code>.</p>
-<p><img src="https://i.loli.net/2019/08/28/yE3h29wS4ibY7G8.jpg" alt=""></p>
-<p>解析到的数据会添加到<code>hintNames列表</code></p>
-<p>举2个实例方便理解.</p>
-<h3 id="例子1-json数据"><a href="#例子1-json数据" class="headerlink" title="例子1:json数据"></a>例子1:json数据</h3><p>比如现在有一段json数据.</p>
-<p><img src="https://i.loli.net/2019/08/28/T7bmUAf3IpM5co9.jpg" alt=""></p>
-<p>经过解析后:</p>
-<p><img src="https://i.loli.net/2019/08/28/sWjDgcXxN4O6YVH.jpg" alt=""></p>
-<p>简单的说就是,经过解析处理后,整段的json数据已经分割开来了,变成了一个个<strong>可测试的参数</strong></p>
-<h3 id="例子2-MULTIPART数据"><a href="#例子2-MULTIPART数据" class="headerlink" title="例子2:MULTIPART数据:"></a>例子2:MULTIPART数据:</h3><p>比如现在有一段MULTIPART类型的数据.</p>
-<p><img src="https://i.loli.net/2019/08/28/cEn4RwWdaOiKMCj.jpg" alt=""></p>
-<p>经过解析后，也变成了一个可测试的参数.</p>
-<p><img src="https://i.loli.net/2019/08/28/nYZNQceMXvaWois.jpg" alt=""></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.</p>
-<hr>
-<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/08/28/w7KulXg9TW3AILv.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/zX3Ga42xeBpt5R7.jpg" alt=""></p>
-<p>通过正则匹配<code>url</code>是否符合<code>uri注入</code>的模式.</p>
-<p>正则表达式:<code>r&quot;//[^/]*/([^\.*?]+)\Z&quot;</code></p>
-<p>符合的情况:</p>
-<ul>
-<li><code>http://www.site.com/id82</code></li>
-<li><code>http://www.site.com/article</code></li>
-</ul>
-<p>不符合的情况:</p>
-<ul>
-<li><code>http://www.qqq.com</code></li>
-<li><code>http://www.site.com/article.php?id=1</code></li>
-</ul>
-<p>如果符合<code>uri注入</code>的模式,会提示你是否尝试进行<code>uri注入</code></p>
-<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h3><p>我之前简单以为<code>url</code>有参数才存在注入的可能性.</p>
-<p>其实,<strong>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在sqli.</strong></p>
-<p>refs:<a href="https://www.secpulse.com/archives/49018.html" target="_blank" rel="noopener">同花顺某站一处URI注入</a></p>
-<p><img src="https://i.loli.net/2019/08/28/BAprsZDNHaKjPqz.jpg" alt=""></p>
-<hr>
-<h2 id="解析cookie"><a href="#解析cookie" class="headerlink" title="解析cookie:"></a>解析cookie:</h2><p><img src="https://i.loli.net/2019/08/28/JMjVPST9nOByQUf.jpg" alt=""></p>
-<p>解析<code>cookie</code>会调用到<code>paramToDict()</code>这个函数(把参数转换为可测试参数字典),这个函数也是个大函数,就不具体讲了.可能要写一篇文章才会详细讲到.</p>
-<p>比较重要的点有,<strong>一般会用<code>;</code>符号去分割解析<code>cookie</code>里面的参数.</strong></p>
-<p><img src="https://i.loli.net/2019/08/28/eUmhpauV8rtE2Mx.jpg" alt=""></p>
-<p>然后形成可测试参数列表.</p>
-<blockquote>
-<p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.cookie里的每个参数都不放过.</p>
-</blockquote>
-<hr>
-<h2 id="解析header"><a href="#解析header" class="headerlink" title="解析header:"></a>解析header:</h2><p><img src="https://i.loli.net/2019/08/28/KliaP9SxsOIX7Wn.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/uXmTcNrst43kaI7.jpg" alt=""></p>
-<p><code>header</code>中可测试的点可能有:</p>
-<ul>
-<li><code>user-agent</code></li>
-<li><code>referer</code></li>
-<li><code>host</code></li>
-<li><code>cookie</code></li>
-</ul>
-<p>比如有一段数据:</p>
-<p><img src="https://i.loli.net/2019/08/28/9VNkWtMmTFX3z7h.jpg" alt=""></p>
-<p>解析后的<code>header</code>中可测试的参数为</p>
-<p><img src="https://i.loli.net/2019/08/28/zoQvSrAnghPCs8u.jpg" alt=""></p>
-<hr>
-<h2 id="识别csrf-token"><a href="#识别csrf-token" class="headerlink" title="识别csrf-token:"></a>识别csrf-token:</h2><p><img src="https://i.loli.net/2019/08/28/nPFXazfGiUDNMoT.jpg" alt=""></p>
-<p><img src="https://i.loli.net/2019/08/28/kTpLFKgwV59AQOE.jpg" alt=""></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Infixes used for automatic recognition of parameters carrying anti-CSRF tokens</span></span><br><span class="line">CSRF_TOKEN_PARAMETER_INFIXES = (<span class="string">"csrf"</span>, <span class="string">"xsrf"</span>, <span class="string">"token"</span>)</span><br></pre></td></tr></table></figure>
-
-<p>尝试在<code>header</code>数据中寻找有无<code>cstf-token</code>标记的字眼,如果有认为无法注入.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elif</span> conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I):</span><br><span class="line">    testSqlInj = <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-
-<p>refs:<a href="https://www.360zhijia.com/360anquanke/178754.html" target="_blank" rel="noopener">【技术分享】使用burp macros和sqlmap绕过csrf防护进行sql注入</a></p>
-<blockquote>
-<p>然而，一些像CSRF、tokens或者简单的的反自动化技术如在一个表单中包含一个隐藏值就能够阻止自动化工具正确的工作</p>
-</blockquote>
-<hr>
-<h1 id="总结-2"><a href="#总结-2" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>sqlmap支持5种数据类型的Post数据:<code>XML</code>、<code>JSON</code>、<code>JSON_LIKE</code>、<code>MULTIPART</code>、<code>ARRAY_LIKE</code></li>
-<li>sqlmap会尽可能找出你的Post数据中所有可测试参数.</li>
-<li>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在注入,可以考虑<code>uri注入</code></li>
-<li><code>header</code>中可以测试的点为:- <code>user-agent</code>、<code>referer</code>、<code>host</code>、<code>cookie</code></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2750,7 +2694,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
