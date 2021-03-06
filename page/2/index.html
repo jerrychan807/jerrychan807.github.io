@@ -252,6 +252,208 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/16/JSON Web Token(JWT)攻击探究(一)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/16/JSON Web Token(JWT)攻击探究(一)/" itemprop="url">JSON Web Token(JWT)攻击探究(一)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-16T14:36:34+08:00">
+                2020-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebSecurity/" itemprop="url" rel="index">
+                    <span itemprop="name">WebSecurity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h1><p>用户认证的方式通常有两种，传统的session认证 和 基于token方式。</p>
+<hr>
+<h2 id="传统的session认证"><a href="#传统的session认证" class="headerlink" title="传统的session认证"></a>传统的session认证</h2><h3 id="sessionID的生成方式"><a href="#sessionID的生成方式" class="headerlink" title="sessionID的生成方式:"></a>sessionID的生成方式:</h3><p>浏览器第一次访问服务器时，服务器创建一个<code>session</code>，同时生成一个唯一的会话key，即<code>sessionID</code>。</p>
+<p>接着sessionID及session分别作为key和value保存到缓存中，也可以保存到数据库中，然后服务器把sessionID以cookie的形式发送给浏览器，浏览器下次访问服务器时直接携带上cookie中的sessionID，服务器再根据sessionID找到对应的session进行匹配</p>
+<p>这里我们注意到两点：</p>
+<ol>
+<li><code>sessionID</code>会自动由浏览器带上 </li>
+<li><code>session</code>是需要存储空间的</li>
+</ol>
+<h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><p>传统的session认证,随着不同客户端用户的增加，独立的服务器已无法承载更多的用户，而这时候基于session认证应用的问题就会暴露出来.</p>
+<p>例如而随着认证用户的增多，服务端的开销会明显增大，这样在分布式的应用上，相应的限制了负载均衡器的能力，因为是基于cookie来进行用户识别的, cookie如果被截获，用户就会很容易受到跨站请求伪造的攻击。</p>
+<hr>
+<h2 id="基于token的鉴权机制"><a href="#基于token的鉴权机制" class="headerlink" title="基于token的鉴权机制"></a>基于token的鉴权机制</h2><p>基于token的鉴权机制类似于http协议也是无状态的，它不需要在服务端去保留用户的认证信息或者会话信息。这就意味着<strong>基于token认证机制的应用不需要去考虑用户在哪一台服务器登录</strong>了，这就为应用的扩展提供了便利。</p>
+<h3 id="token的生成方式"><a href="#token的生成方式" class="headerlink" title="token的生成方式"></a>token的生成方式</h3><p>浏览器第一次访问服务器时，服务器根据传过来的唯一标识<code>userId</code>，通过一些算法，加一个密钥，生成一个token，接着通过base64编码将token返回给客户端。客户端将token保存起来，下次请求时需要带着token，服务器收到请求后，用相同的算法和密钥去验证token</p>
+<p>这里我们注意到两点：</p>
+<ol>
+<li>token需要代码才能带上</li>
+<li>token可以不需要存储空间（JWT）（当然也有存入缓存的处理，特别是要进行revoke操作时），通过算法和密钥验证</li>
+</ol>
+<h2 id="token与sessionID的区别"><a href="#token与sessionID的区别" class="headerlink" title="token与sessionID的区别:"></a>token与sessionID的区别:</h2><ol>
+<li>浏览器方面，是否直接带上 </li>
+<li>服务器方面，是否需要存储空间。</li>
+</ol>
+<blockquote>
+<p>其实token与session的问题是一种时间与空间的博弈问题，session是空间换时间，而token是时间换空间。两者的选择要看具体情况而定。</p>
+</blockquote>
+<hr>
+<h1 id="JWT-JSON-Web-Token"><a href="#JWT-JSON-Web-Token" class="headerlink" title="JWT(JSON Web Token)"></a>JWT(JSON Web Token)</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><p>JWT(JSON Web Token) 是一个非常轻巧的规范，通过这个规范，可以传递可靠的安全信息，JWT常被用于前后端分离，可以和Restful API配合使用，常用于构建身份认证机制。</p>
+<p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).</p>
+<p>该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。</p>
+<p>JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
+<hr>
+<h2 id="组成"><a href="#组成" class="headerlink" title="组成:"></a>组成:</h2><p>一个通常你看到的jwt，由以下三部分组成，它们分别是：</p>
+<ol>
+<li><p><code>header</code>：主要声明了JWT的签名算法；</p>
+</li>
+<li><p><code>payload</code>：主要承载了各种声明并传递明文数据；</p>
+</li>
+<li><p><code>signture</code>：拥有该部分的JWT被称为JWS，也就是签了名的JWS；没有该部分的JWT被称为nonsecure JWT 也就是不安全的JWT，此时header中声明的签名算法为none。</p>
+</li>
+</ol>
+<p><code>signture</code>:将上面的<code>header</code>和<code>payload</code>编码后的字符串都用句号.连接在一起 提供一个密钥（secret）用头部所规定的算法加密就可以形成一个新的字符串</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110456.png" alt="20200417110456"></p>
+<p>三个部分用·分割。形如<code>xxxxx.yyyyy.zzzzz</code>的样式。</p>
+<p>示例:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417105901.png" alt="20200417105901"></p>
+<h2 id="签名的目的"><a href="#签名的目的" class="headerlink" title="签名的目的:"></a>签名的目的:</h2><p>最后一步签名的过程，实际上是对头部以及载荷内容进行签名。</p>
+<p>所以，如果有人对头部以及载荷的内容解码之后进行修改，再进行编码的话，那么新的头部和载荷的签名和之前的签名就将是不一样的。而且，如果不知道服务器加密的时候用的密钥的话，得出来的签名也一定会是不一样的。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110731.png" alt="20200417110731"></p>
+<p>服务器应用在接受到JWT后，会首先对头部和载荷的内容用同一算法再次签名。那么服务器应用是怎么知道我们用的是哪一种算法呢？别忘了，我们在JWT的头部中已经用alg字段指明了我们的加密算法了。</p>
+<p>如果服务器应用对头部和载荷再次以同样方法签名之后发现，自己计算出来的签名和接受到的签名不一样，那么就说明这个Token的内容被别人动过的，我们应该拒绝这个Token，返回一个HTTP 401 Unauthorized响应。</p>
+<hr>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h1><p><a href="https://jwt.io/" target="_blank" rel="noopener">解jwt的</a></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://segmentfault.com/a/1190000015881055" target="_blank" rel="noopener">token与sessionId的区别——学习笔记</a></li>
+<li><a href="http://blog.leapoahead.com/2015/09/07/user-authentication-with-jwt/" target="_blank" rel="noopener">八幅漫画理解使用JSON Web Token设计单点登录系统</a></li>
+</ul>
+<ul>
+<li><a href="http://blog.leapoahead.com/2015/09/06/understanding-jwt/" target="_blank" rel="noopener">JSON Web Token - 在Web应用间安全地传递信息</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/15/webpack带来的安全风险/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1961,152 +2163,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/23/Notes-Web安全防护指南基础篇/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/23/Notes-Web安全防护指南基础篇/" itemprop="url">Notes-Web安全防护指南基础篇</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-23T22:36:34+08:00">
-                2019-12-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Learning/" itemprop="url" rel="index">
-                    <span itemprop="name">Learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          Welcome to my blog, enter password to read.
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/12/23/Notes-Web安全防护指南基础篇/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2159,7 +2215,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2218,7 +2274,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
