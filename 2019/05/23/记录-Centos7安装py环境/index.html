@@ -88,8 +88,9 @@
 <meta property="og:description" content="Pre:环境: Centos7 64位  安装py3:py3版本:3.6.3 12# 准备编译环境yum install zlib-devel bzip2-devel openssl-devel ncurses-devel -y  12# 安装编译所需依赖yum install gcc-c++ gcc -y  12# 下载 Python3.6代码包wget https://www.python.o">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://i.loli.net/2019/05/23/5ce5ff3a7ce4393926.png">
+<meta property="og:image" content="https://i.loli.net/2019/05/23/5ce5ff3a7ce4393926.png">
 <meta property="og:image" content="https://i.loli.net/2019/05/23/5ce61595de84126805.png">
-<meta property="og:updated_time" content="2020-10-26T11:56:26.826Z">
+<meta property="og:updated_time" content="2021-05-24T03:20:21.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录-Centos7安装py环境">
 <meta name="twitter:description" content="Pre:环境: Centos7 64位  安装py3:py3版本:3.6.3 12# 准备编译环境yum install zlib-devel bzip2-devel openssl-devel ncurses-devel -y  12# 安装编译所需依赖yum install gcc-c++ gcc -y  12# 下载 Python3.6代码包wget https://www.python.o">
@@ -366,6 +367,20 @@
 
 <p>搞定.</p>
 <hr>
+<h1 id="同时再安装py3-9"><a href="#同时再安装py3-9" class="headerlink" title="同时再安装py3.9:"></a>同时再安装py3.9:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载 Python3.9源码包</span></span><br><span class="line">wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar xf Python-3.9.5.tgz -C /usr/<span class="built_in">local</span>/src/</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译安装</span></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/Python-3.9.5/</span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/python3.9</span><br><span class="line">make -j 4 &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<p>安装成功后提示</p>
+<p><img src="https://i.loli.net/2019/05/23/5ce5ff3a7ce4393926.png" alt=""></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 做软链：</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/python3.9/bin/python3 /usr/<span class="built_in">local</span>/bin/python3.9</span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/python3.9/bin/python3 /usr/bin/python3.9  </span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/python3.9/bin/pip3 /usr/bin/pip3.9</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 升级pip到最新版本：</span></span><br><span class="line">pip3.9 install --upgrade pip</span><br></pre></td></tr></table></figure>
+
+<p>注意路径，然后不要把原来的另一个python3版本的覆盖了就好。</p>
+<hr>
 <h1 id="安装py2"><a href="#安装py2" class="headerlink" title="安装py2:"></a>安装py2:</h1><p>py2版本:<code>2.7.13</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备编译环境</span></span><br><span class="line">yum groupinstall <span class="string">"Development tools"</span></span><br><span class="line">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel</span><br></pre></td></tr></table></figure>
 
@@ -578,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py3"><span class="nav-number">2.</span> <span class="nav-text">安装py3:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py2"><span class="nav-number">3.</span> <span class="nav-text">安装py2:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#包的迁移"><span class="nav-number">4.</span> <span class="nav-text">包的迁移:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pip其他使用场景"><span class="nav-number">5.</span> <span class="nav-text">pip其他使用场景:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py3"><span class="nav-number">2.</span> <span class="nav-text">安装py3:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#同时再安装py3-9"><span class="nav-number">3.</span> <span class="nav-text">同时再安装py3.9:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装py2"><span class="nav-number">4.</span> <span class="nav-text">安装py2:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#包的迁移"><span class="nav-number">5.</span> <span class="nav-text">包的迁移:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pip其他使用场景"><span class="nav-number">6.</span> <span class="nav-text">pip其他使用场景:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
             
 
           </div>
