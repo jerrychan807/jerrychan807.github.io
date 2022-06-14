@@ -47,80 +47,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Awvs-linux版配置文件修改</title>
-    <url>//42460.html</url>
-    <content><![CDATA[<h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>linux版相较于wins版,默认配置有些许差异</p>
-<table>
-<thead>
-<tr>
-<th>version</th>
-<th>api-port</th>
-<th>db-port</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>wins</td>
-<td>3443</td>
-<td>35432</td>
-</tr>
-<tr>
-<td>linux</td>
-<td>13443</td>
-<td>45432</td>
-</tr>
-</tbody></table>
-<p>现在要把linux的修改成wins的一样。。。</p>
-<hr>
-<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件:"></a>配置文件:</h1><h2 id="wvs-ini："><a href="#wvs-ini：" class="headerlink" title="wvs.ini："></a>wvs.ini：</h2><p>配置文件</p>
-<p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
-<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">logging.file.file_name</span>=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line"><span class="attr">logging.file.level</span>=INFO</span><br><span class="line"><span class="attr">server.address</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="number">3443</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">server.host</span>=debian</span><br><span class="line"><span class="attr">server.frontend.session_secret</span>=<span class="number">6</span>rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line"><span class="attr">wvs.temp_dir</span>=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line"><span class="attr">server.ssl.certificate</span>=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line"><span class="attr">server.ssl.private_key</span>=~/.acunetix_trial/data/certs/server.key</span><br><span class="line"><span class="attr">databases.connections.master.connection.user</span>=acunetix</span><br><span class="line"><span class="attr">databases.connections.master.connection.host</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.port</span>=<span class="number">35432</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.db</span>=wvs</span><br><span class="line"><span class="attr">databases.connections.master.connection.password</span>=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line"><span class="attr">server.static_document_root</span>=~/.acunetix_trial/v_190325161/ui</span><br><span class="line"><span class="attr">wvs.app_dir</span>=~/.acunetix_trial/v_190325161/scanner</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="start-sh"><a href="#start-sh" class="headerlink" title="start.sh"></a>start.sh</h2><p>启动脚本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop previous database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to start the db&quot;</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">&quot;--port=<span class="variable">$db_port</span>&quot;</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;attempting to start the backend&quot;</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;backend exited with&quot;</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop the database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;bye.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<hr>
-<h1 id="数据库文件"><a href="#数据库文件" class="headerlink" title="数据库文件:"></a>数据库文件:</h1><h2 id="pg-hba-conf"><a href="#pg-hba-conf" class="headerlink" title="pg_hba.conf:"></a>pg_hba.conf:</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
-<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png"></p>
-<p>跟原来的wins有些许差异.</p>
-<table>
-<thead>
-<tr>
-<th>version</th>
-<th>method</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>wins</td>
-<td>trust</td>
-</tr>
-<tr>
-<td>linux</td>
-<td>md5</td>
-</tr>
-</tbody></table>
-<p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
-<hr>
-<h2 id="postgresql-conf"><a href="#postgresql-conf" class="headerlink" title="postgresql.conf"></a>postgresql.conf</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
-<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">&#x27;*&#x27;</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">&#x27;Acunetix Trial Database&#x27;</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>然后就可以连接了。。。</p>
-<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png"></p>
-<p>密码在<code>wvs.ini</code>里。</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://www.acunetix.com/blog/category/docs/">acunetix docs</a></p>
-<p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
-]]></content>
-      <categories>
-        <category>SecurityTools</category>
-      </categories>
-      <tags>
-        <tag>SecurityTools</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</title>
     <url>//62100.html</url>
     <content><![CDATA[<h1 id="略读代码："><a href="#略读代码：" class="headerlink" title="略读代码："></a>略读代码：</h1><p>开头包含了文件</p>
@@ -204,6 +130,132 @@
 <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ul>
 <li><a href="http://blog.0kami.cn/2017/01/11/old-bluecms-v1-6-Sql-Injection/">【Code Review】bluecms v1.6 Sql Injection 分析</a></li>
 <li><a href="http://www.freebuf.com/articles/web/31537.html">浅析白盒审计中的字符编码及SQL注入</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>VulnAnalysis</category>
+      </categories>
+      <tags>
+        <tag>VulnAnalysis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Awvs-linux版配置文件修改</title>
+    <url>//42460.html</url>
+    <content><![CDATA[<h1 id="pre"><a href="#pre" class="headerlink" title="pre:"></a>pre:</h1><p>linux版相较于wins版,默认配置有些许差异</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>api-port</th>
+<th>db-port</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wins</td>
+<td>3443</td>
+<td>35432</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>13443</td>
+<td>45432</td>
+</tr>
+</tbody></table>
+<p>现在要把linux的修改成wins的一样。。。</p>
+<hr>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件:"></a>配置文件:</h1><h2 id="wvs-ini："><a href="#wvs-ini：" class="headerlink" title="wvs.ini："></a>wvs.ini：</h2><p>配置文件</p>
+<p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">logging.file.file_name</span>=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line"><span class="attr">logging.file.level</span>=INFO</span><br><span class="line"><span class="attr">server.address</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="number">3443</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">server.host</span>=debian</span><br><span class="line"><span class="attr">server.frontend.session_secret</span>=<span class="number">6</span>rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line"><span class="attr">wvs.temp_dir</span>=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line"><span class="attr">server.ssl.certificate</span>=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line"><span class="attr">server.ssl.private_key</span>=~/.acunetix_trial/data/certs/server.key</span><br><span class="line"><span class="attr">databases.connections.master.connection.user</span>=acunetix</span><br><span class="line"><span class="attr">databases.connections.master.connection.host</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.port</span>=<span class="number">35432</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.db</span>=wvs</span><br><span class="line"><span class="attr">databases.connections.master.connection.password</span>=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line"><span class="attr">server.static_document_root</span>=~/.acunetix_trial/v_190325161/ui</span><br><span class="line"><span class="attr">wvs.app_dir</span>=~/.acunetix_trial/v_190325161/scanner</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="start-sh"><a href="#start-sh" class="headerlink" title="start.sh"></a>start.sh</h2><p>启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop previous database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to start the db&quot;</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">&quot;--port=<span class="variable">$db_port</span>&quot;</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;attempting to start the backend&quot;</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;backend exited with&quot;</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop the database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;bye.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h1 id="数据库文件"><a href="#数据库文件" class="headerlink" title="数据库文件:"></a>数据库文件:</h1><h2 id="pg-hba-conf"><a href="#pg-hba-conf" class="headerlink" title="pg_hba.conf:"></a>pg_hba.conf:</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
+<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png"></p>
+<p>跟原来的wins有些许差异.</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>method</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wins</td>
+<td>trust</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>md5</td>
+</tr>
+</tbody></table>
+<p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
+<hr>
+<h2 id="postgresql-conf"><a href="#postgresql-conf" class="headerlink" title="postgresql.conf"></a>postgresql.conf</h2><p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">&#x27;*&#x27;</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">&#x27;Acunetix Trial Database&#x27;</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>然后就可以连接了。。。</p>
+<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png"></p>
+<p>密码在<code>wvs.ini</code>里。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://www.acunetix.com/blog/category/docs/">acunetix docs</a></p>
+<p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
+]]></content>
+      <categories>
+        <category>SecurityTools</category>
+      </categories>
+      <tags>
+        <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
+    <url>//59330.html</url>
+    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
+<p>方便管理员对模板html文件进行修改</p>
+<hr>
+<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
+<li><code>$_REQUEST</code></li>
+<li><code>$_REQUEST[&#39;act&#39;]</code></li>
+<li><code>$_GET</code></li>
+<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST</code></li>
+<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
+</ul>
+<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
+<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
+<p>有什么比较有价值的网站文件吗?</p>
+<p>可以php文件即读到网站源码</p>
+<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
+<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
+<hr>
+<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
+<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
+<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
+<p>怎么攻击呢？</p>
+<p>可以修改网站下的任何源代码，可以</p>
+<ul>
+<li>写入一句话木马</li>
+<li>盗号js</li>
+</ul>
+<p>写入一句话木马</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
+<hr>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
+<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
 </ul>
 ]]></content>
       <categories>
@@ -315,55 +367,42 @@
       </tags>
   </entry>
   <entry>
-    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
-    <url>//59330.html</url>
-    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
-<p>方便管理员对模板html文件进行修改</p>
+    <title>Celery-动态路由</title>
+    <url>//42649.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在使用celery的时候,可以根据任务情况(任务类型,任务参数),更灵活的把任务分发到不同的队列里.</p>
 <hr>
-<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
-<li><code>$_REQUEST</code></li>
-<li><code>$_REQUEST[&#39;act&#39;]</code></li>
-<li><code>$_GET</code></li>
-<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST</code></li>
-<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
-</ul>
-<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
-<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="任务的去向"><a href="#任务的去向" class="headerlink" title="任务的去向"></a>任务的去向</h1><p>在Celery中, 任务的目的是由下列因素决定（按顺序）:</p>
+<ol>
+<li>task_routes 中定义的路由 </li>
+<li>Task.apply_async() 方法的路由参数 </li>
+<li>Task 本身定义的路由相关属性</li>
+</ol>
+<p>最佳实践是<strong>不写死这些设置，而是通过 Routers 将它作为配置选项；这是最灵活的方式</strong>，但是合理的默认值仍然可以设置称任务属性。</p>
+<hr>
+<h1 id="手动路由做法"><a href="#手动路由做法" class="headerlink" title="手动路由做法:"></a>手动路由做法:</h1><p>一般都会在celery的配置文件里静态写死队列和路由即默认值.如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_QUEUES=(Queue(<span class="string">&quot;fingerprint&quot;</span>, Exchange(<span class="string">&quot;fingerprint&quot;</span>),routing_key=<span class="string">&quot;fingerprint&quot;</span>),  <span class="comment"># 指纹识别)</span></span><br></pre></td></tr></table></figure>
 
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_ROUTES=&#123; <span class="string">&#x27;fingerprint_all_scanner.tasks.startDetectUrl&#x27;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;,&#125;</span><br></pre></td></tr></table></figure>
 
-<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
-<p>有什么比较有价值的网站文件吗?</p>
-<p>可以php文件即读到网站源码</p>
-<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
 <hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
-<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
-<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
-<p>怎么攻击呢？</p>
-<p>可以修改网站下的任何源代码，可以</p>
-<ul>
-<li>写入一句话木马</li>
-<li>盗号js</li>
-</ul>
-<p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
+<h1 id="动态路由做法"><a href="#动态路由做法" class="headerlink" title="动态路由做法:"></a>动态路由做法:</h1><p>自定义一个Router类</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyRouter</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">route_for_task</span>(<span class="params">self, task, args=<span class="literal">None</span>, kwargs=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">print</span> task  <span class="comment"># 任务类型</span></span><br><span class="line">        <span class="built_in">print</span> args  <span class="comment"># 列表任务参数</span></span><br><span class="line">        <span class="built_in">print</span> kwargs <span class="comment"># 键值对任务参数</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 在此处可以自定义代码,可以根据任务参数或者任务类型更灵活的将任务发到不同的队列里</span></span><br><span class="line">        <span class="keyword">if</span> task.startswith(<span class="string">&#x27;fingerprint_all_scanner&#x27;</span>):</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后把配置替换为如下即可</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_ROUTES=(MyRouter(),)</span><br></pre></td></tr></table></figure>
+
 <hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
-<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://blog.csdn.net/zhangfh1990/article/details/77043562">Celery消息队列—-路由任务</a></li>
+<li><a href="http://docs.jinkan.org/docs/celery/userguide/routing.html#routers">Routing Tasks</a></li>
+<li><a href="https://www.jianshu.com/p/b3d2c5871bec">celery路由和交换的相关知识</a></li>
 </ul>
 ]]></content>
       <categories>
-        <category>VulnAnalysis</category>
+        <category>Dev</category>
       </categories>
       <tags>
-        <tag>VulnAnalysis</tag>
+        <tag>Dev</tag>
       </tags>
   </entry>
   <entry>
@@ -531,45 +570,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Celery-动态路由</title>
-    <url>//42649.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在使用celery的时候,可以根据任务情况(任务类型,任务参数),更灵活的把任务分发到不同的队列里.</p>
-<hr>
-<h1 id="任务的去向"><a href="#任务的去向" class="headerlink" title="任务的去向"></a>任务的去向</h1><p>在Celery中, 任务的目的是由下列因素决定（按顺序）:</p>
-<ol>
-<li>task_routes 中定义的路由 </li>
-<li>Task.apply_async() 方法的路由参数 </li>
-<li>Task 本身定义的路由相关属性</li>
-</ol>
-<p>最佳实践是<strong>不写死这些设置，而是通过 Routers 将它作为配置选项；这是最灵活的方式</strong>，但是合理的默认值仍然可以设置称任务属性。</p>
-<hr>
-<h1 id="手动路由做法"><a href="#手动路由做法" class="headerlink" title="手动路由做法:"></a>手动路由做法:</h1><p>一般都会在celery的配置文件里静态写死队列和路由即默认值.如下</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_QUEUES=(Queue(<span class="string">&quot;fingerprint&quot;</span>, Exchange(<span class="string">&quot;fingerprint&quot;</span>),routing_key=<span class="string">&quot;fingerprint&quot;</span>),  <span class="comment"># 指纹识别)</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_ROUTES=&#123; <span class="string">&#x27;fingerprint_all_scanner.tasks.startDetectUrl&#x27;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;,&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="动态路由做法"><a href="#动态路由做法" class="headerlink" title="动态路由做法:"></a>动态路由做法:</h1><p>自定义一个Router类</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyRouter</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">route_for_task</span>(<span class="params">self, task, args=<span class="literal">None</span>, kwargs=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">print</span> task  <span class="comment"># 任务类型</span></span><br><span class="line">        <span class="built_in">print</span> args  <span class="comment"># 列表任务参数</span></span><br><span class="line">        <span class="built_in">print</span> kwargs <span class="comment"># 键值对任务参数</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 在此处可以自定义代码,可以根据任务参数或者任务类型更灵活的将任务发到不同的队列里</span></span><br><span class="line">        <span class="keyword">if</span> task.startswith(<span class="string">&#x27;fingerprint_all_scanner&#x27;</span>):</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后把配置替换为如下即可</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CELERY_ROUTES=(MyRouter(),)</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://blog.csdn.net/zhangfh1990/article/details/77043562">Celery消息队列—-路由任务</a></li>
-<li><a href="http://docs.jinkan.org/docs/celery/userguide/routing.html#routers">Routing Tasks</a></li>
-<li><a href="https://www.jianshu.com/p/b3d2c5871bec">celery路由和交换的相关知识</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Dev</category>
-      </categories>
-      <tags>
-        <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Crawler-利用Simhash做URL去重</title>
     <url>//40924.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>为了防止扫重复的url以及提高扫描效率,url去重扫描器的爬虫中必不可少的一部分.</p>
@@ -654,80 +654,6 @@
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://docs.bscscan.com/api-endpoints/accounts">bscscan api</a></li>
 <li><a href="https://ethereum.stackexchange.com/questions/11144/how-to-decode-input-data-from-a-transaction">How to decode input data from a transaction?</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-CryptoZombie僵尸世界NFT游戏</title>
-    <url>//60348.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。</p>
-<p>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
-<hr>
-<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ul>
-<li>在remix编写solidity</li>
-<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
-<li>truffle部署到ropsten测试网</li>
-<li>vue编写代码调试，与合约交互</li>
-</ul>
-<hr>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
-<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
-
-<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
-<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
-<hr>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
-
-<p>即可部署至Ropsten</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
-<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
-<hr>
-<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
-<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
-<p><code>view</code>读取存储，但不会修改</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
-<hr>
-<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
-<p>external - Cannot be accessed internally, only externally</p>
-<p>internal - only this contract and contracts deriving from it can access</p>
-<p>private - can be accessed only from this contract</p>
-<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
-<hr>
-<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
-<hr>
-<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
-<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
-<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
-<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
-<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
-<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
-<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -828,302 +754,70 @@
       </tags>
   </entry>
   <entry>
-    <title>Crypto-DoDoFlashLoan测试网例子</title>
-    <url>//33960.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>DoDo支持flash loan,并且手续费上比较友好</p>
-<blockquote>
-<p>注：DODO V2 闪电贷仅当返还的base quote 数量比例产生变化时，合约会预览一笔将base quote 磨平的交易，该磨平交易手续费作为闪电贷手续费。其他情况不收取手续费用</p>
-</blockquote>
-<p>试试在<code>rinkby</code>测试网上能否执行借款还款操作</p>
+    <title>Crypto-CryptoZombie僵尸世界NFT游戏</title>
+    <url>//60348.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。</p>
+<p>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
 <hr>
-<h1 id="DoDo闪电交换机制"><a href="#DoDo闪电交换机制" class="headerlink" title="DoDo闪电交换机制:"></a>DoDo闪电交换机制:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png" alt="20220226162909"></p>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
 <hr>
-<h1 id="Code"><a href="#Code" class="headerlink" title="Code:"></a>Code:</h1><h2 id="solidity代码"><a href="#solidity代码" class="headerlink" title="solidity代码:"></a>solidity代码:</h2><p>参考文档里<a href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a>，有代码例子<br>该代码则是只实现了借款和还款的操作，具体的借款后的操作逻辑还要自己实现</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/IDODO.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/Withdraw.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Flashloan</span> is <span class="title class_">Withdraw</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">dodoFlashLoan</span>(<span class="params"></span></span><br><span class="line"><span class="params">        address flashLoanPool, <span class="comment">//You will make a flashloan from this DODOV2 pool</span></span></span><br><span class="line"><span class="params">        uint256 loanAmount, </span></span><br><span class="line"><span class="params">        address loanToken</span></span><br><span class="line"><span class="params">    </span>) external  &#123;</span><br><span class="line">        <span class="comment">//Note: The data can be structured with any variables required by your logic. The following code is just an example</span></span><br><span class="line">        bytes memory data = abi.<span class="title function_">encode</span>(flashLoanPool, loanToken, loanAmount);</span><br><span class="line">        address flashLoanBase = <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">_BASE_TOKEN_</span>();</span><br><span class="line">        <span class="keyword">if</span>(flashLoanBase == loanToken) &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(loanAmount, <span class="number">0</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(<span class="number">0</span>, loanAmount, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DVM) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DVMFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount,bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DPP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DPPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DSP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DSPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_flashLoanCallBack</span>(<span class="params">address sender, uint256, uint256, bytes calldata data</span>) internal &#123;</span><br><span class="line">        (address flashLoanPool, address loanToken, uint256 loanAmount) = abi.<span class="title function_">decode</span>(data, (address, address, uint256));</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">require</span>(sender == <span class="title function_">address</span>(<span class="variable language_">this</span>) &amp;&amp; msg.<span class="property">sender</span> == flashLoanPool, <span class="string">&quot;HANDLE_FLASH_NENIED&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Note: Realize your own logic using the token from flashLoan pool.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//Return funds</span></span><br><span class="line">        <span class="title class_">IERC20</span>(loanToken).<span class="title function_">transfer</span>(flashLoanPool, loanAmount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="brownie"><a href="#brownie" class="headerlink" title="brownie"></a>brownie</h2><p>部署脚本:</p>
-<p><code>brownie run scripts/deployment.py --network rinkeby</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Deploy a `Flashloan` contract from `accounts[0]`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    acct = accounts.add(</span><br><span class="line">        config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>]</span><br><span class="line">    )  <span class="comment"># add your keystore ID as an argument to this call</span></span><br><span class="line"></span><br><span class="line">    flashloan = Flashloan.deploy(&#123;<span class="string">&quot;from&quot;</span>: acct&#125;)</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br></pre></td></tr></table></figure>
-
-<p>执行脚本</p>
-<p><code>brownie run scripts/run_flash_loan.py --network rinkeby</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network, interface</span><br><span class="line"></span><br><span class="line">ETHERSCAN_TX_URL = <span class="string">&quot;https://rinkeby.etherscan.io/tx/&#123;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Executes the funcitonality of the flash loan.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    acct = accounts.add(config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Getting Flashloan contract...&quot;</span>)</span><br><span class="line">    flashloan = Flashloan[<span class="built_in">len</span>(Flashloan) - <span class="number">1</span>]</span><br><span class="line">    usdc = interface.IERC20(config[<span class="string">&quot;networks&quot;</span>][network.show_active()][<span class="string">&quot;usdc&quot;</span>])</span><br><span class="line"></span><br><span class="line">    balance = usdc.balanceOf(acct) </span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Executing Flashloan...&quot;</span>)</span><br><span class="line">    tx = flashloan.dodoFlashLoan(<span class="string">&quot;0x446Bb563EEC2E5C439f5b94C6DaAebcCF5d2F99C&quot;</span>,<span class="number">10000000</span>,<span class="string">&quot;0xab0733588776B8881F7712f6AbCa98F510e6B63D&quot;</span>,  &#123;<span class="string">&quot;from&quot;</span>: acct, <span class="string">&quot;gas_limit&quot;</span>:<span class="string">&quot;5074044&quot;</span>, <span class="string">&quot;allow_revert&quot;</span>:<span class="literal">True</span>&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;You did it! View your tx here: &quot;</span> + ETHERSCAN_TX_URL.<span class="built_in">format</span>(tx.txid))</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果:"></a>执行效果:</h2><p><a href="https://rinkeby.etherscan.io/tx/0xbc67ada4c2d570f8aba40cae4bd47794d9f25f4969b72792b30d2e23f0c8481b">tx</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550"></p>
-<p>能成功借款还款</p>
-<hr>
-<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题:"></a>遇到的问题:</h1><p>dodoFlashLoan函数有3个参数:</p>
-<ul>
-<li>flashLoanPool 池子地址</li>
-<li>loanAmount 数量</li>
-<li>loanToken 要借的token地址</li>
+<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ul>
+<li>在remix编写solidity</li>
+<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
+<li>truffle部署到ropsten测试网</li>
+<li>vue编写代码调试，与合约交互</li>
 </ul>
-<h2 id="选择池子地址"><a href="#选择池子地址" class="headerlink" title="选择池子地址:"></a>选择池子地址:</h2><p>在<code>https://app.dodoex.io/pool/list?network=rinkeby</code>可以看到有哪些池子信息</p>
-<p>比如此处我要借usdc，就可以搜索一下</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537"></p>
-<p>然后该池子还要支持flashloan，比如上图第一个池子就不支持，第二个池子才支持</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948"></p>
 <hr>
-<h2 id="借款数量"><a href="#借款数量" class="headerlink" title="借款数量"></a>借款数量</h2><p>一开始我填的<code>loanAmount</code>为10 ether,想借10个，转换成wei则为<code>10000000000000000000</code><br>执行后报错，无法正常借款还款</p>
-<p>查一下报错<br><code>https://dashboard.tenderly.co/tx/rinkeby/0xee7f3a6e0ef5906f8f95cbc789151e1d62da424dc80c6d93c80307ba060be646</code></p>
-<p><code>Error Message:ERC20: transfer amount exceeds balance</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png" alt="20220226162947"></p>
-<p>对比一下Dodo流程，此时池子在借款的时候，要发送token给我合约时报错了，报错信息为转账数量超过余额了。</p>
-<p>减少<code>loanAmount</code>为<code>10000000</code>后，发现能成功，原来该usdc的精度为6位</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700"></p>
-<p>以后要注意一下，大多数代币的精度为18位，但有些代币不是。</p>
+<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
+<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
+
+<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
+<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
+<hr>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
+
+<p>即可部署至Ropsten</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
+<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
+<hr>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
+<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
+<p><code>view</code>读取存储，但不会修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
+<hr>
+<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
+<p>external - Cannot be accessed internally, only externally</p>
+<p>internal - only this contract and contracts deriving from it can access</p>
+<p>private - can be accessed only from this contract</p>
+<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
+<hr>
+<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
+<hr>
+<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
 <hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a></li>
-<li><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts">https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts</a></li>
-<li><a href="https://medium.com/coinmonks/no-flashloan-fee-with-dodo-cc78215d7f93">No Flashloan Fee with DODO</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-Erc20区分买卖_添加移除流动性行为</title>
-    <url>//14814.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到<code>Transfer()</code>函数,在代码层面上是只有转移的行为。</p>
-<p>那么如何在solidity里区分这几个行为呢？</p>
-<p>如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。</p>
-<h1 id="Token转移："><a href="#Token转移：" class="headerlink" title="Token转移："></a>Token转移：</h1><p>token发生转移时，会有发送方<code>sender</code>,接收方<code>recipient</code><br>可以把Buy、Sell、AddLiquidity、RemoveLiquidity分类为下面两种情况。</p>
-<p><code>sender</code>为Pair，<code>recipient</code>为Token</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Buy:</span><br><span class="line">Usdt ——&gt; Pair ——&gt; Token</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RemoveLiquidity:</span><br><span class="line">LpToken ——&gt; Pair ——&gt; Usdt、Token</span><br></pre></td></tr></table></figure>
-
-<p><code>sender</code>为Token，<code>recipient</code>为Pair</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sell:</span><br><span class="line">Token ——&gt; Pair ——&gt; Usdt</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AddLiquidity:</span><br><span class="line">Usdt、Token ——&gt; Pair ——&gt; LpToken</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>sender</th>
-<th>recipient</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-</tbody></table>
-<p>那如何在solidity里区分这四种行为呢？</p>
-<hr>
-<h1 id="在solidity里区分："><a href="#在solidity里区分：" class="headerlink" title="在solidity里区分："></a>在solidity里区分：</h1><p>关键的判断代码如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询uniswap储备量</span></span><br><span class="line"><span class="comment">// 实例化pair</span></span><br><span class="line"><span class="title class_">IUniswapV</span>2Pair uniswapV2Pair = <span class="title class_">IUniswapV</span>2Pair(uniswapV2PairAddress);</span><br><span class="line"><span class="comment">// 获取上一次swap的结果</span></span><br><span class="line">(uint112 reserve0, uint112 reserve1,) = uniswapV2Pair.<span class="title function_">getReserves</span>();</span><br><span class="line"><span class="comment">// Buy: Usdt↑ Token↓</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token0</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve1) </span><br><span class="line">|| (<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token1</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve0)) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过储备量的变化情况，来区分开这四种行为。</p>
-<hr>
-<h1 id="一些知识点："><a href="#一些知识点：" class="headerlink" title="一些知识点："></a>一些知识点：</h1><h2 id="Uniswap的getreserves获取储备量函数"><a href="#Uniswap的getreserves获取储备量函数" class="headerlink" title="Uniswap的getreserves获取储备量函数"></a>Uniswap的getreserves获取储备量函数</h2><p>可以通过<code>getreserves()</code>获取pair里两类币种的储备量。</p>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>reserve0(USDT)储备量变化</th>
-<th>reserve1（XToken）储备量变化</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>↓</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>↑</td>
-<td>↓</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>↑</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>↓</td>
-<td>↓</td>
-</tr>
-</tbody></table>
-<h2 id="在合约里调用其他合约"><a href="#在合约里调用其他合约" class="headerlink" title="在合约里调用其他合约"></a>在合约里调用其他合约</h2><p>interface + 地址</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;./IUniswapV2Factory.sol&quot;</span>;</span><br><span class="line"><span class="comment">// bsc testnet addr</span></span><br><span class="line">address v2FactoryAddress = <span class="number">0x182859893230dC89b114d6e2D547BFFE30474a21</span>;</span><br><span class="line"><span class="title class_">IUniswapV</span>2Factory uniswapv2Factory = <span class="title class_">IUniswapV</span>2Factory(v2FactoryAddress);</span><br><span class="line">uniswapV2PairAddress = uniswapv2Factory.<span class="title function_">createPair</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), usdtAddress);</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="验证多合约源码："><a href="#验证多合约源码：" class="headerlink" title="验证多合约源码："></a>验证多合约源码：</h2><ul>
-<li>etherscan、bscscan直接将多个源代码文件上传即可</li>
-<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
-</ul>
-<hr>
-<h1 id="测试情况："><a href="#测试情况：" class="headerlink" title="测试情况："></a>测试情况：</h1><h2 id="手动测试网测试"><a href="#手动测试网测试" class="headerlink" title="手动测试网测试:"></a>手动测试网测试:</h2><table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Fee</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>10%</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>10%</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Result</th>
-<th>tx</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x8e937af584c94bfbd1f5280c2a382a2812301178f9d5f3498fe3a75dc24bf285">tx</a></td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>fail</td>
-<td>tx</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x7ed0f97a08896a0f1059ae15c2ff42dcd16370f755f386aafad76d861da51879">tx</a></td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x2e837f4e94c9f8e47490911f1c2d9953ed92e598f4976724444076f160da2cb3">tx</a></td>
-</tr>
-</tbody></table>
-<h2 id="hardhat测试："><a href="#hardhat测试：" class="headerlink" title="hardhat测试："></a>hardhat测试：</h2><p>也是Sell这里暂时没能成功</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
-<li><a href="https://solveforum.com/forums/threads/solved-hardhat-testing-on-testnet-rinkeby.467949/">[Solved] Hardhat testing on testnet (Rinkeby)</a></li>
-<li><a href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-Hardhat框架初步使用</title>
-    <url>//64479.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉、回顾一下hardhat框架的使用，为后续erc20各类功能实现的学习做准备。</p>
-<hr>
-<h1 id="设置环境"><a href="#设置环境" class="headerlink" title="设置环境:"></a>设置环境:</h1><p>完整的安装步骤可参考refs里的链接进行安装，此处只记录部分的步骤</p>
-<h1 id="创建一个Hardhat项目"><a href="#创建一个Hardhat项目" class="headerlink" title="创建一个Hardhat项目:"></a>创建一个Hardhat项目:</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件夹、为项目根目录</span></span><br><span class="line"><span class="built_in">mkdir</span> demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line"><span class="comment"># yarn初始化</span></span><br><span class="line">yarn init --<span class="built_in">yes</span></span><br><span class="line">yarn add -D hardhat</span><br><span class="line"><span class="comment"># 安装各类插件</span></span><br><span class="line">yarn add -D hardhat-deploy hardhat-deploy-ethers ethers chai chai-ethers mocha @types/chai @types/mocha @types/node typescript ts-node dotenv</span><br></pre></td></tr></table></figure>
-
-<p>根目录编辑<code>tsconfig.json</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;target&quot;</span>: <span class="string">&quot;es5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;module&quot;</span>: <span class="string">&quot;commonjs&quot;</span>,</span><br><span class="line">    <span class="string">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;esModuleInterop&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;moduleResolution&quot;</span>: <span class="string">&quot;node&quot;</span>,</span><br><span class="line">    <span class="string">&quot;forceConsistentCasingInFileNames&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;outDir&quot;</span>: <span class="string">&quot;dist&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="string">&quot;include&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;hardhat.config.ts&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./deploy&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./test&quot;</span>,</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="编写智能合约"><a href="#编写智能合约" class="headerlink" title="编写智能合约:"></a>编写智能合约:</h1><p>根目录编辑<code>hardhat.config.ts</code>文件</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hardhat.config.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatUserConfig</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy-ethers&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">HardhatUserConfig</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: &#123;</span><br><span class="line">    <span class="attr">version</span>: <span class="string">&#x27;0.7.6&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">namedAccounts</span>: &#123;</span><br><span class="line">    <span class="attr">deployer</span>: <span class="number">0</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">paths</span>: &#123;</span><br><span class="line">    <span class="attr">sources</span>: <span class="string">&#x27;src&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
-
-<p>根目录创建一个名为<code>contracts</code>的新目录，并在该目录内创建一个名为<code>Token.sol</code>的文件</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Token.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line"><span class="comment">// The line above is recommended and let you define the license of your contract</span></span><br><span class="line"><span class="comment">// Solidity files have to start with this pragma.</span></span><br><span class="line"><span class="comment">// It will be used by the Solidity compiler to validate its version.</span></span><br><span class="line">pragma solidity ^<span class="number">0.7</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// This is the main building block for smart contracts.</span></span><br><span class="line">contract <span class="title class_">Token</span> &#123;</span><br><span class="line">    <span class="comment">// Some string type variables to identify the token.</span></span><br><span class="line">    <span class="comment">// The `public` modifier makes a variable readable from outside the contract.</span></span><br><span class="line">    string public name = <span class="string">&quot;My Hardhat Token&quot;</span>;</span><br><span class="line">    string public symbol = <span class="string">&quot;MBT&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The fixed amount of tokens stored in an unsigned integer type variable.</span></span><br><span class="line">    uint256 public totalSupply = <span class="number">1000000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// An address type variable is used to store ethereum accounts.</span></span><br><span class="line">    address public owner;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// A mapping is a key/value map. Here we store each account balance.</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256) balances;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Contract initialization.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `constructor` is executed only once when the contract is created.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address _owner</span>) &#123;</span><br><span class="line">        <span class="comment">// The totalSupply is assigned to transaction sender, which is the account</span></span><br><span class="line">        <span class="comment">// that is deploying the contract.</span></span><br><span class="line">        balances[_owner] = totalSupply;</span><br><span class="line">        owner = _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * A function to transfer tokens.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `external` modifier makes a function *only* callable from outside</span></span><br><span class="line"><span class="comment">     * the contract.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint256 amount</span>) external &#123;</span><br><span class="line">        <span class="comment">// Check if the transaction sender has enough tokens.</span></span><br><span class="line">        <span class="comment">// If `require`&#x27;s first argument evaluates to `false` then the</span></span><br><span class="line">        <span class="comment">// transaction will revert.</span></span><br><span class="line">        <span class="built_in">require</span>(balances[msg.<span class="property">sender</span>] &gt;= amount, <span class="string">&quot;Not enough tokens&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Transfer the amount.</span></span><br><span class="line">        balances[msg.<span class="property">sender</span>] -= amount;</span><br><span class="line">        balances[to] += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Read only function to retrieve the token balance of a given account.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `view` modifier indicates that it doesn&#x27;t modify the contract&#x27;s</span></span><br><span class="line"><span class="comment">     * state, which allows us to call it without executing a transaction.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address account</span>) external view returns (uint256) &#123;</span><br><span class="line">        <span class="keyword">return</span> balances[account];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="编译"><a href="#编译" class="headerlink" title="编译:"></a>编译:</h1><p>终端运行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn run v1.22.10</span><br><span class="line">$ /Users/cool-erc20/demo/node_modules/.bin/hardhat compile</span><br><span class="line">Compiled 1 Solidity file successfully</span><br><span class="line">✨  Done <span class="keyword">in</span> 5.25s.</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="部署脚本"><a href="#部署脚本" class="headerlink" title="部署脚本:"></a>部署脚本:</h1><p>在能够测试或部署合约之前，你需要设置部署脚本，以便在测试和准备部署时使用。<br>部署脚本让你可以专注于合约的最终形式，设置它们的参数和依赖关系，并确保你的测试的是将要部署的内容。<br>部署脚本也省去了重复部署的烦恼。<br>根目录下创建一个名为<code>deploy</code>的新目录，并创建一个名为<code>001_deploy_token.ts</code>的新文件。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 001_deploy_token.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatRuntimeEnvironment</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">DeployFunction</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat-deploy/types&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">func</span>: <span class="title class_">DeployFunction</span> = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params">hre: HardhatRuntimeEnvironment</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;deployments, getNamedAccounts&#125; = hre;</span><br><span class="line">  <span class="keyword">const</span> &#123;deploy&#125; = deployments;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123;deployer, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">getNamedAccounts</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">deploy</span>(<span class="string">&#x27;Token&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">from</span>: deployer,</span><br><span class="line">    <span class="attr">args</span>: [tokenOwner],</span><br><span class="line">    <span class="attr">log</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> func;</span><br><span class="line">func.<span class="property">tags</span> = [<span class="string">&#x27;Token&#x27;</span>];</span><br></pre></td></tr></table></figure>
-
-<p>编辑<code>hardhat.config.ts</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hardhat.config.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatUserConfig</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy-ethers&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">HardhatUserConfig</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: &#123;</span><br><span class="line">    <span class="attr">version</span>: <span class="string">&#x27;0.7.6&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">namedAccounts</span>: &#123;</span><br><span class="line">    <span class="attr">deployer</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">tokenOwner</span>: <span class="number">1</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">paths</span>: &#123;</span><br><span class="line">    <span class="attr">sources</span>: <span class="string">&#x27;src&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
-
-<p>终端上运行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat deploy</span><br></pre></td></tr></table></figure>
-
-<p>此次部署是在<code>内存</code>中的hardhat网络中进行的。</p>
-<p>输出</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn hardhat deploy</span><br><span class="line">yarn run v1.22.10</span><br><span class="line">$ /Users/cool-erc20/demo/node_modules/.bin/hardhat deploy</span><br><span class="line">Nothing to compile</span><br><span class="line">deploying <span class="string">&quot;Token&quot;</span> (tx: 0x453cf83db75329816a62d6079aa22f694036d339106344b7e1864bcb344aa49d)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 483242 gas</span><br><span class="line">✨  Done <span class="keyword">in</span> 5.60s.</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="测试合约"><a href="#测试合约" class="headerlink" title="测试合约:"></a>测试合约:</h1><p>在项目根目录下创建一个名为<code>test</code>的新目录，并创建一个名为<code>Token.test.ts</code>的新文件。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Token.test.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;expect&#125; <span class="keyword">from</span> <span class="string">&quot;./chai-setup&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;ethers, deployments, getNamedAccounts&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Token contract&quot;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;Deployment should assign the total supply of tokens to the owner&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">await</span> deployments.<span class="title function_">fixture</span>([<span class="string">&quot;Token&quot;</span>]);</span><br><span class="line">    <span class="keyword">const</span> &#123;tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">getNamedAccounts</span>();</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">Token</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContract</span>(<span class="string">&quot;Token&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> ownerBalance = <span class="keyword">await</span> <span class="title class_">Token</span>.<span class="title function_">balanceOf</span>(tokenOwner);</span><br><span class="line">    <span class="keyword">const</span> supply = <span class="keyword">await</span> <span class="title class_">Token</span>.<span class="title function_">totalSupply</span>();</span><br><span class="line">    <span class="title function_">expect</span>(ownerBalance).<span class="property">to</span>.<span class="title function_">equal</span>(supply);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p><code>test</code>目录下创建<code>chai-setup.ts</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// chai-setup.ts</span></span><br><span class="line"><span class="keyword">import</span> chaiModule <span class="keyword">from</span> <span class="string">&#x27;chai&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;chaiEthers&#125; <span class="keyword">from</span> <span class="string">&#x27;chai-ethers&#x27;</span>;</span><br><span class="line">chaiModule.<span class="title function_">use</span>(chaiEthers);</span><br><span class="line"><span class="keyword">export</span> = chaiModule;</span><br></pre></td></tr></table></figure>
-
-<p>在终端上运行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hardhat <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npx hardhat <span class="built_in">test</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">  Token contract</span><br><span class="line">    ✔ Deployment should assign the total supply of tokens to the owner (947ms)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">  1 passing (958ms)</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="常用命令合集："><a href="#常用命令合集：" class="headerlink" title="常用命令合集："></a>常用命令合集：</h1><p>记录一些hardhat框架的常用命令，后面方便复查。</p>
-<h2 id="编译："><a href="#编译：" class="headerlink" title="编译："></a>编译：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
-
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在hardhat网络</span></span><br><span class="line">yarn hardhat deploy</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在配置文件对应的测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet deploy</span><br></pre></td></tr></table></figure>
-<h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试单个script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test test/transfer.ts</span><br></pre></td></tr></table></figure>
-
-<h2 id="验证合约源码："><a href="#验证合约源码：" class="headerlink" title="验证合约源码："></a>验证合约源码：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">example:合约源代码、部署网络、合约的地址</span></span><br><span class="line">yarn hardhat verify --contract contracts/JToken.sol:JToken --network bsc_testnet 0x582cA468bcE2a68D1147D5411814256E52590103</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>构建一个hardhat项目，一般需要以下几个步骤</p>
-<ul>
-<li>环境安装</li>
-<li>创建hardhat项目</li>
-<li>智能合约编写和编译 compile</li>
-<li>编写部署脚本 deploy</li>
-<li>验证合约源码</li>
-<li>编写测试脚本 test</li>
-</ul>
-<hr>
-<h1 id="inspire："><a href="#inspire：" class="headerlink" title="inspire："></a>inspire：</h1><p>search或构建一个适合某类项目的hardhat脚手架，就不用每次都一步步setup了。</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://learnblockchain.cn/article/2354">hardhat 教程及 hardhat-deploy 插件使用</a></li>
-<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
+<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
+<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
+<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
+<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
+<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
+<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
+<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -1192,85 +886,6 @@
 <hr>
 <h1 id="有趣的点2：市场活跃度-amp-差价"><a href="#有趣的点2：市场活跃度-amp-差价" class="headerlink" title="有趣的点2：市场活跃度&amp;差价"></a>有趣的点2：市场活跃度&amp;差价</h1><p>在比较火的那段时间里，raca nft市场的交易量是特别大的，流动性很足，基本上很多商品只要挂最低价上去，就会被立刻买走。</p>
 <p>另外，raca nft市场可以批量10个或100个卖出，一般批量的价格会比单个的价格更低，存在一些差价，这当中有套利的机会。</p>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-SuperTrend指标_合约交易脚本</title>
-    <url>//14610.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>上一篇是去购买现货,回测几次后，发现效果还不错，由于定量设置了止盈率，挂好了<code>limit sell order</code>后,在短期拉盘的时候，能卖得出去。</p>
-<p>想起之前看的<a href="https://tokentax.co/blog/best-crypto-trading-bot/">The Best Crypto Trading Bots On the Market | TokenTax</a></p>
-<blockquote>
-<p>crypto trading bots enable trading based on data and trends—not on emotional impulse</p>
-<p>Ultimately, this usually grows their profits, minimizes their risks, and limits their losses across exchanges. </p>
-<p>Furthermore, bots can produce passive income 24 hours a day. Whether you’re sleeping, biking, giving a presentation, whatever: you could also be earning from automated trades.</p>
-</blockquote>
-<p>通过策略写机器人来做交易,算是有严格的纪律性了，由数据驱动，不受情绪的影响。<br>另外一个好处就是，不用去盯盘。</p>
-<p>这次拿来做合约交易</p>
-<hr>
-<h1 id="策略"><a href="#策略" class="headerlink" title="策略:"></a>策略:</h1><ul>
-<li>选择一个我认为比较好的投资标的(币):<code>BNB</code></li>
-<li>选择一个交易周期:45mins</li>
-<li>Buy信号发出,很可能处于上涨行情,执行市价买入,5倍杠杠</li>
-<li>设置收益率5%,执行限价卖出</li>
-<li>以上每一步都设置tg提醒，入库记录</li>
-<li>暂不设置止损，5倍杠杠，币种暴跌20%可能会爆仓</li>
-</ul>
-<h1 id="效果"><a href="#效果" class="headerlink" title="效果:"></a>效果:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C83CAF70-1EA0-4882-AF5E-2697664AB1B7.png" alt="C83CAF70-1EA0-4882-AF5E-2697664AB1B7"></p>
-<hr>
-<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题:"></a>遇到的问题:</h1><h2 id="创建订单"><a href="#创建订单" class="headerlink" title="创建订单:"></a>创建订单:</h2><p>之前用的交易所是<code>binance</code>,这次用的是<code>ftx</code><br>通过ccxt在创建ftx limit sell order的时候花费比较多时间,参考<a href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a>,才知道需要哪些参数.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">cex_api.create_future_order(token_pair=<span class="string">&#x27;CAKE-PERP&#x27;</span>, <span class="built_in">type</span>=<span class="string">&quot;takeProfit&quot;</span>, side=<span class="string">&quot;sell&quot;</span>, amount=<span class="number">1</span>, price=<span class="number">20.32</span>, params=&#123;<span class="string">&#x27;triggerPrice&#x27;</span>: <span class="number">20.32</span>,<span class="string">&#x27;reduceOnly&#x27;</span>: <span class="literal">True</span>&#125;)</span><br></pre></td></tr></table></figure>
-
-<h2 id="返回的订单内容"><a href="#返回的订单内容" class="headerlink" title="返回的订单内容:"></a>返回的订单内容:</h2><p>同样是执行<code>market buy order</code>，<code>binance</code>和<code>ftx</code>返回的内容不一样</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># binance</span><br><span class="line">order = &#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKEUSDT&#x27;,</span><br><span class="line">		&#x27;orderId&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">		&#x27;orderListId&#x27;: &#x27;-1&#x27;,</span><br><span class="line">		&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">		&#x27;transactTime&#x27;: &#x27;1630229168854&#x27;,</span><br><span class="line">		&#x27;price&#x27;: &#x27;0.00000000&#x27;,</span><br><span class="line">		&#x27;origQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;executedQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;cummulativeQuoteQty&#x27;: &#x27;12.77000000&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;FILLED&#x27;,</span><br><span class="line">		&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;MARKET&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;BUY&#x27;,</span><br><span class="line">		&#x27;fills&#x27;: [&#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">	&#x27;timestamp&#x27;: 1630229168854,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-08-29T09:26:08.854Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: 25.54,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.5,</span><br><span class="line">	&#x27;cost&#x27;: 12.77,</span><br><span class="line">	&#x27;average&#x27;: 25.54,</span><br><span class="line">	&#x27;filled&#x27;: 0.5,</span><br><span class="line">	&#x27;remaining&#x27;: 0.0,</span><br><span class="line">	&#x27;status&#x27;: &#x27;closed&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: &#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;trades&#x27;: [&#123;</span><br><span class="line">		&#x27;info&#x27;: &#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;,</span><br><span class="line">		&#x27;timestamp&#x27;: None,</span><br><span class="line">		&#x27;datetime&#x27;: None,</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">		&#x27;id&#x27;: None,</span><br><span class="line">		&#x27;order&#x27;: None,</span><br><span class="line">		&#x27;type&#x27;: None,</span><br><span class="line">		&#x27;side&#x27;: None,</span><br><span class="line">		&#x27;takerOrMaker&#x27;: None,</span><br><span class="line">		&#x27;price&#x27;: 25.54,</span><br><span class="line">		&#x27;amount&#x27;: 0.5,</span><br><span class="line">		&#x27;cost&#x27;: 12.77,</span><br><span class="line">		&#x27;fee&#x27;: &#123;</span><br><span class="line">			&#x27;cost&#x27;: 0.0005,</span><br><span class="line">			&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;],</span><br><span class="line">	&#x27;fees&#x27;: [&#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># ftx</span><br><span class="line">&#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">		&#x27;clientId&#x27;: None,</span><br><span class="line">		&#x27;market&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">		&#x27;price&#x27;: None,</span><br><span class="line">		&#x27;size&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;new&#x27;,</span><br><span class="line">		&#x27;filledSize&#x27;: &#x27;0.0&#x27;,</span><br><span class="line">		&#x27;remainingSize&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;reduceOnly&#x27;: False,</span><br><span class="line">		&#x27;liquidation&#x27;: None,</span><br><span class="line">		&#x27;avgFillPrice&#x27;: None,</span><br><span class="line">		&#x27;postOnly&#x27;: False,</span><br><span class="line">		&#x27;ioc&#x27;: True,</span><br><span class="line">		&#x27;createdAt&#x27;: &#x27;2021-10-14T04:03:51.958018+00:00&#x27;,</span><br><span class="line">		&#x27;future&#x27;: &#x27;BNB-PERP&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: None,</span><br><span class="line">	&#x27;timestamp&#x27;: 1634184231958,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-10-14T04:03:51.958Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: None,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: None,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.1,</span><br><span class="line">	&#x27;cost&#x27;: None,</span><br><span class="line">	&#x27;average&#x27;: None,</span><br><span class="line">	&#x27;filled&#x27;: 0.0,</span><br><span class="line">	&#x27;remaining&#x27;: 0.1,</span><br><span class="line">	&#x27;status&#x27;: &#x27;open&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: None,</span><br><span class="line">	&#x27;trades&#x27;: None</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">https://ccxt.readthedocs.io/en/latest/manual.html#orders</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014134717.png" alt="20211014134717"></p>
-<p>看文档可知，尽量不要用info key里面的内容，这里面是交易所返回的原始内容，<code>ccxt</code>会解析然后放在其他一级的key，会更具通用性.</p>
-<hr>
-<h1 id="Nginx配置"><a href="#Nginx配置" class="headerlink" title="Nginx配置:"></a>Nginx配置:</h1><h2 id="查看配置文件路径"><a href="#查看配置文件路径" class="headerlink" title="查看配置文件路径:"></a>查看配置文件路径:</h2><p>使用<code>nginx</code>的<code>-t</code>参数进行配置检查，即可知道实际调用的配置文件路径及是否调用有效。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@foolisheddy ~]# nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br></pre></td></tr></table></figure>
-
-<p>查看<code>/etc/nginx/nginx.conf </code>,可能包含了其他配置文件<code>include /etc/nginx/conf.d/*.conf;</code></p>
-<h2 id="添加路由转发"><a href="#添加路由转发" class="headerlink" title="添加路由转发:"></a>添加路由转发:</h2><p>添加一段<code>location</code>,访问后转发到本地的flask api上。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">location /tradingview/ &#123;</span><br><span class="line">            proxy_pass       http://127.0.0.1:10086/tradingview;</span><br><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header Host $host;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="nginx操作"><a href="#nginx操作" class="headerlink" title="nginx操作:"></a>nginx操作:</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看状态</span></span><br><span class="line">systemctl status nginx</span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">systemctl restart nginx </span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014135626.png" alt="20211014135626"></p>
-<p>tradingview会在有bug信号的时候，多次触发我的api</p>
-<p>可能的解决方案:</p>
-<ul>
-<li>修改tradingview对应策略</li>
-<li>发送信号设置</li>
-<li>我这边手动处理</li>
-</ul>
-<p>暂时不处理，先记录一下</p>
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>做合约交易的话，我自己还不是很有经验，可能后面经验增加or回测多次后能再优化策略吧。<br>3倍5倍低倍杠杠我理解成 借钱抄底 哈哈</p>
-<p>有一些点后期可能需要优化:</p>
-<ul>
-<li>保证金</li>
-<li>强平价</li>
-<li>如何止损</li>
-<li>仓位大小</li>
-<li>消息面</li>
-</ul>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://tokentax.co/blog/best-crypto-trading-bot/">The Best Crypto Trading Bots On the Market | TokenTax</a></li>
-<li><a href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a></li>
-<li><a href="https://help.ftx.us/hc/en-us/articles/360043580173-Advanced-Order-Types">FTX 高级订单类型</a></li>
-<li><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">ccxt#orders</a></li>
-</ul>
 ]]></content>
       <categories>
         <category>Crypto</category>
@@ -1349,6 +964,85 @@
 <li><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
 <li><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
 <li><a href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Crypto-SuperTrend指标_合约交易脚本</title>
+    <url>//14610.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>上一篇是去购买现货,回测几次后，发现效果还不错，由于定量设置了止盈率，挂好了<code>limit sell order</code>后,在短期拉盘的时候，能卖得出去。</p>
+<p>想起之前看的<a href="https://tokentax.co/blog/best-crypto-trading-bot/">The Best Crypto Trading Bots On the Market | TokenTax</a></p>
+<blockquote>
+<p>crypto trading bots enable trading based on data and trends—not on emotional impulse</p>
+<p>Ultimately, this usually grows their profits, minimizes their risks, and limits their losses across exchanges. </p>
+<p>Furthermore, bots can produce passive income 24 hours a day. Whether you’re sleeping, biking, giving a presentation, whatever: you could also be earning from automated trades.</p>
+</blockquote>
+<p>通过策略写机器人来做交易,算是有严格的纪律性了，由数据驱动，不受情绪的影响。<br>另外一个好处就是，不用去盯盘。</p>
+<p>这次拿来做合约交易</p>
+<hr>
+<h1 id="策略"><a href="#策略" class="headerlink" title="策略:"></a>策略:</h1><ul>
+<li>选择一个我认为比较好的投资标的(币):<code>BNB</code></li>
+<li>选择一个交易周期:45mins</li>
+<li>Buy信号发出,很可能处于上涨行情,执行市价买入,5倍杠杠</li>
+<li>设置收益率5%,执行限价卖出</li>
+<li>以上每一步都设置tg提醒，入库记录</li>
+<li>暂不设置止损，5倍杠杠，币种暴跌20%可能会爆仓</li>
+</ul>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果:"></a>效果:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C83CAF70-1EA0-4882-AF5E-2697664AB1B7.png" alt="C83CAF70-1EA0-4882-AF5E-2697664AB1B7"></p>
+<hr>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题:"></a>遇到的问题:</h1><h2 id="创建订单"><a href="#创建订单" class="headerlink" title="创建订单:"></a>创建订单:</h2><p>之前用的交易所是<code>binance</code>,这次用的是<code>ftx</code><br>通过ccxt在创建ftx limit sell order的时候花费比较多时间,参考<a href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a>,才知道需要哪些参数.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">cex_api.create_future_order(token_pair=<span class="string">&#x27;CAKE-PERP&#x27;</span>, <span class="built_in">type</span>=<span class="string">&quot;takeProfit&quot;</span>, side=<span class="string">&quot;sell&quot;</span>, amount=<span class="number">1</span>, price=<span class="number">20.32</span>, params=&#123;<span class="string">&#x27;triggerPrice&#x27;</span>: <span class="number">20.32</span>,<span class="string">&#x27;reduceOnly&#x27;</span>: <span class="literal">True</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="返回的订单内容"><a href="#返回的订单内容" class="headerlink" title="返回的订单内容:"></a>返回的订单内容:</h2><p>同样是执行<code>market buy order</code>，<code>binance</code>和<code>ftx</code>返回的内容不一样</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># binance</span><br><span class="line">order = &#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKEUSDT&#x27;,</span><br><span class="line">		&#x27;orderId&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">		&#x27;orderListId&#x27;: &#x27;-1&#x27;,</span><br><span class="line">		&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">		&#x27;transactTime&#x27;: &#x27;1630229168854&#x27;,</span><br><span class="line">		&#x27;price&#x27;: &#x27;0.00000000&#x27;,</span><br><span class="line">		&#x27;origQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;executedQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;cummulativeQuoteQty&#x27;: &#x27;12.77000000&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;FILLED&#x27;,</span><br><span class="line">		&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;MARKET&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;BUY&#x27;,</span><br><span class="line">		&#x27;fills&#x27;: [&#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">	&#x27;timestamp&#x27;: 1630229168854,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-08-29T09:26:08.854Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: 25.54,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.5,</span><br><span class="line">	&#x27;cost&#x27;: 12.77,</span><br><span class="line">	&#x27;average&#x27;: 25.54,</span><br><span class="line">	&#x27;filled&#x27;: 0.5,</span><br><span class="line">	&#x27;remaining&#x27;: 0.0,</span><br><span class="line">	&#x27;status&#x27;: &#x27;closed&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: &#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;trades&#x27;: [&#123;</span><br><span class="line">		&#x27;info&#x27;: &#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;,</span><br><span class="line">		&#x27;timestamp&#x27;: None,</span><br><span class="line">		&#x27;datetime&#x27;: None,</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">		&#x27;id&#x27;: None,</span><br><span class="line">		&#x27;order&#x27;: None,</span><br><span class="line">		&#x27;type&#x27;: None,</span><br><span class="line">		&#x27;side&#x27;: None,</span><br><span class="line">		&#x27;takerOrMaker&#x27;: None,</span><br><span class="line">		&#x27;price&#x27;: 25.54,</span><br><span class="line">		&#x27;amount&#x27;: 0.5,</span><br><span class="line">		&#x27;cost&#x27;: 12.77,</span><br><span class="line">		&#x27;fee&#x27;: &#123;</span><br><span class="line">			&#x27;cost&#x27;: 0.0005,</span><br><span class="line">			&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;],</span><br><span class="line">	&#x27;fees&#x27;: [&#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># ftx</span><br><span class="line">&#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">		&#x27;clientId&#x27;: None,</span><br><span class="line">		&#x27;market&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">		&#x27;price&#x27;: None,</span><br><span class="line">		&#x27;size&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;new&#x27;,</span><br><span class="line">		&#x27;filledSize&#x27;: &#x27;0.0&#x27;,</span><br><span class="line">		&#x27;remainingSize&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;reduceOnly&#x27;: False,</span><br><span class="line">		&#x27;liquidation&#x27;: None,</span><br><span class="line">		&#x27;avgFillPrice&#x27;: None,</span><br><span class="line">		&#x27;postOnly&#x27;: False,</span><br><span class="line">		&#x27;ioc&#x27;: True,</span><br><span class="line">		&#x27;createdAt&#x27;: &#x27;2021-10-14T04:03:51.958018+00:00&#x27;,</span><br><span class="line">		&#x27;future&#x27;: &#x27;BNB-PERP&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: None,</span><br><span class="line">	&#x27;timestamp&#x27;: 1634184231958,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-10-14T04:03:51.958Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: None,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: None,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.1,</span><br><span class="line">	&#x27;cost&#x27;: None,</span><br><span class="line">	&#x27;average&#x27;: None,</span><br><span class="line">	&#x27;filled&#x27;: 0.0,</span><br><span class="line">	&#x27;remaining&#x27;: 0.1,</span><br><span class="line">	&#x27;status&#x27;: &#x27;open&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: None,</span><br><span class="line">	&#x27;trades&#x27;: None</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">https://ccxt.readthedocs.io/en/latest/manual.html#orders</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014134717.png" alt="20211014134717"></p>
+<p>看文档可知，尽量不要用info key里面的内容，这里面是交易所返回的原始内容，<code>ccxt</code>会解析然后放在其他一级的key，会更具通用性.</p>
+<hr>
+<h1 id="Nginx配置"><a href="#Nginx配置" class="headerlink" title="Nginx配置:"></a>Nginx配置:</h1><h2 id="查看配置文件路径"><a href="#查看配置文件路径" class="headerlink" title="查看配置文件路径:"></a>查看配置文件路径:</h2><p>使用<code>nginx</code>的<code>-t</code>参数进行配置检查，即可知道实际调用的配置文件路径及是否调用有效。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@foolisheddy ~]# nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br></pre></td></tr></table></figure>
+
+<p>查看<code>/etc/nginx/nginx.conf </code>,可能包含了其他配置文件<code>include /etc/nginx/conf.d/*.conf;</code></p>
+<h2 id="添加路由转发"><a href="#添加路由转发" class="headerlink" title="添加路由转发:"></a>添加路由转发:</h2><p>添加一段<code>location</code>,访问后转发到本地的flask api上。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">location /tradingview/ &#123;</span><br><span class="line">            proxy_pass       http://127.0.0.1:10086/tradingview;</span><br><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header Host $host;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="nginx操作"><a href="#nginx操作" class="headerlink" title="nginx操作:"></a>nginx操作:</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看状态</span></span><br><span class="line">systemctl status nginx</span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">systemctl restart nginx </span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014135626.png" alt="20211014135626"></p>
+<p>tradingview会在有bug信号的时候，多次触发我的api</p>
+<p>可能的解决方案:</p>
+<ul>
+<li>修改tradingview对应策略</li>
+<li>发送信号设置</li>
+<li>我这边手动处理</li>
+</ul>
+<p>暂时不处理，先记录一下</p>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>做合约交易的话，我自己还不是很有经验，可能后面经验增加or回测多次后能再优化策略吧。<br>3倍5倍低倍杠杠我理解成 借钱抄底 哈哈</p>
+<p>有一些点后期可能需要优化:</p>
+<ul>
+<li>保证金</li>
+<li>强平价</li>
+<li>如何止损</li>
+<li>仓位大小</li>
+<li>消息面</li>
+</ul>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://tokentax.co/blog/best-crypto-trading-bot/">The Best Crypto Trading Bots On the Market | TokenTax</a></li>
+<li><a href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a></li>
+<li><a href="https://help.ftx.us/hc/en-us/articles/360043580173-Advanced-Order-Types">FTX 高级订单类型</a></li>
+<li><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">ccxt#orders</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -1487,13 +1181,13 @@
 <p>分别添加流动性，各10个后，pair里的储备量结果发生变化</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT ↑</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
 
-<h1 id="Sell："><a href="#Sell：" class="headerlink" title="Sell："></a>Sell：</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token</span><br></pre></td></tr></table></figure>
+<h2 id="Sell："><a href="#Sell：" class="headerlink" title="Sell："></a>Sell：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 
 <p>token卖成USDT</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  9669575752865546229(9.669575752865546229) USDT ↓</span><br><span class="line">&gt;  _reserve1   uint112 :  10505383891113691435(10.505383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
 
 <p>token传进pair，token储备量增加<br>pair流出USDT，USDT储备量减少</p>
-<h1 id="Buy"><a href="#Buy" class="headerlink" title="Buy:"></a>Buy:</h1><p>与Sell行为相反，USDT ↑、Token↓</p>
+<h2 id="Buy"><a href="#Buy" class="headerlink" title="Buy:"></a>Buy:</h2><p>与Sell行为相反，USDT ↑、Token↓</p>
 <table>
 <thead>
 <tr>
@@ -1529,7 +1223,7 @@
 </ul>
 ]]></content>
       <categories>
-        <category>Crypto</category>
+        <category>Solidity</category>
       </categories>
       <tags>
         <tag>Crypto</tag>
@@ -2375,6 +2069,40 @@
       </tags>
   </entry>
   <entry>
+    <title>Dsss源码-100行的SqliScanner-源码分析笔记</title>
+    <url>//56271.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
+<blockquote>
+<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
+</blockquote>
+<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
+<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
+<p>原仓库地址:<a href="https://github.com/stamparm/DSSS">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
+<hr>
+<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png"></p>
+<hr>
+<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png"></p>
+<p>亮点:</p>
+<ul>
+<li>TEXT文本的处理</li>
+</ul>
+<hr>
+<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png"></p>
+<hr>
+<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png"></p>
+<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8">issue</a>问作者.</p>
+<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
+<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
+<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
+]]></content>
+      <categories>
+        <category>SourceCodeReading</category>
+      </categories>
+      <tags>
+        <tag>SourceCodeReading</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Diary-2019.9</title>
     <url>//44403.html</url>
     <content><![CDATA[<h1 id="2019-09-26"><a href="#2019-09-26" class="headerlink" title="2019-09-26"></a>2019-09-26</h1><blockquote>
@@ -2412,40 +2140,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Dsss源码-100行的SqliScanner-源码分析笔记</title>
-    <url>//56271.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近想要写个Auto Sqli Scanner,故找了sqlmap作者写的工具DSSS来参考.</p>
-<blockquote>
-<p>Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner (supporting GET and POST parameters) written in under 100 lines of code.</p>
-</blockquote>
-<p>之前也看过一部分<code>sqlmap</code>的源码，看起来头真的有点大。</p>
-<p>相比强大的<code>sqlmap</code>来说,这个工具短小精悍,便于食用,毕竟代码量少很多hhh.</p>
-<p>原仓库地址:<a href="https://github.com/stamparm/DSSS">Damn Small SQLi Scanner</a><br>我的源代码注释版本:<code>https://github.com/jerrychan807/DSSS</code></p>
-<hr>
-<h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程:"></a>整体流程:</h1><p><img src="https://i.loli.net/2019/05/06/5cd054aa1e705.png"></p>
-<hr>
-<h2 id="提取内容函数："><a href="#提取内容函数：" class="headerlink" title="提取内容函数："></a>提取内容函数：</h2><p><img src="https://i.loli.net/2019/05/06/5cd0550f672ff.png"></p>
-<p>亮点:</p>
-<ul>
-<li>TEXT文本的处理</li>
-</ul>
-<hr>
-<h2 id="基于报错的测试"><a href="#基于报错的测试" class="headerlink" title="基于报错的测试:"></a>基于报错的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd0557531ada.png"></p>
-<hr>
-<h2 id="基于布尔的测试"><a href="#基于布尔的测试" class="headerlink" title="基于布尔的测试:"></a>基于布尔的测试:</h2><p><img src="https://i.loli.net/2019/05/06/5cd05595e835e.png"></p>
-<p>在页面文本相似度那里,对于0.95那个理解有点费劲,提了个<a href="https://github.com/stamparm/DSSS/issues/8">issue</a>问作者.</p>
-<p>作者很nice,也很快就回复我了。我才get到它这里面的判断有2种:精确判断和模糊判断.</p>
-<p>精确判断：可以通过<code>HTTP-CODE</code>和<code>TITLE</code>来判断两个页面是否是100%一样</p>
-<p>模糊判断: 通过<code>quick_ratio</code>来计算两个页面的文本相似度,因为<code>quick_ratio</code>计算有时不太准确,有一定的误差,故<code>FUZZY_THRESHOLD = 0.95</code>设置如此,留了5%做误差.</p>
-]]></content>
-      <categories>
-        <category>SourceCodeReading</category>
-      </categories>
-      <tags>
-        <tag>SourceCodeReading</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>FAQ-如何监控token初次添加流动性</title>
     <url>//14901.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>很多币在一开始空投的时候，还没添加流动性，由于没有流动性，无法在<code>dex</code>上进行买卖。<br>那如何监控某个币初次添加了流动性呢？</p>
@@ -2454,19 +2148,17 @@
 <li>监控bscscan上的数据</li>
 <li>查询LP地址在配对主流币种的余额</li>
 </ul>
-<h1 id="监控bscscan"><a href="#监控bscscan" class="headerlink" title="监控bscscan:"></a>监控bscscan:</h1><p>这部分我没有去具体实现，暂时能想到的有几个实现的方向</p>
-<p>已知项目方的地址后，去监控对应地址有没<code>Add Liquidity</code>的动作</p>
+<h1 id="监控bscscan"><a href="#监控bscscan" class="headerlink" title="监控bscscan:"></a>监控bscscan:</h1><p>这部分我没有去具体实现，暂时能想到的有几个实现的方向<br>已知项目方的地址后，去监控对应地址有没<code>Add Liquidity</code>的动作</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150515.png" alt="20220513150515"></p>
 <p>或者监控<code>PancakeSwap: Router v2</code>合约的交互记录里的<code>Add Liquidity</code>的动作</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150709.png" alt="20220513150709"></p>
-<hr>
 <h1 id="LP地址在配对主流币种合约里的余额"><a href="#LP地址在配对主流币种合约里的余额" class="headerlink" title="LP地址在配对主流币种合约里的余额"></a>LP地址在配对主流币种合约里的余额</h1><p>如果是在bsc上的话，一般添加流动性的时候，Token会与<code>BNB</code>、<code>USDT</code>、<code>BUSD</code>、<code>CAKE</code>、<code>USDC</code>等主流的币种进行组合。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513151119.png" alt="20220513151119"></p>
 <p>例如该<code>token</code>是和<code>USDT</code>组合的，那用<code>LP Token</code>地址在<code>USDT</code>的合约能查询到对应的余额。</p>
 <p>例如某token只和<code>USDT</code>组合添加了流动性，那在看k线网站上<code>liquidity</code>数值和<code>LP Token</code>地址在<code>USDT</code>的合约里的余额是一样的。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152149.png" alt="20220513152149"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152421.png" alt="20220513152421"></p>
-<p>那么我们就能通过<code>LP Token</code>地址在主流币种合约里的余额来判断、监控 首次添加的流动性。</p>
+<p>那么我们就能通过<code>LP Token</code>地址在主流币种合约里的余额来判断、监控 首次添加的流动性的动作。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 部分代码</span></span><br><span class="line">USDT_contract = bsc_ins.get_token_contract_with_abi(contract_address=USDT_token, abi=erc20abi) <span class="comment"># usdt合约实例</span></span><br><span class="line">YourToken_usdt_lp = Web3.toChecksumAddress(<span class="string">&quot;0x5eaa1c251db4b0aea24619a37c5c311111111111&quot;</span>) <span class="comment"># token&amp;USDT 组成的lp地址</span></span><br><span class="line">balanceOf = USDT_contract.functions.balanceOf(Web3.toChecksumAddress(YourToken_usdt_lp)).call() <span class="comment"># 查询Lp地址的USDT的余额</span></span><br><span class="line"><span class="keyword">if</span> balanceOf &gt; <span class="number">0</span>:</span><br><span class="line">    notify_content = <span class="string">&quot;&quot;&quot;🟢Usdt lp池子监控存在 \n&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -2476,7 +2168,6 @@
 <li>如何快速查询某token的lp地址?多个地址？</li>
 </ol>
 </blockquote>
-<hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>监控token初次添加流动性的方法:</p>
 <ul>
 <li>监控bscscan上的数据<ul>
@@ -2486,7 +2177,6 @@
 </li>
 <li>查询LP地址在配对主流币种(<code>BNB</code>、<code>USDT</code>、<code>BUSD</code>等)合约里的余额</li>
 </ul>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://github.com/beeb/pancaketrade">PancakeTrade</a></li>
 </ul>
@@ -3519,6 +3209,315 @@
       </categories>
       <tags>
         <tag>Programming</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-DoDoFlashLoan测试网例子</title>
+    <url>//33960.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>DoDo支持flash loan,并且手续费上比较友好</p>
+<blockquote>
+<p>注：DODO V2 闪电贷仅当返还的base quote 数量比例产生变化时，合约会预览一笔将base quote 磨平的交易，该磨平交易手续费作为闪电贷手续费。其他情况不收取手续费用</p>
+</blockquote>
+<p>试试在<code>rinkby</code>测试网上能否执行借款还款操作</p>
+<h1 id="DoDo闪电交换机制"><a href="#DoDo闪电交换机制" class="headerlink" title="DoDo闪电交换机制:"></a>DoDo闪电交换机制:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png" alt="20220226162909"></p>
+<h1 id="Code"><a href="#Code" class="headerlink" title="Code:"></a>Code:</h1><h2 id="solidity代码"><a href="#solidity代码" class="headerlink" title="solidity代码:"></a>solidity代码:</h2><p>参考文档里<a href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a>，有代码例子<br>该代码则是只实现了借款和还款的操作，具体的借款后的操作逻辑还要自己实现</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/IDODO.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/Withdraw.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Flashloan</span> is <span class="title class_">Withdraw</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">dodoFlashLoan</span>(<span class="params"></span></span><br><span class="line"><span class="params">        address flashLoanPool, <span class="comment">//You will make a flashloan from this DODOV2 pool</span></span></span><br><span class="line"><span class="params">        uint256 loanAmount, </span></span><br><span class="line"><span class="params">        address loanToken</span></span><br><span class="line"><span class="params">    </span>) external  &#123;</span><br><span class="line">        <span class="comment">//Note: The data can be structured with any variables required by your logic. The following code is just an example</span></span><br><span class="line">        bytes memory data = abi.<span class="title function_">encode</span>(flashLoanPool, loanToken, loanAmount);</span><br><span class="line">        address flashLoanBase = <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">_BASE_TOKEN_</span>();</span><br><span class="line">        <span class="keyword">if</span>(flashLoanBase == loanToken) &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(loanAmount, <span class="number">0</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(<span class="number">0</span>, loanAmount, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DVM) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DVMFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount,bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DPP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DPPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DSP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DSPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_flashLoanCallBack</span>(<span class="params">address sender, uint256, uint256, bytes calldata data</span>) internal &#123;</span><br><span class="line">        (address flashLoanPool, address loanToken, uint256 loanAmount) = abi.<span class="title function_">decode</span>(data, (address, address, uint256));</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">require</span>(sender == <span class="title function_">address</span>(<span class="variable language_">this</span>) &amp;&amp; msg.<span class="property">sender</span> == flashLoanPool, <span class="string">&quot;HANDLE_FLASH_NENIED&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Note: Realize your own logic using the token from flashLoan pool.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//Return funds</span></span><br><span class="line">        <span class="title class_">IERC20</span>(loanToken).<span class="title function_">transfer</span>(flashLoanPool, loanAmount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="brownie"><a href="#brownie" class="headerlink" title="brownie"></a>brownie</h2><p>部署脚本:</p>
+<p><code>brownie run scripts/deployment.py --network rinkeby</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Deploy a `Flashloan` contract from `accounts[0]`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    acct = accounts.add(</span><br><span class="line">        config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>]</span><br><span class="line">    )  <span class="comment"># add your keystore ID as an argument to this call</span></span><br><span class="line"></span><br><span class="line">    flashloan = Flashloan.deploy(&#123;<span class="string">&quot;from&quot;</span>: acct&#125;)</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本</p>
+<p><code>brownie run scripts/run_flash_loan.py --network rinkeby</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network, interface</span><br><span class="line"></span><br><span class="line">ETHERSCAN_TX_URL = <span class="string">&quot;https://rinkeby.etherscan.io/tx/&#123;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Executes the funcitonality of the flash loan.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    acct = accounts.add(config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Getting Flashloan contract...&quot;</span>)</span><br><span class="line">    flashloan = Flashloan[<span class="built_in">len</span>(Flashloan) - <span class="number">1</span>]</span><br><span class="line">    usdc = interface.IERC20(config[<span class="string">&quot;networks&quot;</span>][network.show_active()][<span class="string">&quot;usdc&quot;</span>])</span><br><span class="line"></span><br><span class="line">    balance = usdc.balanceOf(acct) </span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Executing Flashloan...&quot;</span>)</span><br><span class="line">    tx = flashloan.dodoFlashLoan(<span class="string">&quot;0x446Bb563EEC2E5C439f5b94C6DaAebcCF5d2F99C&quot;</span>,<span class="number">10000000</span>,<span class="string">&quot;0xab0733588776B8881F7712f6AbCa98F510e6B63D&quot;</span>,  &#123;<span class="string">&quot;from&quot;</span>: acct, <span class="string">&quot;gas_limit&quot;</span>:<span class="string">&quot;5074044&quot;</span>, <span class="string">&quot;allow_revert&quot;</span>:<span class="literal">True</span>&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;You did it! View your tx here: &quot;</span> + ETHERSCAN_TX_URL.<span class="built_in">format</span>(tx.txid))</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果:"></a>执行效果:</h2><p><a href="https://rinkeby.etherscan.io/tx/0xbc67ada4c2d570f8aba40cae4bd47794d9f25f4969b72792b30d2e23f0c8481b">tx</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550"></p>
+<p>能成功借款还款</p>
+<hr>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题:"></a>遇到的问题:</h1><p>dodoFlashLoan函数有3个参数:</p>
+<ul>
+<li>flashLoanPool 池子地址</li>
+<li>loanAmount 数量</li>
+<li>loanToken 要借的token地址</li>
+</ul>
+<h2 id="选择池子地址"><a href="#选择池子地址" class="headerlink" title="选择池子地址:"></a>选择池子地址:</h2><p>在<code>https://app.dodoex.io/pool/list?network=rinkeby</code>可以看到有哪些池子信息</p>
+<p>比如此处我要借usdc，就可以搜索一下</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537"></p>
+<p>然后该池子还要支持flashloan，比如上图第一个池子就不支持，第二个池子才支持</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948"></p>
+<hr>
+<h2 id="借款数量"><a href="#借款数量" class="headerlink" title="借款数量"></a>借款数量</h2><p>一开始我填的<code>loanAmount</code>为10 ether,想借10个，转换成wei则为<code>10000000000000000000</code><br>执行后报错，无法正常借款还款</p>
+<p>查一下报错<br><code>https://dashboard.tenderly.co/tx/rinkeby/0xee7f3a6e0ef5906f8f95cbc789151e1d62da424dc80c6d93c80307ba060be646</code></p>
+<p><code>Error Message:ERC20: transfer amount exceeds balance</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png" alt="20220226162947"></p>
+<p>对比一下Dodo流程，此时池子在借款的时候，要发送token给我合约时报错了，报错信息为转账数量超过余额了。</p>
+<p>减少<code>loanAmount</code>为<code>10000000</code>后，发现能成功，原来该usdc的精度为6位</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700"></p>
+<p>以后要注意一下，大多数代币的精度为18位，但有些代币不是。</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a></li>
+<li><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts">https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts</a></li>
+<li><a href="https://medium.com/coinmonks/no-flashloan-fee-with-dodo-cc78215d7f93">No Flashloan Fee with DODO</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-Erc20区分买卖_添加移除流动性行为</title>
+    <url>//14814.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到<code>Transfer()</code>函数,在代码层面上是只有转移的行为。<br>那么如何在solidity里区分这几个行为呢？<br>如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。</p>
+<h1 id="Token转移："><a href="#Token转移：" class="headerlink" title="Token转移："></a>Token转移：</h1><p>token发生转移时，会有发送方<code>sender</code>,接收方<code>recipient</code><br>可以把Buy、Sell、AddLiquidity、RemoveLiquidity分类为下面两种情况。</p>
+<ol>
+<li><code>sender</code>为Pair，<code>recipient</code>为Token</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Buy:</span><br><span class="line">Usdt ——&gt; Pair ——&gt; Token</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RemoveLiquidity:</span><br><span class="line">LpToken ——&gt; Pair ——&gt; Usdt、Token</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>sender</code>为Token，<code>recipient</code>为Pair</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sell:</span><br><span class="line">Token ——&gt; Pair ——&gt; Usdt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AddLiquidity:</span><br><span class="line">Usdt、Token ——&gt; Pair ——&gt; LpToken</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>sender</th>
+<th>recipient</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>Pair</td>
+<td>Token</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>Token</td>
+<td>Pair</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>Token</td>
+<td>Pair</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>Pair</td>
+<td>Token</td>
+</tr>
+</tbody></table>
+<p>那如何在smart contract里区分这四种行为呢？</p>
+<h1 id="在smart-contract里区分："><a href="#在smart-contract里区分：" class="headerlink" title="在smart contract里区分："></a>在smart contract里区分：</h1><p>关键的判断代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询uniswap储备量</span></span><br><span class="line"><span class="comment">// 实例化pair</span></span><br><span class="line"><span class="title class_">IUniswapV</span>2Pair uniswapV2Pair = <span class="title class_">IUniswapV</span>2Pair(uniswapV2PairAddress);</span><br><span class="line"><span class="comment">// 获取上一次swap的结果</span></span><br><span class="line">(uint112 reserve0, uint112 reserve1,) = uniswapV2Pair.<span class="title function_">getReserves</span>();</span><br><span class="line"><span class="comment">// Buy: Usdt↑ Token↓</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token0</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve1) </span><br><span class="line">|| (<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token1</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve0)) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过储备量的变化情况，来区分开这四种行为。</p>
+<h1 id="测试情况："><a href="#测试情况：" class="headerlink" title="测试情况："></a>测试情况：</h1><h2 id="手动测试网测试"><a href="#手动测试网测试" class="headerlink" title="手动测试网测试:"></a>手动测试网测试:</h2><table>
+<thead>
+<tr>
+<th>行为</th>
+<th>Fee</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>5%</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>10%</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>5%</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>10%</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>Result</th>
+<th>tx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x8e937af584c94bfbd1f5280c2a382a2812301178f9d5f3498fe3a75dc24bf285">tx</a></td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>fail</td>
+<td>tx</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x7ed0f97a08896a0f1059ae15c2ff42dcd16370f755f386aafad76d861da51879">tx</a></td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x2e837f4e94c9f8e47490911f1c2d9953ed92e598f4976724444076f160da2cb3">tx</a></td>
+</tr>
+</tbody></table>
+<h2 id="hardhat测试："><a href="#hardhat测试：" class="headerlink" title="hardhat测试："></a>hardhat测试：</h2><p>也是<code>Sell</code>这一步骤没能成功</p>
+<h1 id="一些知识点："><a href="#一些知识点：" class="headerlink" title="一些知识点："></a>一些知识点：</h1><h2 id="Uniswap的getreserves获取储备量函数"><a href="#Uniswap的getreserves获取储备量函数" class="headerlink" title="Uniswap的getreserves获取储备量函数"></a>Uniswap的getreserves获取储备量函数</h2><p>可以通过<code>getreserves()</code>获取pair里两类币种的储备量。</p>
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>reserve0(USDT)储备量变化</th>
+<th>reserve1（XToken）储备量变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>↓</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>↑</td>
+<td>↓</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>↑</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>↓</td>
+<td>↓</td>
+</tr>
+</tbody></table>
+<h2 id="在合约里调用其他合约"><a href="#在合约里调用其他合约" class="headerlink" title="在合约里调用其他合约"></a>在合约里调用其他合约</h2><p>interface + 地址</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;./IUniswapV2Factory.sol&quot;</span>;</span><br><span class="line"><span class="comment">// bsc testnet addr</span></span><br><span class="line">address v2FactoryAddress = <span class="number">0x182859893230dC89b114d6e2D547BFFE30474a21</span>;</span><br><span class="line"><span class="title class_">IUniswapV</span>2Factory uniswapv2Factory = <span class="title class_">IUniswapV</span>2Factory(v2FactoryAddress);</span><br><span class="line">uniswapV2PairAddress = uniswapv2Factory.<span class="title function_">createPair</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), usdtAddress);</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证多合约源码："><a href="#验证多合约源码：" class="headerlink" title="验证多合约源码："></a>验证多合约源码：</h2><ol>
+<li>etherscan、bscscan直接将多个源代码文件上传即可</li>
+<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
+</ol>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
+<li><a href="https://solveforum.com/forums/threads/solved-hardhat-testing-on-testnet-rinkeby.467949/">[Solved] Hardhat testing on testnet (Rinkeby)</a></li>
+<li><a href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-Hardhat框架初步使用</title>
+    <url>//64479.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉、回顾一下hardhat框架的使用，为后续erc20各类功能实现的学习做准备。</p>
+<h1 id="设置环境"><a href="#设置环境" class="headerlink" title="设置环境:"></a>设置环境:</h1><p>完整的安装步骤可参考refs里的链接进行安装，此处只记录部分的步骤</p>
+<h1 id="创建一个Hardhat项目"><a href="#创建一个Hardhat项目" class="headerlink" title="创建一个Hardhat项目:"></a>创建一个Hardhat项目:</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件夹、为项目根目录</span></span><br><span class="line"><span class="built_in">mkdir</span> demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line"><span class="comment"># yarn初始化</span></span><br><span class="line">yarn init --<span class="built_in">yes</span></span><br><span class="line">yarn add -D hardhat</span><br><span class="line"><span class="comment"># 安装各类插件</span></span><br><span class="line">yarn add -D hardhat-deploy hardhat-deploy-ethers ethers chai chai-ethers mocha @types/chai @types/mocha @types/node typescript ts-node dotenv</span><br></pre></td></tr></table></figure>
+
+<p>根目录编辑<code>tsconfig.json</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;target&quot;</span>: <span class="string">&quot;es5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;module&quot;</span>: <span class="string">&quot;commonjs&quot;</span>,</span><br><span class="line">    <span class="string">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;esModuleInterop&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;moduleResolution&quot;</span>: <span class="string">&quot;node&quot;</span>,</span><br><span class="line">    <span class="string">&quot;forceConsistentCasingInFileNames&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;outDir&quot;</span>: <span class="string">&quot;dist&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="string">&quot;include&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;hardhat.config.ts&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./deploy&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./test&quot;</span>,</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="编写智能合约"><a href="#编写智能合约" class="headerlink" title="编写智能合约:"></a>编写智能合约:</h1><p>根目录编辑<code>hardhat.config.ts</code>文件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hardhat.config.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatUserConfig</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy-ethers&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">HardhatUserConfig</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: &#123;</span><br><span class="line">    <span class="attr">version</span>: <span class="string">&#x27;0.7.6&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">namedAccounts</span>: &#123;</span><br><span class="line">    <span class="attr">deployer</span>: <span class="number">0</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">paths</span>: &#123;</span><br><span class="line">    <span class="attr">sources</span>: <span class="string">&#x27;src&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
+
+<p>根目录创建一个名为<code>contracts</code>的新目录，并在该目录内创建一个名为<code>Token.sol</code>的文件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Token.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line"><span class="comment">// The line above is recommended and let you define the license of your contract</span></span><br><span class="line"><span class="comment">// Solidity files have to start with this pragma.</span></span><br><span class="line"><span class="comment">// It will be used by the Solidity compiler to validate its version.</span></span><br><span class="line">pragma solidity ^<span class="number">0.7</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// This is the main building block for smart contracts.</span></span><br><span class="line">contract <span class="title class_">Token</span> &#123;</span><br><span class="line">    <span class="comment">// Some string type variables to identify the token.</span></span><br><span class="line">    <span class="comment">// The `public` modifier makes a variable readable from outside the contract.</span></span><br><span class="line">    string public name = <span class="string">&quot;My Hardhat Token&quot;</span>;</span><br><span class="line">    string public symbol = <span class="string">&quot;MBT&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The fixed amount of tokens stored in an unsigned integer type variable.</span></span><br><span class="line">    uint256 public totalSupply = <span class="number">1000000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// An address type variable is used to store ethereum accounts.</span></span><br><span class="line">    address public owner;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// A mapping is a key/value map. Here we store each account balance.</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256) balances;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Contract initialization.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `constructor` is executed only once when the contract is created.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address _owner</span>) &#123;</span><br><span class="line">        <span class="comment">// The totalSupply is assigned to transaction sender, which is the account</span></span><br><span class="line">        <span class="comment">// that is deploying the contract.</span></span><br><span class="line">        balances[_owner] = totalSupply;</span><br><span class="line">        owner = _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * A function to transfer tokens.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `external` modifier makes a function *only* callable from outside</span></span><br><span class="line"><span class="comment">     * the contract.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint256 amount</span>) external &#123;</span><br><span class="line">        <span class="comment">// Check if the transaction sender has enough tokens.</span></span><br><span class="line">        <span class="comment">// If `require`&#x27;s first argument evaluates to `false` then the</span></span><br><span class="line">        <span class="comment">// transaction will revert.</span></span><br><span class="line">        <span class="built_in">require</span>(balances[msg.<span class="property">sender</span>] &gt;= amount, <span class="string">&quot;Not enough tokens&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Transfer the amount.</span></span><br><span class="line">        balances[msg.<span class="property">sender</span>] -= amount;</span><br><span class="line">        balances[to] += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Read only function to retrieve the token balance of a given account.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The `view` modifier indicates that it doesn&#x27;t modify the contract&#x27;s</span></span><br><span class="line"><span class="comment">     * state, which allows us to call it without executing a transaction.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address account</span>) external view returns (uint256) &#123;</span><br><span class="line">        <span class="keyword">return</span> balances[account];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="编译"><a href="#编译" class="headerlink" title="编译:"></a>编译:</h1><p>终端运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn run v1.22.10</span><br><span class="line">$ /Users/cool-erc20/demo/node_modules/.bin/hardhat compile</span><br><span class="line">Compiled 1 Solidity file successfully</span><br><span class="line">✨  Done <span class="keyword">in</span> 5.25s.</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="部署脚本"><a href="#部署脚本" class="headerlink" title="部署脚本:"></a>部署脚本:</h1><p>在能够测试或部署合约之前，你需要设置部署脚本，以便在测试和准备部署时使用。<br>部署脚本让你可以专注于合约的最终形式，设置它们的参数和依赖关系，并确保你的测试的是将要部署的内容。<br>部署脚本也省去了重复部署的烦恼。</p>
+<blockquote>
+<p>经历过手工测试之后，才知道用脚本测试有多必要…</p>
+</blockquote>
+<p>根目录下创建一个名为<code>deploy</code>的新目录，并创建一个名为<code>001_deploy_token.ts</code>的新文件。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 001_deploy_token.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatRuntimeEnvironment</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">DeployFunction</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat-deploy/types&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">func</span>: <span class="title class_">DeployFunction</span> = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params">hre: HardhatRuntimeEnvironment</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;deployments, getNamedAccounts&#125; = hre;</span><br><span class="line">  <span class="keyword">const</span> &#123;deploy&#125; = deployments;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123;deployer, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">getNamedAccounts</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">deploy</span>(<span class="string">&#x27;Token&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">from</span>: deployer,</span><br><span class="line">    <span class="attr">args</span>: [tokenOwner],</span><br><span class="line">    <span class="attr">log</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> func;</span><br><span class="line">func.<span class="property">tags</span> = [<span class="string">&#x27;Token&#x27;</span>];</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>hardhat.config.ts</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// hardhat.config.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatUserConfig</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;hardhat-deploy-ethers&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">HardhatUserConfig</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: &#123;</span><br><span class="line">    <span class="attr">version</span>: <span class="string">&#x27;0.7.6&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">namedAccounts</span>: &#123;</span><br><span class="line">    <span class="attr">deployer</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">tokenOwner</span>: <span class="number">1</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">paths</span>: &#123;</span><br><span class="line">    <span class="attr">sources</span>: <span class="string">&#x27;src&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
+
+<p>终端上运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat deploy</span><br></pre></td></tr></table></figure>
+
+<p>此次部署是在<code>内存</code>中的hardhat网络中进行的。</p>
+<p>输出</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yarn hardhat deploy</span><br><span class="line">yarn run v1.22.10</span><br><span class="line">$ /Users/cool-erc20/demo/node_modules/.bin/hardhat deploy</span><br><span class="line">Nothing to compile</span><br><span class="line">deploying <span class="string">&quot;Token&quot;</span> (tx: 0x453cf83db75329816a62d6079aa22f694036d339106344b7e1864bcb344aa49d)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 483242 gas</span><br><span class="line">✨  Done <span class="keyword">in</span> 5.60s.</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="测试合约"><a href="#测试合约" class="headerlink" title="测试合约:"></a>测试合约:</h1><p>在项目根目录下创建一个名为<code>test</code>的新目录，并创建一个名为<code>Token.test.ts</code>的新文件。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Token.test.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;expect&#125; <span class="keyword">from</span> <span class="string">&quot;./chai-setup&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;ethers, deployments, getNamedAccounts&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Token contract&quot;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;Deployment should assign the total supply of tokens to the owner&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">await</span> deployments.<span class="title function_">fixture</span>([<span class="string">&quot;Token&quot;</span>]);</span><br><span class="line">    <span class="keyword">const</span> &#123;tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">getNamedAccounts</span>();</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">Token</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContract</span>(<span class="string">&quot;Token&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> ownerBalance = <span class="keyword">await</span> <span class="title class_">Token</span>.<span class="title function_">balanceOf</span>(tokenOwner);</span><br><span class="line">    <span class="keyword">const</span> supply = <span class="keyword">await</span> <span class="title class_">Token</span>.<span class="title function_">totalSupply</span>();</span><br><span class="line">    <span class="title function_">expect</span>(ownerBalance).<span class="property">to</span>.<span class="title function_">equal</span>(supply);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><code>test</code>目录下创建<code>chai-setup.ts</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// chai-setup.ts</span></span><br><span class="line"><span class="keyword">import</span> chaiModule <span class="keyword">from</span> <span class="string">&#x27;chai&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;chaiEthers&#125; <span class="keyword">from</span> <span class="string">&#x27;chai-ethers&#x27;</span>;</span><br><span class="line">chaiModule.<span class="title function_">use</span>(chaiEthers);</span><br><span class="line"><span class="keyword">export</span> = chaiModule;</span><br></pre></td></tr></table></figure>
+
+<p>在终端上运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx hardhat <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npx hardhat <span class="built_in">test</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">  Token contract</span><br><span class="line">    ✔ Deployment should assign the total supply of tokens to the owner (947ms)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">  1 passing (958ms)</span><br></pre></td></tr></table></figure>
+
+<h1 id="常用命令合集："><a href="#常用命令合集：" class="headerlink" title="常用命令合集："></a>常用命令合集：</h1><p>记录一些hardhat框架的常用命令，后面方便复查。</p>
+<h2 id="编译："><a href="#编译：" class="headerlink" title="编译："></a>编译：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
+
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在hardhat网络</span></span><br><span class="line">yarn hardhat deploy</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在配置文件对应的测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet deploy</span><br></pre></td></tr></table></figure>
+<h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试单个script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test test/transfer.ts</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证合约源码："><a href="#验证合约源码：" class="headerlink" title="验证合约源码："></a>验证合约源码：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">example:合约源代码、部署网络、合约的地址</span></span><br><span class="line">yarn hardhat verify --contract contracts/JToken.sol:JToken --network bsc_testnet 0x582cA468bcE2a68D1147D5411814256E52590103</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>构建一个hardhat项目，一般需要以下几个步骤</p>
+<ul>
+<li>环境安装</li>
+<li>创建hardhat项目</li>
+<li>智能合约编写和编译 compile</li>
+<li>编写部署脚本 deploy</li>
+<li>验证合约源码</li>
+<li>编写测试脚本 test</li>
+</ul>
+<hr>
+<h1 id="Inspire："><a href="#Inspire：" class="headerlink" title="Inspire："></a>Inspire：</h1><p>search或构建一个适合某类项目的hardhat脚手架，就不用每次都一步步setup了。</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://learnblockchain.cn/article/2354">hardhat 教程及 hardhat-deploy 插件使用</a></li>
+<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
       </tags>
   </entry>
   <entry>
@@ -6534,6 +6533,87 @@
       </tags>
   </entry>
   <entry>
+    <title>记录-Mysql无法启动及数据恢复</title>
+    <url>//8704.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Centos7又报io error了.</p>
+<p><img src="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png"></p>
+<p>然后想着把数据库的数据迁移出来. </p>
+<p>用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用.</p>
+<p>然后上头说尝试恢复下硬盘.</p>
+<hr>
+<h1 id="修复硬盘"><a href="#修复硬盘" class="headerlink" title="修复硬盘:"></a>修复硬盘:</h1><p>按这个链接<a href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a>尝试了一下,未果.</p>
+<p>因为上次是进不去系统才进行了<code>xfs_repair</code>,这次一断电才开机就又正常了.</p>
+<p>然后以为机器正常了,可是这个时候mysql的服务起不来了.</p>
+<blockquote>
+<p>这个时候没有看mysql的状态和log.不好的习惯.</p>
+</blockquote>
+<p>那只好尝试一下通过文件来迁移数据库<code>Mysql</code>.</p>
+<hr>
+<h1 id="通过文件迁移数据库"><a href="#通过文件迁移数据库" class="headerlink" title="通过文件迁移数据库:"></a>通过文件迁移数据库:</h1><p>按照<a href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a> 来传mysql的文件.</p>
+<p>里面提到通过用<code>rsync</code>来传文件.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#后面的路径是目标路径</span></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/</span><br></pre></td></tr></table></figure>
+
+<p>具体用的哪条命令,忘了…</p>
+<hr>
+<h1 id="查看Log"><a href="#查看Log" class="headerlink" title="查看Log"></a>查看Log</h1><p>迁移完数据库文件后,重启数据库服务,依旧起不来.</p>
+<p>发现状态一直在<code>activating</code>…</p>
+<p>根据<a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a>,去看mysql的log.</p>
+<p>才找到了问题所在.</p>
+<blockquote>
+<p><strong>看Log的重要性!!!</strong></p>
+<p><strong>看Log的重要性!!!</strong></p>
+<p><strong>看Log的重要性!!!</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">InnoDB: Error: trying to access page number 0 in space 168,</span><br><span class="line">InnoDB: space name okcloud/ok_1_ipscan_task_result,</span><br><span class="line">InnoDB: which is outside the tablespace bounds.</span><br><span class="line">InnoDB: Byte offset 0, len 16384, i/o type 10.</span><br><span class="line">InnoDB: If you get this error at mysqld startup, please check that</span><br><span class="line">InnoDB: your my.cnf matches the ibdata files that you have in the</span><br><span class="line">InnoDB: MySQL server.</span><br><span class="line">2019-07-29 19:23:43 7f2a7946d700  InnoDB: Assertion failure in thread 139820400039680 in file fil0fil.cc line 5666</span><br><span class="line">InnoDB: We intentionally generate a memory trap.</span><br><span class="line">InnoDB: Submit a detailed bug report to http://bugs.mysql.com.</span><br><span class="line">InnoDB: If you get repeated assertion failures or crashes, even</span><br><span class="line">InnoDB: immediately after the mysqld startup, there may be</span><br><span class="line">InnoDB: corruption in the InnoDB tablespace. Please refer to</span><br><span class="line">InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html</span><br><span class="line">InnoDB: about forcing recovery.</span><br></pre></td></tr></table></figure>
+
+<p>访问这个表<code>ok_1_ipscan_task_result</code>出错,可参考<code>forcing recovery</code></p>
+<hr>
+<h1 id="恢复数据"><a href="#恢复数据" class="headerlink" title="恢复数据:"></a>恢复数据:</h1><h2 id="Mysql-Forcing-InnoDB-Recovery特性"><a href="#Mysql-Forcing-InnoDB-Recovery特性" class="headerlink" title="Mysql Forcing InnoDB Recovery特性:"></a>Mysql Forcing InnoDB Recovery特性:</h2><blockquote>
+<p>需要做特殊操作，让 MySQL 跳过恢复，启动 MySQL，然后把数据导出来，再重建数据库导入。</p>
+<p>MySQL 有个一个特性：<a href="https://dev.mysql.com/doc/refman/5.7/en/forcing-innodb-recovery.html">Forcing InnoDB Recovery</a>，启用这个特性需要设置  </p>
+<p>innodb_force_recovery 大于 0。</p>
+<p>innodb_force_recovery 可以设置为 1-6，大的值包含前面所有小于它的值的影响。</p>
+<ol>
+<li><p><code>(SRV_FORCE_IGNORE_CORRUPT)</code>: <strong>忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</strong></p>
+</li>
+<li><p><code>(SRV_FORCE_NO_BACKGROUND)</code>: 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_TRX_UNDO)</code>: 不执行事务回滚操作。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_IBUF_MERGE)</code>: 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_UNDO_LOG_SCAN)</code>: 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</p>
+</li>
+<li><p><code>(SRV_FORCE_NO_LOG_REDO)</code>: 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</p>
+</li>
+</ol>
+</blockquote>
+<p>一般设为1即可,当时没认真看,直接设为了6…</p>
+<p>6可能损坏原有数据库表…</p>
+<hr>
+<h2 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">my.cnf 中添加：</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery = 1</span><br></pre></td></tr></table></figure>
+
+<p>然后重启数据库,用<code>Navicat</code>将数据库转储成sql语句.</p>
+<p>只有在mysql log里报错误的那个表导不出来.不过已经足够了.</p>
+<p>恢复了很多的数据.</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
+<li><a href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a></li>
+<li><a href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a></li>
+<li><a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a></li>
+<li><a href="https://www.cnblogs.com/glon/p/6728380.html">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a></li>
+<li><a href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Dev</category>
+      </categories>
+      <tags>
+        <tag>Dev</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>记录-Centos7系统安装</title>
     <url>//64204.html</url>
     <content><![CDATA[<h1 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装:"></a>系统安装:</h1><h2 id="镜像选择"><a href="#镜像选择" class="headerlink" title="镜像选择:"></a>镜像选择:</h2><p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
@@ -6617,87 +6697,6 @@
 <li><a href="https://blog.csdn.net/justlpf/article/details/80703763">linux xfs和ext4的区别</a></li>
 <li><a href="https://blog.csdn.net/sinat_29384657/article/details/51152954">CentOS 7 安装教程、硬盘分区、LVM、网络配置、软件源配置、制作</a></li>
 <li><a href="https://v2ex.com/t/146662">在经常突然断电的情况下，使用 ext4 和 xfs 哪个文件系统更安全？</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Dev</category>
-      </categories>
-      <tags>
-        <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记录-Mysql无法启动及数据恢复</title>
-    <url>//8704.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Centos7又报io error了.</p>
-<p><img src="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png"></p>
-<p>然后想着把数据库的数据迁移出来. </p>
-<p>用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用.</p>
-<p>然后上头说尝试恢复下硬盘.</p>
-<hr>
-<h1 id="修复硬盘"><a href="#修复硬盘" class="headerlink" title="修复硬盘:"></a>修复硬盘:</h1><p>按这个链接<a href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a>尝试了一下,未果.</p>
-<p>因为上次是进不去系统才进行了<code>xfs_repair</code>,这次一断电才开机就又正常了.</p>
-<p>然后以为机器正常了,可是这个时候mysql的服务起不来了.</p>
-<blockquote>
-<p>这个时候没有看mysql的状态和log.不好的习惯.</p>
-</blockquote>
-<p>那只好尝试一下通过文件来迁移数据库<code>Mysql</code>.</p>
-<hr>
-<h1 id="通过文件迁移数据库"><a href="#通过文件迁移数据库" class="headerlink" title="通过文件迁移数据库:"></a>通过文件迁移数据库:</h1><p>按照<a href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a> 来传mysql的文件.</p>
-<p>里面提到通过用<code>rsync</code>来传文件.</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#后面的路径是目标路径</span></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/</span><br></pre></td></tr></table></figure>
-
-<p>具体用的哪条命令,忘了…</p>
-<hr>
-<h1 id="查看Log"><a href="#查看Log" class="headerlink" title="查看Log"></a>查看Log</h1><p>迁移完数据库文件后,重启数据库服务,依旧起不来.</p>
-<p>发现状态一直在<code>activating</code>…</p>
-<p>根据<a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a>,去看mysql的log.</p>
-<p>才找到了问题所在.</p>
-<blockquote>
-<p><strong>看Log的重要性!!!</strong></p>
-<p><strong>看Log的重要性!!!</strong></p>
-<p><strong>看Log的重要性!!!</strong></p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">InnoDB: Error: trying to access page number 0 in space 168,</span><br><span class="line">InnoDB: space name okcloud/ok_1_ipscan_task_result,</span><br><span class="line">InnoDB: which is outside the tablespace bounds.</span><br><span class="line">InnoDB: Byte offset 0, len 16384, i/o type 10.</span><br><span class="line">InnoDB: If you get this error at mysqld startup, please check that</span><br><span class="line">InnoDB: your my.cnf matches the ibdata files that you have in the</span><br><span class="line">InnoDB: MySQL server.</span><br><span class="line">2019-07-29 19:23:43 7f2a7946d700  InnoDB: Assertion failure in thread 139820400039680 in file fil0fil.cc line 5666</span><br><span class="line">InnoDB: We intentionally generate a memory trap.</span><br><span class="line">InnoDB: Submit a detailed bug report to http://bugs.mysql.com.</span><br><span class="line">InnoDB: If you get repeated assertion failures or crashes, even</span><br><span class="line">InnoDB: immediately after the mysqld startup, there may be</span><br><span class="line">InnoDB: corruption in the InnoDB tablespace. Please refer to</span><br><span class="line">InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html</span><br><span class="line">InnoDB: about forcing recovery.</span><br></pre></td></tr></table></figure>
-
-<p>访问这个表<code>ok_1_ipscan_task_result</code>出错,可参考<code>forcing recovery</code></p>
-<hr>
-<h1 id="恢复数据"><a href="#恢复数据" class="headerlink" title="恢复数据:"></a>恢复数据:</h1><h2 id="Mysql-Forcing-InnoDB-Recovery特性"><a href="#Mysql-Forcing-InnoDB-Recovery特性" class="headerlink" title="Mysql Forcing InnoDB Recovery特性:"></a>Mysql Forcing InnoDB Recovery特性:</h2><blockquote>
-<p>需要做特殊操作，让 MySQL 跳过恢复，启动 MySQL，然后把数据导出来，再重建数据库导入。</p>
-<p>MySQL 有个一个特性：<a href="https://dev.mysql.com/doc/refman/5.7/en/forcing-innodb-recovery.html">Forcing InnoDB Recovery</a>，启用这个特性需要设置  </p>
-<p>innodb_force_recovery 大于 0。</p>
-<p>innodb_force_recovery 可以设置为 1-6，大的值包含前面所有小于它的值的影响。</p>
-<ol>
-<li><p><code>(SRV_FORCE_IGNORE_CORRUPT)</code>: <strong>忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</strong></p>
-</li>
-<li><p><code>(SRV_FORCE_NO_BACKGROUND)</code>: 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</p>
-</li>
-<li><p><code>(SRV_FORCE_NO_TRX_UNDO)</code>: 不执行事务回滚操作。</p>
-</li>
-<li><p><code>(SRV_FORCE_NO_IBUF_MERGE)</code>: 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</p>
-</li>
-<li><p><code>(SRV_FORCE_NO_UNDO_LOG_SCAN)</code>: 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</p>
-</li>
-<li><p><code>(SRV_FORCE_NO_LOG_REDO)</code>: 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</p>
-</li>
-</ol>
-</blockquote>
-<p>一般设为1即可,当时没认真看,直接设为了6…</p>
-<p>6可能损坏原有数据库表…</p>
-<hr>
-<h2 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">my.cnf 中添加：</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery = 1</span><br></pre></td></tr></table></figure>
-
-<p>然后重启数据库,用<code>Navicat</code>将数据库转储成sql语句.</p>
-<p>只有在mysql log里报错误的那个表导不出来.不过已经足够了.</p>
-<p>恢复了很多的数据.</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
-<li><a href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a></li>
-<li><a href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a></li>
-<li><a href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a></li>
-<li><a href="https://www.cnblogs.com/glon/p/6728380.html">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a></li>
-<li><a href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
 </ul>
 ]]></content>
       <categories>
