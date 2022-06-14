@@ -24,15 +24,17 @@
 
   <meta name="description" content="Pre:在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法先试一下如何在自己的合约里调用uniswap 完整代码:kovan测试网里  uniswapV2: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D dai: 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa  1234567891011121314151">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Crypto-合约里调用Uniswap">
+<meta property="og:title" content="SmartContract-合约里调用Uniswap">
 <meta property="og:url" content="https://jerrychan807.github.io/50077.html">
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法先试一下如何在自己的合约里调用uniswap 完整代码:kovan测试网里  uniswapV2: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D dai: 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa  1234567891011121314151">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-02-23T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T02:59:44.476Z">
+<meta property="article:modified_time" content="2022-06-14T05:22:57.318Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="SmartContract">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://jerrychan807.github.io/50077.html">
@@ -48,7 +50,7 @@
   };
 </script>
 
-  <title>Crypto-合约里调用Uniswap | Black House</title>
+  <title>SmartContract-合约里调用Uniswap | Black House</title>
   
 
 
@@ -194,7 +196,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Crypto-合约里调用Uniswap
+          SmartContract-合约里调用Uniswap
         </h1>
 
         <div class="post-meta">
@@ -211,7 +213,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+                <time title="Modified: 2022-06-14 13:22:57" itemprop="dateModified" datetime="2022-06-14T13:22:57+08:00">2022-06-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -219,7 +221,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                  <a href="/categories/SmartContract/" itemprop="url" rel="index"><span itemprop="name">SmartContract</span></a>
                 </span>
             </span>
 
@@ -263,9 +265,7 @@
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity  <span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/Uniswap/uniswap-v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router02.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UseSwap</span> &#123;</span><br><span class="line">    <span class="title class_">IUniswapV</span>2Router02 private constant <span class="variable constant_">ROUTER</span> = <span class="title class_">IUniswapV</span>2Router02(<span class="number">0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</span>); <span class="comment">//</span></span><br><span class="line">    address internal owner;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier <span class="title function_">isOwner</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Caller is not owner&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(token); <span class="comment">// 合约地址授权给router地址</span></span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 授权 </span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_approveTokenIfNeeded</span>(<span class="params">address token</span>) private &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">IERC20</span>(token).<span class="title function_">allowance</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), <span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">approveToken</span>(<span class="params">address token</span>) public &#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForTokenToEth</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = token;</span><br><span class="line">        path[<span class="number">1</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForEthToToken</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        path[<span class="number">1</span>] = token;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdraw</span>(<span class="params">address payable _address, uint withdrawAmount</span>) public payable isOwner&#123;</span><br><span class="line">        _address.<span class="title function_">transfer</span>(withdrawAmount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// important to receive ETH</span></span><br><span class="line">    <span class="title function_">receive</span>() external payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<hr>
 <h1 id="实例化合约"><a href="#实例化合约" class="headerlink" title="实例化合约:"></a>实例化合约:</h1><p>知道合约的interface和合约地址后，就可以实例化合约了。</p>
-<hr>
 <h1 id="Eth-gt-Token"><a href="#Eth-gt-Token" class="headerlink" title="Eth -&gt; Token:"></a>Eth -&gt; Token:</h1><h2 id="定义receive函数"><a href="#定义receive函数" class="headerlink" title="定义receive函数:"></a>定义receive函数:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">receive 接收以太函数</span><br><span class="line">一个合约最多有一个 receive 函数, 声明函数为： receive() external payable &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">不需要 function 关键字，也没有参数和返回值并且必须是　external　可见性和　payable 修饰． 它可以是 virtual 的，可以被重载也可以有 修改器modifier 。</span><br></pre></td></tr></table></figure>
 
 <p>合约里要定义receive函数才能接受eth</p>
@@ -281,7 +281,6 @@
 <li>调用函数的同时转账<code>msg.value</code>数量的eth</li>
 <li>eth继续通过<code>msg.value</code>传入，调用<code>swapExactETHForTokens</code></li>
 </ol>
-<hr>
 <h1 id="Token-gt-Eth"><a href="#Token-gt-Eth" class="headerlink" title="Token -&gt; Eth:"></a>Token -&gt; Eth:</h1><p>这里要用到<code>uniswapRouter</code>的<code>swapTokensForExactETH</code>函数，<br>一开始遇到<code>Fail with error &#39;TransferHelper: ETH_TRANSFER_FAILED&#39;</code>报错<br>看了一下函数的定义</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokensForExactETH</span>(<span class="params">uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[path.<span class="property">length</span> - <span class="number">1</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsIn</span>(factory, amountOut, path);</span><br><span class="line">    <span class="built_in">require</span>(amounts[<span class="number">0</span>] &lt;= amountInMax, <span class="string">&#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferFrom</span>(</span><br><span class="line">        path[<span class="number">0</span>], msg.<span class="property">sender</span>, <span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]</span><br><span class="line">    );  <span class="comment">// Here</span></span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">withdraw</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferETH</span>(to, amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -296,7 +295,6 @@
 <li>合约授权<code>Dai</code>给uniswap router</li>
 <li>uniswap router从合约里提取<code>Dai</code>，兑换成eth，再发回来</li>
 </ol>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol">https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol</a></li>
 <li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/question/1828">使用智能合约调用Uniswap交换token时出现错误</a></li>
@@ -314,19 +312,19 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/7095.html" rel="bookmark">Crypto-BscTradeHistory Project</a></div>
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">SmartContract-Erc20区分买卖_添加移除流动性行为</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
+      <div class="popular-posts-title"><a href="/64479.html" rel="bookmark">SmartContract-Hardhat框架初步使用</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">SmartContract-CryptoZombie僵尸世界NFT游戏</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/54061.html" rel="bookmark">SmartContract-Uniswap原理-恒定乘积公式</a></div>
     </li>
   </ul>
 
@@ -334,6 +332,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
           </div>
 
         
@@ -342,8 +342,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/54061.html" rel="prev" title="Crypto-Uniswap原理-恒定乘积公式">
-      <i class="fa fa-chevron-left"></i> Crypto-Uniswap原理-恒定乘积公式
+    <a href="/54061.html" rel="prev" title="SmartContract-Uniswap原理-恒定乘积公式">
+      <i class="fa fa-chevron-left"></i> SmartContract-Uniswap原理-恒定乘积公式
     </a></div>
       <div class="post-nav-item">
     <a href="/33960.html" rel="next" title="SmartContract-DoDoFlashLoan测试网例子">

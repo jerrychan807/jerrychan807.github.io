@@ -667,7 +667,6 @@
     <title>Crypto-BscTradeHistory Project</title>
     <url>//7095.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。<br>看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
-<hr>
 <h1 id="debank交易历史界面"><a href="#debank交易历史界面" class="headerlink" title="debank交易历史界面:"></a>debank交易历史界面:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825"></p>
 <p>有以下功能点:</p>
 <ul>
@@ -679,10 +678,8 @@
 <li>token的传输记录，增加了X Token,减少了X Token</li>
 <li>gas费用换算成u</li>
 </ul>
-<hr>
 <h1 id="项目效果图"><a href="#项目效果图" class="headerlink" title="项目效果图:"></a>项目效果图:</h1><p>项目地址:<a href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542"></p>
-<hr>
 <h1 id="功能点"><a href="#功能点" class="headerlink" title="功能点:"></a>功能点:</h1><h2 id="合约交互记录-重点"><a href="#合约交互记录-重点" class="headerlink" title="合约交互记录-重点:"></a>合约交互记录-重点:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445"></p>
 <p>有以下几个点:</p>
 <ul>
@@ -690,7 +687,6 @@
 <li>项目名字</li>
 <li>调用合约的具体函数</li>
 </ul>
-<hr>
 <h2 id="合约交互记录-项目logo和名字"><a href="#合约交互记录-项目logo和名字" class="headerlink" title="合约交互记录-项目logo和名字:"></a>合约交互记录-项目logo和名字:</h2><p>交易记录里，会记录你地址与哪个合约发生了交互</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723"></p>
 <p>可以知道合约地址，一个项目可以有好几个合约地址，比如<code>PancakeSwap</code>可以有几个合约地址</p>
@@ -708,7 +704,6 @@
 <li>在项目源码找常量，记录了那些项目合约地址</li>
 </ul>
 <p>这一块感觉后续要不断去维护这些映射关系</p>
-<hr>
 <h2 id="合约交互记录-调用合约的具体函数"><a href="#合约交互记录-调用合约的具体函数" class="headerlink" title="合约交互记录-调用合约的具体函数:"></a>合约交互记录-调用合约的具体函数:</h2><p>调用bscscan的这个<code>Get a list of &#39;Normal&#39; Transactions By Address</code>接口,可以获得以下数据</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527"></p>
 <p>调用合约的具体函数可以通过解析<code>input_data</code>得知</p>
@@ -754,92 +749,17 @@
       </tags>
   </entry>
   <entry>
-    <title>Crypto-CryptoZombie僵尸世界NFT游戏</title>
-    <url>//60348.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。</p>
-<p>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
-<hr>
-<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ul>
-<li>在remix编写solidity</li>
-<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
-<li>truffle部署到ropsten测试网</li>
-<li>vue编写代码调试，与合约交互</li>
-</ul>
-<hr>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
-<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
-
-<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
-<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
-<hr>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
-
-<p>即可部署至Ropsten</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
-<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
-<hr>
-<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
-<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
-<p><code>view</code>读取存储，但不会修改</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
-<hr>
-<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
-<p>external - Cannot be accessed internally, only externally</p>
-<p>internal - only this contract and contracts deriving from it can access</p>
-<p>private - can be accessed only from this contract</p>
-<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
-<hr>
-<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
-<hr>
-<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
-<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
-<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
-<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
-<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
-<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
-<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Crypto-Raca Nft市场实时交易记录</title>
     <url>//43268.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png" alt="20220512174618"></p>
 <p>朋友有需求，想要监控<code>Raca NFT</code>市场在BSC链上的实时交易记录<br>特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。</p>
-<hr>
 <p>要获取Raca NFT市场的实时交易记录，有两个数据来源：</p>
-<ul>
+<ol>
 <li>官方网站爬虫、API</li>
 <li>读取bsc每个块的数据</li>
-</ul>
+</ol>
 <p>第一种延时严重，存在几分钟的延时，所以采取第二种</p>
-<h1 id="快速读取block数据"><a href="#快速读取block数据" class="headerlink" title="快速读取block数据"></a>快速读取block数据</h1><p>bsc链上约3s左右出一个块,出块的频率很高。</p>
+<h1 id="读取Bsc-Block-Data"><a href="#读取Bsc-Block-Data" class="headerlink" title="读取Bsc Block Data"></a>读取Bsc Block Data</h1><h2 id="快速读取block数据"><a href="#快速读取block数据" class="headerlink" title="快速读取block数据"></a>快速读取block数据</h2><p>bsc链上约3s左右出一个块,出块的频率很高。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174907.png" alt="20220512174907"></p>
 <p>一开始是简单使用<code>time.sleep()</code>去停顿几秒，避免对节点发起过多的请求，但是这样会出现漏块的问题。</p>
 <p>后来想到是，配置多个节点地址，每次查询前随机选用一个节点，这样既可以减少漏块的几率，也不会因为查询频率过高被节点ban.</p>
@@ -847,12 +767,11 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 官方给的节点列表</span></span><br><span class="line">RPC_List = [<span class="string">&#x27;https://bsc-dataseed.binance.org/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed1.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed1.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed2.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed3.defibit.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed4.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed2.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed3.ninicoin.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed4.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed1.binance.org/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed2.binance.org/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed3.binance.org/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed4.binance.org/&#x27;</span>]</span><br></pre></td></tr></table></figure>
 
 <p>能稳定、快速的获取到block的数据后，接下来就要过滤出跟Raca NFT市场相关的交易记录</p>
-<hr>
-<h1 id="过滤相关记录："><a href="#过滤相关记录：" class="headerlink" title="过滤相关记录："></a>过滤相关记录：</h1><p>相关的交易记录：tx的to地址指向raca市场合约</p>
+<h2 id="过滤相关记录："><a href="#过滤相关记录：" class="headerlink" title="过滤相关记录："></a>过滤相关记录：</h2><p>相关的交易记录：tx的to地址指向raca市场合约</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">list_of_block_transactions = block.transactions</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> transaction <span class="keyword">in</span> list_of_block_transactions:</span><br><span class="line">    to_account = transaction[<span class="string">&#x27;to&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> to_account == self.contract_addr: <span class="comment"># 与raca市场合约交互的记录</span></span><br><span class="line">        self.parse_transaction(transaction, block_timestamp)</span><br></pre></td></tr></table></figure>
 
 <p>过滤出相关记录后，就要进行对记录进行解析了。</p>
-<h1 id="解析："><a href="#解析：" class="headerlink" title="解析："></a>解析：</h1><p><code>input data</code>的前八位为方法名，找出买卖两类函数的hash，就可以再次过滤出raca市场有关的买卖交易记录了。</p>
+<h2 id="解析："><a href="#解析：" class="headerlink" title="解析："></a>解析：</h2><p><code>input data</code>的前八位为方法名，找出买卖两类函数的hash，就可以再次过滤出raca市场有关的买卖交易记录了。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_transaction</span>(<span class="params">self, transaction, block_timestamp</span>):</span><br><span class="line">    <span class="comment"># logger.debug(&quot;parse transaction. hash:&#123;&#125;&quot;.format(hash_info[&quot;hash&quot;]))</span></span><br><span class="line">    transaction_info = &#123;&#125;</span><br><span class="line">    transaction_info[<span class="string">&quot;tx&quot;</span>] = transaction[<span class="string">&quot;hash&quot;</span>].<span class="built_in">hex</span>()</span><br><span class="line">    transaction_info[<span class="string">&quot;from&quot;</span>] = transaction[<span class="string">&quot;from&quot;</span>]</span><br><span class="line">    transaction_info[<span class="string">&quot;time&quot;</span>] = timestamp2date(<span class="built_in">int</span>(block_timestamp))</span><br><span class="line"></span><br><span class="line">    input_data = transaction[<span class="string">&quot;input&quot;</span>]</span><br><span class="line">    four_byte = input_data[<span class="number">0</span>:<span class="number">10</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> four_byte == <span class="string">&quot;0x467f963d&quot;</span>:  <span class="comment"># sell的函数选择器</span></span><br><span class="line">        transaction_info[<span class="string">&quot;type&quot;</span>] = <span class="string">&quot;SELL&quot;</span></span><br><span class="line">        nft_token, token_id, num, per_price = self.parse_sell_input_data(input_data)</span><br><span class="line">        transaction_info[<span class="string">&quot;token&quot;</span>] = Web3.toChecksumAddress(nft_token)</span><br><span class="line">        transaction_info[<span class="string">&quot;tokenId&quot;</span>] = token_id</span><br><span class="line">        transaction_info[<span class="string">&quot;count&quot;</span>] = num</span><br><span class="line">        transaction_info[<span class="string">&quot;amount&quot;</span>] = <span class="built_in">str</span>(per_price)</span><br><span class="line">        <span class="comment"># 。。。。</span></span><br></pre></td></tr></table></figure>
 
 <p>剩下的部分,就是对各个参数进行解析了。</p>
@@ -861,7 +780,6 @@
 <p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
 <p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
 </blockquote>
-<hr>
 <h1 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h1><p>至此，通过以下几个步骤</p>
 <ul>
 <li>读取block数据</li>
@@ -871,9 +789,8 @@
 <p>就基本可以完成对<code>Raca NFT</code>市场实时交易记录的监控了。</p>
 <hr>
 <p>在开发的过程中，也发现了一些有趣的点。</p>
-<h1 id="有趣的点1：科学家抢购"><a href="#有趣的点1：科学家抢购" class="headerlink" title="有趣的点1：科学家抢购"></a>有趣的点1：科学家抢购</h1><p>比如该<a href="https://bscscan.com/tx/0x80aef859189aa9508ca6760cd669057ed592bf1ac646f6c5951c8dd6e89b4927">tx</a>在<code>13151047</code>区块挂了元兽蛋的卖单，每个以<code>86.5raca</code>售出</p>
-<p>在接下来的几个区块，都有人发单去抢</p>
-<p>最快是之后的第二个区块:block_num: <code>13151049</code></p>
+<h1 id="有趣的点："><a href="#有趣的点：" class="headerlink" title="有趣的点："></a>有趣的点：</h1><h2 id="科学家抢购"><a href="#科学家抢购" class="headerlink" title="科学家抢购:"></a>科学家抢购:</h2><p>比如该<a href="https://bscscan.com/tx/0x80aef859189aa9508ca6760cd669057ed592bf1ac646f6c5951c8dd6e89b4927">tx</a>在<code>13151047</code>区块挂了元兽蛋的卖单，每个以<code>86.5raca</code>售出</p>
+<p>在接下来的几个区块，都有人发单去抢<br>最快是之后的第二个区块:block_num: <code>13151049</code></p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 抢购的tx列表</span></span><br><span class="line"><span class="number">0x62ab3cb23f62459154b652dfb855d4f6f9df4b6fa27363ce69484909f695b94c</span></span><br><span class="line"><span class="number">0x6e8e06710565fd9cd5f4d8223ed172d817f2e50b5f0aa4f297bf9738bab5b541</span></span><br><span class="line"><span class="number">0xfd1bee48d470f8bf9b3f4134ea5de7fc323f20b3de2ccd6d8658f02378d97649</span></span><br><span class="line"><span class="number">0x65ec96412cd5632b8e29225cb8ce96bb76429cc4da68a28ad394643c75a2c8b7</span></span><br><span class="line"><span class="number">0x094b419c95790a8514193a79e2835db42e7ccc0313a5d6511a486853c06508d3</span></span><br></pre></td></tr></table></figure>
 
 <p>第三个区块:block_num: <code>13151050</code></p>
@@ -883,9 +800,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 抢购的tx列表</span></span><br><span class="line"><span class="number">0xc4373dd6aac99ecb046c581f8006c34bda520111b4e575d400241eb59d889e85</span></span><br></pre></td></tr></table></figure>
 
 <p>奇怪的是大家都抢购失败了，<code>Fail with error &#39;Auction: auction not OnAuction&#39;</code><br>但能在卖单的之后的第二个区块，能检测并发起买单的这些科学家的实力都是挺厉害的。</p>
-<hr>
-<h1 id="有趣的点2：市场活跃度-amp-差价"><a href="#有趣的点2：市场活跃度-amp-差价" class="headerlink" title="有趣的点2：市场活跃度&amp;差价"></a>有趣的点2：市场活跃度&amp;差价</h1><p>在比较火的那段时间里，raca nft市场的交易量是特别大的，流动性很足，基本上很多商品只要挂最低价上去，就会被立刻买走。</p>
-<p>另外，raca nft市场可以批量10个或100个卖出，一般批量的价格会比单个的价格更低，存在一些差价，这当中有套利的机会。</p>
+<h2 id="市场活跃度-amp-差价"><a href="#市场活跃度-amp-差价" class="headerlink" title="市场活跃度&amp;差价"></a>市场活跃度&amp;差价</h2><p>在比较火的那段时间里，raca nft市场的交易量是特别大的，流动性很足，基本上很多商品只要挂最低价上去，就会被立刻买走。<br>另外，raca nft市场可以批量10个或100个卖出，一般批量的价格会比单个的价格更低，存在一些差价，这当中有套利的机会。</p>
 ]]></content>
       <categories>
         <category>Crypto</category>
@@ -901,8 +816,7 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
 <p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
 <hr>
-<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
-<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
+<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。<br>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
@@ -921,9 +835,7 @@
 </ul>
 <p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
-<p>参数部分则是使用对应的16进制数。</p>
-<p>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
-<hr>
+<p>参数部分则是使用对应的16进制数。<br>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
 <h1 id="实验"><a href="#实验" class="headerlink" title="实验:"></a>实验:</h1><p>刚好自己有在练手solidity，有部署到ropsten测试网上。<br>可以尝试能不能构造出已知交易的<code>input_data</code></p>
 <p>调用的合约函数:</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -937,13 +849,11 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
 
 <p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。<br>但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
-<hr>
 <h1 id="data的组成规则："><a href="#data的组成规则：" class="headerlink" title="data的组成规则："></a>data的组成规则：</h1><blockquote>
 <p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
 <p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
 <p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
 </blockquote>
-<hr>
 <h1 id="raca-nft挂单卖出"><a href="#raca-nft挂单卖出" class="headerlink" title="raca nft挂单卖出:"></a>raca nft挂单卖出:</h1><h2 id="授权："><a href="#授权：" class="headerlink" title="授权："></a>授权：</h2><p>授权这个data比较简单，找到多几个tx比较一下。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
 <p>可知他的data是固定的，直接用就行了。</p>
@@ -954,12 +864,10 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
 
 <p>将tx用私钥签名，广播交易就可以了。<br>然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
-<hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
 <li>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</li>
 <li>多找相关的tx比较，找规律</li>
 </ol>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
 <li><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
@@ -1230,106 +1138,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Crypto-Uniswap原理-恒定乘积公式</title>
-    <url>//54061.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a><br>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
-<hr>
-<h1 id="恒定乘积公式"><a href="#恒定乘积公式" class="headerlink" title="恒定乘积公式"></a>恒定乘积公式</h1><h2 id="无手续费"><a href="#无手续费" class="headerlink" title="无手续费:"></a>无手续费:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</li>
-<li>两货币数量的乘积 x * y 恆等于 k</li>
-<li>k 值是由第一笔注入的流动性所决定</li>
-</ul>
-<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
-<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
-<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
-<p>公式推导:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
-<p>这样可以推导出前2行</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
-<p>接着推导<code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
-<p>推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
-<p>第一个图里的公式，都推导完了。</p>
-<h2 id="计入手续费"><a href="#计入手续费" class="headerlink" title="计入手续费:"></a>计入手续费:</h2><p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
-<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
-<p>手续费 ρ &#x3D; 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
-<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
-<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
-<p>接着推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
-<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
-<p>推导<code>x’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
-<p>推导<code>y’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
-<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
-<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
-<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 &#x3D;&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
-<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 &#x3D; 0.3% 对于 k 值的影响极小。</p>
-<hr>
-<h2 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码:"></a>相关代码:</h2><p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面已知</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
-<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
-<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
-<p>getAmountOut函数，通过入参：</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
-</ul>
-<p>计算出参:</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
-</ul>
-<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
-<p>getAmountIn函数，通过入参：</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
-</ul>
-<p>计算出参:</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
-</ul>
-<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>+1之后，交易者需要付出多一点点</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></li>
-<li><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Crypto-pancakeswap_receipt细节</title>
     <url>//35176.html</url>
     <content><![CDATA[<h1 id="swap-token"><a href="#swap-token" class="headerlink" title="swap token:"></a>swap token:</h1><p>测试用<code>BNB</code>去购买<code>VRT</code></p>
@@ -1364,7 +1172,6 @@
 </ol>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">logs = self.get_token_contract(token_address=token_address).events.Transfer().processReceipt(receipt)</span><br></pre></td></tr></table></figure>
 
-<hr>
 <h1 id="receipt-log-交易收据log"><a href="#receipt-log-交易收据log" class="headerlink" title="receipt log 交易收据log:"></a>receipt log 交易收据log:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2B776BF8-05AF-41A0-ADE5-402D51A5771E.png" alt="2B776BF8-05AF-41A0-ADE5-402D51A5771E"></p>
 <p><a href="https://bscscan.com/tx/0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf">tx记录</a></p>
 <p>example:</p>
@@ -1378,7 +1185,6 @@
 <li>PancakeSwap V2: VRT 5 Sync()</li>
 <li>PancakeSwap V2: VRT 5 Swap()</li>
 </ol>
-<hr>
 <h2 id="Events"><a href="#Events" class="headerlink" title="Events:"></a>Events:</h2><p>交易后可以获取到收据对象，收据对象里有log,记录了每个调用函数的 入参</p>
 <ol>
 <li>Wbnb——Deposit()</li>
@@ -1419,11 +1225,10 @@
 <h1 id="Question"><a href="#Question" class="headerlink" title="Question:"></a>Question:</h1><h2 id="swap比转账要消耗更多的gas"><a href="#swap比转账要消耗更多的gas" class="headerlink" title="swap比转账要消耗更多的gas?"></a>swap比转账要消耗更多的gas?</h2><p>我觉得是，测试过程中，swap的话消耗 <code>0.000652585 BNB</code>，转账的话消耗 <code>0.0001071 BNB</code></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211018163457.png" alt="20211018163457"></p>
 <p>swap要比转账需要更多的执行步骤, 所以需要消耗更多的gas</p>
-<hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>交易收据里log列表里有事件event<br>event里的内容，用对应合约去解析一下，就可以看到记录里调用哪个合约的哪个函数以及哪些入参</p>
 <p>感觉可以写个简单页面玩玩，类似debank里的交易历史<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/1A6352FF-E581-4644-88F2-A7994A20AD46.png" alt="1A6352FF-E581-4644-88F2-A7994A20AD46"></p>
 <p>后面还要看看<code>预言机</code>的相关内容</p>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap pair doc</a></li>
 </ul>
 ]]></content>
@@ -1440,16 +1245,14 @@
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>当你在pancakeswap上交易时，它会帮你找到最佳的交易对路径，中间交易代币可能是一个或多个。<br>那它这个最佳交易对路径是如何计算出来的呢?</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104114.png" alt="20211020104114"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104124.png" alt="20211020104124"></p>
-<hr>
 <h1 id="如何查找最佳交易对路径"><a href="#如何查找最佳交易对路径" class="headerlink" title="如何查找最佳交易对路径:"></a>如何查找最佳交易对路径:</h1><p><a href="https://docs.uniswap.org/sdk/2.0.0/reference/trade#besttradeexactin">uniswap sdk</a></p>
 <p>从sdk中可以看到有<code>bestTradeExactIn</code>方法:</p>
 <blockquote>
-<p>给定一组对、固定数量的输入和输出的代币数量，此方法返回将maxNumResults输入代币数量交换为输出代币的最佳交易，最多maxHops跳数。返回的交易按输出金额降序排列，并且都共享给定的输入金额。</p>
+<p>给定一组对、固定数量的输入和输出的代币数量，此方法返回将maxNumResults输入代币数量交换为输出代币的最佳交易，最多maxHops跳数。<br>返回的交易按输出金额降序排列，并且都共享给定的输入金额。</p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Trade.bestTradeExactIn(</span><br><span class="line">    pairs: Pair[],</span><br><span class="line">    amountIn: TokenAmount,</span><br><span class="line">    tokenOut: Token,</span><br><span class="line">    &#123; maxNumResults = 3, maxHops = 3 &#125;: BestTradeOptions = &#123;&#125;): Trade[]</span><br></pre></td></tr></table></figure>
 
-<p>意思就是哪个交易对路径最后返回的币最多，哪个就是最佳路径。</p>
-<p>如果要自己简单的实现的话,可以找到对应链的主流币种，例如<code>USDT</code>,<code>BNB</code>,<code>BUSD</code>等。<br><strong>所有代币都是与这些代币中的一种或多种配对组成流动性池子的</strong>。<br>因此，只要用这些代币作为路径组合的中间币种即可，而无需考虑全部代币。</p>
+<p>意思就是哪个交易对路径最后返回的币最多，哪个就是最佳路径。<br>如果要自己简单的实现的话,可以找到对应链的主流币种，例如<code>USDT</code>,<code>BNB</code>,<code>BUSD</code>等。<br><strong>所有代币都是与这些代币中的一种或多种配对组成流动性池子的</strong>。<br>因此，只要用这些代币作为路径组合的中间币种即可，而无需考虑全部代币。</p>
 <p>tokenA 兑换 tokenB 可遍历的路径包括：</p>
 <ul>
 <li>tokenA &gt; tokenB：只有两个代币存在直接配对的流动性池子时，该路径才有效</li>
@@ -1458,16 +1261,14 @@
 </ul>
 <p>然后自己去简单遍历构造交易对路径。<br>调用<code>pancakeswap router</code>的<code>getAmountsOut</code>方法</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165458.png" alt="20211105165458"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">predicted_out = router_contract.functions.getAmountsOut(amount_bnb, [from_token_address, contract_addr,</span><br><span class="line">                                                                                 token_address]).call()[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># python web3部分代码</span></span><br><span class="line">predicted_out = router_contract.functions.getAmountsOut(amount_bnb, [from_token_address, contract_addr,</span><br><span class="line">                                                                                 token_address]).call()[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 
 <p>最终哪个交易路径最后返回的币最多，哪个就是最佳路径。</p>
-<hr>
 <h1 id="简单试验"><a href="#简单试验" class="headerlink" title="简单试验:"></a>简单试验:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165844.png" alt="20211105165844"></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ADA-BUSD-BUNNY--32.601445898030065398</span><br><span class="line">ADA-WBNB-BUNNY--57.411093623881308004</span><br><span class="line">ADA-USDT-BUNNY--13.477518281960642732</span><br><span class="line">ADA-USDC-BUNNY--0.000005664178344977</span><br><span class="line">ADA-CAKE-BUNNY--48.583485276034042082</span><br></pre></td></tr></table></figure>
 
 <p>查询出来是含bnb的交易路径是最佳的，和前端页面显示的也对得上。</p>
 <p>至于为什么不同的交易路径会有不同的返回，暂时猜测和池子的深度有关。<br>后续还有看看<code>uniswap</code>的源码后，才能更加深入的理解</p>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://learnblockchain.cn/question/2093">uniswap 前端是怎么计算得出一个交易对的path(route)的？</a></li>
 <li><a href="https://learnblockchain.cn/question/2453">uniswap sdk 怎么获取全部交易对去筛选路径呢</a></li>
@@ -1770,66 +1571,6 @@
 <hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="http://cw.hubwiz.com/card/c/web3.js-1.0/1/8/24/">web3js中文文档</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-合约里调用Uniswap</title>
-    <url>//50077.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法<br>先试一下如何在自己的合约里调用uniswap</p>
-<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码:"></a>完整代码:</h1><p>kovan测试网里</p>
-<ul>
-<li>uniswapV2: <code>0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</code></li>
-<li>dai: <code>0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa</code></li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity  <span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/Uniswap/uniswap-v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router02.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UseSwap</span> &#123;</span><br><span class="line">    <span class="title class_">IUniswapV</span>2Router02 private constant <span class="variable constant_">ROUTER</span> = <span class="title class_">IUniswapV</span>2Router02(<span class="number">0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</span>); <span class="comment">//</span></span><br><span class="line">    address internal owner;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier <span class="title function_">isOwner</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Caller is not owner&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(token); <span class="comment">// 合约地址授权给router地址</span></span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 授权 </span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_approveTokenIfNeeded</span>(<span class="params">address token</span>) private &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">IERC20</span>(token).<span class="title function_">allowance</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), <span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">approveToken</span>(<span class="params">address token</span>) public &#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForTokenToEth</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = token;</span><br><span class="line">        path[<span class="number">1</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForEthToToken</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        path[<span class="number">1</span>] = token;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdraw</span>(<span class="params">address payable _address, uint withdrawAmount</span>) public payable isOwner&#123;</span><br><span class="line">        _address.<span class="title function_">transfer</span>(withdrawAmount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// important to receive ETH</span></span><br><span class="line">    <span class="title function_">receive</span>() external payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="实例化合约"><a href="#实例化合约" class="headerlink" title="实例化合约:"></a>实例化合约:</h1><p>知道合约的interface和合约地址后，就可以实例化合约了。</p>
-<hr>
-<h1 id="Eth-gt-Token"><a href="#Eth-gt-Token" class="headerlink" title="Eth -&gt; Token:"></a>Eth -&gt; Token:</h1><h2 id="定义receive函数"><a href="#定义receive函数" class="headerlink" title="定义receive函数:"></a>定义receive函数:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">receive 接收以太函数</span><br><span class="line">一个合约最多有一个 receive 函数, 声明函数为： receive() external payable &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">不需要 function 关键字，也没有参数和返回值并且必须是　external　可见性和　payable 修饰． 它可以是 virtual 的，可以被重载也可以有 修改器modifier 。</span><br></pre></td></tr></table></figure>
-
-<p>合约里要定义receive函数才能接受eth</p>
-<h2 id="swapExactETHForTokens"><a href="#swapExactETHForTokens" class="headerlink" title="swapExactETHForTokens:"></a>swapExactETHForTokens:</h2><p>要用到<code>uniswapRouter</code>的<code>swapExactETHForTokens</code>函数:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapExactETHForTokens</span>(<span class="params">uint amountOutMin, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    payable</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[<span class="number">0</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsOut</span>(factory, msg.<span class="property">value</span>, path); <span class="comment">// 获得可兑换出来的数量</span></span><br><span class="line">    <span class="built_in">require</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>] &gt;= amountOutMin, <span class="string">&#x27;UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>); <span class="comment">// 可兑换的数量要大于我们的期望值</span></span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="property">deposit</span>&#123;<span class="attr">value</span>: amounts[<span class="number">0</span>]&#125;();</span><br><span class="line">    <span class="title function_">assert</span>(<span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">transfer</span>(<span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]));</span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, to); <span class="comment">// swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>该函数有<code>payable</code>修饰，需要输入eth的数量通过<code>msg.value</code>传入</p>
-<p>通过在自己合约里调用<code>swapExactETHForTokens</code>函数的流程是:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>函数为payable</li>
-<li>调用函数的同时转账<code>msg.value</code>数量的eth</li>
-<li>eth继续通过<code>msg.value</code>传入，调用<code>swapExactETHForTokens</code></li>
-</ol>
-<hr>
-<h1 id="Token-gt-Eth"><a href="#Token-gt-Eth" class="headerlink" title="Token -&gt; Eth:"></a>Token -&gt; Eth:</h1><p>这里要用到<code>uniswapRouter</code>的<code>swapTokensForExactETH</code>函数，<br>一开始遇到<code>Fail with error &#39;TransferHelper: ETH_TRANSFER_FAILED&#39;</code>报错<br>看了一下函数的定义</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokensForExactETH</span>(<span class="params">uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[path.<span class="property">length</span> - <span class="number">1</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsIn</span>(factory, amountOut, path);</span><br><span class="line">    <span class="built_in">require</span>(amounts[<span class="number">0</span>] &lt;= amountInMax, <span class="string">&#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferFrom</span>(</span><br><span class="line">        path[<span class="number">0</span>], msg.<span class="property">sender</span>, <span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]</span><br><span class="line">    );  <span class="comment">// Here</span></span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">withdraw</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferETH</span>(to, amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>没有payable修饰，在兑换成ETH之前，需要把token转进去</p>
-<p>通过在自己合约里调用<code>swapTokensForExactETH</code>函数的流程是:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">    <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">    <span class="title function_">_approveTokenIfNeeded</span>(token);</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<ol>
-<li>自己的钱包地址授权<code>Dai</code>额度给自己的合约地址</li>
-<li>合约从钱包里提取一定额度<code>Dai</code></li>
-<li>合约授权<code>Dai</code>给uniswap router</li>
-<li>uniswap router从合约里提取<code>Dai</code>，兑换成eth，再发回来</li>
-</ol>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol">https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol</a></li>
-<li><a href="https://learnblockchain.cn/question/1828">使用智能合约调用Uniswap交换token时出现错误</a></li>
-<li><a href="https://soliditydeveloper.com/uniswap2">Using the new Uniswap v2 in your contracts</a></li>
-<li><a href="https://learnblockchain.cn/docs/solidity/contracts.html#receive">receive函数</a></li>
-<li><a href="https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol">https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -3234,7 +2975,6 @@
 <h2 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果:"></a>执行效果:</h2><p><a href="https://rinkeby.etherscan.io/tx/0xbc67ada4c2d570f8aba40cae4bd47794d9f25f4969b72792b30d2e23f0c8481b">tx</a></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550"></p>
 <p>能成功借款还款</p>
-<hr>
 <h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题:"></a>遇到的问题:</h1><p>dodoFlashLoan函数有3个参数:</p>
 <ul>
 <li>flashLoanPool 池子地址</li>
@@ -3246,7 +2986,6 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537"></p>
 <p>然后该池子还要支持flashloan，比如上图第一个池子就不支持，第二个池子才支持</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948"></p>
-<hr>
 <h2 id="借款数量"><a href="#借款数量" class="headerlink" title="借款数量"></a>借款数量</h2><p>一开始我填的<code>loanAmount</code>为10 ether,想借10个，转换成wei则为<code>10000000000000000000</code><br>执行后报错，无法正常借款还款</p>
 <p>查一下报错<br><code>https://dashboard.tenderly.co/tx/rinkeby/0xee7f3a6e0ef5906f8f95cbc789151e1d62da424dc80c6d93c80307ba060be646</code></p>
 <p><code>Error Message:ERC20: transfer amount exceeds balance</code></p>
@@ -3255,7 +2994,6 @@
 <p>减少<code>loanAmount</code>为<code>10000000</code>后，发现能成功，原来该usdc的精度为6位</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700"></p>
 <p>以后要注意一下，大多数代币的精度为18位，但有些代币不是。</p>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a></li>
 <li><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts">https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts</a></li>
@@ -7534,6 +7272,229 @@
       </categories>
       <tags>
         <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-CryptoZombie僵尸世界NFT游戏</title>
+    <url>//60348.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。<br>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
+<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ol>
+<li>在remix编写solidity</li>
+<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
+<li>truffle部署到ropsten测试网</li>
+<li>vue编写代码调试，与合约交互</li>
+</ol>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
+
+<p>即可部署至Ropsten</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
+<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
+<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
+<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
+
+<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
+<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
+<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
+<p><code>view</code>读取存储，但不会修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
+<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
+<p>external - Cannot be accessed internally, only externally</p>
+<p>internal - only this contract and contracts deriving from it can access</p>
+<p>private - can be accessed only from this contract</p>
+<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
+<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
+<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
+<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
+<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
+<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
+<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
+<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
+<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-Uniswap原理-恒定乘积公式</title>
+    <url>//54061.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a><br>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
+<h1 id="恒定乘积公式"><a href="#恒定乘积公式" class="headerlink" title="恒定乘积公式"></a>恒定乘积公式</h1><h2 id="无手续费"><a href="#无手续费" class="headerlink" title="无手续费:"></a>无手续费:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</li>
+<li>两货币数量的乘积 x * y 恆等于 k</li>
+<li>k 值是由第一笔注入的流动性所决定</li>
+</ul>
+<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
+<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
+<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
+<p>公式推导:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
+<p>这样可以推导出前2行</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
+<p>接着推导<code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
+<p>推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
+<p>第一个图里的公式，都推导完了。</p>
+<h2 id="计入手续费"><a href="#计入手续费" class="headerlink" title="计入手续费:"></a>计入手续费:</h2><p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
+<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
+<p>手续费 ρ &#x3D; 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
+<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
+<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
+<p>接着推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
+<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
+<p>推导<code>x’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
+<p>推导<code>y’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
+<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
+<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
+<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 &#x3D;&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
+<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 &#x3D; 0.3% 对于 k 值的影响极小。</p>
+<h2 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码:"></a>相关代码:</h2><p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面已知</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
+<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
+<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
+<p>getAmountOut函数，通过入参：</p>
+<ul>
+<li>amountIn —— ∆x —— ∆x数量的x币</li>
+<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
+<li>reserveOut —— y —— y币的储备量</li>
+</ul>
+<p>计算出参:</p>
+<ul>
+<li>amountOut —— ∆y —— ∆y数量的y币</li>
+</ul>
+<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
+<p>getAmountIn函数，通过入参：</p>
+<ul>
+<li>amountOut —— ∆y —— ∆y数量的y币</li>
+<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
+<li>reserveOut —— y —— y币的储备量</li>
+</ul>
+<p>计算出参:</p>
+<ul>
+<li>amountIn —— ∆x —— ∆x数量的x币</li>
+</ul>
+<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>+1之后，交易者需要付出多一点点</p>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></li>
+<li><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-合约里调用Uniswap</title>
+    <url>//50077.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法<br>先试一下如何在自己的合约里调用uniswap</p>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码:"></a>完整代码:</h1><p>kovan测试网里</p>
+<ul>
+<li>uniswapV2: <code>0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</code></li>
+<li>dai: <code>0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity  <span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/Uniswap/uniswap-v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router02.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UseSwap</span> &#123;</span><br><span class="line">    <span class="title class_">IUniswapV</span>2Router02 private constant <span class="variable constant_">ROUTER</span> = <span class="title class_">IUniswapV</span>2Router02(<span class="number">0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</span>); <span class="comment">//</span></span><br><span class="line">    address internal owner;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier <span class="title function_">isOwner</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Caller is not owner&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(token); <span class="comment">// 合约地址授权给router地址</span></span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 授权 </span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_approveTokenIfNeeded</span>(<span class="params">address token</span>) private &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">IERC20</span>(token).<span class="title function_">allowance</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), <span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">approveToken</span>(<span class="params">address token</span>) public &#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForTokenToEth</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = token;</span><br><span class="line">        path[<span class="number">1</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForEthToToken</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        path[<span class="number">1</span>] = token;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdraw</span>(<span class="params">address payable _address, uint withdrawAmount</span>) public payable isOwner&#123;</span><br><span class="line">        _address.<span class="title function_">transfer</span>(withdrawAmount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// important to receive ETH</span></span><br><span class="line">    <span class="title function_">receive</span>() external payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="实例化合约"><a href="#实例化合约" class="headerlink" title="实例化合约:"></a>实例化合约:</h1><p>知道合约的interface和合约地址后，就可以实例化合约了。</p>
+<h1 id="Eth-gt-Token"><a href="#Eth-gt-Token" class="headerlink" title="Eth -&gt; Token:"></a>Eth -&gt; Token:</h1><h2 id="定义receive函数"><a href="#定义receive函数" class="headerlink" title="定义receive函数:"></a>定义receive函数:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">receive 接收以太函数</span><br><span class="line">一个合约最多有一个 receive 函数, 声明函数为： receive() external payable &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">不需要 function 关键字，也没有参数和返回值并且必须是　external　可见性和　payable 修饰． 它可以是 virtual 的，可以被重载也可以有 修改器modifier 。</span><br></pre></td></tr></table></figure>
+
+<p>合约里要定义receive函数才能接受eth</p>
+<h2 id="swapExactETHForTokens"><a href="#swapExactETHForTokens" class="headerlink" title="swapExactETHForTokens:"></a>swapExactETHForTokens:</h2><p>要用到<code>uniswapRouter</code>的<code>swapExactETHForTokens</code>函数:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapExactETHForTokens</span>(<span class="params">uint amountOutMin, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    payable</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[<span class="number">0</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsOut</span>(factory, msg.<span class="property">value</span>, path); <span class="comment">// 获得可兑换出来的数量</span></span><br><span class="line">    <span class="built_in">require</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>] &gt;= amountOutMin, <span class="string">&#x27;UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>); <span class="comment">// 可兑换的数量要大于我们的期望值</span></span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="property">deposit</span>&#123;<span class="attr">value</span>: amounts[<span class="number">0</span>]&#125;();</span><br><span class="line">    <span class="title function_">assert</span>(<span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">transfer</span>(<span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]));</span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, to); <span class="comment">// swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数有<code>payable</code>修饰，需要输入eth的数量通过<code>msg.value</code>传入</p>
+<p>通过在自己合约里调用<code>swapExactETHForTokens</code>函数的流程是:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>函数为payable</li>
+<li>调用函数的同时转账<code>msg.value</code>数量的eth</li>
+<li>eth继续通过<code>msg.value</code>传入，调用<code>swapExactETHForTokens</code></li>
+</ol>
+<h1 id="Token-gt-Eth"><a href="#Token-gt-Eth" class="headerlink" title="Token -&gt; Eth:"></a>Token -&gt; Eth:</h1><p>这里要用到<code>uniswapRouter</code>的<code>swapTokensForExactETH</code>函数，<br>一开始遇到<code>Fail with error &#39;TransferHelper: ETH_TRANSFER_FAILED&#39;</code>报错<br>看了一下函数的定义</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokensForExactETH</span>(<span class="params">uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[path.<span class="property">length</span> - <span class="number">1</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsIn</span>(factory, amountOut, path);</span><br><span class="line">    <span class="built_in">require</span>(amounts[<span class="number">0</span>] &lt;= amountInMax, <span class="string">&#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferFrom</span>(</span><br><span class="line">        path[<span class="number">0</span>], msg.<span class="property">sender</span>, <span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]</span><br><span class="line">    );  <span class="comment">// Here</span></span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">withdraw</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferETH</span>(to, amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有payable修饰，在兑换成ETH之前，需要把token转进去</p>
+<p>通过在自己合约里调用<code>swapTokensForExactETH</code>函数的流程是:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">    <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">    <span class="title function_">_approveTokenIfNeeded</span>(token);</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol>
+<li>自己的钱包地址授权<code>Dai</code>额度给自己的合约地址</li>
+<li>合约从钱包里提取一定额度<code>Dai</code></li>
+<li>合约授权<code>Dai</code>给uniswap router</li>
+<li>uniswap router从合约里提取<code>Dai</code>，兑换成eth，再发回来</li>
+</ol>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol">https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol</a></li>
+<li><a href="https://learnblockchain.cn/question/1828">使用智能合约调用Uniswap交换token时出现错误</a></li>
+<li><a href="https://soliditydeveloper.com/uniswap2">Using the new Uniswap v2 in your contracts</a></li>
+<li><a href="https://learnblockchain.cn/docs/solidity/contracts.html#receive">receive函数</a></li>
+<li><a href="https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol">https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
       </tags>
   </entry>
 </search>

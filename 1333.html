@@ -22,19 +22,19 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。 以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。">
+  <meta name="description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。 1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Crypto-RacaNft市场挂单script">
 <meta property="og:url" content="https://jerrychan807.github.io/1333.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。 以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。">
+<meta property="og:description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。 1">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png">
 <meta property="article:published_time" content="2021-11-17T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T02:59:44.468Z">
+<meta property="article:modified_time" content="2022-06-14T05:33:39.376Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary">
@@ -216,7 +216,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+                <time title="Modified: 2022-06-14 13:33:39" itemprop="dateModified" datetime="2022-06-14T13:33:39+08:00">2022-06-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -264,8 +264,7 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
 <p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
 <hr>
-<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
-<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
+<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。<br>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
@@ -284,9 +283,7 @@
 </ul>
 <p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
-<p>参数部分则是使用对应的16进制数。</p>
-<p>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
-<hr>
+<p>参数部分则是使用对应的16进制数。<br>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
 <h1 id="实验"><a href="#实验" class="headerlink" title="实验:"></a>实验:</h1><p>刚好自己有在练手solidity，有部署到ropsten测试网上。<br>可以尝试能不能构造出已知交易的<code>input_data</code></p>
 <p>调用的合约函数:</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -300,13 +297,11 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
 
 <p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。<br>但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
-<hr>
 <h1 id="data的组成规则："><a href="#data的组成规则：" class="headerlink" title="data的组成规则："></a>data的组成规则：</h1><blockquote>
 <p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
 <p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
 <p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
 </blockquote>
-<hr>
 <h1 id="raca-nft挂单卖出"><a href="#raca-nft挂单卖出" class="headerlink" title="raca nft挂单卖出:"></a>raca nft挂单卖出:</h1><h2 id="授权："><a href="#授权：" class="headerlink" title="授权："></a>授权：</h2><p>授权这个data比较简单，找到多几个tx比较一下。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
 <p>可知他的data是固定的，直接用就行了。</p>
@@ -317,12 +312,10 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
 
 <p>将tx用私钥签名，广播交易就可以了。<br>然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
-<hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
 <li>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</li>
 <li>多找相关的tx比较，找规律</li>
 </ol>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
 <li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
@@ -344,13 +337,13 @@
       <div class="popular-posts-title"><a href="/7095.html" rel="bookmark">Crypto-BscTradeHistory Project</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
     </li>
   </ul>
 
