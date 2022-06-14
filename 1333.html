@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。 以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-RacaNft市场挂单script">
+<meta property="og:url" content="https://jerrychan807.github.io/1333.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:朋友有一批raca potion的nft要出售,尝试用程序去挂单  raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。  InputData例子解析:先了解一下InputData是怎么构成的。 以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png">
+<meta property="article:published_time" content="2021-11-17T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.468Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/1333.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-RacaNft市场挂单script | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/1333.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-RacaNft市场挂单script
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-17 22:36:34" itemprop="dateCreated datePublished" datetime="2021-11-17T22:36:34+08:00">2021-11-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
+<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
+<hr>
+<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
+<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
+<p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
+<p>这个数据就是ABI的编码数据：<br><code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
+<p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
+<p>函数选择器(4字节)</p>
+<ul>
+<li><code>0x60fe47b1</code></li>
+</ul>
+<p>第一个参数(32字节)</p>
+<ul>
+<li><code>00000000000000000000000000000000000000000000000000000000000000001</code></li>
+</ul>
+<p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
+<p>参数部分则是使用对应的16进制数。</p>
+<p>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
+<hr>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验:"></a>实验:</h1><p>刚好自己有在练手solidity，有部署到ropsten测试网上。<br>可以尝试能不能构造出已知交易的<code>input_data</code></p>
+<p>调用的合约函数:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mint_zoombie</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># function createZoombie(string name) public&#123;&#125;</span></span><br><span class="line">    func_abi = &#123;</span><br><span class="line">        <span class="string">&quot;inputs&quot;</span>: [</span><br><span class="line">            &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,  <span class="comment"># 参数类型</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;createZoombie&quot;</span>,  <span class="comment"># 函数名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn_selector = <span class="string">&#x27;0x&#x27;</span> + encode_hex(function_abi_to_4byte_selector(func_abi)) </span><br><span class="line"></span><br><span class="line">    args_data = encode_hex(encode_single(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>))  <span class="comment"># encode_abi([&#x27;string&#x27;], [&#x27;haha&#x27;])</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(fn_selector)</span><br><span class="line">    <span class="built_in">print</span>(args_data)</span><br><span class="line">    total_data = fn_selector + args_data</span><br><span class="line">    <span class="built_in">print</span>(total_data)</span><br></pre></td></tr></table></figure>
+
+<p>实际的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+
+<p>构造出的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+
+<p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。<br>但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
+<hr>
+<h1 id="data的组成规则："><a href="#data的组成规则：" class="headerlink" title="data的组成规则："></a>data的组成规则：</h1><blockquote>
+<p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
+<p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
+<p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
+</blockquote>
+<hr>
+<h1 id="raca-nft挂单卖出"><a href="#raca-nft挂单卖出" class="headerlink" title="raca nft挂单卖出:"></a>raca nft挂单卖出:</h1><h2 id="授权："><a href="#授权：" class="headerlink" title="授权："></a>授权：</h2><p>授权这个data比较简单，找到多几个tx比较一下。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
+<p>可知他的data是固定的，直接用就行了。</p>
+<h2 id="挂单卖出："><a href="#挂单卖出：" class="headerlink" title="挂单卖出："></a>挂单卖出：</h2><p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0x467f963d                                                         <span class="comment"># function selector</span></span><br><span class="line">00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e2   <span class="comment"># usm potion药水地址</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000001   <span class="comment"># 数量</span></span><br><span class="line">00000000000000000000000012bb890508c125661e03b09ec06e404bc9289040   <span class="comment"># Raca token 地址</span></span><br><span class="line">0000000000000000000000000000000000000000000002f6d546136addf80000   <span class="comment"># 价格</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>可知，主要是要修改数量和价格的数据，其他数据不变。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
+
+<p>将tx用私钥签名，广播交易就可以了。<br>然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
+<li>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</li>
+<li>多找相关的tx比较，找规律</li>
+</ol>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
+<li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/7095.html" rel="bookmark">Crypto-BscTradeHistory Project</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">Crypto-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">Crypto-Erc20区分买卖_添加移除流动性行为</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/49032.html" rel="prev" title="Crypto-pancakeswap_最佳交易对路径">
+      <i class="fa fa-chevron-left"></i> Crypto-pancakeswap_最佳交易对路径
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/65046.html" rel="next" title="Crypto-web3js文档方法列表">
+      Crypto-web3js文档方法列表 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InputData%E4%BE%8B%E5%AD%90%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">InputData例子解析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">3.</span> <span class="nav-text">实验:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data%E7%9A%84%E7%BB%84%E6%88%90%E8%A7%84%E5%88%99%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">data的组成规则：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#raca-nft%E6%8C%82%E5%8D%95%E5%8D%96%E5%87%BA"><span class="nav-number">5.</span> <span class="nav-text">raca nft挂单卖出:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%88%E6%9D%83%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">授权：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%82%E5%8D%95%E5%8D%96%E5%87%BA%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">挂单卖出：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

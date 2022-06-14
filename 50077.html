@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法先试一下如何在自己的合约里调用uniswap 完整代码:kovan测试网里  uniswapV2: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D dai: 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa  1234567891011121314151">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-合约里调用Uniswap">
+<meta property="og:url" content="https://jerrychan807.github.io/50077.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法先试一下如何在自己的合约里调用uniswap 完整代码:kovan测试网里  uniswapV2: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D dai: 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa  1234567891011121314151">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-23T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.476Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/50077.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-合约里调用Uniswap | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/50077.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-合约里调用Uniswap
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-23 22:36:34" itemprop="dateCreated datePublished" datetime="2022-02-23T22:36:34+08:00">2022-02-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在学习闪电贷的过程中，先熟悉一下合约里调用其他swap合约的用法<br>先试一下如何在自己的合约里调用uniswap</p>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码:"></a>完整代码:</h1><p>kovan测试网里</p>
+<ul>
+<li>uniswapV2: <code>0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</code></li>
+<li>dai: <code>0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa</code></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity  <span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/Uniswap/uniswap-v2-periphery/blob/master/contracts/interfaces/IUniswapV2Router02.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UseSwap</span> &#123;</span><br><span class="line">    <span class="title class_">IUniswapV</span>2Router02 private constant <span class="variable constant_">ROUTER</span> = <span class="title class_">IUniswapV</span>2Router02(<span class="number">0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D</span>); <span class="comment">//</span></span><br><span class="line">    address internal owner;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier <span class="title function_">isOwner</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Caller is not owner&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(token); <span class="comment">// 合约地址授权给router地址</span></span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">        uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">        <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 授权 </span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_approveTokenIfNeeded</span>(<span class="params">address token</span>) private &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">IERC20</span>(token).<span class="title function_">allowance</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), <span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">approveToken</span>(<span class="params">address token</span>) public &#123;</span><br><span class="line">        <span class="title class_">IERC20</span>(token).<span class="title function_">approve</span>(<span class="title function_">address</span>(<span class="variable constant_">ROUTER</span>), <span class="number">1000000</span> ether);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForTokenToEth</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = token;</span><br><span class="line">        path[<span class="number">1</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getPathForEthToToken</span>(<span class="params">address token</span>) private view returns (address[] memory)&#123;</span><br><span class="line">        address[] memory path = <span class="keyword">new</span> address[](<span class="number">2</span>);</span><br><span class="line">        path[<span class="number">0</span>] = <span class="variable constant_">ROUTER</span>.<span class="title function_">WETH</span>();</span><br><span class="line">        path[<span class="number">1</span>] = token;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdraw</span>(<span class="params">address payable _address, uint withdrawAmount</span>) public payable isOwner&#123;</span><br><span class="line">        _address.<span class="title function_">transfer</span>(withdrawAmount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// important to receive ETH</span></span><br><span class="line">    <span class="title function_">receive</span>() external payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="实例化合约"><a href="#实例化合约" class="headerlink" title="实例化合约:"></a>实例化合约:</h1><p>知道合约的interface和合约地址后，就可以实例化合约了。</p>
+<hr>
+<h1 id="Eth-gt-Token"><a href="#Eth-gt-Token" class="headerlink" title="Eth -&gt; Token:"></a>Eth -&gt; Token:</h1><h2 id="定义receive函数"><a href="#定义receive函数" class="headerlink" title="定义receive函数:"></a>定义receive函数:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">receive 接收以太函数</span><br><span class="line">一个合约最多有一个 receive 函数, 声明函数为： receive() external payable &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">不需要 function 关键字，也没有参数和返回值并且必须是　external　可见性和　payable 修饰． 它可以是 virtual 的，可以被重载也可以有 修改器modifier 。</span><br></pre></td></tr></table></figure>
+
+<p>合约里要定义receive函数才能接受eth</p>
+<h2 id="swapExactETHForTokens"><a href="#swapExactETHForTokens" class="headerlink" title="swapExactETHForTokens:"></a>swapExactETHForTokens:</h2><p>要用到<code>uniswapRouter</code>的<code>swapExactETHForTokens</code>函数:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapExactETHForTokens</span>(<span class="params">uint amountOutMin, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    payable</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[<span class="number">0</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsOut</span>(factory, msg.<span class="property">value</span>, path); <span class="comment">// 获得可兑换出来的数量</span></span><br><span class="line">    <span class="built_in">require</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>] &gt;= amountOutMin, <span class="string">&#x27;UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>); <span class="comment">// 可兑换的数量要大于我们的期望值</span></span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="property">deposit</span>&#123;<span class="attr">value</span>: amounts[<span class="number">0</span>]&#125;();</span><br><span class="line">    <span class="title function_">assert</span>(<span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">transfer</span>(<span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]));</span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, to); <span class="comment">// swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数有<code>payable</code>修饰，需要输入eth的数量通过<code>msg.value</code>传入</p>
+<p>通过在自己合约里调用<code>swapExactETHForTokens</code>函数的流程是:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapEthToToken</span>(<span class="params">address token, uint TokenOutAmountMin</span>) public payable&#123;</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="property">swapExactETHForTokens</span>&#123; <span class="attr">value</span>: msg.<span class="property">value</span> &#125;(<span class="title class_">TokenOutAmountMin</span>, <span class="title function_">getPathForEthToToken</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>函数为payable</li>
+<li>调用函数的同时转账<code>msg.value</code>数量的eth</li>
+<li>eth继续通过<code>msg.value</code>传入，调用<code>swapExactETHForTokens</code></li>
+</ol>
+<hr>
+<h1 id="Token-gt-Eth"><a href="#Token-gt-Eth" class="headerlink" title="Token -&gt; Eth:"></a>Token -&gt; Eth:</h1><p>这里要用到<code>uniswapRouter</code>的<code>swapTokensForExactETH</code>函数，<br>一开始遇到<code>Fail with error &#39;TransferHelper: ETH_TRANSFER_FAILED&#39;</code>报错<br>看了一下函数的定义</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokensForExactETH</span>(<span class="params">uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline</span>)</span><br><span class="line">    external</span><br><span class="line">    virtual</span><br><span class="line">    override</span><br><span class="line">    <span class="title function_">ensure</span>(deadline)</span><br><span class="line">    returns (uint[] memory amounts)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">require</span>(path[path.<span class="property">length</span> - <span class="number">1</span>] == <span class="variable constant_">WETH</span>, <span class="string">&#x27;UniswapV2Router: INVALID_PATH&#x27;</span>);</span><br><span class="line">    amounts = <span class="title class_">UniswapV2Library</span>.<span class="title function_">getAmountsIn</span>(factory, amountOut, path);</span><br><span class="line">    <span class="built_in">require</span>(amounts[<span class="number">0</span>] &lt;= amountInMax, <span class="string">&#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferFrom</span>(</span><br><span class="line">        path[<span class="number">0</span>], msg.<span class="property">sender</span>, <span class="title class_">UniswapV2Library</span>.<span class="title function_">pairFor</span>(factory, path[<span class="number">0</span>], path[<span class="number">1</span>]), amounts[<span class="number">0</span>]</span><br><span class="line">    );  <span class="comment">// Here</span></span><br><span class="line">    <span class="title function_">_swap</span>(amounts, path, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">    <span class="title function_">IWETH</span>(<span class="variable constant_">WETH</span>).<span class="title function_">withdraw</span>(amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">    <span class="title class_">TransferHelper</span>.<span class="title function_">safeTransferETH</span>(to, amounts[amounts.<span class="property">length</span> - <span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有payable修饰，在兑换成ETH之前，需要把token转进去</p>
+<p>通过在自己合约里调用<code>swapTokensForExactETH</code>函数的流程是:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">swapTokenToEth</span>(<span class="params">address token, uint amountOut, uint amountInMax </span>) public&#123;</span><br><span class="line">    <span class="title class_">IERC20</span>(token).<span class="title function_">transferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amountInMax); <span class="comment">// 往合约里转账</span></span><br><span class="line">    <span class="title function_">_approveTokenIfNeeded</span>(token);</span><br><span class="line">    uint deadline = block.<span class="property">timestamp</span> + <span class="number">100</span>;</span><br><span class="line">    <span class="variable constant_">ROUTER</span>.<span class="title function_">swapTokensForExactETH</span>(amountOut, amountInMax, <span class="title function_">getPathForTokenToEth</span>(token), <span class="title function_">address</span>(<span class="variable language_">this</span>), deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol>
+<li>自己的钱包地址授权<code>Dai</code>额度给自己的合约地址</li>
+<li>合约从钱包里提取一定额度<code>Dai</code></li>
+<li>合约授权<code>Dai</code>给uniswap router</li>
+<li>uniswap router从合约里提取<code>Dai</code>，兑换成eth，再发回来</li>
+</ol>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol">https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol</a></li>
+<li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/question/1828">使用智能合约调用Uniswap交换token时出现错误</a></li>
+<li><a target="_blank" rel="noopener" href="https://soliditydeveloper.com/uniswap2">Using the new Uniswap v2 in your contracts</a></li>
+<li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/solidity/contracts.html#receive">receive函数</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol">https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/7095.html" rel="bookmark">Crypto-BscTradeHistory Project</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">Crypto-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">Crypto-Erc20区分买卖_添加移除流动性行为</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/54061.html" rel="prev" title="Crypto-Uniswap原理-恒定乘积公式">
+      <i class="fa fa-chevron-left"></i> Crypto-Uniswap原理-恒定乘积公式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/33960.html" rel="next" title="Crypto-DoDoFlashLoan测试网例子">
+      Crypto-DoDoFlashLoan测试网例子 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">完整代码:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%90%88%E7%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">实例化合约:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eth-gt-Token"><span class="nav-number">4.</span> <span class="nav-text">Eth -&gt; Token:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89receive%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">定义receive函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#swapExactETHForTokens"><span class="nav-number">4.2.</span> <span class="nav-text">swapExactETHForTokens:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Token-gt-Eth"><span class="nav-number">5.</span> <span class="nav-text">Token -&gt; Eth:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

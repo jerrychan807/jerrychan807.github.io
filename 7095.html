@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。看着不错，仿照debank的交易历史功能做个小项目练练手。  debank交易历史界面: 有以下功能点:  钱包余额总值 不同的公链 交易时间 交易hash 与什么合约做了什么交互动作 token的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-BscTradeHistory Project">
+<meta property="og:url" content="https://jerrychan807.github.io/7095.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。看着不错，仿照debank的交易历史功能做个小项目练练手。  debank交易历史界面: 有以下功能点:  钱包余额总值 不同的公链 交易时间 交易hash 与什么合约做了什么交互动作 token的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png">
+<meta property="article:published_time" content="2021-11-04T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.464Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/7095.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-BscTradeHistory Project | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/7095.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-BscTradeHistory Project
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-04 22:36:34" itemprop="dateCreated datePublished" datetime="2021-11-04T22:36:34+08:00">2021-11-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。<br>看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
+<hr>
+<h1 id="debank交易历史界面"><a href="#debank交易历史界面" class="headerlink" title="debank交易历史界面:"></a>debank交易历史界面:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825"></p>
+<p>有以下功能点:</p>
+<ul>
+<li>钱包余额总值</li>
+<li>不同的公链</li>
+<li>交易时间</li>
+<li>交易hash</li>
+<li>与什么合约做了什么交互动作</li>
+<li>token的传输记录，增加了X Token,减少了X Token</li>
+<li>gas费用换算成u</li>
+</ul>
+<hr>
+<h1 id="项目效果图"><a href="#项目效果图" class="headerlink" title="项目效果图:"></a>项目效果图:</h1><p>项目地址:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542"></p>
+<hr>
+<h1 id="功能点"><a href="#功能点" class="headerlink" title="功能点:"></a>功能点:</h1><h2 id="合约交互记录-重点"><a href="#合约交互记录-重点" class="headerlink" title="合约交互记录-重点:"></a>合约交互记录-重点:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445"></p>
+<p>有以下几个点:</p>
+<ul>
+<li>项目的logo</li>
+<li>项目名字</li>
+<li>调用合约的具体函数</li>
+</ul>
+<hr>
+<h2 id="合约交互记录-项目logo和名字"><a href="#合约交互记录-项目logo和名字" class="headerlink" title="合约交互记录-项目logo和名字:"></a>合约交互记录-项目logo和名字:</h2><p>交易记录里，会记录你地址与哪个合约发生了交互</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723"></p>
+<p>可以知道合约地址，一个项目可以有好几个合约地址，比如<code>PancakeSwap</code>可以有几个合约地址</p>
+<ul>
+<li><code>PancakeSwap: Router v2</code></li>
+<li><code>PancakeSwap: Router v1</code></li>
+<li>…</li>
+</ul>
+<p>这里主要是要找到<code>合约地址</code>和<code>项目</code>的映射关系<br>暂时有几个思路:</p>
+<ul>
+<li><code>contract creator</code> 部署项目合约的地址</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png" alt="20211031162907"></p>
+<ul>
+<li>在项目源码找常量，记录了那些项目合约地址</li>
+</ul>
+<p>这一块感觉后续要不断去维护这些映射关系</p>
+<hr>
+<h2 id="合约交互记录-调用合约的具体函数"><a href="#合约交互记录-调用合约的具体函数" class="headerlink" title="合约交互记录-调用合约的具体函数:"></a>合约交互记录-调用合约的具体函数:</h2><p>调用bscscan的这个<code>Get a list of &#39;Normal&#39; Transactions By Address</code>接口,可以获得以下数据</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527"></p>
+<p>调用合约的具体函数可以通过解析<code>input_data</code>得知</p>
+<p>如果项目合约是开源验证过的话，可以通过<code>decode_function_input</code>接得</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">contract_ins = self.get_token_contract_with_abi(contract_address, contract_abi_json)</span><br><span class="line">func, params = contract_ins.decode_function_input(input_data)</span><br></pre></td></tr></table></figure>
+
+<p>如果项目合约未开源,<code>input_data</code>的前4个字节是函数原型的<code>Keccak256</code>哈希，可以调用<a target="_blank" rel="noopener" href="https://www.4byte.directory/docs/">4byte.directory</a>进行哈希查询，反查出函数名。</p>
+<hr>
+<h2 id="transaction里的token传输记录"><a href="#transaction里的token传输记录" class="headerlink" title="transaction里的token传输记录:"></a>transaction里的token传输记录:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png" alt="20211104131002"></p>
+<p>要怎么解析出交易里代币的传输记录？<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png" alt="20211029094938"></p>
+<p>token基本都是符合<code>erc20</code>标准,都含有标准的<code>Transfer</code>函数<br>要知道该次交易里token的传输记录，要解析log里的<code>Transfer event</code></p>
+<p>但并不是所有log里，都能看到<code>Transfer</code>的字眼<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png" alt="20211029100319"></p>
+<p>有的就没有<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png" alt="20211029100713"></p>
+<p>由于符合erc20标准的代币的<code>Transfer(address from, address to, uint256 value)</code>函数是固定的，<br>经过<code>keccak</code>哈希后,可得到哈希字符串<code>0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef</code></p>
+<p>如果该次交易里含有erc20代币的传输，那么就存在含有该哈希的<code>event</code>.<br>接下来去解析这些<code>event</code>就可以知道token的传输记录了</p>
+<p>参考:<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/52222758/erc20-tokens-transferred-information-from-transaction-hash">ERC20 Tokens Transferred Information from Transaction Hash</a></p>
+<hr>
+<h1 id="Bug-amp-Todo"><a href="#Bug-amp-Todo" class="headerlink" title="Bug&amp;Todo:"></a>Bug&amp;Todo:</h1><h2 id="个人地址转账"><a href="#个人地址转账" class="headerlink" title="个人地址转账:"></a>个人地址转账:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png" alt="20211103115056"></p>
+<p>如何判断一个地址是合约地址还是个人地址？</p>
+<p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/28521/how-to-detect-if-an-address-is-a-contract">How to detect if an address is a contract?</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png" alt="20211103115835"></p>
+<p>个人地址的转账记录这块还没做对应的解析</p>
+<h2 id="SSL-error"><a href="#SSL-error" class="headerlink" title="SSL error:"></a>SSL error:</h2><p>[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2570)</p>
+<h2 id="normal"><a href="#normal" class="headerlink" title="normal"></a>normal</h2><p>只用了bscscan的这个<code>Get a list of &#39;Normal&#39; Transactions By Address</code>接口，还有一些交易类型没收录进去，仍有欠缺</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/coinmonks/discovering-the-secrets-of-an-ethereum-transaction-64febb00935c">Unlocking the Secrets of an Ethereum Transaction</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/55258332/find-the-function-name-and-parameter-from-input-data">Find the function name and parameter from input data</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.4byte.directory/">https://www.4byte.directory/</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mikeshultz/py4byte">py4byte</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/48004356/get-token-transfer-detail-from-transaction-hash-with-web3js">Get token transfer detail from transaction hash with web3js</a></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/80135/getting-tokens-transferred-from-web3-py">Getting Tokens Transferred from Web3.py</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/389359014">web3.py extraData 错误</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.z01.com/bootstrap-vue/docs/">bootstrapvue中文文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/311323583">用Flask和Vue制作一个单页应用（一）</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">Crypto-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">Crypto-Erc20区分买卖_添加移除流动性行为</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/64479.html" rel="bookmark">Crypto-Hardhat框架初步使用</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/35176.html" rel="prev" title="Crypto-pancakeswap_receipt细节">
+      <i class="fa fa-chevron-left"></i> Crypto-pancakeswap_receipt细节
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/49032.html" rel="next" title="Crypto-pancakeswap_最佳交易对路径">
+      Crypto-pancakeswap_最佳交易对路径 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#debank%E4%BA%A4%E6%98%93%E5%8E%86%E5%8F%B2%E7%95%8C%E9%9D%A2"><span class="nav-number">2.</span> <span class="nav-text">debank交易历史界面:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">项目效果图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">功能点:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E4%BA%A4%E4%BA%92%E8%AE%B0%E5%BD%95-%E9%87%8D%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text">合约交互记录-重点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E4%BA%A4%E4%BA%92%E8%AE%B0%E5%BD%95-%E9%A1%B9%E7%9B%AElogo%E5%92%8C%E5%90%8D%E5%AD%97"><span class="nav-number">4.2.</span> <span class="nav-text">合约交互记录-项目logo和名字:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E4%BA%A4%E4%BA%92%E8%AE%B0%E5%BD%95-%E8%B0%83%E7%94%A8%E5%90%88%E7%BA%A6%E7%9A%84%E5%85%B7%E4%BD%93%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">合约交互记录-调用合约的具体函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#transaction%E9%87%8C%E7%9A%84token%E4%BC%A0%E8%BE%93%E8%AE%B0%E5%BD%95"><span class="nav-number">4.4.</span> <span class="nav-text">transaction里的token传输记录:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bug-amp-Todo"><span class="nav-number">5.</span> <span class="nav-text">Bug&amp;Todo:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E5%9C%B0%E5%9D%80%E8%BD%AC%E8%B4%A6"><span class="nav-number">5.1.</span> <span class="nav-text">个人地址转账:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL-error"><span class="nav-number">5.2.</span> <span class="nav-text">SSL error:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#normal"><span class="nav-number">5.3.</span> <span class="nav-text">normal</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

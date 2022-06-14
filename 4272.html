@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="第三部分 业务逻辑安全 功能有很多，这些功能执行的前提是用户需要登录系统，并获得用户权限。业务功能有很多种，并且每个网站的应用流程不同（如京东与淘宝的支付流程完全不同），用户业务的开展及应用体验均基于Web应用实现。   原有用户管理组件设计的缺陷导致它们极易受到来自外部的恶意攻击，实现对其他用户权限\信息的获取，进而导致更严重的后果。  第9章 业务逻辑安全风险存在的前提 业务逻辑实现的前提是：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notes-Web安全防护指南基础篇">
+<meta property="og:url" content="https://jerrychan807.github.io/4272.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="第三部分 业务逻辑安全 功能有很多，这些功能执行的前提是用户需要登录系统，并获得用户权限。业务功能有很多种，并且每个网站的应用流程不同（如京东与淘宝的支付流程完全不同），用户业务的开展及应用体验均基于Web应用实现。   原有用户管理组件设计的缺陷导致它们极易受到来自外部的恶意攻击，实现对其他用户权限\信息的获取，进而导致更严重的后果。  第9章 业务逻辑安全风险存在的前提 业务逻辑实现的前提是：">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-23T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.485Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Learning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/4272.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Notes-Web安全防护指南基础篇 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/4272.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Notes-Web安全防护指南基础篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-23 22:36:34" itemprop="dateCreated datePublished" datetime="2019-12-23T22:36:34+08:00">2019-12-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Learning/" itemprop="url" rel="index"><span itemprop="name">Learning</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="第三部分-业务逻辑安全"><a href="#第三部分-业务逻辑安全" class="headerlink" title="第三部分 业务逻辑安全"></a>第三部分 业务逻辑安全</h1><blockquote>
+<p>功能有很多，这些功能执行的前提是用户需要登录系统，并获得用户权限。<br>业务功能有很多种，并且每个网站的应用流程不同（如京东与淘宝的支付流程完全不同），用户业务的开展及应用体验均基于Web应用实现。</p>
+</blockquote>
+<blockquote>
+<p>原有用户管理组件设计的缺陷导致它们极易受到来自外部的恶意攻击，实现对其他用户权限\信息的获取，进而导致更严重的后果。</p>
+</blockquote>
+<h2 id="第9章-业务逻辑安全风险存在的前提"><a href="#第9章-业务逻辑安全风险存在的前提" class="headerlink" title="第9章 业务逻辑安全风险存在的前提"></a>第9章 业务逻辑安全风险存在的前提</h2><blockquote>
+<p>业务逻辑实现的前提是：要有效区分每个用户，针对每个用户提供独立的服务内容，并且允许客户与服务器进行大量交互。</p>
+</blockquote>
+<blockquote>
+<p>如果把一个网站比喻成一个银行，那么用户权限就相当于银行中每个人能活动的区域。例如，银行工作人员可以在银行柜台内部、办公区活动，并进行相应工作；而对于来到银行办理业务的顾客，其活动区域就是银行公共区域，也就是柜台外面。可见，银行工作人员的权限比顾客高，因为其活动区域大，同时活动涉及银行业务的正常开展。那么，如果顾客的权限与工作人员一样，会产生什么后果？结果是顾客也能随意出入银行内部，翻看经营报表，随意办理业务等，必然会对银行的正常运营造成极大影响，并且对资金安全产生直接威胁。通过这个例子可知，做出有效的权限划分是极其必要的</p>
+</blockquote>
+<blockquote>
+<p>在Web应用场景下，一个网站也会涉及多种用户身份：游客、普通用户、VIP用户、客服人员、业务主管、网站管理员等。每类用户都会对网站正常工作带来影响。这就要求网站的运营者必须对网站的各类用户进行权限划分，方可实现网站的正常运营，避免产生混乱。</p>
+</blockquote>
+<blockquote>
+<p>针对Web应用的攻击就是一个从零权限到最高权限的过程。攻击者在初始状态下没有任何权限（可理解为与网站无任何交集）。如果能获取最高权限（通常为网站管理员权限，可操作网站的全部功能），就相当于取得了网站的管理权限。同理，如果攻击者退而求其次，只取得某一个用户权限，那么攻击者就可以利用这个用户的身份开展相关业务，如转账、购买物品等。总之，攻击者的核心目标就是通过各种手段提升自己的权限。权限越大，对后续的攻击越有帮助</p>
+</blockquote>
+<blockquote>
+<p>假设网站对权限管理不足，就会造成平行越权的情况。例如，A、B两人的账户均为普通用户。若登录A账户后可通过修改参数方式，冒充B账户获得相关信息或开展业务，这就是平行越权</p>
+</blockquote>
+<blockquote>
+<p>核心问题是对权限的逻辑进行攻击</p>
+</blockquote>
+<blockquote>
+<p>权限过于细化也容易给网站管理带来不便。为了解决这个问题，通常建议从多个角度进行划分，即分层管理权限。</p>
+</blockquote>
+<blockquote>
+<p>可利用分权管理作为分类管理的延续。</p>
+</blockquote>
+<blockquote>
+<p>用户管理的本质是权限管理</p>
+</blockquote>
+<blockquote>
+<p>可见，用户管理涉及Web应用的所有权限点，并且每个步骤都涉及权限的提升、修改、删除等。每项功能都在一定程度上影响着用户账户安全，决定着当前用户账户的安全程度。</p>
+</blockquote>
+<p>某个数据包里的某个参数就会引起问题</p>
+<blockquote>
+<p>例如，对于用户注册功能，需要用户打开注册页面、填写个人信息、提交表单，某些站点还需要用户进行短信或邮件验证。这个过程中，只要有任意一个环境出现判断偏差</p>
+</blockquote>
+<blockquote>
+<p>例如，对于用户注册功能，需要用户打开注册页面、填写个人信息、提交表单，某些站点还需要用户进行短信或邮件验证。这个过程中，只要有任意一个环境出现判断偏差</p>
+</blockquote>
+<h2 id="第10章-用户管理功能的实现"><a href="#第10章-用户管理功能的实现" class="headerlink" title="第10章 用户管理功能的实现"></a>第10章 用户管理功能的实现</h2><blockquote>
+<p>由于HTTP协议的无状态特性，导致用户每次访问网站页面时，Web服务器不知道用户的本次访问与上次访问有什么关联。从用户角度来说，如果在一个网站中，每次打开新页面均需输入用户名&#x2F;密码，那么用户体验将非常差。因此Web系统在开发过程中需引入客户端的保持方案，使服务器在一定时间内对连接到Web服务器的客户端进行识别。目前，客户端保持方案主要采用的技术为Cookie和Session两种方式。</p>
+</blockquote>
+<blockquote>
+<p>Cookie采用的是在客户端保持状态的方案，而Session采用的是在服务器端保持状态的方案。在真实环境中，两种客户端的保持方式会共存。</p>
+</blockquote>
+<blockquote>
+<p>HTTP协议的无状态是指协议对于事务处理没有记忆能力。这意味着如果后续处理需要前面的信息，则必须重传之前的信息，从而导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时，则应答速度就较快。</p>
+</blockquote>
+<blockquote>
+<p>客户端与服务器进行动态交互的Web应用程序（典型的应用场景为在线商店、BBS等）出现之后，HTTP无状态的特性严重阻碍了这些应用程序的功能实现，因为这些交互需要知道前后操作的关联，并且每个用户必须拥有独立的交互环境。</p>
+</blockquote>
+<blockquote>
+<p>总体来说，Cookie与Session实现了针对客户端的保持状态。通过上述两种技术，服务器就知道了它在给谁服务。</p>
+</blockquote>
+<blockquote>
+<p>绝大部分Web应用系统采用Web中间件+数据库的模式运行。通过Web服务器对用户提出的申请进行识别，并自动连接数据库，在数据库中添加或查询相关信息，即可实现此类功能。</p>
+</blockquote>
+<blockquote>
+<p>服务器在对用户登录请求进行校验并通过后，生成唯一的Cookie并发送给用户，之后用户在此网站中执行任意点击功能，浏览器均会将服务器生成的Cookie一并发送，从而达到区分用户的目的</p>
+</blockquote>
+<blockquote>
+<p>Cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。</p>
+</blockquote>
+<blockquote>
+<p>浏览器检查所有存储的Cookie，如果某个Cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该Cookie附在请求资源的HTTP请求头上发送给服务</p>
+</blockquote>
+<blockquote>
+<p>Cookie的内容主要包括名字、内容、创建时间、过期时间、路径和域。路径与域一起构成Cookie的作用范围。若不设置过期时间，则表示这个Cookie的生命期为浏览器会话期间，关闭浏览器窗口时，Cookie消失。这种生命期为浏览器会话期的Cookie称为会话Cookie。若设置了过期时间，浏览器就会把Cookie保存到硬盘上，关闭后再次打开浏览器，这些Cookie仍然有效，直到超过设定的过期时间。存储在硬盘上的Cookie可以在不同的浏览器进程间共享，比如在两个IE窗口间共享，方便用户进行多窗口操作，也为网站设计带来方便</p>
+</blockquote>
+<blockquote>
+<p>同源策略（Same Origin Policy, SOP）的主要目的在于区分不同站点的Cookie信息，避免不同站点的Cookie信息交互，导致用户信息的泄漏。</p>
+</blockquote>
+<blockquote>
+<p>这主要是由于Cookie由客户端保存，攻击者可以利用这种特性，完全修改Cookie的内容，达到欺骗目标服务器的效果。这种情况下，仅通过Cookie无法阻止攻击者的各类仿冒攻击，因此，还需引入Session来解决此问题。</p>
+</blockquote>
+<blockquote>
+<p>如果用户名和密码存储在数据库，那么每次请求都要查询一次数据库，给数据库造成很大负担，同时在用户访问一个新页面或开展一项新业务还需重新登录，这样的环境对用户而言极不方便，甚至会放弃使用当前站点。</p>
+</blockquote>
+<blockquote>
+<p>Session的实现原理与Cookie有非常大的不同。Session内容存储在服务器端，远程用户无法直接修改Session文件的内容，因此可以只存储一个admin变量来判断用户是否登录，首次验证通过后设置“admin”值为true，以后判断该值是否为true。</p>
+</blockquote>
+<blockquote>
+<p>当第一次访问网站时，Seesion_start()函数就会创建一个唯一的Session ID，并自动通过HTTP的响应头，将这个Session ID保存到客户端Cookie中。同时，也在服务器端创建一个以Session ID命名的文件，用于保存这个用户的会话信息</p>
+</blockquote>
+<blockquote>
+<p>当同一个用户再次访问这个网站时，也会自动通过HTTP的请求头将Cookie中保存的Seesion ID携带过来，这时Session_start()函数就不会再去分配一个新的Session ID，而是在服务器的硬盘中寻找和这个Session ID同名的Session文件，将之前为这个用户保存的会话信息读出，并在当前脚本中应用，达到跟踪用户的目的。Session以数组的形式使用，如$_SESSION[‘Session名’]。</p>
+</blockquote>
+<blockquote>
+<p>通常情况下，Cookie与Session同时使用。如果仅利用Cookie，在一些场景下也能有效实现用户的身份保持方式。</p>
+</blockquote>
+<blockquote>
+<p>整体情况下，WordPress使用Cookie来验证用户身份，并且根据用户的使用权限，将Cookie分为登录用户Cookie和评论人Cookie。</p>
+</blockquote>
+<blockquote>
+<p>总体来说，WordPress的站点主要有用户登录、发布文章、评论等功能，功能较为单一。因此利用Cookie方法可满足现有要求。这里分析WrodPress的目的在于理解Cookie的具体实现方式，并且能说明技术的使用没有绝对性，能满足实际的需求才是技术的根本目的。</p>
+</blockquote>
+<blockquote>
+<p>因此，AJAX可实现局部功能请求及刷新，从而有效避免其他重复内容的变更，节省服务器及带宽资源，并提升用户体验。当然，在这个过程中，AJAX在后台判断，然后向前台返回结果，这也是信任前台的处理过程</p>
+</blockquote>
+<blockquote>
+<p>AJAX有个显著特点，就是判断机制在客户端执行，这样就可能产生极大的安全隐患。具体执行方式为：攻击者可截获服务器的response包，并修改其中的信息，进而实现欺骗客户端的判断机制，并绕过用户登录验证。</p>
+</blockquote>
+<blockquote>
+<p>当然，如果只修改返回包的数据，并欺骗判断机制，有时并不能成功。这主要取决于服务器端是如何实现Session生成及管理机制。</p>
+</blockquote>
+<blockquote>
+<p>业务流程的安全隐患与基础漏洞有非常大的不同，主要表现在漏洞利用方式上，因此需要从业务流程设计角度进行考虑，从而更好地理解漏洞原理及处理方法。</p>
+</blockquote>
+<h2 id="第11章-用户授权管理及安全分析"><a href="#第11章-用户授权管理及安全分析" class="headerlink" title="第11章 用户授权管理及安全分析"></a>第11章 用户授权管理及安全分析</h2><blockquote>
+<p>用户授权管理是指用户在未获得任何网站的用户权限时，用户可实现对自己的身份的注册，并根据用户的私有信息（用户名&#x2F;密码）等进行成功登录，之后根据用户登录成功信息合理开展后续业务。登录过程即为获得网站对应此用户的权限</p>
+</blockquote>
+<blockquote>
+<p>用户第一次访问目标站点时，从这个网站的权限管理角度来看，该用户的权限为零，只有公共页面浏览权限。如果用户需要开展业务，则需先进行账户注册，再利用注册成功的用户名及密码登录网站。</p>
+</blockquote>
+<blockquote>
+<p>所有的Web系统应用都是获得用户权限之后才能开展工作，因此，用户权限管理的安全直接关系到整体系统的业务体系安全性</p>
+</blockquote>
+<blockquote>
+<p>但是这个流程中存在哪些安全隐患呢？<br>1）没有用户验证过程，如果注册用户与现有用户重复，可能会覆盖现有用户。<br>2）没有对用户输入数据进行校验，易出现空格覆盖、万能密码绕过等隐患。<br>3）没有注册申请数量限制，可能会被批量注册。</p>
+</blockquote>
+<blockquote>
+<p>因此，标准的用户注册功能应为：用户提交注册表单→服务器验证用户名是否可用→对用户数据进行校验→创建数据库数据→服务器接受数据库返回值→告知用户注册成功或失败。</p>
+</blockquote>
+<blockquote>
+<p>重复注册是指用户在注册过程中，对同样的信息进行多次提交。如果服务器没有业务重复检测机制，就会对用户多次提交的相同信息进行处理，导致后台数据增多、用户权限混乱等问题的出现。</p>
+</blockquote>
+<blockquote>
+<p>token机制的防护原理为：当用户请求注册页面的时候，服务器会给浏览器返回正常的页面和一个隐藏的输入，其中就包含服务器生成的token。token的值是一个服务器生成的字符串。当用户点击提交的时候，这个token会被同时加载到服务器端。服务器得到这个token后，会将从用户端获得的token与当前用户session中保存的token进行比对</p>
+</blockquote>
+<blockquote>
+<p>之后，无论比对结果是否匹配，均立即删除服务器上当前的token，并根据算法重新生成新的token。当用户再次提交的时候，因为找不到对应的token，所以不会重复提交用户的信息。</p>
+</blockquote>
+<blockquote>
+<p>ySQL数据库存在一个特性，即会自动删除参数的前后空格，然后再将其存储入库。</p>
+</blockquote>
+<blockquote>
+<p>阻止批量注册行为通常采用以下的手段。<br>1．对相同用户信息进行注册频率限制<br>（1）单IP注册频率限制</p>
+</blockquote>
+<blockquote>
+<p>（2）表单加验证码</p>
+</blockquote>
+<p>验证码被绕过后则无法区分</p>
+<blockquote>
+<p>验证码是有效区分“人”“机器”的重要手段。但是目前各类验证码容易被破解或有打码平台的支持、导致验证码的防护效果不断下降。</p>
+</blockquote>
+<blockquote>
+<p>验证码是有效区分“人”“机器”的重要手段。但是目前各类验证码容易被破解或有打码平台的支持、导致验证码的防护效果不断下降。</p>
+</blockquote>
+<blockquote>
+<p>（3）需要姓名加身份证认证</p>
+</blockquote>
+<blockquote>
+<p>2．采用二次身份校验技术<br>（1）需要验证用户邮箱</p>
+</blockquote>
+<blockquote>
+<p>（2）手机绑定验证</p>
+</blockquote>
+<blockquote>
+<p>但是，综上所述，所有的限制手段的目的均为提升批量注册的难度，但无法从根本上阻止恶意用户，因为系统无法识别用户注册的真实意图。因此从防御视角来看，应尽可能提高恶意注册的难度，使批量注册的成本高于从网站获取到的利益，这样为解决此问题的唯一思路。</p>
+</blockquote>
+<blockquote>
+<p>这种登录页面很常见，而且目前很多站点支持手机APP扫码登录，这样可避免输入用户名及密码，并且能利用手机实现二次验证，能极大提升安全性，推荐大家使用。</p>
+</blockquote>
+<blockquote>
+<p>11.2.1 明文传输用户名&#x2F;密码<br>互联网是开放的，在互联网上传播的任何数据包均可能被截获。对于用户来说，其用户名和密码至关重要，一旦泄漏，用户的身份就能够被其他人直接使用。如果攻击者恶意监听网络通信，并对与目标网站交互的数据包进行分析，那么包中的内容就可能被获取（非HTTPS传输的情况下）。在实际业务中，会带来极大的危害。</p>
+</blockquote>
+<blockquote>
+<p>要解决这个问题，标准方式是在原有密码上添加相应的salt（salt称作盐，也就是一段字符串或特定内容），在利用MD5()计算散列值后进行传输，即可有效提升密码在传输过程中的安全</p>
+</blockquote>
+<blockquote>
+<p>而且，在添加SALT时，不要仅仅利用拼接方式，在实际业务场景下，推荐采用特定位数插入、倒序、定向位数替换等多种方法处理，提升破解难度。</p>
+</blockquote>
+<blockquote>
+<p>当然，HTTPS也不是万能的，这与某些根证书的安全有直接关系。HTTPS解决的是在传输过程中的安全，并不是客户端的安全。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/52437.html" rel="bookmark">Notes-代码之外的功夫:程序员精进之路读后感(上)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/64499.html" rel="bookmark">Python-dynamic typing</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/39913.html" rel="bookmark">WebSecurity Learning lib</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Learning/" rel="tag"># Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/24549.html" rel="prev" title="w13scan-扫描插件总结-PerFile">
+      <i class="fa fa-chevron-left"></i> w13scan-扫描插件总结-PerFile
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/14249.html" rel="next" title="越权半自动化插件的尝试">
+      越权半自动化插件的尝试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E5%AE%89%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">第三部分 业务逻辑安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC9%E7%AB%A0-%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E5%AD%98%E5%9C%A8%E7%9A%84%E5%89%8D%E6%8F%90"><span class="nav-number">1.1.</span> <span class="nav-text">第9章 业务逻辑安全风险存在的前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC10%E7%AB%A0-%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">第10章 用户管理功能的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC11%E7%AB%A0-%E7%94%A8%E6%88%B7%E6%8E%88%E6%9D%83%E7%AE%A1%E7%90%86%E5%8F%8A%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">第11章 用户授权管理及安全分析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

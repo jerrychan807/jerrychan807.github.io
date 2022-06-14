@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="swap token:测试用BNB去购买VRT 代码步骤:执行一段完整的交易，代码需要进行几个步骤:  swapExactETHForTokens 传参，构造好函数  1func &#x3D; router_contract.functions.swapExactETHForTokens(min_output_tokens, [self.addr.wbnb, token_address], self.wal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-pancakeswap_receipt细节">
+<meta property="og:url" content="https://jerrychan807.github.io/35176.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="swap token:测试用BNB去购买VRT 代码步骤:执行一段完整的交易，代码需要进行几个步骤:  swapExactETHForTokens 传参，构造好函数  1func &#x3D; router_contract.functions.swapExactETHForTokens(min_output_tokens, [self.addr.wbnb, token_address], self.wal">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2B776BF8-05AF-41A0-ADE5-402D51A5771E.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211018163457.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/1A6352FF-E581-4644-88F2-A7994A20AD46.png">
+<meta property="article:published_time" content="2021-10-18T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.472Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2B776BF8-05AF-41A0-ADE5-402D51A5771E.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/35176.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-pancakeswap_receipt细节 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/35176.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-pancakeswap_receipt细节
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-10-18 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-18T22:36:34+08:00">2021-10-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>10 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="swap-token"><a href="#swap-token" class="headerlink" title="swap token:"></a>swap token:</h1><p>测试用<code>BNB</code>去购买<code>VRT</code></p>
+<h2 id="代码步骤"><a href="#代码步骤" class="headerlink" title="代码步骤:"></a>代码步骤:</h2><p>执行一段完整的交易，代码需要进行几个步骤:</p>
+<ol>
+<li><strong>swapExactETHForTokens</strong> 传参，构造好函数</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func = router_contract.functions.swapExactETHForTokens(min_output_tokens, [self.addr.wbnb, token_address], self.wallet, self.deadline(<span class="number">60</span>))</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>buildTransaction</strong> 构造好交易</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transaction = func.buildTransaction(tx_params)</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>sign_transaction</strong> 私钥进行签名</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">signed_tx = self.w3.eth.account.sign_transaction(transaction, private_key=self.secret_key)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><strong>send_raw_transaction</strong> 广播交易</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><strong>wait_for_transaction_receipt</strong> 等待交易完成，获取收据</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.w3.eth.wait_for_transaction_receipt(tx, timeout=<span class="number">60</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><strong>processReceipt</strong> 可以解析获取Transfer事件的内容</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logs = self.get_token_contract(token_address=token_address).events.Transfer().processReceipt(receipt)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="receipt-log-交易收据log"><a href="#receipt-log-交易收据log" class="headerlink" title="receipt log 交易收据log:"></a>receipt log 交易收据log:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2B776BF8-05AF-41A0-ADE5-402D51A5771E.png" alt="2B776BF8-05AF-41A0-ADE5-402D51A5771E"></p>
+<p><a target="_blank" rel="noopener" href="https://bscscan.com/tx/0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf">tx记录</a></p>
+<p>example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">	<span class="string">&#x27;contractAddress&#x27;</span>: <span class="literal">None</span>,</span><br><span class="line">	<span class="string">&#x27;cumulativeGasUsed&#x27;</span>: <span class="number">34932511</span>,</span><br><span class="line">	<span class="string">&#x27;from&#x27;</span>: <span class="string">&#x27;0x302c98e6d6A65Bf15255b81972f9EaA1F45438C8&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;gasUsed&#x27;</span>: <span class="number">130517</span>,</span><br><span class="line">	<span class="string">&#x27;logs&#x27;</span>: [AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;topics&#x27;</span>: [HexBytes(<span class="string">&#x27;0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c&#x27;</span>), HexBytes(<span class="string">&#x27;0x00000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e&#x27;</span>)],</span><br><span class="line">		<span class="string">&#x27;data&#x27;</span>: <span class="string">&#x27;0x00000000000000000000000000000000000000000000000000038d7ea4c68000&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">		<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">		<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">752</span>,</span><br><span class="line">		<span class="string">&#x27;removed&#x27;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;), AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;topics&#x27;</span>: [HexBytes(<span class="string">&#x27;0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&#x27;</span>), HexBytes(<span class="string">&#x27;0x00000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e&#x27;</span>), HexBytes(<span class="string">&#x27;0x000000000000000000000000ef5212ada83ec2cc105c409df10b8806d20e3b35&#x27;</span>)],</span><br><span class="line">		<span class="string">&#x27;data&#x27;</span>: <span class="string">&#x27;0x00000000000000000000000000000000000000000000000000038d7ea4c68000&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">		<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">		<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">753</span>,</span><br><span class="line">		<span class="string">&#x27;removed&#x27;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;), AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0x5F84ce30DC3cF7909101C69086c50De191895883&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;topics&#x27;</span>: [HexBytes(<span class="string">&#x27;0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&#x27;</span>), HexBytes(<span class="string">&#x27;0x000000000000000000000000ef5212ada83ec2cc105c409df10b8806d20e3b35&#x27;</span>), HexBytes(<span class="string">&#x27;0x000000000000000000000000302c98e6d6a65bf15255b81972f9eaa1f45438c8&#x27;</span>)],</span><br><span class="line">		<span class="string">&#x27;data&#x27;</span>: <span class="string">&#x27;0x000000000000000000000000000000000000000000000015e7daca2ce9a452a0&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">		<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">		<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">754</span>,</span><br><span class="line">		<span class="string">&#x27;removed&#x27;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;), AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;topics&#x27;</span>: [HexBytes(<span class="string">&#x27;0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1&#x27;</span>)],</span><br><span class="line">		<span class="string">&#x27;data&#x27;</span>: <span class="string">&#x27;0x0000000000000000000000000000000000000000007f1919c0dd1f6e07bbbe220000000000000000000000000000000000000000000000148fc351f07c27c38d&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">		<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">		<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">755</span>,</span><br><span class="line">		<span class="string">&#x27;removed&#x27;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;), AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;topics&#x27;</span>: [HexBytes(<span class="string">&#x27;0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&#x27;</span>), HexBytes(<span class="string">&#x27;0x00000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e&#x27;</span>), HexBytes(<span class="string">&#x27;0x000000000000000000000000302c98e6d6a65bf15255b81972f9eaa1f45438c8&#x27;</span>)],</span><br><span class="line">		<span class="string">&#x27;data&#x27;</span>: <span class="string">&#x27;0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038d7ea4c68000000000000000000000000000000000000000000000000015e7daca2ce9a452a00000000000000000000000000000000000000000000000000000000000000000&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span>,</span><br><span class="line">		<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">		<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">		<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">756</span>,</span><br><span class="line">		<span class="string">&#x27;removed&#x27;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;)],</span><br><span class="line">	<span class="string">&#x27;logsBloom&#x27;</span>: HexBytes(<span class="string">&#x27;0x00200200000000000000000080000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000008000000200200000000000000000400008080000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000240001000400080000004000000000000000000000000000000400020000400000000000000000000000000000000200000002000004080000000000000000000000000000001800000000000080000000000000000000000000800000000000000000000000400000000000000000&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;status&#x27;</span>: <span class="number">1</span>,</span><br><span class="line">	<span class="string">&#x27;to&#x27;</span>: <span class="string">&#x27;0x10ED43C718714eb63d5aA57B78B54704E256024E&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;0x0&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Event:</p>
+<ol>
+<li>Wbnb Deposit() </li>
+<li>Wbnb Transfer()</li>
+<li>VRT Transfer()</li>
+<li>PancakeSwap V2: VRT 5 Sync()</li>
+<li>PancakeSwap V2: VRT 5 Swap()</li>
+</ol>
+<hr>
+<h2 id="Events"><a href="#Events" class="headerlink" title="Events:"></a>Events:</h2><p>交易后可以获取到收据对象，收据对象里有log,记录了每个调用函数的 入参</p>
+<ol>
+<li>Wbnb——Deposit()</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">AttributeDict(&#123;</span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;dst&#x27;</span>: <span class="string">&#x27;0x10ED43C718714eb63d5aA57B78B54704E256024E&#x27;</span>, <span class="comment"># router_v2</span></span><br><span class="line">		<span class="string">&#x27;wad&#x27;</span>: <span class="number">1000000000000000</span> <span class="comment"># 买入时 输入0.001BNB</span></span><br><span class="line">	&#125;),</span><br><span class="line">	<span class="string">&#x27;event&#x27;</span>: <span class="string">&#x27;Deposit&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">752</span>,</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>往<code>router_v2</code>质押了0.001 BNB</p>
+<ol start="2">
+<li>Wbnb——Transfer()</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">AttributeDict(&#123;</span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;from&#x27;</span>: <span class="string">&#x27;0x10ED43C718714eb63d5aA57B78B54704E256024E&#x27;</span>, <span class="comment"># router_v2</span></span><br><span class="line">		<span class="string">&#x27;to&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>, <span class="comment"># PancakeSwap V2: VRT 5</span></span><br><span class="line">		<span class="string">&#x27;value&#x27;</span>: <span class="number">1000000000000000</span> <span class="comment"># 买入时 输入0.001BNB</span></span><br><span class="line">	&#125;),</span><br><span class="line">	<span class="string">&#x27;event&#x27;</span>: <span class="string">&#x27;Transfer&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">753</span>,</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>router_v2</code>给<code>PancakeSwap V2: VRT 5</code>转了0.001BNB</p>
+<ol start="3">
+<li>VRT——Transfer()</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">AttributeDict(&#123;</span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;from&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>, <span class="comment"># PancakeSwap V2: VRT 5</span></span><br><span class="line">		<span class="string">&#x27;to&#x27;</span>: <span class="string">&#x27;0x302c98e6d6A65Bf15255b81972f9EaA1F45438C8&#x27;</span>, <span class="comment"># My Address</span></span><br><span class="line">		<span class="string">&#x27;value&#x27;</span>: <span class="number">404088513609832092320</span> <span class="comment"># 得到404.08851360983209232 vrt</span></span><br><span class="line">	&#125;),</span><br><span class="line">	<span class="string">&#x27;event&#x27;</span>: <span class="string">&#x27;Transfer&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">754</span>,</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0x5F84ce30DC3cF7909101C69086c50De191895883&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>PancakeSwap V2: VRT 5</code>给<code>My Address</code>转了404.08851360983209232 vrt</p>
+<ol start="4">
+<li>PancakeSwap V2: VRT 5——Sync()</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">AttributeDict(&#123;</span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;reserve0&#x27;</span>: <span class="number">153652113319030071628643874</span>,</span><br><span class="line">		<span class="string">&#x27;reserve1&#x27;</span>: <span class="number">379294095135390286733</span></span><br><span class="line">	&#125;),</span><br><span class="line">	<span class="string">&#x27;event&#x27;</span>: <span class="string">&#x27;Sync&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">755</span>,</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(uint112 _reserve0, uint112 _reserve1,) = <span class="title function_">getReserves</span>(); <span class="comment">// gas savings</span></span><br><span class="line"><span class="comment">// 返回用于交易定价和分配流动性的token0和token1储备</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// force reserves to match balances</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sync</span>(<span class="params"></span>) external lock &#123;</span><br><span class="line">	<span class="title function_">_update</span>(<span class="title class_">IERC20</span>(token0).<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)), <span class="title class_">IERC20</span>(token1).<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)), reserve0, reserve1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看了下solidity源码，这步应该是用于同步 交易定价和分配流动性的token0和token1储备</p>
+<ol start="5">
+<li>PancakeSwap V2: VRT 5——Swap()</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">AttributeDict(&#123;</span><br><span class="line">	<span class="string">&#x27;args&#x27;</span>: AttributeDict(&#123;</span><br><span class="line">		<span class="string">&#x27;sender&#x27;</span>: <span class="string">&#x27;0x10ED43C718714eb63d5aA57B78B54704E256024E&#x27;</span>, <span class="comment"># router_v2</span></span><br><span class="line">		<span class="string">&#x27;to&#x27;</span>: <span class="string">&#x27;0x302c98e6d6A65Bf15255b81972f9EaA1F45438C8&#x27;</span>, <span class="comment"># My Address</span></span><br><span class="line">		<span class="string">&#x27;amount0In&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">		<span class="string">&#x27;amount1In&#x27;</span>: <span class="number">1000000000000000</span>, <span class="comment"># 0.001BNB</span></span><br><span class="line">		<span class="string">&#x27;amount0Out&#x27;</span>: <span class="number">404088513609832092320</span>, <span class="comment"># 404.08851360983209232 vrt</span></span><br><span class="line">		<span class="string">&#x27;amount1Out&#x27;</span>: <span class="number">0</span></span><br><span class="line">	&#125;),</span><br><span class="line">	<span class="string">&#x27;event&#x27;</span>: <span class="string">&#x27;Swap&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;logIndex&#x27;</span>: <span class="number">756</span>,</span><br><span class="line">	<span class="string">&#x27;transactionIndex&#x27;</span>: <span class="number">215</span>,</span><br><span class="line">	<span class="string">&#x27;transactionHash&#x27;</span>: HexBytes(<span class="string">&#x27;0xa1215da3b2f9fba0dc4ce90318fd42e947d596e91c6582d8b450612f6a472abf&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;address&#x27;</span>: <span class="string">&#x27;0xEf5212aDa83EC2cc105C409DF10b8806D20E3b35&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;blockHash&#x27;</span>: HexBytes(<span class="string">&#x27;0x9ba33f85ec6edccfee637ae9a3eb8303df74aeb81cbc106676c1af44f7291cb3&#x27;</span>),</span><br><span class="line">	<span class="string">&#x27;blockNumber&#x27;</span>: <span class="number">11864838</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这步和第3步有什么区别?</p>
+</blockquote>
+<hr>
+<h1 id="Question"><a href="#Question" class="headerlink" title="Question:"></a>Question:</h1><h2 id="swap比转账要消耗更多的gas"><a href="#swap比转账要消耗更多的gas" class="headerlink" title="swap比转账要消耗更多的gas?"></a>swap比转账要消耗更多的gas?</h2><p>我觉得是，测试过程中，swap的话消耗 <code>0.000652585 BNB</code>，转账的话消耗 <code>0.0001071 BNB</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211018163457.png" alt="20211018163457"></p>
+<p>swap要比转账需要更多的执行步骤, 所以需要消耗更多的gas</p>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>交易收据里log列表里有事件event<br>event里的内容，用对应合约去解析一下，就可以看到记录里调用哪个合约的哪个函数以及哪些入参</p>
+<p>感觉可以写个简单页面玩玩，类似debank里的交易历史<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/1A6352FF-E581-4644-88F2-A7994A20AD46.png" alt="1A6352FF-E581-4644-88F2-A7994A20AD46"></p>
+<p>后面还要看看<code>预言机</code>的相关内容</p>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap pair doc</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/7095.html" rel="bookmark">Crypto-BscTradeHistory Project</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Crypto-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">Crypto-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">Crypto-Erc20区分买卖_添加移除流动性行为</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/12472.html" rel="prev" title="Crypto-批量创建钱包和转账">
+      <i class="fa fa-chevron-left"></i> Crypto-批量创建钱包和转账
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/7095.html" rel="next" title="Crypto-BscTradeHistory Project">
+      Crypto-BscTradeHistory Project <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#swap-token"><span class="nav-number">1.</span> <span class="nav-text">swap token:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.</span> <span class="nav-text">代码步骤:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#receipt-log-%E4%BA%A4%E6%98%93%E6%94%B6%E6%8D%AElog"><span class="nav-number">2.</span> <span class="nav-text">receipt log 交易收据log:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Events"><span class="nav-number">2.1.</span> <span class="nav-text">Events:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Question"><span class="nav-number">3.</span> <span class="nav-text">Question:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#swap%E6%AF%94%E8%BD%AC%E8%B4%A6%E8%A6%81%E6%B6%88%E8%80%97%E6%9B%B4%E5%A4%9A%E7%9A%84gas"><span class="nav-number">3.1.</span> <span class="nav-text">swap比转账要消耗更多的gas?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">4.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:部署在内网的主机,无法联网,需要在离线的状态下进行更新.  方案:使用git 的git format-patch或者 git bundle 两者的区别: Which is better to use and why? git format-patch or git bundle?  git bundle only makes sense if you transfer a changese">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录-简单的代码离线更新方案">
+<meta property="og:url" content="https://jerrychan807.github.io/35326.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:部署在内网的主机,无法联网,需要在离线的状态下进行更新.  方案:使用git 的git format-patch或者 git bundle 两者的区别: Which is better to use and why? git format-patch or git bundle?  git bundle only makes sense if you transfer a changese">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg">
+<meta property="article:published_time" content="2019-02-13T06:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.555Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg">
+
+<link rel="canonical" href="https://jerrychan807.github.io/35326.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>记录-简单的代码离线更新方案 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/35326.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记录-简单的代码离线更新方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-02-13 14:36:34" itemprop="dateCreated datePublished" datetime="2019-02-13T14:36:34+08:00">2019-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>部署在内网的主机,无法联网,需要在离线的状态下进行更新.</p>
+<hr>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案:"></a>方案:</h1><p>使用git 的<code>git format-patch</code>或者 <code>git bundle</code></p>
+<p>两者的区别:</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/24013127/which-is-better-to-use-and-why-git-format-patch-or-git-bundle">Which is better to use and why? git format-patch or git bundle?</a></p>
+<blockquote>
+<p><code>git bundle</code> only makes sense if you transfer a changeset from one git-repository to another, whereas <code>git format-patch</code> creates standard diff-files which can be inspected easily and applied to a non-gitified source tree as well. on the other hand <code>git bundle</code> creates a single file, which is easier to transport than the multi-file output of <code>git format-patch</code></p>
+</blockquote>
+<p><code>git bundle</code>只产生一个文件,只能应用于同一个仓库,而<code>git format-patch</code>会产生多个文件,不仅限于同一个仓库.</p>
+<hr>
+<h1 id="git-bundle"><a href="#git-bundle" class="headerlink" title="git bundle:"></a>git bundle:</h1><p>使用场景:</p>
+<ul>
+<li>有可能你的网络中断了，但你又希望将你的提交传给你的合作者们。 </li>
+<li>可能你不在办公网中并且出于安全考虑没有给你接入内网的权限。 </li>
+<li>可能你的无线、有线网卡坏掉了。 </li>
+<li>可能你现在没有共享服务器的权限，你又希望通过邮件将更新发送给别人，却不希望通过 <code>format-patch</code> 的方式传输 40 个提交。</li>
+</ul>
+<p><code>bundle</code> 命令会将 <code>git push</code> 命令所传输的所有内容打包成一个二进制文件，你可以将这个文件通过邮件或者闪存传给其他人，然后解包到其他的仓库中。</p>
+<hr>
+<h2 id="git-bundle-使用命令"><a href="#git-bundle-使用命令" class="headerlink" title="git bundle 使用命令:"></a>git bundle 使用命令:</h2><h2 id="创建"><a href="#创建" class="headerlink" title="创建:"></a>创建:</h2><p>生成<code>repo.bundle</code>的文件，该文件包含了所有重建该仓库<code>master</code>分支所需的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git bundle create repo.bundle HEAD master</span><br></pre></td></tr></table></figure>
+
+<p>在使用 <code>bundle</code> 命令时，你需要列出所有你希望<strong>打包的引用或者提交的区间</strong>。 如果你希望这个仓库可以在别处被克隆，你应该像例子中那样增加一个 HEAD 引用。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用:"></a>应用:</h2><p>克隆项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> repo.bundle repo</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="git-format-patch"><a href="#git-format-patch" class="headerlink" title="git format-patch:"></a>git format-patch:</h1><blockquote>
+<p>UNIX世界的软件开发大多都是协作式的，因此，Patch（补丁）是一个相当重要的东西，因为几乎所有的大型UNIX项目的普通贡献者，都是通过 Patch来提交代码的。作为最重要的开源项目之一，Linux，也是这样的。普通开发者从软件仓库clone下代码，然后写入代码，做一个Patch， 最后用E-mail发给Linux Kernel的维护者就好了。Git最初作为Linux的版本控制工具，提供了透明、完整、稳定的Patch功能。</p>
+</blockquote>
+<blockquote>
+<p>我们先介绍一下Patch是什么。如果一个软件有了新版本，我们可以完整地下载新版本的代码进行编译安装。然而，像Linux Kernel这样的大型项目，代码即使压缩，也超过70MB，每次全新下载是有相当大的代价的。然而，每次更新变动的代码可能不超过1MB，因此，我们只 要能够有两个版本代码的diff的数据，应该就可以以极低的代价更新程序了。因此，Larry Wall开发了一个工具：patch。它可以根据一个diff文件进行版本更新。</p>
+</blockquote>
+<blockquote>
+<p>不过在git中，我们没有必要直接使用diff和patch来做补丁，这样做既危险又麻烦。git提供了两种简单的patch方案。一是用git diff生成的标准patch，二是git format-patch生成的Git专用Patch。</p>
+</blockquote>
+<h2 id="git-format-patch-使用命令"><a href="#git-format-patch-使用命令" class="headerlink" title="git format-patch 使用命令:"></a>git format-patch 使用命令:</h2><h2 id="创建patch"><a href="#创建patch" class="headerlink" title="创建patch:"></a>创建patch:</h2><p>某次提交（含）之前的几次提交：n指从sha1 id对应的commit开始算起n个提交</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 <span class="built_in">id</span>】-n</span><br></pre></td></tr></table></figure>
+
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8 -2</span><br></pre></td></tr></table></figure>
+
+<p>某两次提交之间的所有patch:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch 【commit sha1 <span class="built_in">id</span>】..【commit sha1 <span class="built_in">id</span>】 </span><br></pre></td></tr></table></figure>
+
+<p>eg:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git format-patch  2a2fb4539925bfa4a141fe492d9828d030f7c8a8..89aebfcc73bdac8054be1a242598610d8ed5f3c8</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用patch"><a href="#应用patch" class="headerlink" title="应用patch:"></a>应用patch:</h2><p>检查patch&#x2F;diff是否能正常打入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply --check 【path/to/xxx.patch】</span><br><span class="line">git apply --check 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
+<p>打入patch&#x2F;diff:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git apply 【path/to/xxx.patch】</span><br><span class="line">git apply 【path/to/xxx.diff】</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><code>git bundle</code>可以理解为全量更新<br><code>git format-patch</code>可以理解为增量更新</p>
+<p>为了方便,还是选择了<code>git bundle</code>,因为使用<code>git format-patch</code>的过程,容易出现<code>patch</code>打不上导致更新中断的问题.</p>
+<p>不过对于更严谨的更新方案的话,还是应该选择<code>git format-patch</code>的.</p>
+<hr>
+<h1 id="大体思路"><a href="#大体思路" class="headerlink" title="大体思路:"></a>大体思路:</h1><ul>
+<li>更新包生成端:<ul>
+<li>分别生成各个项目的<code>bundle</code>文件</li>
+<li>加密压缩成<code>zip</code>文件</li>
+</ul>
+</li>
+<li>更新包使用端:<ul>
+<li>用密钥解密压缩包</li>
+<li>到指定目录移除原来的项目,执行<code>git clone</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13nngtg6pj31320u0wpg.jpg"></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="http://www.mottoin.com/article/network/97143.html">巡风在隔离网络环境下的离线更新方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33208607">携程无线离线包增量更新方案实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/liujin0506/autopatch">根据git对比分支与tag之间的文件变动，生成补丁包</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/jinweilin/article/details/78356860">git打两个版本的增量包</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ec04de3f95cc">Git 打补丁– patch 和 diff 的使用（详细）</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E6%89%93%E5%8C%85">Git 工具 - 打包</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/an23lm/GitBundlePlus">Bundle a local Git project with all uncommitted changes and stashes (git bundle on steroids).</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_20059415/article/details/80598347">git 打补丁方法总结</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/kangear/article/details/39675421">Git打补丁常见问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/y041039/articles/2411600.html">Git的Patch功能</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/40513.html" rel="bookmark">Celery-任务调度框架实践</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/42649.html" rel="bookmark">Celery-动态路由</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/12733.html" rel="bookmark">记录-Centos7下root运行Chrome</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/34580.html" rel="bookmark">记录-Centos7安装py环境</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dev/" rel="tag"># Dev</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/4287.html" rel="prev" title="获取masscan的扫描进度">
+      <i class="fa fa-chevron-left"></i> 获取masscan的扫描进度
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/1900.html" rel="next" title="Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析">
+      Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-bundle"><span class="nav-number">3.</span> <span class="nav-text">git bundle:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-bundle-%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.1.</span> <span class="nav-text">git bundle 使用命令:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">3.2.</span> <span class="nav-text">创建:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">3.3.</span> <span class="nav-text">应用:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git-format-patch"><span class="nav-number">4.</span> <span class="nav-text">git format-patch:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-format-patch-%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">4.1.</span> <span class="nav-text">git format-patch 使用命令:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BApatch"><span class="nav-number">4.2.</span> <span class="nav-text">创建patch:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8patch"><span class="nav-number">4.3.</span> <span class="nav-text">应用patch:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="nav-number">6.</span> <span class="nav-text">大体思路:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">273k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:08</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
