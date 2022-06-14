@@ -214,58 +214,6 @@
       </tags>
   </entry>
   <entry>
-    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
-    <url>//59330.html</url>
-    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
-<p>方便管理员对模板html文件进行修改</p>
-<hr>
-<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
-<li><code>$_REQUEST</code></li>
-<li><code>$_REQUEST[&#39;act&#39;]</code></li>
-<li><code>$_GET</code></li>
-<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST</code></li>
-<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
-</ul>
-<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
-<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
-<p>有什么比较有价值的网站文件吗?</p>
-<p>可以php文件即读到网站源码</p>
-<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
-<hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
-<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
-<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
-<p>怎么攻击呢？</p>
-<p>可以修改网站下的任何源代码，可以</p>
-<ul>
-<li>写入一句话木马</li>
-<li>盗号js</li>
-</ul>
-<p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
-<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
-</ul>
-]]></content>
-      <categories>
-        <category>VulnAnalysis</category>
-      </categories>
-      <tags>
-        <tag>VulnAnalysis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Breacher-Go高并发管理员后台爆破工具</title>
     <url>//7273.html</url>
     <content><![CDATA[<h1 id="preface"><a href="#preface" class="headerlink" title="preface :"></a>preface :</h1><p><a href="https://github.com/s0md3v/Breacher">Breacher</a>是由python写的多线程管理员后台爆破工具</p>
@@ -364,6 +312,58 @@
       </categories>
       <tags>
         <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
+    <url>//59330.html</url>
+    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
+<p>方便管理员对模板html文件进行修改</p>
+<hr>
+<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
+<li><code>$_REQUEST</code></li>
+<li><code>$_REQUEST[&#39;act&#39;]</code></li>
+<li><code>$_GET</code></li>
+<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST</code></li>
+<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
+</ul>
+<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
+<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
+<p>有什么比较有价值的网站文件吗?</p>
+<p>可以php文件即读到网站源码</p>
+<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
+<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
+<hr>
+<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
+<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
+<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
+<p>怎么攻击呢？</p>
+<p>可以修改网站下的任何源代码，可以</p>
+<ul>
+<li>写入一句话木马</li>
+<li>盗号js</li>
+</ul>
+<p>写入一句话木马</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
+<hr>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
+<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
+</ul>
+]]></content>
+      <categories>
+        <category>VulnAnalysis</category>
+      </categories>
+      <tags>
+        <tag>VulnAnalysis</tag>
       </tags>
   </entry>
   <entry>
@@ -664,6 +664,80 @@
       </tags>
   </entry>
   <entry>
+    <title>Crypto-CryptoZombie僵尸世界NFT游戏</title>
+    <url>//60348.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。</p>
+<p>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
+<hr>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
+<hr>
+<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ul>
+<li>在remix编写solidity</li>
+<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
+<li>truffle部署到ropsten测试网</li>
+<li>vue编写代码调试，与合约交互</li>
+</ul>
+<hr>
+<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
+<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
+
+<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
+<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
+<hr>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
+
+<p>即可部署至Ropsten</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
+<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
+<hr>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
+<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
+<p><code>view</code>读取存储，但不会修改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
+<hr>
+<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
+<p>external - Cannot be accessed internally, only externally</p>
+<p>internal - only this contract and contracts deriving from it can access</p>
+<p>private - can be accessed only from this contract</p>
+<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
+<hr>
+<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
+<hr>
+<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
+<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
+<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
+<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
+<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
+<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
+<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Crypto-BscTradeHistory Project</title>
     <url>//7095.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。<br>看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
@@ -744,80 +818,6 @@
 <li><a href="https://zhuanlan.zhihu.com/p/389359014">web3.py extraData 错误</a></li>
 <li><a href="https://code.z01.com/bootstrap-vue/docs/">bootstrapvue中文文档</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/311323583">用Flask和Vue制作一个单页应用（一）</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-CryptoZombie僵尸世界NFT游戏</title>
-    <url>//60348.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。</p>
-<p>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
-<hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
-<hr>
-<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ul>
-<li>在remix编写solidity</li>
-<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
-<li>truffle部署到ropsten测试网</li>
-<li>vue编写代码调试，与合约交互</li>
-</ul>
-<hr>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
-<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
-
-<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
-<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
-<hr>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
-
-<p>即可部署至Ropsten</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
-<p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
-<hr>
-<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
-<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
-<p><code>view</code>读取存储，但不会修改</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
-<hr>
-<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
-<p>external - Cannot be accessed internally, only externally</p>
-<p>internal - only this contract and contracts deriving from it can access</p>
-<p>private - can be accessed only from this contract</p>
-<p><a href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
-<hr>
-<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
-<hr>
-<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
-<li><a href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
-<li><a href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
-<li><a href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
-<li><a href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
-<li><a href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
-<li><a href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -1073,10 +1073,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn run v1.22.10</span><br><span class="line">$ /Users/cool-erc20/demo/node_modules/.bin/hardhat compile</span><br><span class="line">Compiled 1 Solidity file successfully</span><br><span class="line">✨  Done <span class="keyword">in</span> 5.25s.</span><br></pre></td></tr></table></figure>
 
 <hr>
-<h1 id="部署脚本"><a href="#部署脚本" class="headerlink" title="部署脚本:"></a>部署脚本:</h1><p>在能够测试或部署合约之前，你需要设置部署脚本，以便在测试和准备部署时使用。</p>
-<p>部署脚本让你可以专注于合约的最终形式，设置它们的参数和依赖关系，并确保你的测试的是将要部署的内容。</p>
-<p>部署脚本也省去了重复部署的烦恼。</p>
-<p>根目录下创建一个名为<code>deploy</code>的新目录，并创建一个名为<code>001_deploy_token.ts</code>的新文件。</p>
+<h1 id="部署脚本"><a href="#部署脚本" class="headerlink" title="部署脚本:"></a>部署脚本:</h1><p>在能够测试或部署合约之前，你需要设置部署脚本，以便在测试和准备部署时使用。<br>部署脚本让你可以专注于合约的最终形式，设置它们的参数和依赖关系，并确保你的测试的是将要部署的内容。<br>部署脚本也省去了重复部署的烦恼。<br>根目录下创建一个名为<code>deploy</code>的新目录，并创建一个名为<code>001_deploy_token.ts</code>的新文件。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 001_deploy_token.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">HardhatRuntimeEnvironment</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat/types&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">DeployFunction</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;hardhat-deploy/types&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">func</span>: <span class="title class_">DeployFunction</span> = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params">hre: HardhatRuntimeEnvironment</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;deployments, getNamedAccounts&#125; = hre;</span><br><span class="line">  <span class="keyword">const</span> &#123;deploy&#125; = deployments;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123;deployer, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">getNamedAccounts</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">deploy</span>(<span class="string">&#x27;Token&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">from</span>: deployer,</span><br><span class="line">    <span class="attr">args</span>: [tokenOwner],</span><br><span class="line">    <span class="attr">log</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> func;</span><br><span class="line">func.<span class="property">tags</span> = [<span class="string">&#x27;Token&#x27;</span>];</span><br></pre></td></tr></table></figure>
 
 <p>编辑<code>hardhat.config.ts</code></p>
@@ -1204,85 +1201,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Crypto-RacaNft市场挂单script</title>
-    <url>//1333.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
-<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
-<hr>
-<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
-<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
-<p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
-<p>这个数据就是ABI的编码数据：<br><code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
-<p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
-<p>函数选择器(4字节)</p>
-<ul>
-<li><code>0x60fe47b1</code></li>
-</ul>
-<p>第一个参数(32字节)</p>
-<ul>
-<li><code>00000000000000000000000000000000000000000000000000000000000000001</code></li>
-</ul>
-<p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
-<p>参数部分则是使用对应的16进制数。</p>
-<p>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
-<hr>
-<h1 id="实验"><a href="#实验" class="headerlink" title="实验:"></a>实验:</h1><p>刚好自己有在练手solidity，有部署到ropsten测试网上。<br>可以尝试能不能构造出已知交易的<code>input_data</code></p>
-<p>调用的合约函数:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mint_zoombie</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># function createZoombie(string name) public&#123;&#125;</span></span><br><span class="line">    func_abi = &#123;</span><br><span class="line">        <span class="string">&quot;inputs&quot;</span>: [</span><br><span class="line">            &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,  <span class="comment"># 参数类型</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;createZoombie&quot;</span>,  <span class="comment"># 函数名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn_selector = <span class="string">&#x27;0x&#x27;</span> + encode_hex(function_abi_to_4byte_selector(func_abi)) </span><br><span class="line"></span><br><span class="line">    args_data = encode_hex(encode_single(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>))  <span class="comment"># encode_abi([&#x27;string&#x27;], [&#x27;haha&#x27;])</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(fn_selector)</span><br><span class="line">    <span class="built_in">print</span>(args_data)</span><br><span class="line">    total_data = fn_selector + args_data</span><br><span class="line">    <span class="built_in">print</span>(total_data)</span><br></pre></td></tr></table></figure>
-
-<p>实际的<code>input_data</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
-
-<p>构造出的<code>input_data</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
-
-<p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。<br>但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
-<hr>
-<h1 id="data的组成规则："><a href="#data的组成规则：" class="headerlink" title="data的组成规则："></a>data的组成规则：</h1><blockquote>
-<p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
-<p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
-<p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
-</blockquote>
-<hr>
-<h1 id="raca-nft挂单卖出"><a href="#raca-nft挂单卖出" class="headerlink" title="raca nft挂单卖出:"></a>raca nft挂单卖出:</h1><h2 id="授权："><a href="#授权：" class="headerlink" title="授权："></a>授权：</h2><p>授权这个data比较简单，找到多几个tx比较一下。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
-<p>可知他的data是固定的，直接用就行了。</p>
-<h2 id="挂单卖出："><a href="#挂单卖出：" class="headerlink" title="挂单卖出："></a>挂单卖出：</h2><p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x467f963d                                                         <span class="comment"># function selector</span></span><br><span class="line">00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e2   <span class="comment"># usm potion药水地址</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000001   <span class="comment"># 数量</span></span><br><span class="line">00000000000000000000000012bb890508c125661e03b09ec06e404bc9289040   <span class="comment"># Raca token 地址</span></span><br><span class="line">0000000000000000000000000000000000000000000002f6d546136addf80000   <span class="comment"># 价格</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
-
-<p>可知，主要是要修改数量和价格的数据，其他数据不变。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
-
-<p>将tx用私钥签名，广播交易就可以了。<br>然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
-<li>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</li>
-<li>多找相关的tx比较，找规律</li>
-</ol>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
-<li><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
-<li><a href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Crypto-SuperTrend指标_合约交易脚本</title>
     <url>//14610.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>上一篇是去购买现货,回测几次后，发现效果还不错，由于定量设置了止盈率，挂好了<code>limit sell order</code>后,在短期拉盘的时候，能卖得出去。</p>
@@ -1352,6 +1270,85 @@
 <li><a href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a></li>
 <li><a href="https://help.ftx.us/hc/en-us/articles/360043580173-Advanced-Order-Types">FTX 高级订单类型</a></li>
 <li><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">ccxt#orders</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Crypto-RacaNft市场挂单script</title>
+    <url>//1333.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
+<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
+<hr>
+<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
+<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
+<p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
+<p>这个数据就是ABI的编码数据：<br><code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
+<p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
+<p>函数选择器(4字节)</p>
+<ul>
+<li><code>0x60fe47b1</code></li>
+</ul>
+<p>第一个参数(32字节)</p>
+<ul>
+<li><code>00000000000000000000000000000000000000000000000000000000000000001</code></li>
+</ul>
+<p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
+<p>参数部分则是使用对应的16进制数。</p>
+<p>现在就好理解 附加数据怎么转化为对应的函数调用。</p>
+<hr>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验:"></a>实验:</h1><p>刚好自己有在练手solidity，有部署到ropsten测试网上。<br>可以尝试能不能构造出已知交易的<code>input_data</code></p>
+<p>调用的合约函数:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mint_zoombie</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># function createZoombie(string name) public&#123;&#125;</span></span><br><span class="line">    func_abi = &#123;</span><br><span class="line">        <span class="string">&quot;inputs&quot;</span>: [</span><br><span class="line">            &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,  <span class="comment"># 参数类型</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;createZoombie&quot;</span>,  <span class="comment"># 函数名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn_selector = <span class="string">&#x27;0x&#x27;</span> + encode_hex(function_abi_to_4byte_selector(func_abi)) </span><br><span class="line"></span><br><span class="line">    args_data = encode_hex(encode_single(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>))  <span class="comment"># encode_abi([&#x27;string&#x27;], [&#x27;haha&#x27;])</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(fn_selector)</span><br><span class="line">    <span class="built_in">print</span>(args_data)</span><br><span class="line">    total_data = fn_selector + args_data</span><br><span class="line">    <span class="built_in">print</span>(total_data)</span><br></pre></td></tr></table></figure>
+
+<p>实际的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+
+<p>构造出的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+
+<p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。<br>但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
+<hr>
+<h1 id="data的组成规则："><a href="#data的组成规则：" class="headerlink" title="data的组成规则："></a>data的组成规则：</h1><blockquote>
+<p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
+<p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
+<p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
+</blockquote>
+<hr>
+<h1 id="raca-nft挂单卖出"><a href="#raca-nft挂单卖出" class="headerlink" title="raca nft挂单卖出:"></a>raca nft挂单卖出:</h1><h2 id="授权："><a href="#授权：" class="headerlink" title="授权："></a>授权：</h2><p>授权这个data比较简单，找到多几个tx比较一下。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
+<p>可知他的data是固定的，直接用就行了。</p>
+<h2 id="挂单卖出："><a href="#挂单卖出：" class="headerlink" title="挂单卖出："></a>挂单卖出：</h2><p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x467f963d                                                         <span class="comment"># function selector</span></span><br><span class="line">00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e2   <span class="comment"># usm potion药水地址</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000001   <span class="comment"># 数量</span></span><br><span class="line">00000000000000000000000012bb890508c125661e03b09ec06e404bc9289040   <span class="comment"># Raca token 地址</span></span><br><span class="line">0000000000000000000000000000000000000000000002f6d546136addf80000   <span class="comment"># 价格</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>可知，主要是要修改数量和价格的数据，其他数据不变。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
+
+<p>将tx用私钥签名，广播交易就可以了。<br>然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
+<li>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</li>
+<li>多找相关的tx比较，找规律</li>
+</ol>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></li>
+<li><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -1482,12 +1479,12 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">token1</span>(<span class="params"></span>) external view returns (address);</span><br></pre></td></tr></table></figure>
 <p>Returns the address of the pair token with the higher sort order.</p>
 <p>可以在pair的合约里查到token0和token1分别的address</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png" alt="20220525153407"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png?40" alt="20220525153407"></p>
 <hr>
 <h1 id="测试储备量的变化："><a href="#测试储备量的变化：" class="headerlink" title="测试储备量的变化："></a>测试储备量的变化：</h1><h2 id="AddLiquidity"><a href="#AddLiquidity" class="headerlink" title="AddLiquidity:"></a>AddLiquidity:</h2><p>在添加流动性之前，查询结果</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  5462692571130940(0.00546269257113094) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  5383891113691435(0.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png" alt="20220525153952"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png?40" alt="20220525153952"></p>
 <p>分别添加流动性，各10个后，pair里的储备量结果发生变化</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT ↑</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
 
@@ -2346,6 +2343,40 @@
       </tags>
   </entry>
   <entry>
+    <title>DNS域传送漏洞</title>
+    <url>//40526.html</url>
+    <content><![CDATA[<h1 id="DNS域传送漏洞"><a href="#DNS域传送漏洞" class="headerlink" title="DNS域传送漏洞:"></a>DNS域传送漏洞:</h1><h2 id="DNS记录分类"><a href="#DNS记录分类" class="headerlink" title="DNS记录分类"></a>DNS记录分类</h2><p>常见的DNS记录有以下几类：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A记录       IP地址记录,记录一个域名对应的IP地址</span><br><span class="line">AAAA记录    IPv6地址记录，记录一个域名对应的IPv6地址</span><br><span class="line">CNAME记录   别名记录，记录一个主机的别名</span><br><span class="line">MX记录      电子邮件交换记录，记录一个邮件域名对应的IP地址</span><br><span class="line">NS记录      域名服务器记录 ,记录该域名由哪台域名服务器解析</span><br><span class="line">PTR记录     反向记录，也即从IP地址到域名的一条记录</span><br><span class="line">TXT记录     记录域名的相关文本信息</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理:"></a>原理:</h2><p>DNS服务器分为：主服务器、备份服务器和缓存服务器。</p>
+<p>在主备服务器之间同步数据库，需要使用“DNS域传送”。</p>
+<p><strong>域传送是指备份服务器从主服务器拷贝数据，并用得到的数据更新自身数据库。</strong></p>
+<p>若DNS服务器<strong>配置不当（本来只有备份服务器能获得主服务器的数据，由于漏洞导致任意client都能通过“域传送”获得主服务器的数据（zone数据库信息））</strong>，可能导致攻击者获取某个域的所有记录。</p>
+<p>造成整个网络的拓扑结构泄露给潜在的攻击者，包括一些安全性较低的内部主机，如测试服务器。</p>
+<p>同时，黑客可以快速的判定出某个特定zone的所有主机，收集域信息，选择攻击目标，找出未使用的IP地址，绕过基于网络的访问控制。</p>
+<p>攻击者能获取的敏感主要包括：</p>
+<p>1）网络的拓扑结构，服务器集中的IP地址段</p>
+<p>2）数据库服务器的IP地址</p>
+<p>3）测试服务器的IP地址，</p>
+<p>4）VPN服务器地址泄露</p>
+<p>5）其他敏感服务器</p>
+<hr>
+<h2 id="检测"><a href="#检测" class="headerlink" title="检测:"></a>检测:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap --script dns-zone-transfer --script-args dns-zone-transfer.domain=li-ning.com -p 53 -Pn ns.lining.cn</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201113100039.png" alt="20201113100039"></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://www.jianshu.com/p/d2af08e6f8fb">dns 域传送漏洞利用总结</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>WebSecurity</category>
+      </categories>
+      <tags>
+        <tag>WebSecurity</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Diary-2019.9</title>
     <url>//44403.html</url>
     <content><![CDATA[<h1 id="2019-09-26"><a href="#2019-09-26" class="headerlink" title="2019-09-26"></a>2019-09-26</h1><blockquote>
@@ -2380,40 +2411,6 @@
       </categories>
       <tags>
         <tag>Diary</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>DNS域传送漏洞</title>
-    <url>//40526.html</url>
-    <content><![CDATA[<h1 id="DNS域传送漏洞"><a href="#DNS域传送漏洞" class="headerlink" title="DNS域传送漏洞:"></a>DNS域传送漏洞:</h1><h2 id="DNS记录分类"><a href="#DNS记录分类" class="headerlink" title="DNS记录分类"></a>DNS记录分类</h2><p>常见的DNS记录有以下几类：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A记录       IP地址记录,记录一个域名对应的IP地址</span><br><span class="line">AAAA记录    IPv6地址记录，记录一个域名对应的IPv6地址</span><br><span class="line">CNAME记录   别名记录，记录一个主机的别名</span><br><span class="line">MX记录      电子邮件交换记录，记录一个邮件域名对应的IP地址</span><br><span class="line">NS记录      域名服务器记录 ,记录该域名由哪台域名服务器解析</span><br><span class="line">PTR记录     反向记录，也即从IP地址到域名的一条记录</span><br><span class="line">TXT记录     记录域名的相关文本信息</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理:"></a>原理:</h2><p>DNS服务器分为：主服务器、备份服务器和缓存服务器。</p>
-<p>在主备服务器之间同步数据库，需要使用“DNS域传送”。</p>
-<p><strong>域传送是指备份服务器从主服务器拷贝数据，并用得到的数据更新自身数据库。</strong></p>
-<p>若DNS服务器<strong>配置不当（本来只有备份服务器能获得主服务器的数据，由于漏洞导致任意client都能通过“域传送”获得主服务器的数据（zone数据库信息））</strong>，可能导致攻击者获取某个域的所有记录。</p>
-<p>造成整个网络的拓扑结构泄露给潜在的攻击者，包括一些安全性较低的内部主机，如测试服务器。</p>
-<p>同时，黑客可以快速的判定出某个特定zone的所有主机，收集域信息，选择攻击目标，找出未使用的IP地址，绕过基于网络的访问控制。</p>
-<p>攻击者能获取的敏感主要包括：</p>
-<p>1）网络的拓扑结构，服务器集中的IP地址段</p>
-<p>2）数据库服务器的IP地址</p>
-<p>3）测试服务器的IP地址，</p>
-<p>4）VPN服务器地址泄露</p>
-<p>5）其他敏感服务器</p>
-<hr>
-<h2 id="检测"><a href="#检测" class="headerlink" title="检测:"></a>检测:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap --script dns-zone-transfer --script-args dns-zone-transfer.domain=li-ning.com -p 53 -Pn ns.lining.cn</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201113100039.png" alt="20201113100039"></p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://www.jianshu.com/p/d2af08e6f8fb">dns 域传送漏洞利用总结</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>WebSecurity</category>
-      </categories>
-      <tags>
-        <tag>WebSecurity</tag>
       </tags>
   </entry>
   <entry>

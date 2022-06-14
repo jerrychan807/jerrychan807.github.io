@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
   <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
   <script src="/lib/pace/pace.min.js"></script>
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>Black House</title>
+  <title>Archive | Black House</title>
   
 
 
@@ -113,11 +113,6 @@
 
 <nav class="site-nav">
   <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
@@ -126,16 +121,6 @@
         <li class="menu-item menu-item-about">
 
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -186,1061 +171,230 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content archive">
             
-      
+
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/1333.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/1333.html" class="post-title-link" itemprop="url">Crypto-RacaNft市场挂单script</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-11-17 22:36:34" itemprop="dateCreated datePublished" datetime="2021-11-17T22:36:34+08:00">2021-11-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.3k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
-<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。<br>需要自己构造data，与合约交互。</p>
-<hr>
-<h1 id="InputData例子解析"><a href="#InputData例子解析" class="headerlink" title="InputData例子解析:"></a>InputData例子解析:</h1><p>先了解一下InputData是怎么构成的。</p>
-<p>以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/1333.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
         
+        <span class="collection-header">Good! 90 posts in total. Keep on posting.</span>
+      </div>
+
       
+    <div class="collection-year">
+      <span class="collection-header">2021</span>
     </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-11-17T22:36:34+08:00"
+              content="2021-11-17">
+          11-17
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/1333.html" itemprop="url">
+            <span itemprop="name">Crypto-RacaNft市场挂单script</span>
+          </a>
+      </div>
+
+    </header>
   </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/49032.html">
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-11-05T22:36:34+08:00"
+              content="2021-11-05">
+          11-05
+        </time>
+      </div>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/49032.html" class="post-title-link" itemprop="url">Crypto-pancakeswap_最佳交易对路径</a>
-        </h2>
+      <div class="post-title">
+          <a class="post-title-link" href="/49032.html" itemprop="url">
+            <span itemprop="name">Crypto-pancakeswap_最佳交易对路径</span>
+          </a>
+      </div>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
+    </header>
+  </article>
 
-              <time title="Created: 2021-11-05 22:36:34" itemprop="dateCreated datePublished" datetime="2021-11-05T22:36:34+08:00">2021-11-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.4k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-11-04T22:36:34+08:00"
+              content="2021-11-04">
+          11-04
+        </time>
+      </div>
 
-        </div>
-      </header>
+      <div class="post-title">
+          <a class="post-title-link" href="/7095.html" itemprop="url">
+            <span itemprop="name">Crypto-BscTradeHistory Project</span>
+          </a>
+      </div>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+    </header>
+  </article>
 
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>当你在pancakeswap上交易时，它会帮你找到最佳的交易对路径，中间交易代币可能是一个或多个。<br>那它这个最佳交易对路径是如何计算出来的呢?</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104114.png" alt="20211020104114"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104124.png" alt="20211020104124"></p>
-<hr>
-<h1 id="如何查找最佳交易对路径"><a href="#如何查找最佳交易对路径" class="headerlink" title="如何查找最佳交易对路径:"></a>如何查找最佳交易对路径:</h1><p><a target="_blank" rel="noopener" href="https://docs.uniswap.org/sdk/2.0.0/reference/trade#besttradeexactin">uniswap sdk</a></p>
-<p>从sdk中可以看到有<code>bestTradeExactIn</code>方法:</p>
-<blockquote>
-<p>给定一组对、固定数量的输入和输出的代币数量，此方法返回将maxNumResults输入代币数量交换为输出代币的最佳交易，最多maxHops跳数。返回的交易按输出金额降序排列，并且都共享给定的输入金额。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Trade.bestTradeExactIn(</span><br><span class="line">    pairs: Pair[],</span><br><span class="line">    amountIn: TokenAmount,</span><br><span class="line">    tokenOut: Token,</span><br><span class="line">    &#123; maxNumResults = 3, maxHops = 3 &#125;: BestTradeOptions = &#123;&#125;): Trade[]</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/49032.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-10-18T22:36:34+08:00"
+              content="2021-10-18">
+          10-18
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/35176.html" itemprop="url">
+            <span itemprop="name">Crypto-pancakeswap_receipt细节</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-10-16T22:36:34+08:00"
+              content="2021-10-16">
+          10-16
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/12472.html" itemprop="url">
+            <span itemprop="name">Crypto-批量创建钱包和转账</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-10-14T22:36:34+08:00"
+              content="2021-10-14">
+          10-14
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/14610.html" itemprop="url">
+            <span itemprop="name">Crypto-SuperTrend指标_合约交易脚本</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-10-14T22:36:34+08:00"
+              content="2021-10-14">
+          10-14
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/38991.html" itemprop="url">
+            <span itemprop="name">Crypto-调用pancake合约进行交易</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-10-08T22:36:34+08:00"
+              content="2021-10-08">
+          10-08
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/32598.html" itemprop="url">
+            <span itemprop="name">Crypto-Bp宝石回购监控脚本</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-09-27T22:36:34+08:00"
+              content="2021-09-27">
+          09-27
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/3287.html" itemprop="url">
+            <span itemprop="name">Crypto-rarity自动冒险升级脚本</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-09-26T22:36:34+08:00"
+              content="2021-09-26">
+          09-26
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/48779.html" itemprop="url">
+            <span itemprop="name">Crypto-SuperTrend指标_现货交易脚本</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
+
+
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
+  </div>
   
   
   
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/7095.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/7095.html" class="post-title-link" itemprop="url">Crypto-BscTradeHistory Project</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-11-04 22:36:34" itemprop="dateCreated datePublished" datetime="2021-11-04T22:36:34+08:00">2021-11-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。<br>看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
-<hr>
-<h1 id="debank交易历史界面"><a href="#debank交易历史界面" class="headerlink" title="debank交易历史界面:"></a>debank交易历史界面:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825"></p>
-<p>有以下功能点:</p>
-<ul>
-<li>钱包余额总值</li>
-<li>不同的公链</li>
-<li>交易时间</li>
-<li>交易hash</li>
-<li>与什么合约做了什么交互动作</li>
-<li>token的传输记录，增加了X Token,减少了X Token</li>
-<li>gas费用换算成u</li>
-</ul>
-<hr>
-<h1 id="项目效果图"><a href="#项目效果图" class="headerlink" title="项目效果图:"></a>项目效果图:</h1><p>项目地址:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/7095.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/35176.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/35176.html" class="post-title-link" itemprop="url">Crypto-pancakeswap_receipt细节</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-18 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-18T22:36:34+08:00">2021-10-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>11k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>10 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="swap-token"><a href="#swap-token" class="headerlink" title="swap token:"></a>swap token:</h1><p>测试用<code>BNB</code>去购买<code>VRT</code></p>
-<h2 id="代码步骤"><a href="#代码步骤" class="headerlink" title="代码步骤:"></a>代码步骤:</h2><p>执行一段完整的交易，代码需要进行几个步骤:</p>
-<ol>
-<li><strong>swapExactETHForTokens</strong> 传参，构造好函数</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func = router_contract.functions.swapExactETHForTokens(min_output_tokens, [self.addr.wbnb, token_address], self.wallet, self.deadline(<span class="number">60</span>))</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><strong>buildTransaction</strong> 构造好交易</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transaction = func.buildTransaction(tx_params)</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><strong>sign_transaction</strong> 私钥进行签名</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">signed_tx = self.w3.eth.account.sign_transaction(transaction, private_key=self.secret_key)</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/35176.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/12472.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/12472.html" class="post-title-link" itemprop="url">Crypto-批量创建钱包和转账</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-16 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-16T22:36:34+08:00">2021-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>需求:</p>
-<ol>
-<li>创建40个bsc新钱包</li>
-<li>由1个主钱包把某代币平均分发到40个新钱包中去</li>
-</ol>
-<hr>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="创建钱包"><a href="#创建钱包" class="headerlink" title="创建钱包:"></a>创建钱包:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3, HTTPProvider</span><br><span class="line"><span class="keyword">from</span> web3.middleware <span class="keyword">import</span> geth_poa_middleware</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_wallet</span>():</span><br><span class="line">    bscUrl = <span class="string">&quot;&quot;</span></span><br><span class="line">    web3 = Web3(HTTPProvider(bscUrl))</span><br><span class="line">    web3.middleware_stack.inject(geth_poa_middleware, layer=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    password = <span class="string">&quot;&quot;</span></span><br><span class="line">    bscAccount = web3.eth.account.create(password)</span><br><span class="line"></span><br><span class="line">    bscAddress = bscAccount.address</span><br><span class="line">    privateKey = bscAccount.privateKey.<span class="built_in">hex</span>()</span><br></pre></td></tr></table></figure>
-
-<p>这一步遇到的问题主要是，web3js的文档和web3py的有些差异，使用上需要注意。</p>
-<h2 id="转账代币"><a href="#转账代币" class="headerlink" title="转账代币:"></a>转账代币:</h2><p>这一步也很简单，调用代币合约里的<code>transfer</code>函数即可</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/12472.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/14610.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/14610.html" class="post-title-link" itemprop="url">Crypto-SuperTrend指标_合约交易脚本</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-14 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-14T22:36:34+08:00">2021-10-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>上一篇是去购买现货,回测几次后，发现效果还不错，由于定量设置了止盈率，挂好了<code>limit sell order</code>后,在短期拉盘的时候，能卖得出去。</p>
-<p>想起之前看的<a target="_blank" rel="noopener" href="https://tokentax.co/blog/best-crypto-trading-bot/">The Best Crypto Trading Bots On the Market | TokenTax</a></p>
-<blockquote>
-<p>crypto trading bots enable trading based on data and trends—not on emotional impulse</p>
-<p>Ultimately, this usually grows their profits, minimizes their risks, and limits their losses across exchanges. </p>
-<p>Furthermore, bots can produce passive income 24 hours a day. Whether you’re sleeping, biking, giving a presentation, whatever: you could also be earning from automated trades.</p>
-</blockquote>
-<p>通过策略写机器人来做交易,算是有严格的纪律性了，由数据驱动，不受情绪的影响。<br>另外一个好处就是，不用去盯盘。</p>
-<p>这次拿来做合约交易</p>
-<hr>
-<h1 id="策略"><a href="#策略" class="headerlink" title="策略:"></a>策略:</h1><ul>
-<li>选择一个我认为比较好的投资标的(币):<code>BNB</code></li>
-<li>选择一个交易周期:45mins</li>
-<li>Buy信号发出,很可能处于上涨行情,执行市价买入,5倍杠杠</li>
-<li>设置收益率5%,执行限价卖出</li>
-<li>以上每一步都设置tg提醒，入库记录</li>
-<li>暂不设置止损，5倍杠杠，币种暴跌20%可能会爆仓</li>
-</ul>
-<h1 id="效果"><a href="#效果" class="headerlink" title="效果:"></a>效果:</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/14610.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/38991.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/38991.html" class="post-title-link" itemprop="url">Crypto-调用pancake合约进行交易</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-14 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-14T22:36:34+08:00">2021-10-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.4k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>最近在看<a target="_blank" rel="noopener" href="https://github.com/PancakeBunny-finance/Bunny/blob/main/contracts/zap/ZapBSC.sol">pancakeBunny</a>机枪池的源代码时，看到了他们有个<code>zap</code>功能</p>
-<blockquote>
-<p>Zap 功能本质上允许用户直接从单一资产（BNB）切换到 LP 代币（BNB-CAKE LP），只需单击一个按钮，而无需进行煎饼交换和切换不同的资产</p>
-</blockquote>
-<p>源码里是直接调用<code>pancakeswap router</code>合约,后面打算尝试写个类似的<code>dex</code> dapp玩一下。</p>
-<p>现在先试一下如何调用<code>pancakeswap router</code>进行代币的交换。</p>
-<hr>
-<h1 id="pancakebunny-zap-源码"><a href="#pancakebunny-zap-源码" class="headerlink" title="pancakebunny zap 源码:"></a>pancakebunny zap 源码:</h1><p>贴个函数,solidity的代码量感觉都比较少，多看看多实践应该不难掌握吧~</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将代币的一半换成另一种代币，然后提供流动性</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">zapInToken</span>(<span class="params">address _from, uint amount, address _to</span>) external override &#123;</span><br><span class="line">        <span class="title class_">IBEP20</span>(_from).<span class="title function_">safeTransferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amount);</span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(_from);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_">isFlip</span>(_to)) &#123;</span><br><span class="line">            <span class="title class_">IPancakePair</span> pair = <span class="title class_">IPancakePair</span>(_to);</span><br><span class="line">            address token0 = pair.<span class="title function_">token0</span>();</span><br><span class="line">            address token1 = pair.<span class="title function_">token1</span>();</span><br><span class="line">            <span class="keyword">if</span> (_from == token0 || _from == token1) &#123;</span><br><span class="line">                <span class="comment">// swap half amount for other</span></span><br><span class="line">                address other = _from == token0 ? token1 : token0;</span><br><span class="line">                <span class="title function_">_approveTokenIfNeeded</span>(other); <span class="comment">// 授权</span></span><br><span class="line">                uint sellAmount = amount.<span class="title function_">div</span>(<span class="number">2</span>); <span class="comment">// 一半的数量</span></span><br><span class="line">                uint otherAmount = <span class="title function_">_swap</span>(_from, sellAmount, other, <span class="title function_">address</span>(<span class="variable language_">this</span>)); <span class="comment">// 兑换</span></span><br><span class="line">                pair.<span class="title function_">skim</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">                <span class="variable constant_">ROUTER</span>.<span class="title function_">addLiquidity</span>(_from, other, amount.<span class="title function_">sub</span>(sellAmount), otherAmount, <span class="number">0</span>, <span class="number">0</span>, msg.<span class="property">sender</span>, block.<span class="property">timestamp</span>); <span class="comment">// 添加流动性</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                uint bnbAmount = _from == <span class="variable constant_">WBNB</span> ? <span class="title function_">_safeSwapToBNB</span>(amount) : <span class="title function_">_swapTokenForBNB</span>(_from, amount, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">                <span class="title function_">_swapBNBToFlip</span>(_to, bnbAmount, msg.<span class="property">sender</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">_swap</span>(_from, amount, _to, msg.<span class="property">sender</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/38991.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/32598.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/32598.html" class="post-title-link" itemprop="url">Crypto-Bp宝石回购监控脚本</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-10-08 22:36:34" itemprop="dateCreated datePublished" datetime="2021-10-08T22:36:34+08:00">2021-10-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.2k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>来自朋友的需求,bp项目方某个钱包地址每隔一段时间就会回购宝石代币<br>要监控该钱包回购的动作</p>
-<hr>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="思路"><a href="#思路" class="headerlink" title="思路:"></a>思路:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008145806.png" alt="20211008145806"></p>
-<p>一开始打算用爬虫,不过想起之前写<code>rarity</code>的升级脚本调用过<code>ftmscan</code>的api</p>
-<p>所以看了一下<code>bscscan</code>的api文档，找到个方法能满足需求</p>
-<p><code>Get a list of &#39;Normal&#39; Transactions By Address</code>获取地址的交易记录</p>
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/32598.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/3287.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/3287.html" class="post-title-link" itemprop="url">Crypto-rarity自动冒险升级脚本</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-27 22:36:34" itemprop="dateCreated datePublished" datetime="2021-09-27T22:36:34+08:00">2021-09-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.3k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
-<p>顺便熟悉一下<code>solidty</code>和<code>web3js</code></p>
-<hr>
-<h1 id="Rarity"><a href="#Rarity" class="headerlink" title="Rarity:"></a>Rarity:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
-<p>游戏共有 11 个角色，分别是野人、吟游诗人、牧师、德鲁伊、斗士、僧侣、圣骑士、游侠、巡逻兵、巫师、法师。</p>
-<hr>
-<h2 id="合约源码"><a href="#合约源码" class="headerlink" title="合约源码:"></a>合约源码:</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/3287.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/48779.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
-      <meta itemprop="name" content="Foolisheddy">
-      <meta itemprop="description" content="nothing to say :)">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Black House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/48779.html" class="post-title-link" itemprop="url">Crypto-SuperTrend指标_现货交易脚本</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-26 22:36:34" itemprop="dateCreated datePublished" datetime="2021-09-26T22:36:34+08:00">2021-09-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>960</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>无意中看到这个<a target="_blank" rel="noopener" href="https://youtu.be/yPQYHxwfC1g">视频</a>，有介绍到tradingview这个网站和SuperTrend这个指标,看起来还不错,尝试写个简单的交易脚本试试水。</p>
-<hr>
-<h1 id="SuperTrend指标"><a href="#SuperTrend指标" class="headerlink" title="SuperTrend指标:"></a>SuperTrend指标:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>SuperTrend指标主要用于为投资者提供价格上涨或下跌的范围</p>
-<p>该指标中当产品价格位于绿色线上方时，认为价格处于上涨行情中；</p>
-<p>当价格位于红色线下方时，则认为当前的价格处于下跌行情</p>
-<blockquote>
-<p>简单的说,会给出<code>Buy</code>或者<code>Sell</code>信号</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png" alt="8ECBDBBC-A854-461F-A069-7A54DFE82690"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/48779.html#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1318,13 +472,11 @@
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-          
         <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-          
         <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
