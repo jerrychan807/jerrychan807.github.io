@@ -1479,12 +1479,14 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">token1</span>(<span class="params"></span>) external view returns (address);</span><br></pre></td></tr></table></figure>
 <p>Returns the address of the pair token with the higher sort order.</p>
 <p>可以在pair的合约里查到token0和token1分别的address</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png?40" alt="20220525153407"></p>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png" width="50%" height="50%" />
+
 <hr>
 <h1 id="测试储备量的变化："><a href="#测试储备量的变化：" class="headerlink" title="测试储备量的变化："></a>测试储备量的变化：</h1><h2 id="AddLiquidity"><a href="#AddLiquidity" class="headerlink" title="AddLiquidity:"></a>AddLiquidity:</h2><p>在添加流动性之前，查询结果</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  5462692571130940(0.00546269257113094) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  5383891113691435(0.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png?40" alt="20220525153952"></p>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png" width="50%" height="50%" />
+
 <p>分别添加流动性，各10个后，pair里的储备量结果发生变化</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT ↑</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
 
