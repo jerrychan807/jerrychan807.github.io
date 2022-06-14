@@ -1439,7 +1439,6 @@
     <title>Crypto-UniSwap_getReserves获取储备量</title>
     <url>//15785.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。</p>
-<hr>
 <h1 id="合约结构"><a href="#合约结构" class="headerlink" title="合约结构"></a>合约结构</h1><p>根据文档简单过一遍</p>
 <p><strong>Event:</strong></p>
 <ul>
@@ -1467,7 +1466,6 @@
 <li>skim</li>
 <li>sync 同步</li>
 </ul>
-<hr>
 <h1 id="getReserves获取储备量"><a href="#getReserves获取储备量" class="headerlink" title="getReserves获取储备量"></a>getReserves获取储备量</h1><p>getReserves</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getReserves</span>(<span class="params"></span>) external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);</span><br></pre></td></tr></table></figure>
 <p>Returns the reserves of token0 and token1 used to price trades and distribute liquidity. See Pricing.<br>Also returns the block.timestamp (mod 2**32) of the last block during which an interaction occured for the pair.</p>
@@ -1481,7 +1479,6 @@
 <p>可以在pair的合约里查到token0和token1分别的address</p>
 <img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png" width="50%" height="50%" />
 
-<hr>
 <h1 id="测试储备量的变化："><a href="#测试储备量的变化：" class="headerlink" title="测试储备量的变化："></a>测试储备量的变化：</h1><h2 id="AddLiquidity"><a href="#AddLiquidity" class="headerlink" title="AddLiquidity:"></a>AddLiquidity:</h2><p>在添加流动性之前，查询结果</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  5462692571130940(0.00546269257113094) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  5383891113691435(0.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 
@@ -1526,7 +1523,6 @@
 <td>↓</td>
 </tr>
 </tbody></table>
-<hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
 <li><a href="https://pancake.kiemtienonline360.com/#/swap">pancake swap测试网</a></li>
@@ -2452,15 +2448,12 @@
   <entry>
     <title>FAQ-如何监控token初次添加流动性</title>
     <url>//14901.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>很多币在一开始空投的时候，还没添加流动性，由于没有流动性，无法在<code>dex</code>上进行买卖。</p>
-<p>那如何监控某个币初次添加了流动性呢？</p>
-<hr>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>很多币在一开始空投的时候，还没添加流动性，由于没有流动性，无法在<code>dex</code>上进行买卖。<br>那如何监控某个币初次添加了流动性呢？</p>
 <p>暂时能想到的2个思路:</p>
 <ul>
 <li>监控bscscan上的数据</li>
 <li>查询LP地址在配对主流币种的余额</li>
 </ul>
-<hr>
 <h1 id="监控bscscan"><a href="#监控bscscan" class="headerlink" title="监控bscscan:"></a>监控bscscan:</h1><p>这部分我没有去具体实现，暂时能想到的有几个实现的方向</p>
 <p>已知项目方的地址后，去监控对应地址有没<code>Add Liquidity</code>的动作</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150515.png" alt="20220513150515"></p>
