@@ -7529,9 +7529,12 @@
 <p>加上这个函数之后，合约才能正常接受代币</p>
 <h2 id="合约里提取代币"><a href="#合约里提取代币" class="headerlink" title="合约里提取代币:"></a>合约里提取代币:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/access/Ownable.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/security/ReentrancyGuard.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Withdraw</span> is <span class="title class_">Ownable</span>, <span class="title class_">ReentrancyGuard</span> &#123;</span><br><span class="line">    event <span class="title class_">Withdrawal</span>(address indexed sender, uint256 amount);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdrawToken</span>(<span class="params"></span></span><br><span class="line"><span class="params">        IERC20 token,</span></span><br><span class="line"><span class="params">        address _to,</span></span><br><span class="line"><span class="params">        uint256 _value</span></span><br><span class="line"><span class="params">    </span>) public onlyOwner nonReentrant &#123;</span><br><span class="line">        <span class="built_in">require</span>(token.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)) &gt;= _value, <span class="string">&quot;Not enough token&quot;</span>);</span><br><span class="line">        <span class="title class_">SafeERC20</span>.<span class="title function_">safeTransfer</span>(token, _to, _value);</span><br><span class="line">        emit <span class="title class_">Withdrawal</span>(_to, _value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>继承<code>Withdraw</code>，就可以从合约里提取指定数量的指定代币。</p>
+<p>继承<code>Withdraw</code>，后面调用<code>withdrawToken</code>就可以从合约里提取指定数量的指定代币。</p>
 <h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="使用remix测试："><a href="#使用remix测试：" class="headerlink" title="使用remix测试："></a>使用remix测试：</h2><p>把代码copy到remix上，先做一些语法检查<br>然后直接在remix上做一些简单的测试，再用hardhat编写测试脚本，提高复用率</p>
-<h2 id="使用hardhat环境测试："><a href="#使用hardhat环境测试：" class="headerlink" title="使用hardhat环境测试："></a>使用hardhat环境测试：</h2><table>
+<h2 id="使用hardhat环境测试："><a href="#使用hardhat环境测试：" class="headerlink" title="使用hardhat环境测试："></a>使用hardhat环境测试：</h2><h3 id="fixture"><a href="#fixture" class="headerlink" title="fixture:"></a>fixture:</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// it first ensure the deployment is executed and reset (use of evm_snaphost for fast test)</span></span><br><span class="line">  <span class="keyword">await</span> deployments.<span class="title function_">fixture</span>([<span class="string">&quot;Token&quot;</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>在每一部分测试前，都会调用到这个函数，相当于恢复快照到初始部署的时候。真实的测试网络就不支持该功能。</p>
+<h3 id="使用感受"><a href="#使用感受" class="headerlink" title="使用感受"></a>使用感受</h3><table>
 <thead>
 <tr>
 <th>x</th>
@@ -7572,6 +7575,7 @@
 <li><a href="https://blog.csdn.net/sanqima/article/details/120388853">openzeppelin与solidity版本对应关系</a></li>
 <li><a href="https://docs.openzeppelin.com/contracts/4.x/">https://docs.openzeppelin.com/contracts/4.x/</a></li>
 <li><a href="https://learnblockchain.cn/article/3228">使用hardhat一步一步构建智能合约演示项目开箱即用(最易上手操作)</a></li>
+<li><a href="https://github.com/OpenZeppelin/openzeppelin-contracts">https://github.com/OpenZeppelin/openzeppelin-contracts</a></li>
 </ul>
 ]]></content>
       <categories>
