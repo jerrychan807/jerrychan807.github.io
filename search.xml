@@ -2914,7 +2914,7 @@
     <url>//64479.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉、回顾一下hardhat框架的使用，为后续erc20各类功能实现的学习做准备。</p>
 <h1 id="设置环境"><a href="#设置环境" class="headerlink" title="设置环境:"></a>设置环境:</h1><p>完整的安装步骤可参考refs里的链接进行安装，此处只记录部分的步骤</p>
-<h1 id="创建一个Hardhat项目"><a href="#创建一个Hardhat项目" class="headerlink" title="创建一个Hardhat项目:"></a>创建一个Hardhat项目:</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件夹、为项目根目录</span></span><br><span class="line"><span class="built_in">mkdir</span> demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line"><span class="comment"># yarn初始化</span></span><br><span class="line">yarn init --<span class="built_in">yes</span></span><br><span class="line">yarn add -D hardhat</span><br><span class="line"><span class="comment"># 安装各类插件</span></span><br><span class="line">yarn add -D hardhat-deploy hardhat-deploy-ethers ethers chai chai-ethers mocha @types/chai @types/mocha @types/node typescript ts-node dotenv</span><br></pre></td></tr></table></figure>
+<h1 id="创建一个Hardhat项目"><a href="#创建一个Hardhat项目" class="headerlink" title="创建一个Hardhat项目:"></a>创建一个Hardhat项目:</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件夹、为项目根目录</span></span><br><span class="line"><span class="built_in">mkdir</span> demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line"><span class="comment"># yarn初始化</span></span><br><span class="line">yarn init --<span class="built_in">yes</span></span><br><span class="line">yarn add -D hardhat</span><br><span class="line"><span class="comment"># 安装各类插件</span></span><br><span class="line">yarn add -D hardhat-deploy hardhat-deploy-ethers ethers chai chai-ethers mocha @types/chai @types/mocha @types/node typescript ts-node dotenv</span><br><span class="line"><span class="comment"># 超时、github连接不上，可尝试加timeout参数</span></span><br><span class="line">yarn add -D @nomiclabs/hardhat-etherscan --network-timeout 600000</span><br></pre></td></tr></table></figure>
 
 <p>根目录编辑<code>tsconfig.json</code></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;target&quot;</span>: <span class="string">&quot;es5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;module&quot;</span>: <span class="string">&quot;commonjs&quot;</span>,</span><br><span class="line">    <span class="string">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;esModuleInterop&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;moduleResolution&quot;</span>: <span class="string">&quot;node&quot;</span>,</span><br><span class="line">    <span class="string">&quot;forceConsistentCasingInFileNames&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;outDir&quot;</span>: <span class="string">&quot;dist&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="string">&quot;include&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;hardhat.config.ts&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./deploy&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./test&quot;</span>,</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -2968,7 +2968,7 @@
 <h2 id="编译："><a href="#编译：" class="headerlink" title="编译："></a>编译：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
 
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在hardhat网络</span></span><br><span class="line">yarn hardhat deploy</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在配置文件对应的测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet deploy</span><br></pre></td></tr></table></figure>
-<h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试单个script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test test/transfer.ts</span><br></pre></td></tr></table></figure>
+<h2 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script,hardhat环境</span></span><br><span class="line">yarn hardhat test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script,指定测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试单个script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test test/transfer.ts</span><br></pre></td></tr></table></figure>
 
 <h2 id="验证合约源码："><a href="#验证合约源码：" class="headerlink" title="验证合约源码："></a>验证合约源码：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">example:合约源代码、部署网络、合约的地址</span></span><br><span class="line">yarn hardhat verify --contract contracts/JToken.sol:JToken --network bsc_testnet 0x582cA468bcE2a68D1147D5411814256E52590103</span><br></pre></td></tr></table></figure>
 
@@ -7499,6 +7499,89 @@
         <tag>Crypto</tag>
         <tag>Solidity</tag>
         <tag>SmartContract</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-CoolErc20-burnable</title>
+    <url>//21702.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个燃烧通缩的erc20代币</p>
+<p>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/burnable</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><p>代币发生转移时：</p>
+<ul>
+<li>进行燃烧通缩（4%），<code>TotalSupply</code>减少</li>
+<li>税收（1%）留在合约里</li>
+<li>管理员可以从合约里提取代币</li>
+</ul>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p><code>hardhat.config.ts</code>里的编译器版本可以参考<code>remix</code>给出的版本</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100322.png" alt="20220615100322"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100602.png" alt="20220615100602"></p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="使用openzeppelin库："><a href="#使用openzeppelin库：" class="headerlink" title="使用openzeppelin库："></a>使用openzeppelin库：</h2><blockquote>
+<p>OpenZeppelin 库是一个开发框架，可以简化智能合约和 Dapp 的开发，基于已经成熟（严格审计）的代码还能增加安全性，其代码库常年保持着较高的更新频率</p>
+</blockquote>
+<p>使用感受：里面有很多轮子，用起来很方便，合约类直接继承很多工具类库，不用自己自定义多余的函数，在减少代码量的同时还保证了安全性。</p>
+<p>后面计划多熟悉一下这个库里的内容。</p>
+<p>在solidity里的具体导入路径，可以参考他们github仓库里的文件夹结构</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615095423.png" alt="20220615095423"></p>
+<h2 id="合约接受代币："><a href="#合约接受代币：" class="headerlink" title="合约接受代币："></a>合约接受代币：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">receive</span>() external payable &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加上这个函数之后，合约才能正常接受代币</p>
+<h2 id="合约里提取代币"><a href="#合约里提取代币" class="headerlink" title="合约里提取代币:"></a>合约里提取代币:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/access/Ownable.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/security/ReentrancyGuard.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Withdraw</span> is <span class="title class_">Ownable</span>, <span class="title class_">ReentrancyGuard</span> &#123;</span><br><span class="line">    event <span class="title class_">Withdrawal</span>(address indexed sender, uint256 amount);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">withdrawToken</span>(<span class="params"></span></span><br><span class="line"><span class="params">        IERC20 token,</span></span><br><span class="line"><span class="params">        address _to,</span></span><br><span class="line"><span class="params">        uint256 _value</span></span><br><span class="line"><span class="params">    </span>) public onlyOwner nonReentrant &#123;</span><br><span class="line">        <span class="built_in">require</span>(token.<span class="title function_">balanceOf</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>)) &gt;= _value, <span class="string">&quot;Not enough token&quot;</span>);</span><br><span class="line">        <span class="title class_">SafeERC20</span>.<span class="title function_">safeTransfer</span>(token, _to, _value);</span><br><span class="line">        emit <span class="title class_">Withdrawal</span>(_to, _value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承<code>Withdraw</code>，就可以从合约里提取指定数量的指定代币。</p>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="使用remix测试："><a href="#使用remix测试：" class="headerlink" title="使用remix测试："></a>使用remix测试：</h2><p>把代码copy到remix上，先做一些语法检查<br>然后直接在remix上做一些简单的测试，再用hardhat编写测试脚本，提高复用率</p>
+<h2 id="使用hardhat环境测试："><a href="#使用hardhat环境测试：" class="headerlink" title="使用hardhat环境测试："></a>使用hardhat环境测试：</h2><table>
+<thead>
+<tr>
+<th>x</th>
+<th>感受</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>优点</td>
+<td>相比真实的测试环境来说，速度快得多</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>真实测试环境可以借<code>browser</code>,<code>tenderly</code> Debug，直观一些</td>
+</tr>
+</tbody></table>
+<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><ul>
+<li><p>Deployment</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> set the right owner</li>
+<li><input checked="" disabled="" type="checkbox"> Deployment,total supply &#x3D; token owner balance</li>
+</ul>
+</li>
+<li><p>Transactions</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> tokenOwner —transfer–&gt; user</li>
+<li><input checked="" disabled="" type="checkbox"> userA —transfer–&gt; userB（Fee）,totalsupply<code>↓</code>,balance of contract <code>↑</code></li>
+</ul>
+</li>
+<li><p>tokenOwner withdraw</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> tokenOwner withdraw from contract After userA to userB</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Deployment</span><br><span class="line">      ✔ Should set the right owner (1127ms)</span><br><span class="line">      ✔ Should assign the total supply of tokens to the owner (65ms)</span><br><span class="line">    Transactions</span><br><span class="line">users0Balance: 100.0</span><br><span class="line">      ✔ Should transfer tokens from tokenOwner to user (78ms)</span><br><span class="line">users1ShouldGet: 47.5</span><br><span class="line">totalSupplyBefore: 1000.0</span><br><span class="line">totalSupplyAfter: 998.0</span><br><span class="line">contractBalanceWei: 0.5</span><br><span class="line">contractShouldGet: 0.5</span><br><span class="line">      ✔ Should transfer tokens from user1 to user2 (139ms)</span><br><span class="line">    tokenOwner withdraw from contract</span><br><span class="line">tokenOwnerBalanceWeiBefore: 900.0</span><br><span class="line">contractBalanceWei: 0.5</span><br><span class="line">contractBalanceWeiNow: 0.0</span><br><span class="line">tokenOwnerBalanceWeiAfter: 900.5</span><br><span class="line">tokenOwnerShouldGet: 900.5</span><br><span class="line">      ✔ tokenOwner withdraw from contract (162ms)</span><br><span class="line"></span><br><span class="line">  5 passing (2s)</span><br><span class="line"></span><br><span class="line">✨  Done in 5.62s.</span><br></pre></td></tr></table></figure>
+
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://blog.csdn.net/sanqima/article/details/120388853">openzeppelin与solidity版本对应关系</a></li>
+<li><a href="https://docs.openzeppelin.com/contracts/4.x/">https://docs.openzeppelin.com/contracts/4.x/</a></li>
+<li><a href="https://learnblockchain.cn/article/3228">使用hardhat一步一步构建智能合约演示项目开箱即用(最易上手操作)</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+        <tag>CoolErc20</tag>
       </tags>
   </entry>
 </search>
