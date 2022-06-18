@@ -7075,25 +7075,4 @@
         <tag>CoolErc20</tag>
       </tags>
   </entry>
-  <entry>
-    <title>SmartContract-CoolErc20-黑名单</title>
-    <url>//35217.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/black_white_list</code></p>
-<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><p>白名单用户可以正常使用<br>黑名单用户无法使用<br>管理员可配置黑白名单里的地址</p>
-<p>黑名单业务场景：</p>
-<p>暂时能想到的，<br>将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当于冻结它的资产</p>
-<p>白名单业务场景：</p>
-<p>一些优惠的条件，费率优惠<br>设置某个区块时间内，只有白名单可以交易</p>
-<p>其实只需要一个白名单就可以</p>
-<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1>]]></content>
-      <categories>
-        <category>SmartContract</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-        <tag>Solidity</tag>
-        <tag>SmartContract</tag>
-        <tag>CoolErc20</tag>
-      </tags>
-  </entry>
 </search>
