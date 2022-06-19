@@ -7075,4 +7075,66 @@
         <tag>CoolErc20</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SmartContract-以太坊合约静态分析工具Slither使用记录</title>
+    <url>//59932.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉一下<code>SLITHER</code>该工具的使用，主要想用它的<code>graph</code>来帮助阅读sol源码</p>
+<p><a href="https://github.com/crytic/slither/wiki/Usage">slither Usage</a></p>
+<h1 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h1><blockquote>
+<p>Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：<a href="https://github.com/crytic/slither#detectors">link</a></li>
+<li>自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。</li>
+<li>代码理解。Slither能够绘制合约的继承拓扑图，合约方法调用关系图等，帮助开发者理解代码。</li>
+<li>辅助代码审查。用户可以通过API与Slither进行交互。</li>
+</ul>
+</blockquote>
+<h1 id="安装与启动："><a href="#安装与启动：" class="headerlink" title="安装与启动："></a>安装与启动：</h1><h2 id="docker安装："><a href="#docker安装：" class="headerlink" title="docker安装："></a>docker安装：</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安裝 docker image：</span></span><br><span class="line">docker pull trailofbits/eth-security-toolbox</span><br></pre></td></tr></table></figure>
+
+<h2 id="docker共享目录volume"><a href="#docker共享目录volume" class="headerlink" title="docker共享目录volume:"></a>docker共享目录volume:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># docker里创建目录:</span></span><br><span class="line"><span class="comment"># 源代码文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> contracts</span><br><span class="line"><span class="comment"># 库文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> @openzeppelin</span><br></pre></td></tr></table></figure>
+
+<p>我是使用图形化工具共享目录<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png" alt="EC7266A8-3812-4827-8BCD-2CBFAA44330B"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 共享源文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/openzeppelin-contracts/contracts </span><br><span class="line"></span><br><span class="line">/home/contracts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 共享库文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/cool-erc20/blacklist/node_modules/@openzeppelin</span><br><span class="line"></span><br><span class="line">/home/@openzeppelin</span><br></pre></td></tr></table></figure>
+
+<h1 id="SLITHER使用"><a href="#SLITHER使用" class="headerlink" title="SLITHER使用:"></a>SLITHER使用:</h1><h2 id="检查solc版本"><a href="#检查solc版本" class="headerlink" title="检查solc版本:"></a>检查solc版本:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看已安装的solc版本列表</span></span><br><span class="line">solc-select versions</span><br><span class="line"><span class="comment"># 用use命令切换编译器版本</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="漏洞检测："><a href="#漏洞检测：" class="headerlink" title="漏洞检测："></a>漏洞检测：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 开始扫描</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/ERC20Snapshot.sol</span><br></pre></td></tr></table></figure>
+
+<p>报错，不支持相对导入<code> import &quot;../ERC20.sol&quot;;</code></p>
+<p>修改import语句，成<code>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 指定 --solc-remaps 来告诉编译器 openzeppelin 的具体位置</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ </span><br></pre></td></tr></table></figure>
+
+<p>扫描结果：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png" alt="2859ABE2-0593-4DC4-9786-E6CDC6F945BF"></p>
+<h2 id="输出合约继承关系："><a href="#输出合约继承关系：" class="headerlink" title="输出合约继承关系："></a>输出合约继承关系：</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 输出合约继承关系 --print inheritance-graph</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> inheritance-graph</span><br></pre></td></tr></table></figure>
+
+<p>执行结果:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/881C71ED-C4E0-476D-81D8-879BE8B4D25A.png" alt="881C71ED-C4E0-476D-81D8-879BE8B4D25A"></p>
+<p>生成的是<code>.dot文件</code></p>
+<p>使用在线工具，转换一下<code>.dot</code>格式的文件，来输出图形</p>
+<p><a href="https://dreampuf.github.io/GraphvizOnline/#digraph%20G%20%7B%0A%0A%20%20subgraph%20cluster_0%20%7B%0A%20%20%20%20style%3Dfilled%3B%0A%20%20%20%20color%3Dlightgrey%3B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%2Ccolor%3Dwhite%5D%3B%0A%20%20%20%20a0%20-%3E%20a1%20-%3E%20a2%20-%3E%20a3%3B%0A%20%20%20%20label%20%3D%20%22process%20%231%22%3B%0A%20%20%7D%0A%0A%20%20subgraph%20cluster_1%20%7B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%5D%3B%0A%20%20%20%20b0%20-%3E%20b1%20-%3E%20b2%20-%3E%20b3%3B%0A%20%20%20%20label%20%3D%20%22process%20%232%22%3B%0A%20%20%20%20color%3Dblue%0A%20%20%7D%0A%20%20start%20-%3E%20a0%3B%0A%20%20start%20-%3E%20b0%3B%0A%20%20a1%20-%3E%20b3%3B%0A%20%20b2%20-%3E%20a3%3B%0A%20%20a3%20-%3E%20a0%3B%0A%20%20a3%20-%3E%20end%3B%0A%20%20b3%20-%3E%20end%3B%0A%0A%20%20start%20%5Bshape%3DMdiamond%5D%3B%0A%20%20end%20%5Bshape%3DMsquare%5D%3B%0A%7D">Graphviz在线使用</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3ADC3166-CCB2-43A5-B9F8-52CE1EB66491.png" alt="3ADC3166-CCB2-43A5-B9F8-52CE1EB66491"></p>
+<p>更多打印功能，可看<a href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a>，这个工具还是蛮实用和有趣的,So cool ~</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://learnblockchain.cn/article/1301#3-3-%E5%90%88%E7%BA%A6%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB">以太坊合约静态分析工具Slither简介与使用</a></li>
+<li><a href="https://www.frank.hk/blog/slither-solidity-scanner/">使用 SLITHER 來檢測你的 SOLIDITY 智能合約程式碼</a></li>
+<li><a href="https://segmentfault.com/a/1190000041329191">Graphviz的使用指南</a></li>
+<li><a href="https://github.com/crytic/slither/wiki/Usage">slither Usage</a></li>
+<li><a href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
 </search>
