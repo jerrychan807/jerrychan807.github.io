@@ -24,7 +24,7 @@
 
   <meta name="description" content="Pre:简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构根据文档简单过一遍 Event:  Mint 创造流动性token时触发 Burn 销毁流动性token时触发 Swap 交换时触发 Sync 储备量被更新时(mint、burn、swap、sync)触发  Read-Only Functions:  MINIMUM_LIQUIDITY 常量值1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SmartContract-UniSwap_getReserves获取储备量">
+<meta property="og:title" content="Uniswap-getReserves获取储备量">
 <meta property="og:url" content="https://jerrychan807.github.io/15785.html">
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构根据文档简单过一遍 Event:  Mint 创造流动性token时触发 Burn 销毁流动性token时触发 Swap 交换时触发 Sync 储备量被更新时(mint、burn、swap、sync)触发  Read-Only Functions:  MINIMUM_LIQUIDITY 常量值1">
@@ -32,11 +32,12 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png">
 <meta property="article:published_time" content="2022-05-26T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T05:39:49.319Z">
+<meta property="article:modified_time" content="2022-06-21T08:41:38.827Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="Crypto">
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="Uniswap">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png">
 
@@ -53,7 +54,7 @@
   };
 </script>
 
-  <title>SmartContract-UniSwap_getReserves获取储备量 | Black House</title>
+  <title>Uniswap-getReserves获取储备量 | Black House</title>
   
 
 
@@ -199,7 +200,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          SmartContract-UniSwap_getReserves获取储备量
+          Uniswap-getReserves获取储备量
         </h1>
 
         <div class="post-meta">
@@ -216,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 13:39:49" itemprop="dateModified" datetime="2022-06-14T13:39:49+08:00">2022-06-14</time>
+                <time title="Modified: 2022-06-21 16:41:38" itemprop="dateModified" datetime="2022-06-21T16:41:38+08:00">2022-06-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -359,19 +360,19 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/21702.html" rel="bookmark">SmartContract-CoolErc20-burnable-燃烧通缩代币</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">SmartContract-CryptoZombie僵尸世界NFT游戏</a></div>
+      <div class="popular-posts-title"><a href="/54061.html" rel="bookmark">Uniswap原理-恒定乘积公式</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/64479.html" rel="bookmark">SmartContract-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/59932.html" rel="bookmark">SmartContract-以太坊合约静态分析工具Slither使用记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
     </li>
   </ul>
 
@@ -381,6 +382,7 @@
               <a href="/tags/Crypto/" rel="tag"># Crypto</a>
               <a href="/tags/Solidity/" rel="tag"># Solidity</a>
               <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/Uniswap/" rel="tag"># Uniswap</a>
           </div>
 
         
@@ -389,12 +391,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/14814.html" rel="prev" title="SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为">
-      <i class="fa fa-chevron-left"></i> SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为
+    <a href="/14814.html" rel="prev" title="Project-CoolErc20-four_way-区分买卖添加移除流动性行为">
+      <i class="fa fa-chevron-left"></i> Project-CoolErc20-four_way-区分买卖添加移除流动性行为
     </a></div>
       <div class="post-nav-item">
-    <a href="/21702.html" rel="next" title="SmartContract-CoolErc20-burnable-燃烧通缩代币">
-      SmartContract-CoolErc20-burnable-燃烧通缩代币 <i class="fa fa-chevron-right"></i>
+    <a href="/21702.html" rel="next" title="Project-CoolErc20-burnable-燃烧通缩代币">
+      Project-CoolErc20-burnable-燃烧通缩代币 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -483,12 +485,12 @@
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

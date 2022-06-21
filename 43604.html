@@ -24,19 +24,18 @@
 
   <meta name="description" content="Pre:对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。 https:&#x2F;&#x2F;github.com&#x2F;OpenZeppelin&#x2F;openzeppelin-contracts&#x2F;blob&#x2F;master&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;README.adoc 目录：   Contract 使用场景    ERC20Burnable 对自己或有授权">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenZeppelin_ERC20_extensions源码学习(一)">
+<meta property="og:title" content="OpenZeppelin-ERC20-extensions源码学习(一)">
 <meta property="og:url" content="https://jerrychan807.github.io/43604.html">
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。 https:&#x2F;&#x2F;github.com&#x2F;OpenZeppelin&#x2F;openzeppelin-contracts&#x2F;blob&#x2F;master&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;README.adoc 目录：   Contract 使用场景    ERC20Burnable 对自己或有授权">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png">
 <meta property="article:published_time" content="2022-06-21T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-21T08:10:16.990Z">
+<meta property="article:modified_time" content="2022-06-21T08:42:58.575Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="Crypto">
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="SmartContract">
-<meta property="article:tag" content="CoolErc20">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png">
 
@@ -53,7 +52,7 @@
   };
 </script>
 
-  <title>OpenZeppelin_ERC20_extensions源码学习(一) | Black House</title>
+  <title>OpenZeppelin-ERC20-extensions源码学习(一) | Black House</title>
   
 
 
@@ -199,7 +198,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          OpenZeppelin_ERC20_extensions源码学习(一)
+          OpenZeppelin-ERC20-extensions源码学习(一)
         </h1>
 
         <div class="post-meta">
@@ -210,7 +209,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-06-21 22:36:34 / Modified: 16:10:16" itemprop="dateCreated datePublished" datetime="2022-06-21T22:36:34+08:00">2022-06-21</time>
+              <time title="Created: 2022-06-21 22:36:34 / Modified: 16:42:58" itemprop="dateCreated datePublished" datetime="2022-06-21T22:36:34+08:00">2022-06-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -280,7 +279,7 @@
 <td>有效存储过去的代币余额&#x2F;供应量，以便以后随时查询</td>
 </tr>
 </tbody></table>
-<h1 id="ERC20Burnable"><a href="#ERC20Burnable" class="headerlink" title="ERC20Burnable:"></a>ERC20Burnable:</h1><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>对自己或有授权额度的地址进行代币销毁,使得代币总供应量<code>↓</code>，可能会让用户觉得自己持有的币会越来越有价值。。。</p>
+<h1 id="ERC20Burnable"><a href="#ERC20Burnable" class="headerlink" title="ERC20Burnable:"></a>ERC20Burnable:</h1><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>对自己或有授权额度的地址进行代币销毁,使得代币总供应量↓，可能会让用户觉得自己持有的币会越来越有价值。。。</p>
 <h2 id="源码解析："><a href="#源码解析：" class="headerlink" title="源码解析："></a>源码解析：</h2><p>多了一个<code>burnFrom()</code>委托销毁的函数</p>
 <h2 id="重要函数变量表："><a href="#重要函数变量表：" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
 <thead>
@@ -305,7 +304,7 @@
 </tr>
 </tbody></table>
 <h2 id="Inspire"><a href="#Inspire" class="headerlink" title="Inspire:"></a>Inspire:</h2><p>授权额度给别人或合约之后，第三者不只是可以拿来转账，也可以用来销毁，简言之就是具备了控制权</p>
-<h1 id="ERC20Capped"><a href="#ERC20Capped" class="headerlink" title="ERC20Capped:"></a>ERC20Capped:</h1><h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><p>在铸造代币时对总供应量设定一个<code>不可变的上限值</code>，可防止代币无限增发。</p>
+<h1 id="ERC20Capped"><a href="#ERC20Capped" class="headerlink" title="ERC20Capped:"></a>ERC20Capped:</h1><h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><p>在代币的构造函数里对总供应量设定一个<code>不可变的上限值</code>，可防止在代码实现中不小心改动了这个值，从而防止代币无限增发。</p>
 <p>注意：是<code>上限值</code>不可变，<code>总供应量</code>还是可变的，只是<code>上限值</code>被写死了。</p>
 <h2 id="源码解析：-1"><a href="#源码解析：-1" class="headerlink" title="源码解析："></a>源码解析：</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重要代码片段：</span></span><br><span class="line"></span><br><span class="line">uint256 private immutable _cap; <span class="comment">// 不可变常量 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 只在构造函数里，初次也只能有一次去定义该上限值</span></span><br><span class="line"><span class="title function_">constructor</span>(<span class="params">uint256 cap_</span>) &#123;</span><br><span class="line">    <span class="built_in">require</span>(cap_ &gt; <span class="number">0</span>, <span class="string">&quot;ERC20Capped: cap is 0&quot;</span>);</span><br><span class="line">    _cap = cap_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_mint</span>(<span class="params">address account, uint256 amount</span>) internal virtual override &#123;</span><br><span class="line"><span class="comment">// 限制铸造增发不能超过 上限值</span></span><br><span class="line">    <span class="built_in">require</span>(<span class="title class_">ERC20</span>.<span class="title function_">totalSupply</span>() + amount &lt;= <span class="title function_">cap</span>(), <span class="string">&quot;ERC20Capped: cap exceeded&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_mint</span>(account, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -355,7 +354,7 @@
 <li>token转移之后，<code>_afterTokenTransfer</code></li>
 </ol>
 <p>控制了<code>_beforeTokenTransfer</code>函数后，就不会进入到token转移时的具体处理逻辑，也就控制了代币的转账、铸造、销毁这三类行为，从而实现了暂停功能。</p>
-<table>
+<h2 id="重要函数变量表：-2"><a href="#重要函数变量表：-2" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
 <thead>
 <tr>
 <th>Contract</th>
@@ -385,19 +384,15 @@
 <h2 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h2><blockquote>
 <ul>
 <li>这可用于安全地创建基于代币余额的机制，例如无需信任的股息或加权投票。</li>
-</ul>
-</blockquote>
-<ul>
 <li>可以通过重用来自不同地方的相同余额来执行“双花”攻击帐户。通过使用快照来计算股息或投票权，这些攻击不再适用。</li>
 <li>它也可以用于创建高效的 ERC20 分叉机制</li>
 </ul>
-<h2 id="源码解析：-3"><a href="#源码解析：-3" class="headerlink" title="源码解析："></a>源码解析：</h2><blockquote>
-<p>开始看之前有一些疑问：</p>
+</blockquote>
+<h2 id="源码解析：-3"><a href="#源码解析：-3" class="headerlink" title="源码解析："></a>源码解析：</h2><p>开始看之前有一些疑问： </p>
 <ol>
 <li>用户余额该用什么数据结构来存储？</li>
 <li>什么时候、多少周期创建一个快照？</li>
 </ol>
-</blockquote>
 <h3 id="存储的数据结构："><a href="#存储的数据结构：" class="headerlink" title="存储的数据结构："></a>存储的数据结构：</h3><ul>
 <li>存储用户的余额:</li>
 </ul>
@@ -417,9 +412,9 @@
 <h3 id="源码里的快照id策略："><a href="#源码里的快照id策略：" class="headerlink" title="源码里的快照id策略："></a>源码里的快照id策略：</h3><p>还没跑过原本的代码，源码里的快照id策略应该是：定义了一个计数器变量，只能单增，具备单调性。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 快照id单调递增，第一个值为1。id为0无效。</span><br><span class="line">Counters.Counter private _currentSnapshotId;</span><br><span class="line"></span><br><span class="line">function _snapshot() internal virtual returns (uint256) &#123;</span><br><span class="line">    _currentSnapshotId.increment(); // ！！！快照id单调递增</span><br><span class="line"></span><br><span class="line">    uint256 currentId = _getCurrentSnapshotId(); // 获取当前的快照Id</span><br><span class="line">    emit Snapshot(currentId);</span><br><span class="line">    return currentId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="自定义快照id策略："><a href="#自定义快照id策略：" class="headerlink" title="自定义快照id策略："></a>自定义快照id策略：</h3><p>自己实现了一下基于<code>blockNumber</code>的快照策略，详见<a href="">文章</a></p>
+<h3 id="自定义快照id策略："><a href="#自定义快照id策略：" class="headerlink" title="自定义快照id策略："></a>自定义快照id策略：</h3><p>自己实现了一下基于<code>blockNumber</code>的快照策略，详见<a href="https://jerrychan807.github.io/8661.html">文章</a></p>
 <h3 id="继承图"><a href="#继承图" class="headerlink" title="继承图:"></a>继承图:</h3><p>用<code>Slither</code>生成的，方便参照去阅读源码<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png" alt="A1D0D3CA-E749-44C4-A30E-9441BAD82C15"></p>
-<h2 id="重要函数变量表：-2"><a href="#重要函数变量表：-2" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<h3 id="重要函数变量表：-3"><a href="#重要函数变量表：-3" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h3><table>
 <thead>
 <tr>
 <th>Contract</th>
@@ -498,19 +493,19 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/21702.html" rel="bookmark">SmartContract-CoolErc20-burnable-燃烧通缩代币</a></div>
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为</a></div>
+      <div class="popular-posts-title"><a href="/64479.html" rel="bookmark">SmartContract-Hardhat框架初步使用</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/59932.html" rel="bookmark">SmartContract-以太坊合约静态分析工具Slither使用记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/8661.html" rel="bookmark">SmartContract-CoolErc20-snapshot-快照功能代币</a></div>
+      <div class="popular-posts-title"><a href="/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">SmartContract-CryptoZombie僵尸世界NFT游戏</a></div>
+      <div class="popular-posts-title"><a href="/15785.html" rel="bookmark">Uniswap-getReserves获取储备量</a></div>
     </li>
   </ul>
 
@@ -520,7 +515,6 @@
               <a href="/tags/Crypto/" rel="tag"># Crypto</a>
               <a href="/tags/Solidity/" rel="tag"># Solidity</a>
               <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
-              <a href="/tags/CoolErc20/" rel="tag"># CoolErc20</a>
           </div>
 
         
@@ -532,7 +526,10 @@
     <a href="/59932.html" rel="prev" title="SmartContract-以太坊合约静态分析工具Slither使用记录">
       <i class="fa fa-chevron-left"></i> SmartContract-以太坊合约静态分析工具Slither使用记录
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/8661.html" rel="next" title="Project-CoolErc20-snapshot-快照功能代币">
+      Project-CoolErc20-snapshot-快照功能代币 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -598,7 +595,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">目录：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Burnable"><span class="nav-number">3.</span> <span class="nav-text">ERC20Burnable:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire"><span class="nav-number">3.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Capped"><span class="nav-number">4.</span> <span class="nav-text">ERC20Capped:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">4.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-1"><span class="nav-number">4.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-1"><span class="nav-number">4.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire-1"><span class="nav-number">4.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Pausable%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">ERC20Pausable：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">5.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-2"><span class="nav-number">5.2.</span> <span class="nav-text">源码解析：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Snapshot"><span class="nav-number">6.</span> <span class="nav-text">ERC20Snapshot:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">使用场景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-3"><span class="nav-number">6.2.</span> <span class="nav-text">源码解析：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">6.2.1.</span> <span class="nav-text">存储的数据结构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E9%87%8C%E7%9A%84%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.2.</span> <span class="nav-text">源码里的快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.3.</span> <span class="nav-text">自定义快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E5%9B%BE"><span class="nav-number">6.2.4.</span> <span class="nav-text">继承图:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-2"><span class="nav-number">6.3.</span> <span class="nav-text">重要函数变量表：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Template"><span class="nav-number">7.</span> <span class="nav-text">Template</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">目录：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Burnable"><span class="nav-number">3.</span> <span class="nav-text">ERC20Burnable:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire"><span class="nav-number">3.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Capped"><span class="nav-number">4.</span> <span class="nav-text">ERC20Capped:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">4.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-1"><span class="nav-number">4.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-1"><span class="nav-number">4.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire-1"><span class="nav-number">4.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Pausable%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">ERC20Pausable：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">5.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-2"><span class="nav-number">5.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-2"><span class="nav-number">5.3.</span> <span class="nav-text">重要函数变量表：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Snapshot"><span class="nav-number">6.</span> <span class="nav-text">ERC20Snapshot:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">使用场景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-3"><span class="nav-number">6.2.</span> <span class="nav-text">源码解析：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">6.2.1.</span> <span class="nav-text">存储的数据结构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E9%87%8C%E7%9A%84%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.2.</span> <span class="nav-text">源码里的快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.3.</span> <span class="nav-text">自定义快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E5%9B%BE"><span class="nav-number">6.2.4.</span> <span class="nav-text">继承图:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-3"><span class="nav-number">6.2.5.</span> <span class="nav-text">重要函数变量表：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Template"><span class="nav-number">7.</span> <span class="nav-text">Template</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -620,12 +617,12 @@
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

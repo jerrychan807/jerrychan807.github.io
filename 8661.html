@@ -24,19 +24,18 @@
 
   <meta name="description" content="Pre:参考openzeppelin里的ERC20Snapshot，实现一个具有快照功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;snapshot 需求:代币发生转移时，以当前区块数做快照id,记录发生转移前的用户余额或代币供应量。 部署：无 编写合约：自定义快照策略：注释里有提到要怎么修改:">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SmartContract-CoolErc20-snapshot-快照功能代币">
+<meta property="og:title" content="Project-CoolErc20-snapshot-快照功能代币">
 <meta property="og:url" content="https://jerrychan807.github.io/8661.html">
 <meta property="og:site_name" content="Black House">
 <meta property="og:description" content="Pre:参考openzeppelin里的ERC20Snapshot，实现一个具有快照功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;snapshot 需求:代币发生转移时，以当前区块数做快照id,记录发生转移前的用户余额或代币供应量。 部署：无 编写合约：自定义快照策略：注释里有提到要怎么修改:">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220621101109.png">
-<meta property="article:published_time" content="2022-06-19T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-21T08:12:12.519Z">
+<meta property="article:published_time" content="2022-06-21T15:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-21T08:40:22.775Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="Crypto">
-<meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="SmartContract">
 <meta property="article:tag" content="CoolErc20">
+<meta property="article:tag" content="Project">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220621101109.png">
 
@@ -53,7 +52,7 @@
   };
 </script>
 
-  <title>SmartContract-CoolErc20-snapshot-快照功能代币 | Black House</title>
+  <title>Project-CoolErc20-snapshot-快照功能代币 | Black House</title>
   
 
 
@@ -199,7 +198,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          SmartContract-CoolErc20-snapshot-快照功能代币
+          Project-CoolErc20-snapshot-快照功能代币
         </h1>
 
         <div class="post-meta">
@@ -208,23 +207,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2022-06-19 22:36:34" itemprop="dateCreated datePublished" datetime="2022-06-19T22:36:34+08:00">2022-06-19</time>
+              <time title="Created: 2022-06-21 23:36:34 / Modified: 16:40:22" itemprop="dateCreated datePublished" datetime="2022-06-21T23:36:34+08:00">2022-06-21</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-21 16:12:12" itemprop="dateModified" datetime="2022-06-21T16:12:12+08:00">2022-06-21</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SmartContract/" itemprop="url" rel="index"><span itemprop="name">SmartContract</span></a>
+                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
                 </span>
             </span>
 
@@ -285,11 +278,11 @@
 <blockquote>
 <p>tips: 理解清楚<code>private</code>，<code>internal</code>,<code>virtual</code>这几个修饰符后，才能更好的写出面向对象的。。精简的代码。。</p>
 </blockquote>
-<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="hardhat-console"><a href="#hardhat-console" class="headerlink" title="hardhat console:"></a>hardhat console:</h2><p>先在remix简单测试，由于继承了父类的一些方法，用<code>console.log</code>去Debug，易于知道自己的方法在什么时候能够调用到</p>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="Remix"><a href="#Remix" class="headerlink" title="Remix:"></a>Remix:</h2><p>先在remix简单测试，由于继承了父类的一些方法，用<code>console.log</code>去Debug，易于知道自己的方法在什么时候能够调用到</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;hardhat/console.sol&quot;</span>;</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220621101109.png" alt="20220621101109"></p>
-<h2 id="hardhat-test"><a href="#hardhat-test" class="headerlink" title="hardhat test:"></a>hardhat test:</h2><h3 id="获取tx详情"><a href="#获取tx详情" class="headerlink" title="获取tx详情:"></a>获取tx详情:</h3><p>在<code>hardhat</code>自带环境，不用像测试网那样要wait,可直接获得被确认后的tx详情</p>
+<h2 id="hardhat"><a href="#hardhat" class="headerlink" title="hardhat:"></a>hardhat:</h2><h3 id="获取tx详情"><a href="#获取tx详情" class="headerlink" title="获取tx详情:"></a>获取tx详情:</h3><p>在<code>hardhat</code>自带环境，不用像测试网那样要wait,可直接获得被确认后的tx详情</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tx = <span class="keyword">await</span> tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei1);</span><br><span class="line"><span class="comment">// console.log(tx)  不用wait,该tx就是被确认的tx</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="trick："><a href="#trick：" class="headerlink" title="trick："></a>trick：</h3><p>如果是使用hardhat环境，修改代码后不需要再编译、部署，直接运行<code> yarn hardhat test</code>，就可以使用新代码</p>
@@ -301,7 +294,9 @@
 <li>加深对<code>solidity</code>继承这一块的理解，理解清楚<code>private</code>，<code>internal</code>,<code>virtual</code>等修饰符，才能更好的写出面向对象的精简的代码。。目前这一块还是有点晕😓</li>
 <li>多看如<code>openzeppelin</code>这类优秀的源码库，可以学到很多优秀的代码实现，且少写很多代码</li>
 </ol>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><p><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</a></p>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</a></li>
+</ul>
 
     </div>
 
@@ -312,29 +307,28 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/21702.html" rel="bookmark">SmartContract-CoolErc20-burnable-燃烧通缩代币</a></div>
+      <div class="popular-posts-title"><a href="/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为</a></div>
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/59932.html" rel="bookmark">SmartContract-以太坊合约静态分析工具Slither使用记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/43604.html" rel="bookmark">OpenZeppelin_ERC20_extensions源码学习(一)</a></div>
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">Project-CryptoZombie僵尸世界NFT游戏</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">SmartContract-CryptoZombie僵尸世界NFT游戏</a></div>
+      <div class="popular-posts-title"><a href="/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
               <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
               <a href="/tags/CoolErc20/" rel="tag"># CoolErc20</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
           </div>
 
         
@@ -343,13 +337,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/21702.html" rel="prev" title="SmartContract-CoolErc20-burnable-燃烧通缩代币">
-      <i class="fa fa-chevron-left"></i> SmartContract-CoolErc20-burnable-燃烧通缩代币
+    <a href="/43604.html" rel="prev" title="OpenZeppelin-ERC20-extensions源码学习(一)">
+      <i class="fa fa-chevron-left"></i> OpenZeppelin-ERC20-extensions源码学习(一)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/59932.html" rel="next" title="SmartContract-以太坊合约静态分析工具Slither使用记录">
-      SmartContract-以太坊合约静态分析工具Slither使用记录 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -415,7 +406,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">自定义快照策略：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat-console"><span class="nav-number">5.1.</span> <span class="nav-text">hardhat console:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat-test"><span class="nav-number">5.2.</span> <span class="nav-text">hardhat test:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96tx%E8%AF%A6%E6%83%85"><span class="nav-number">5.2.1.</span> <span class="nav-text">获取tx详情:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trick%EF%BC%9A"><span class="nav-number">5.2.2.</span> <span class="nav-text">trick：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">5.2.3.</span> <span class="nav-text">测试结果：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">自定义快照策略：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Remix"><span class="nav-number">5.1.</span> <span class="nav-text">Remix:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat"><span class="nav-number">5.2.</span> <span class="nav-text">hardhat:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96tx%E8%AF%A6%E6%83%85"><span class="nav-number">5.2.1.</span> <span class="nav-text">获取tx详情:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trick%EF%BC%9A"><span class="nav-number">5.2.2.</span> <span class="nav-text">trick：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">5.2.3.</span> <span class="nav-text">测试结果：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -437,12 +428,12 @@
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
