@@ -4478,106 +4478,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Uniswap原理-恒定乘积公式</title>
-    <url>//54061.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a><br>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
-<h1 id="恒定乘积公式"><a href="#恒定乘积公式" class="headerlink" title="恒定乘积公式"></a>恒定乘积公式</h1><h2 id="无手续费"><a href="#无手续费" class="headerlink" title="无手续费:"></a>无手续费:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</li>
-<li>两货币数量的乘积 x * y 恆等于 k</li>
-<li>k 值是由第一笔注入的流动性所决定</li>
-</ul>
-<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
-<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
-<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
-<p>公式推导:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
-<p>这样可以推导出前2行</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
-<p>接着推导<code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
-<p>推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
-<p>第一个图里的公式，都推导完了。</p>
-<h2 id="计入手续费"><a href="#计入手续费" class="headerlink" title="计入手续费:"></a>计入手续费:</h2><p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
-<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
-<p>手续费 ρ &#x3D; 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
-<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
-<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
-<p>接着推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
-<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
-<p>推导<code>x’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
-<p>推导<code>y’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
-<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
-<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
-<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 &#x3D;&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
-<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 &#x3D; 0.3% 对于 k 值的影响极小。</p>
-<h2 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码:"></a>相关代码:</h2><p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面已知</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
-<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
-<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
-<p>getAmountOut函数，通过入参：</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
-</ul>
-<p>计算出参:</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
-</ul>
-<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
-<p>getAmountIn函数，通过入参：</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
-</ul>
-<p>计算出参:</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
-</ul>
-<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>+1之后，交易者需要付出多一点点</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></li>
-<li><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>SmartContract</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-        <tag>Solidity</tag>
-        <tag>SmartContract</tag>
-        <tag>Uniswap</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>WPSIH-网站个人敏感信息文件扫描器-开发记录</title>
     <url>//64851.html</url>
     <content><![CDATA[<h1 id="项目名-WPSIH"><a href="#项目名-WPSIH" class="headerlink" title="项目名:WPSIH"></a>项目名:WPSIH</h1><p>Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器</p>
@@ -7479,6 +7379,174 @@
       </categories>
       <tags>
         <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-CoolErc20-blacklist-具备黑名单代币</title>
+    <url>//35217.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个具有黑名单功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
+<li>黑名单用户无法正常<code>transfer</code></li>
+<li>管理员可配置黑白名单里的地址</li>
+</ul>
+<h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>暂时能想到的</p>
+<table>
+<thead>
+<tr>
+<th>项目方</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>好人</td>
+<td>将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当于冻结它的资产</td>
+</tr>
+<tr>
+<td>坏人</td>
+<td>rug、scam</td>
+</tr>
+</tbody></table>
+<p>还想到一个骚操作，如果把swap的地址加入黑名单列表。。🤣也可以使得该erc20代币 无法正常的与swap交互，无法买卖、添加移除流动性。</p>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>如果是在<code>hardhat</code>环境的话，不用先执行编译、部署了，可以直接<code>yarn hardhat test</code>，会默认执行前两步。</p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="黑名单判断："><a href="#黑名单判断：" class="headerlink" title="黑名单判断："></a>黑名单判断：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal override &#123;</span><br><span class="line">    <span class="comment">// 错误写法：只要一个为非黑名单即可</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from] || !_blackList[to], &quot;ERC20: user in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="comment">// require( !_blackList[to], &quot;ERC20: &#x27;to&#x27; address in black list&quot;);</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from], &quot;ERC20: &#x27;from&#x27; address in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="built_in">require</span>( !_blackList[to] &amp;&amp;  !_blackList[<span class="keyword">from</span>], <span class="string">&quot;ERC20: &#x27;to&#x27; or &#x27;from&#x27; address in black list&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一开始觉得这个erc20合约很简单，结果一写到黑名单判断的时候，第一次就写错了。。😅<br>还发现正确写法有两种，其中第一种可以更清晰地把错误原因写清楚。</p>
+<blockquote>
+<p>看来还是要多code，多实践才行</p>
+</blockquote>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="Mocha测试框架"><a href="#Mocha测试框架" class="headerlink" title="Mocha测试框架"></a>Mocha测试框架</h2><p>在写测试脚本时，有一个目前没接触过的测试需求：<br>需要给用户设置黑名单后，给这个用户转账，然后希望这次转账报错。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 希望该函数报错的写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在查文档的时候才知道。。<code>hardhat</code>用到的是一个叫<code>Mocha</code>的测试框架，后续如果还遇到新的测试需求可以查阅该文档。</p>
+<blockquote>
+<p>Mocha是一个能够运行在Node和浏览器中的多功能的JavaScript测试框架，它让异步测试简单且有趣。</p>
+<p>Mocha连续地运行测试，并给出灵活而精确的报告，同时能够将错误精确地映射到测试用例上。它托管在GitHub上。</p>
+</blockquote>
+<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><p>符合预期：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Set blacklist: </span><br><span class="line">【Step 3】tokenOwner Set user0 in blacklist: </span><br><span class="line">【Step 3】user0IfBlackList: true</span><br><span class="line"> After setting blacklist, try : </span><br><span class="line">【Step 4】tokenOwner Set user0 in blacklist and try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line">      ✔ can&#x27;t transfer after setting blacklist (1351ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ul>
+<li>看来还是要多code，多实践才行，再简单的需求，真正写起来的时候也很有可能出错。</li>
+<li>写<code>hardhat</code>测试脚本时，如果遇到没见过的测试需求，可以查阅<code>mocha</code>的文档</li>
+<li>比如平时有看到别的项目用hardhat构建的，可以参考里面的test脚本，学学别人的写法</li>
+<li>实践出真知🧐🧐🧐</li>
+<li>实践出真知🧐🧐🧐</li>
+<li>实践出真知🧐🧐🧐</li>
+</ul>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/bsc/bscUniswapV2.test.ts">poly-flash 参考里面的test脚本</a></li>
+<li><a href="https://www.jianshu.com/p/9c78548caffa">Mocha.js官方文档翻译 —— 简单、灵活、有趣</a></li>
+<li><a href="https://mochajs.bootcss.com/#inclusive-tests">Mocha中文文档1</a></li>
+<li><a href="https://www.wanxiangyundang.top/read/mocha-in-chinese/EXCLUSIVE.md">Mocha中文文档2</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Uniswap-恒定乘积公式原理</title>
+    <url>//54061.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a><br>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
+<h1 id="恒定乘积公式"><a href="#恒定乘积公式" class="headerlink" title="恒定乘积公式"></a>恒定乘积公式</h1><h2 id="无手续费"><a href="#无手续费" class="headerlink" title="无手续费:"></a>无手续费:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</li>
+<li>两货币数量的乘积 x * y 恆等于 k</li>
+<li>k 值是由第一笔注入的流动性所决定</li>
+</ul>
+<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
+<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
+<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
+<p>公式推导:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
+<p>这样可以推导出前2行</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
+<p>接着推导<code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
+<p>推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
+<p>第一个图里的公式，都推导完了。</p>
+<h2 id="计入手续费"><a href="#计入手续费" class="headerlink" title="计入手续费:"></a>计入手续费:</h2><p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
+<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
+<p>手续费 ρ &#x3D; 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
+<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
+<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
+<p>接着推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
+<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
+<p>推导<code>x’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
+<p>推导<code>y’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
+<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
+<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
+<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 &#x3D;&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
+<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 &#x3D; 0.3% 对于 k 值的影响极小。</p>
+<h2 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码:"></a>相关代码:</h2><p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面已知</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
+<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
+<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
+<p>getAmountOut函数，通过入参：</p>
+<ul>
+<li>amountIn —— ∆x —— ∆x数量的x币</li>
+<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
+<li>reserveOut —— y —— y币的储备量</li>
+</ul>
+<p>计算出参:</p>
+<ul>
+<li>amountOut —— ∆y —— ∆y数量的y币</li>
+</ul>
+<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
+<p>getAmountIn函数，通过入参：</p>
+<ul>
+<li>amountOut —— ∆y —— ∆y数量的y币</li>
+<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
+<li>reserveOut —— y —— y币的储备量</li>
+</ul>
+<p>计算出参:</p>
+<ul>
+<li>amountIn —— ∆x —— ∆x数量的x币</li>
+</ul>
+<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>+1之后，交易者需要付出多一点点</p>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></li>
+<li><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+        <tag>Uniswap</tag>
       </tags>
   </entry>
 </search>
