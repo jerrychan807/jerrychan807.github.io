@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。 https:&#x2F;&#x2F;github.com&#x2F;OpenZeppelin&#x2F;openzeppelin-contracts&#x2F;blob&#x2F;master&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;README.adoc 目录：   Contract 使用场景    ERC20Burnable 对自己或有授权">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenZeppelin_ERC20_extensions源码学习(一)">
+<meta property="og:url" content="https://jerrychan807.github.io/43604.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。 https:&#x2F;&#x2F;github.com&#x2F;OpenZeppelin&#x2F;openzeppelin-contracts&#x2F;blob&#x2F;master&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;README.adoc 目录：   Contract 使用场景    ERC20Burnable 对自己或有授权">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png">
+<meta property="article:published_time" content="2022-06-21T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-21T08:10:16.990Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="CoolErc20">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/43604.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>OpenZeppelin_ERC20_extensions源码学习(一) | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/43604.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenZeppelin_ERC20_extensions源码学习(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-21 22:36:34 / Modified: 16:10:16" itemprop="dateCreated datePublished" datetime="2022-06-21T22:36:34+08:00">2022-06-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SmartContract/" itemprop="url" rel="index"><span itemprop="name">SmartContract</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。</p>
+<p><code>https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</code></p>
+<h1 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h1><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Burnable</td>
+<td>对自己或有授权额度的地址进行代币销毁</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>在铸造代币时对总供应量设定一个不可变的上限值</td>
+</tr>
+<tr>
+<td>ERC20Pausable</td>
+<td>具有暂停代币传输的功能</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>有效存储过去的代币余额&#x2F;供应量，以便以后随时查询</td>
+</tr>
+</tbody></table>
+<h1 id="ERC20Burnable"><a href="#ERC20Burnable" class="headerlink" title="ERC20Burnable:"></a>ERC20Burnable:</h1><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>对自己或有授权额度的地址进行代币销毁,使得代币总供应量<code>↓</code>，可能会让用户觉得自己持有的币会越来越有价值。。。</p>
+<h2 id="源码解析："><a href="#源码解析：" class="headerlink" title="源码解析："></a>源码解析：</h2><p>多了一个<code>burnFrom()</code>委托销毁的函数</p>
+<h2 id="重要函数变量表："><a href="#重要函数变量表：" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Burnable</td>
+<td>burn(uint256 amount)</td>
+<td>token持有者销毁自己的token</td>
+<td>调用<code>_burn</code>函数，余额↓，总供应量↓</td>
+</tr>
+<tr>
+<td>ERC20Burnable</td>
+<td>burnFrom(address account, uint256 amount)</td>
+<td>token授权者销毁指定地址的token</td>
+<td>caller授权额度↓，指定地址余额↓，总供应量↓</td>
+</tr>
+</tbody></table>
+<h2 id="Inspire"><a href="#Inspire" class="headerlink" title="Inspire:"></a>Inspire:</h2><p>授权额度给别人或合约之后，第三者不只是可以拿来转账，也可以用来销毁，简言之就是具备了控制权</p>
+<h1 id="ERC20Capped"><a href="#ERC20Capped" class="headerlink" title="ERC20Capped:"></a>ERC20Capped:</h1><h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><p>在铸造代币时对总供应量设定一个<code>不可变的上限值</code>，可防止代币无限增发。</p>
+<p>注意：是<code>上限值</code>不可变，<code>总供应量</code>还是可变的，只是<code>上限值</code>被写死了。</p>
+<h2 id="源码解析：-1"><a href="#源码解析：-1" class="headerlink" title="源码解析："></a>源码解析：</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重要代码片段：</span></span><br><span class="line"></span><br><span class="line">uint256 private immutable _cap; <span class="comment">// 不可变常量 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 只在构造函数里，初次也只能有一次去定义该上限值</span></span><br><span class="line"><span class="title function_">constructor</span>(<span class="params">uint256 cap_</span>) &#123;</span><br><span class="line">    <span class="built_in">require</span>(cap_ &gt; <span class="number">0</span>, <span class="string">&quot;ERC20Capped: cap is 0&quot;</span>);</span><br><span class="line">    _cap = cap_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_mint</span>(<span class="params">address account, uint256 amount</span>) internal virtual override &#123;</span><br><span class="line"><span class="comment">// 限制铸造增发不能超过 上限值</span></span><br><span class="line">    <span class="built_in">require</span>(<span class="title class_">ERC20</span>.<span class="title function_">totalSupply</span>() + amount &lt;= <span class="title function_">cap</span>(), <span class="string">&quot;ERC20Capped: cap exceeded&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_mint</span>(account, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="重要函数变量表：-1"><a href="#重要函数变量表：-1" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Capped</td>
+<td>constructor(uint256 cap_)</td>
+<td>只有在构造函数能够修改<code>代币供应量上限</code>的值</td>
+<td>提前定义上限值为<code>immutable</code>的变量</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>cap()</td>
+<td>返回上限值</td>
+<td>——</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>_mint(address account, uint256 amount)</td>
+<td>铸币增发</td>
+<td>判断：代币供应量+增发量&lt;&#x3D; 上限值</td>
+</tr>
+</tbody></table>
+<h2 id="Inspire-1"><a href="#Inspire-1" class="headerlink" title="Inspire:"></a>Inspire:</h2><p>看来solidity里的各类修饰符 如<code>immutable</code>，还是大有学问的，在某些特定场景上使用起来能够起到合适的限制，后面要仔细总结一下</p>
+<p>同理，对于某些通缩机制的代币，也可以设定一个下限值，在不断销毁代币时，也不能低于这个下限值</p>
+<h1 id="ERC20Pausable："><a href="#ERC20Pausable：" class="headerlink" title="ERC20Pausable："></a>ERC20Pausable：</h1><h2 id="使用场景-2"><a href="#使用场景-2" class="headerlink" title="使用场景"></a>使用场景</h2><p>出bug的时候，可以由管理员设置<code>暂停开关</code>，阻止代币的传输、铸造和燃烧等功能，相当于一个紧急停止机制。</p>
+<h2 id="源码解析：-2"><a href="#源码解析：-2" class="headerlink" title="源码解析："></a>源码解析：</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重要代码片段：</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 重写_beforeTokenTransfer,增加对 暂停开关值的判断</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal virtual override &#123;</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">require</span>(!<span class="title function_">paused</span>(), <span class="string">&quot;ERC20Pausable: token transfer while paused&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>ERC20Pausable.sol</code>继承<a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol">Pausable.sol</a>，<code>Pausable.sol</code>里围绕一个<code>_paused</code>暂停开关写了几个<code>event</code>和<code>modifier</code>,核心还是这个暂停开关变量。</p>
+<p>如果自己的erc20合约想要实现暂停开关功能的话，继承<code>ERC20</code>, <code>Pausable</code>合约，重写<code>_beforeTokenTransfer</code>函数，在里面加上对暂停开关的判断条件就可以了。</p>
+<p>其中<code>_beforeTokenTransfer</code>函数在<code>_transfer</code>函数里被调用到。</p>
+<p><code>ERC20.sol</code>的<code>_transfer</code>函数里可以分成3个阶段:</p>
+<ol>
+<li>token转移之前，<code>_beforeTokenTransfer()</code></li>
+<li>token转移时的具体处理逻辑（一般是<code>sender</code>余额↓，<code>recipient</code>余额↑）</li>
+<li>token转移之后，<code>_afterTokenTransfer</code></li>
+</ol>
+<p>控制了<code>_beforeTokenTransfer</code>函数后，就不会进入到token转移时的具体处理逻辑，也就控制了代币的转账、铸造、销毁这三类行为，从而实现了暂停功能。</p>
+<table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pausable</td>
+<td>constructor()</td>
+<td>——</td>
+<td>暂停开关初始化 为关</td>
+</tr>
+<tr>
+<td>ERC20Pausable</td>
+<td>function _beforeTokenTransfer(address from,address to,uint256 amount)</td>
+<td>阻止进入token转移的处理逻辑</td>
+<td>加上对暂停开关变量的判断</td>
+</tr>
+</tbody></table>
+<h1 id="ERC20Snapshot"><a href="#ERC20Snapshot" class="headerlink" title="ERC20Snapshot:"></a>ERC20Snapshot:</h1><p>使用快照机制扩展了 ERC20 代币。创建快照时，记录用户余额和当时的总供应量，以供以后访问。</p>
+<blockquote>
+<p>快照不是每个区块或每隔一段时间都会自动生成的，快照的周期依附于你设定的快照策略。</p>
+<p>比如你可以设定每次<code>Transfer</code>执行一次快照等</p>
+</blockquote>
+<h2 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h2><blockquote>
+<ul>
+<li>这可用于安全地创建基于代币余额的机制，例如无需信任的股息或加权投票。</li>
+</ul>
+</blockquote>
+<ul>
+<li>可以通过重用来自不同地方的相同余额来执行“双花”攻击帐户。通过使用快照来计算股息或投票权，这些攻击不再适用。</li>
+<li>它也可以用于创建高效的 ERC20 分叉机制</li>
+</ul>
+<h2 id="源码解析：-3"><a href="#源码解析：-3" class="headerlink" title="源码解析："></a>源码解析：</h2><blockquote>
+<p>开始看之前有一些疑问：</p>
+<ol>
+<li>用户余额该用什么数据结构来存储？</li>
+<li>什么时候、多少周期创建一个快照？</li>
+</ol>
+</blockquote>
+<h3 id="存储的数据结构："><a href="#存储的数据结构：" class="headerlink" title="存储的数据结构："></a>存储的数据结构：</h3><ul>
+<li>存储用户的余额:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct <span class="title class_">Snapshots</span> &#123;</span><br><span class="line">    uint256[] ids; <span class="comment">// 存快照id</span></span><br><span class="line">    uint256[] values; <span class="comment">// 存余额/总供应量</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> <span class="title class_">Snapshots</span>) private _accountBalanceSnapshots;</span><br></pre></td></tr></table></figure>
+
+<p>存储用户余额的变量<code>_accountBalanceSnapshots</code>是一个二维的数据结构,类似于<code>python</code>里一个<code>dict</code>里存放两个<code>list</code>,两个<code>list</code>里的值索引是相对应的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;addr&quot;</span>:地址做键值</span><br><span class="line">        ids数组:存快照id</span><br><span class="line">        <span class="attr">value</span>:存余额</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>存储总供应量:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Snapshots</span> private _totalSupplySnapshots;</span><br></pre></td></tr></table></figure>
+
+<p>存储代币总供应量的变量<code>_totalSupplySnapshots</code>是一个一维的数据结构,类似于<code>python</code>里就两个<code>list</code>,两个<code>list</code>里的值索引是相对应的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ids数组:存快照id</span><br><span class="line"><span class="attr">value</span>:存余额</span><br></pre></td></tr></table></figure>
+
+<h3 id="源码里的快照id策略："><a href="#源码里的快照id策略：" class="headerlink" title="源码里的快照id策略："></a>源码里的快照id策略：</h3><p>还没跑过原本的代码，源码里的快照id策略应该是：定义了一个计数器变量，只能单增，具备单调性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 快照id单调递增，第一个值为1。id为0无效。</span><br><span class="line">Counters.Counter private _currentSnapshotId;</span><br><span class="line"></span><br><span class="line">function _snapshot() internal virtual returns (uint256) &#123;</span><br><span class="line">    _currentSnapshotId.increment(); // ！！！快照id单调递增</span><br><span class="line"></span><br><span class="line">    uint256 currentId = _getCurrentSnapshotId(); // 获取当前的快照Id</span><br><span class="line">    emit Snapshot(currentId);</span><br><span class="line">    return currentId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义快照id策略："><a href="#自定义快照id策略：" class="headerlink" title="自定义快照id策略："></a>自定义快照id策略：</h3><p>自己实现了一下基于<code>blockNumber</code>的快照策略，详见<a href="">文章</a></p>
+<h3 id="继承图"><a href="#继承图" class="headerlink" title="继承图:"></a>继承图:</h3><p>用<code>Slither</code>生成的，方便参照去阅读源码<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png" alt="A1D0D3CA-E749-44C4-A30E-9441BAD82C15"></p>
+<h2 id="重要函数变量表：-2"><a href="#重要函数变量表：-2" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>使用场景</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Snapshot</td>
+<td>_accountBalanceSnapshots</td>
+<td>存储用户快照余额</td>
+<td>二维数据结构</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_totalSupplySnapshots</td>
+<td>存储总供应量快照余额</td>
+<td>一维数据结构</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_currentSnapshotId</td>
+<td>当前快照id</td>
+<td>id为0无效，要具备单调性如单增</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_snapshot()</td>
+<td>创建一个新快照并返回其快照 ID</td>
+<td>可重写该函数，自定义快照策略</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_getCurrentSnapshotId()</td>
+<td>获取当前的快照Id</td>
+<td>xx</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_updateSnapshot(Snapshots storage snapshots, uint256 currentValue)</td>
+<td>更新快照</td>
+<td>注意里面的触发快照的条件</td>
+</tr>
+</tbody></table>
+<h1 id="Template"><a href="#Template" class="headerlink" title="Template"></a>Template</h1><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>使用场景</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+</tr>
+<tr>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+</tr>
+</tbody></table>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><p><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</a></p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/21702.html" rel="bookmark">SmartContract-CoolErc20-burnable-燃烧通缩代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/14814.html" rel="bookmark">SmartContract-CoolErc20-four_way-区分买卖添加移除流动性行为</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/59932.html" rel="bookmark">SmartContract-以太坊合约静态分析工具Slither使用记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/8661.html" rel="bookmark">SmartContract-CoolErc20-snapshot-快照功能代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/60348.html" rel="bookmark">SmartContract-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/CoolErc20/" rel="tag"># CoolErc20</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/59932.html" rel="prev" title="SmartContract-以太坊合约静态分析工具Slither使用记录">
+      <i class="fa fa-chevron-left"></i> SmartContract-以太坊合约静态分析工具Slither使用记录
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">目录：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Burnable"><span class="nav-number">3.</span> <span class="nav-text">ERC20Burnable:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire"><span class="nav-number">3.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Capped"><span class="nav-number">4.</span> <span class="nav-text">ERC20Capped:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">4.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-1"><span class="nav-number">4.2.</span> <span class="nav-text">源码解析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-1"><span class="nav-number">4.3.</span> <span class="nav-text">重要函数变量表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspire-1"><span class="nav-number">4.4.</span> <span class="nav-text">Inspire:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Pausable%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">ERC20Pausable：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">5.1.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-2"><span class="nav-number">5.2.</span> <span class="nav-text">源码解析：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC20Snapshot"><span class="nav-number">6.</span> <span class="nav-text">ERC20Snapshot:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">使用场景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A-3"><span class="nav-number">6.2.</span> <span class="nav-text">源码解析：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">6.2.1.</span> <span class="nav-text">存储的数据结构：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E9%87%8C%E7%9A%84%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.2.</span> <span class="nav-text">源码里的快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7id%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">6.2.3.</span> <span class="nav-text">自定义快照id策略：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E5%9B%BE"><span class="nav-number">6.2.4.</span> <span class="nav-text">继承图:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0%E5%8F%98%E9%87%8F%E8%A1%A8%EF%BC%9A-2"><span class="nav-number">6.3.</span> <span class="nav-text">重要函数变量表：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Template"><span class="nav-number">7.</span> <span class="nav-text">Template</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">382k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:47</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

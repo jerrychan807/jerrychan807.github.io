@@ -2841,6 +2841,14 @@
     <title>SmartContract-Hardhat框架初步使用</title>
     <url>//64479.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉、回顾一下hardhat框架的使用，为后续erc20各类功能实现的学习做准备。</p>
+<h1 id="hardhat介绍："><a href="#hardhat介绍：" class="headerlink" title="hardhat介绍："></a>hardhat介绍：</h1><blockquote>
+<p>Hardhat是一个编译、部署、测试和调试以太坊应用的开发环境。</p>
+<p>它可以帮助开发人员管理和自动化构建智能合约和DApps过程中固有的重复性任务，并围绕这一工作流程轻松引入更多功能。</p>
+<p>这意味着hardhat在最核心的地方是编译、运行和测试智能合约。</p>
+<p>Hardhat内置了Hardhat网络，这是一个专为开发设计的本地以太坊网络。主要功能有Solidity调试，跟踪调用堆栈、console.log()和交易失败时的明确错误信息提示等。</p>
+<p>Hardhat Runner是与Hardhat交互的CLI命令，是一个可扩展的任务运行器。它是围绕任务和插件的概念设计的。每次你从CLI运行Hardhat时，你都在运行一个任务。例如，npx hardhat compile运行的是内置的compile任务。任务可以调用其他任务，允许定义复杂的工作流程。用户和插件可以覆盖现有的任务，从而定制和扩展工作流程。</p>
+<p>Hardhat的很多功能都来自于插件，而作为开发者，你可以自由选择想使用的插件。Hardhat不限制使用什么工具的，但它确实有一些内置的默认值。所有这些都可以覆盖</p>
+</blockquote>
 <h1 id="设置环境"><a href="#设置环境" class="headerlink" title="设置环境:"></a>设置环境:</h1><p>完整的安装步骤可参考refs里的链接进行安装，此处只记录部分的步骤</p>
 <h1 id="创建一个Hardhat项目"><a href="#创建一个Hardhat项目" class="headerlink" title="创建一个Hardhat项目:"></a>创建一个Hardhat项目:</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建文件夹、为项目根目录</span></span><br><span class="line"><span class="built_in">mkdir</span> demo</span><br><span class="line"><span class="built_in">cd</span> demo</span><br><span class="line"><span class="comment"># yarn初始化</span></span><br><span class="line">yarn init --<span class="built_in">yes</span></span><br><span class="line">yarn add -D hardhat</span><br><span class="line"><span class="comment"># 安装各类插件</span></span><br><span class="line">yarn add -D hardhat-deploy hardhat-deploy-ethers ethers chai chai-ethers mocha @types/chai @types/mocha @types/node typescript ts-node dotenv</span><br><span class="line"><span class="comment"># 安装openzeppelin合约库</span></span><br><span class="line">yarn add @openzeppelin/contracts </span><br><span class="line"><span class="comment"># 超时、github连接不上，可尝试加timeout参数</span></span><br><span class="line">yarn add -D @nomiclabs/hardhat-etherscan --network-timeout 600000</span><br></pre></td></tr></table></figure>
 
@@ -7171,6 +7179,310 @@
       </categories>
       <tags>
         <tag>Dev</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OpenZeppelin_ERC20_extensions源码学习(一)</title>
+    <url>//43604.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>对OpenZeppelin_ERC20_extensions文件夹里的自定义拓展合约，源码学习一波。</p>
+<p><code>https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</code></p>
+<h1 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h1><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Burnable</td>
+<td>对自己或有授权额度的地址进行代币销毁</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>在铸造代币时对总供应量设定一个不可变的上限值</td>
+</tr>
+<tr>
+<td>ERC20Pausable</td>
+<td>具有暂停代币传输的功能</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>有效存储过去的代币余额&#x2F;供应量，以便以后随时查询</td>
+</tr>
+</tbody></table>
+<h1 id="ERC20Burnable"><a href="#ERC20Burnable" class="headerlink" title="ERC20Burnable:"></a>ERC20Burnable:</h1><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>对自己或有授权额度的地址进行代币销毁,使得代币总供应量<code>↓</code>，可能会让用户觉得自己持有的币会越来越有价值。。。</p>
+<h2 id="源码解析："><a href="#源码解析：" class="headerlink" title="源码解析："></a>源码解析：</h2><p>多了一个<code>burnFrom()</code>委托销毁的函数</p>
+<h2 id="重要函数变量表："><a href="#重要函数变量表：" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Burnable</td>
+<td>burn(uint256 amount)</td>
+<td>token持有者销毁自己的token</td>
+<td>调用<code>_burn</code>函数，余额↓，总供应量↓</td>
+</tr>
+<tr>
+<td>ERC20Burnable</td>
+<td>burnFrom(address account, uint256 amount)</td>
+<td>token授权者销毁指定地址的token</td>
+<td>caller授权额度↓，指定地址余额↓，总供应量↓</td>
+</tr>
+</tbody></table>
+<h2 id="Inspire"><a href="#Inspire" class="headerlink" title="Inspire:"></a>Inspire:</h2><p>授权额度给别人或合约之后，第三者不只是可以拿来转账，也可以用来销毁，简言之就是具备了控制权</p>
+<h1 id="ERC20Capped"><a href="#ERC20Capped" class="headerlink" title="ERC20Capped:"></a>ERC20Capped:</h1><h2 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h2><p>在铸造代币时对总供应量设定一个<code>不可变的上限值</code>，可防止代币无限增发。</p>
+<p>注意：是<code>上限值</code>不可变，<code>总供应量</code>还是可变的，只是<code>上限值</code>被写死了。</p>
+<h2 id="源码解析：-1"><a href="#源码解析：-1" class="headerlink" title="源码解析："></a>源码解析：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 重要代码片段：</span></span><br><span class="line"></span><br><span class="line">uint256 private immutable _cap; <span class="comment">// 不可变常量 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 只在构造函数里，初次也只能有一次去定义该上限值</span></span><br><span class="line"><span class="title function_">constructor</span>(<span class="params">uint256 cap_</span>) &#123;</span><br><span class="line">    <span class="built_in">require</span>(cap_ &gt; <span class="number">0</span>, <span class="string">&quot;ERC20Capped: cap is 0&quot;</span>);</span><br><span class="line">    _cap = cap_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_mint</span>(<span class="params">address account, uint256 amount</span>) internal virtual override &#123;</span><br><span class="line"><span class="comment">// 限制铸造增发不能超过 上限值</span></span><br><span class="line">    <span class="built_in">require</span>(<span class="title class_">ERC20</span>.<span class="title function_">totalSupply</span>() + amount &lt;= <span class="title function_">cap</span>(), <span class="string">&quot;ERC20Capped: cap exceeded&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_mint</span>(account, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="重要函数变量表：-1"><a href="#重要函数变量表：-1" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Capped</td>
+<td>constructor(uint256 cap_)</td>
+<td>只有在构造函数能够修改<code>代币供应量上限</code>的值</td>
+<td>提前定义上限值为<code>immutable</code>的变量</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>cap()</td>
+<td>返回上限值</td>
+<td>——</td>
+</tr>
+<tr>
+<td>ERC20Capped</td>
+<td>_mint(address account, uint256 amount)</td>
+<td>铸币增发</td>
+<td>判断：代币供应量+增发量&lt;&#x3D; 上限值</td>
+</tr>
+</tbody></table>
+<h2 id="Inspire-1"><a href="#Inspire-1" class="headerlink" title="Inspire:"></a>Inspire:</h2><p>看来solidity里的各类修饰符 如<code>immutable</code>，还是大有学问的，在某些特定场景上使用起来能够起到合适的限制，后面要仔细总结一下</p>
+<p>同理，对于某些通缩机制的代币，也可以设定一个下限值，在不断销毁代币时，也不能低于这个下限值</p>
+<h1 id="ERC20Pausable："><a href="#ERC20Pausable：" class="headerlink" title="ERC20Pausable："></a>ERC20Pausable：</h1><h2 id="使用场景-2"><a href="#使用场景-2" class="headerlink" title="使用场景"></a>使用场景</h2><p>出bug的时候，可以由管理员设置<code>暂停开关</code>，阻止代币的传输、铸造和燃烧等功能，相当于一个紧急停止机制。</p>
+<h2 id="源码解析：-2"><a href="#源码解析：-2" class="headerlink" title="源码解析："></a>源码解析：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 重要代码片段：</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 重写_beforeTokenTransfer,增加对 暂停开关值的判断</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal virtual override &#123;</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">require</span>(!<span class="title function_">paused</span>(), <span class="string">&quot;ERC20Pausable: token transfer while paused&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>ERC20Pausable.sol</code>继承<a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol">Pausable.sol</a>，<code>Pausable.sol</code>里围绕一个<code>_paused</code>暂停开关写了几个<code>event</code>和<code>modifier</code>,核心还是这个暂停开关变量。</p>
+<p>如果自己的erc20合约想要实现暂停开关功能的话，继承<code>ERC20</code>, <code>Pausable</code>合约，重写<code>_beforeTokenTransfer</code>函数，在里面加上对暂停开关的判断条件就可以了。</p>
+<p>其中<code>_beforeTokenTransfer</code>函数在<code>_transfer</code>函数里被调用到。</p>
+<p><code>ERC20.sol</code>的<code>_transfer</code>函数里可以分成3个阶段:</p>
+<ol>
+<li>token转移之前，<code>_beforeTokenTransfer()</code></li>
+<li>token转移时的具体处理逻辑（一般是<code>sender</code>余额↓，<code>recipient</code>余额↑）</li>
+<li>token转移之后，<code>_afterTokenTransfer</code></li>
+</ol>
+<p>控制了<code>_beforeTokenTransfer</code>函数后，就不会进入到token转移时的具体处理逻辑，也就控制了代币的转账、铸造、销毁这三类行为，从而实现了暂停功能。</p>
+<table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function</th>
+<th>作用</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pausable</td>
+<td>constructor()</td>
+<td>——</td>
+<td>暂停开关初始化 为关</td>
+</tr>
+<tr>
+<td>ERC20Pausable</td>
+<td>function _beforeTokenTransfer(address from,address to,uint256 amount)</td>
+<td>阻止进入token转移的处理逻辑</td>
+<td>加上对暂停开关变量的判断</td>
+</tr>
+</tbody></table>
+<h1 id="ERC20Snapshot"><a href="#ERC20Snapshot" class="headerlink" title="ERC20Snapshot:"></a>ERC20Snapshot:</h1><p>使用快照机制扩展了 ERC20 代币。创建快照时，记录用户余额和当时的总供应量，以供以后访问。</p>
+<blockquote>
+<p>快照不是每个区块或每隔一段时间都会自动生成的，快照的周期依附于你设定的快照策略。</p>
+<p>比如你可以设定每次<code>Transfer</code>执行一次快照等</p>
+</blockquote>
+<h2 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h2><blockquote>
+<ul>
+<li>这可用于安全地创建基于代币余额的机制，例如无需信任的股息或加权投票。</li>
+</ul>
+</blockquote>
+<ul>
+<li>可以通过重用来自不同地方的相同余额来执行“双花”攻击帐户。通过使用快照来计算股息或投票权，这些攻击不再适用。</li>
+<li>它也可以用于创建高效的 ERC20 分叉机制</li>
+</ul>
+<h2 id="源码解析：-3"><a href="#源码解析：-3" class="headerlink" title="源码解析："></a>源码解析：</h2><blockquote>
+<p>开始看之前有一些疑问：</p>
+<ol>
+<li>用户余额该用什么数据结构来存储？</li>
+<li>什么时候、多少周期创建一个快照？</li>
+</ol>
+</blockquote>
+<h3 id="存储的数据结构："><a href="#存储的数据结构：" class="headerlink" title="存储的数据结构："></a>存储的数据结构：</h3><ul>
+<li>存储用户的余额:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">struct <span class="title class_">Snapshots</span> &#123;</span><br><span class="line">    uint256[] ids; <span class="comment">// 存快照id</span></span><br><span class="line">    uint256[] values; <span class="comment">// 存余额/总供应量</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> <span class="title class_">Snapshots</span>) private _accountBalanceSnapshots;</span><br></pre></td></tr></table></figure>
+
+<p>存储用户余额的变量<code>_accountBalanceSnapshots</code>是一个二维的数据结构,类似于<code>python</code>里一个<code>dict</code>里存放两个<code>list</code>,两个<code>list</code>里的值索引是相对应的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;addr&quot;</span>:地址做键值</span><br><span class="line">        ids数组:存快照id</span><br><span class="line">        <span class="attr">value</span>:存余额</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>存储总供应量:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Snapshots</span> private _totalSupplySnapshots;</span><br></pre></td></tr></table></figure>
+
+<p>存储代币总供应量的变量<code>_totalSupplySnapshots</code>是一个一维的数据结构,类似于<code>python</code>里就两个<code>list</code>,两个<code>list</code>里的值索引是相对应的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ids数组:存快照id</span><br><span class="line"><span class="attr">value</span>:存余额</span><br></pre></td></tr></table></figure>
+
+<h3 id="源码里的快照id策略："><a href="#源码里的快照id策略：" class="headerlink" title="源码里的快照id策略："></a>源码里的快照id策略：</h3><p>还没跑过原本的代码，源码里的快照id策略应该是：定义了一个计数器变量，只能单增，具备单调性。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 快照id单调递增，第一个值为1。id为0无效。</span><br><span class="line">Counters.Counter private _currentSnapshotId;</span><br><span class="line"></span><br><span class="line">function _snapshot() internal virtual returns (uint256) &#123;</span><br><span class="line">    _currentSnapshotId.increment(); // ！！！快照id单调递增</span><br><span class="line"></span><br><span class="line">    uint256 currentId = _getCurrentSnapshotId(); // 获取当前的快照Id</span><br><span class="line">    emit Snapshot(currentId);</span><br><span class="line">    return currentId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义快照id策略："><a href="#自定义快照id策略：" class="headerlink" title="自定义快照id策略："></a>自定义快照id策略：</h3><p>自己实现了一下基于<code>blockNumber</code>的快照策略，详见<a href="">文章</a></p>
+<h3 id="继承图"><a href="#继承图" class="headerlink" title="继承图:"></a>继承图:</h3><p>用<code>Slither</code>生成的，方便参照去阅读源码<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A1D0D3CA-E749-44C4-A30E-9441BAD82C15.png" alt="A1D0D3CA-E749-44C4-A30E-9441BAD82C15"></p>
+<h2 id="重要函数变量表：-2"><a href="#重要函数变量表：-2" class="headerlink" title="重要函数变量表："></a>重要函数变量表：</h2><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>使用场景</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ERC20Snapshot</td>
+<td>_accountBalanceSnapshots</td>
+<td>存储用户快照余额</td>
+<td>二维数据结构</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_totalSupplySnapshots</td>
+<td>存储总供应量快照余额</td>
+<td>一维数据结构</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_currentSnapshotId</td>
+<td>当前快照id</td>
+<td>id为0无效，要具备单调性如单增</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_snapshot()</td>
+<td>创建一个新快照并返回其快照 ID</td>
+<td>可重写该函数，自定义快照策略</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_getCurrentSnapshotId()</td>
+<td>获取当前的快照Id</td>
+<td>xx</td>
+</tr>
+<tr>
+<td>ERC20Snapshot</td>
+<td>_updateSnapshot(Snapshots storage snapshots, uint256 currentValue)</td>
+<td>更新快照</td>
+<td>注意里面的触发快照的条件</td>
+</tr>
+</tbody></table>
+<h1 id="Template"><a href="#Template" class="headerlink" title="Template"></a>Template</h1><table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Function&#x2F;Variable</th>
+<th>使用场景</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+</tr>
+<tr>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+<td>xx</td>
+</tr>
+</tbody></table>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><p><a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</a></p>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SmartContract-CoolErc20-snapshot-快照功能代币</title>
+    <url>//8661.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>参考<code>openzeppelin</code>里的<code>ERC20Snapshot</code>，实现一个具有快照功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/snapshot</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><p>代币发生转移时，以当前区块数做快照id,记录发生转移前的用户余额或代币供应量。</p>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>无</p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="自定义快照策略："><a href="#自定义快照策略：" class="headerlink" title="自定义快照策略："></a>自定义快照策略：</h2><p>注释里有提到要怎么修改:</p>
+<blockquote>
+<p>可以通过覆盖<code>&#123;_getCurrentSnapshotId&#125;</code> 方法来自定义快照策略。</p>
+<p>例如，return <code>block.number</code> ,将在每个新块的开头触发创建快照。当覆盖这个函数，注意其结果的单调性（需要单增）。非单调的快照 id 会破坏合约。</p>
+</blockquote>
+<p><code>ERC20Snapshot</code>源码里的快照id原本是一个计数器，该计数器只能+1,-1这样去操作。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ERC20Snapshot源码</span></span><br><span class="line"><span class="title class_">Counters</span>.<span class="property">Counter</span> private _currentSnapshotId;</span><br></pre></td></tr></table></figure>
+
+<p>如果要用当前区块数做快照id,那就要重写该变量，并且重写与该变量有关的两个函数：</p>
+<ul>
+<li><code>function _snapshot() internal virtual returns (uint256) &#123;&#125;</code></li>
+<li><code> function _getCurrentSnapshotId() internal view virtual returns (uint256) &#123;&#125;</code></li>
+</ul>
+<p>从而自己去管理这个快照id</p>
+<p>还要注意<code>_updateSnapshot（）</code>函数里，有个触发快照的判断条件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="title function_">_lastSnapshotId</span>(snapshots.<span class="property">ids</span>) &lt; currentId) &#123; <span class="comment">// 触发快照的条件：当前id要比上一次存储的id大</span></span><br><span class="line">        snapshots.<span class="property">ids</span>.<span class="title function_">push</span>(currentId);</span><br><span class="line">        snapshots.<span class="property">values</span>.<span class="title function_">push</span>(currentValue);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在测试几次后，发现要在构造器里初始化<code>_currentSnapshotId</code>才行，不然这个<code>_currentSnapshotId</code>一直为0，一直过不了这个判断条件，不执行快照。</p>
+<p>在实现的时候，还被<code>private</code>修饰符搞得很晕。。。<br><code>私有变量</code>不能直接在子类访问或修改，只能通过调用父类的函数去访问或修改，或者该变量相关的定义和函数都自己重写覆盖掉（我采用的是后者）</p>
+<blockquote>
+<p>tips: 理解清楚<code>private</code>，<code>internal</code>,<code>virtual</code>这几个修饰符后，才能更好的写出面向对象的。。精简的代码。。</p>
+</blockquote>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="hardhat-console"><a href="#hardhat-console" class="headerlink" title="hardhat console:"></a>hardhat console:</h2><p>先在remix简单测试，由于继承了父类的一些方法，用<code>console.log</code>去Debug，易于知道自己的方法在什么时候能够调用到</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;hardhat/console.sol&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220621101109.png" alt="20220621101109"></p>
+<h2 id="hardhat-test"><a href="#hardhat-test" class="headerlink" title="hardhat test:"></a>hardhat test:</h2><h3 id="获取tx详情"><a href="#获取tx详情" class="headerlink" title="获取tx详情:"></a>获取tx详情:</h3><p>在<code>hardhat</code>自带环境，不用像测试网那样要wait,可直接获得被确认后的tx详情</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">tx = <span class="keyword">await</span> tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei1);</span><br><span class="line"><span class="comment">// console.log(tx)  不用wait,该tx就是被确认的tx</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="trick："><a href="#trick：" class="headerlink" title="trick："></a>trick：</h3><p>如果是使用hardhat环境，修改代码后不需要再编译、部署，直接运行<code> yarn hardhat test</code>，就可以使用新代码</p>
+<h3 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h3><p>符合预期</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transactions</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】blockNum When tx confirmed: 2</span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 3】tokenOwnerBalance(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line">【Step 3】userBalance(Ether) AtSnapshot: 0.0  BlockNum :2</span><br><span class="line"> Transfer again: </span><br><span class="line">【Step 4】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 4】blockNum When tx confirmed: 3</span><br><span class="line">【Step 4】tokenOwnerBalance(Ether): 800.0</span><br><span class="line">【Step 4】userBalance(Ether): 200.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 5】tokenOwnerBalance(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">【Step 5】userBalance(Ether) AtSnapshot: 100.0  BlockNum :3</span><br><span class="line">      ✔ Check snapshotId和<span class="built_in">users</span> balance (1468ms)</span><br><span class="line">    Burn</span><br><span class="line"> Before burn : </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】totalSupplyWeiBefore(Ether): 1000.0</span><br><span class="line"> tokenOwner Burn 100Ether token: </span><br><span class="line">【Step 2】blockNum When tx confirmed: 2</span><br><span class="line">【Step 2】tokenOwnerBalanceWei(Ether): 900.0</span><br><span class="line">【Step 2】totalSupplyWei(Ether): 900.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 3】tokenOwnerBalance(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line">【Step 3】totalSupply(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line"> tokenOwner Burn 100Ether token Again: </span><br><span class="line">【Step 4】blockNum When tx confirmed: 3</span><br><span class="line">【Step 4】tokenOwnerBalanceWei(Ether): 800.0</span><br><span class="line">【Step 4】totalSupplyWei(Ether): 800.0</span><br><span class="line"> Check Snapshot Again: </span><br><span class="line">【Step 5】tokenOwnerBalance(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">【Step 5】totalSupply(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">      ✔ Burn, check Snapshot totalsupply (241ms)</span><br><span class="line"></span><br><span class="line">  2 passing (2s)</span><br><span class="line"></span><br><span class="line">✨  Done <span class="keyword">in</span> 9.05s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ol>
+<li>阅读源码技巧：<code>Slither</code>输出继承关系图，还差一个能输出<code>函数互相调用</code>的图的工具。</li>
+<li>加深对<code>solidity</code>继承这一块的理解，理解清楚<code>private</code>，<code>internal</code>,<code>virtual</code>等修饰符，才能更好的写出面向对象的精简的代码。。目前这一块还是有点晕😓</li>
+<li>多看如<code>openzeppelin</code>这类优秀的源码库，可以学到很多优秀的代码实现，且少写很多代码</li>
+</ol>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><p><a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/README.adoc</a></p>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>Solidity</tag>
+        <tag>SmartContract</tag>
+        <tag>CoolErc20</tag>
       </tags>
   </entry>
 </search>
