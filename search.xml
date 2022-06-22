@@ -214,6 +214,58 @@
       </tags>
   </entry>
   <entry>
+    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
+    <url>/2018/59330.html</url>
+    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
+<p>方便管理员对模板html文件进行修改</p>
+<hr>
+<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
+<li><code>$_REQUEST</code></li>
+<li><code>$_REQUEST[&#39;act&#39;]</code></li>
+<li><code>$_GET</code></li>
+<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST</code></li>
+<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
+<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
+</ul>
+<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
+<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
+<p>有什么比较有价值的网站文件吗?</p>
+<p>可以php文件即读到网站源码</p>
+<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
+<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
+<hr>
+<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
+<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
+<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
+<p>怎么攻击呢？</p>
+<p>可以修改网站下的任何源代码，可以</p>
+<ul>
+<li>写入一句话木马</li>
+<li>盗号js</li>
+</ul>
+<p>写入一句话木马</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
+<hr>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
+<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
+</ul>
+]]></content>
+      <categories>
+        <category>VulnAnalysis</category>
+      </categories>
+      <tags>
+        <tag>VulnAnalysis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Breacher-Go高并发管理员后台爆破工具</title>
     <url>/2019/7273.html</url>
     <content><![CDATA[<h1 id="preface"><a href="#preface" class="headerlink" title="preface :"></a>preface :</h1><p><a href="https://github.com/s0md3v/Breacher">Breacher</a>是由python写的多线程管理员后台爆破工具</p>
@@ -476,58 +528,6 @@
       </categories>
       <tags>
         <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</title>
-    <url>/2018/59330.html</url>
-    <content><![CDATA[<h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
-<p>方便管理员对模板html文件进行修改</p>
-<hr>
-<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
-<li><code>$_REQUEST</code></li>
-<li><code>$_REQUEST[&#39;act&#39;]</code></li>
-<li><code>$_GET</code></li>
-<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST</code></li>
-<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
-</ul>
-<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
-<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
-<p>有什么比较有价值的网站文件吗?</p>
-<p>可以php文件即读到网站源码</p>
-<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
-<hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
-<p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
-<p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
-<p>怎么攻击呢？</p>
-<p>可以修改网站下的任何源代码，可以</p>
-<ul>
-<li>写入一句话木马</li>
-<li>盗号js</li>
-</ul>
-<p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
-<hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
-<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
-</ul>
-]]></content>
-      <categories>
-        <category>VulnAnalysis</category>
-      </categories>
-      <tags>
-        <tag>VulnAnalysis</tag>
       </tags>
   </entry>
   <entry>
@@ -1228,6 +1228,83 @@
       </tags>
   </entry>
   <entry>
+    <title>Crypto-批量创建钱包和转账</title>
+    <url>/2021/12472.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>需求:</p>
+<ol>
+<li>创建40个bsc新钱包</li>
+<li>由1个主钱包把某代币平均分发到40个新钱包中去</li>
+</ol>
+<hr>
+<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="创建钱包"><a href="#创建钱包" class="headerlink" title="创建钱包:"></a>创建钱包:</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3, HTTPProvider</span><br><span class="line"><span class="keyword">from</span> web3.middleware <span class="keyword">import</span> geth_poa_middleware</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_wallet</span>():</span><br><span class="line">    bscUrl = <span class="string">&quot;&quot;</span></span><br><span class="line">    web3 = Web3(HTTPProvider(bscUrl))</span><br><span class="line">    web3.middleware_stack.inject(geth_poa_middleware, layer=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    password = <span class="string">&quot;&quot;</span></span><br><span class="line">    bscAccount = web3.eth.account.create(password)</span><br><span class="line"></span><br><span class="line">    bscAddress = bscAccount.address</span><br><span class="line">    privateKey = bscAccount.privateKey.<span class="built_in">hex</span>()</span><br></pre></td></tr></table></figure>
+
+<p>这一步遇到的问题主要是，web3js的文档和web3py的有些差异，使用上需要注意。</p>
+<h2 id="转账代币"><a href="#转账代币" class="headerlink" title="转账代币:"></a>转账代币:</h2><p>这一步也很简单，调用代币合约里的<code>transfer</code>函数即可</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">contract_address = <span class="string">&#x27;&#x27;</span>  <span class="comment"># 代币地址</span></span><br><span class="line">contract = web3.eth.contract(address=contract_address, abi=abi)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转账数量</span></span><br><span class="line">amount_ether = web3.toWei(amount, <span class="string">&#x27;ether&#x27;</span>)</span><br><span class="line">logger.debug(<span class="string">&quot;[*] send amount: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(amount))</span><br><span class="line"></span><br><span class="line">nonce = web3.eth.getTransactionCount(main_address)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建交易对象</span></span><br><span class="line">token_tx = contract.functions.transfer(to_addr, amount_ether).buildTransaction(&#123;</span><br><span class="line">    <span class="string">&#x27;chainId&#x27;</span>: <span class="number">56</span>, <span class="string">&#x27;gas&#x27;</span>: <span class="number">200000</span>, <span class="string">&#x27;gasPrice&#x27;</span>: web3.toWei(<span class="string">&quot;5&quot;</span>, <span class="string">&#x27;gwei&#x27;</span>), <span class="string">&#x27;nonce&#x27;</span>: nonce</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment"># 私钥签名，然后发送交易</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="代币合约"><a href="#代币合约" class="headerlink" title="代币合约:"></a>代币合约:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@title</span> ERC20 interface</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@dev</span> see https://github.com/ethereum/EIPs/issues/20</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">interface <span class="title class_">IERC20</span> &#123;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">totalSupply</span>(<span class="params"></span>) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address who</span>) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">allowance</span>(<span class="params">address owner, address spender</span>)</span><br><span class="line">    external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint256 value</span>) external returns (bool);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">approve</span>(<span class="params">address spender, uint256 value</span>)</span><br><span class="line">    external returns (bool);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">transferFrom</span>(<span class="params">address <span class="keyword">from</span>, address to, uint256 value</span>)</span><br><span class="line">    external returns (bool);</span><br><span class="line"></span><br><span class="line">  event <span class="title class_">Transfer</span>(</span><br><span class="line">    address indexed <span class="keyword">from</span>,</span><br><span class="line">    address indexed to,</span><br><span class="line">    uint256 value</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  event <span class="title class_">Approval</span>(</span><br><span class="line">    address indexed owner,</span><br><span class="line">    address indexed spender,</span><br><span class="line">    uint256 value</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">contract <span class="title class_">ERC20</span> is <span class="title class_">IERC20</span> &#123; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看一下代币合约的solidity代码，可知大部分代币都是符合erc20标准的，都有几个基础函数.</p>
+<ul>
+<li>totalSupply():总供应量</li>
+<li>balanceOf():余额</li>
+<li>allowance():授权的代币数量</li>
+<li>transfer():转账</li>
+<li>approve():批准花费代币</li>
+<li>transferFrom():转账</li>
+</ul>
+<hr>
+<h1 id="ERC20"><a href="#ERC20" class="headerlink" title="ERC20:"></a>ERC20:</h1><h2 id="什么是Token（代币）？"><a href="#什么是Token（代币）？" class="headerlink" title="什么是Token（代币）？"></a>什么是Token（代币）？</h2><p>在Ethereum中，代币几乎可以代表任何东西，从在线平台的信誉点、游戏中角色的技能、彩票到金融资产债券，再到真正的商品，如公司的股份、货币、金盎司等！<br>如此强大的功能，值得也必须处理好。<br>如此强大的功能，理应也必须由一个强大的标准来处理，对吗？<br>这正是<code>ERC-20</code>的作用所在，<code>ERC-20</code>就是针对这些发布的Token（代币）制定的一个固定的基础的标准原则。</p>
+<hr>
+<h2 id="什么是-ERC20"><a href="#什么是-ERC20" class="headerlink" title="什么是 ERC20:"></a>什么是 ERC20:</h2><p><code>ERC-20</code>引入了可替代Token的标准。<br>换句话说，它们具有使每个Token与另一个Token完全相同（在类型和价值上）的属性。<br>例如，<code>ERC-20</code>，Token的行为与ETH相同，这意味着任意1个遵循ERC-20规则的Token与所有其他所有Token是平等和相同的。</p>
+<blockquote>
+<p>简单地说，任何<code>ERC-20</code>代币都能立即兼容以太坊钱包（几乎所有支持以太币的钱包，包括Jaxx、MEW、imToken等，也支持 erc-20的代币）</p>
+<p>由于交易所已经知道这些代币是如何操作的，它们可以很容易地整合这些代币。这就意味着，在很多情况下，这些代币都是可以立即进行交易的。</p>
+</blockquote>
+<p>标准化非常有利，也就意味着这些资产可以用于不同的平台和项目，否则只能用在特定的场合。</p>
+<p>代币（Token）是区块链中定义价值的方式，用于标定金融或数字资产。</p>
+<p>在以太坊上，<strong>代币使用相同的标准，这样代币之间的兑换和DAPP支持就会变得容易</strong>。</p>
+<hr>
+<h2 id="标准规定了哪些内容"><a href="#标准规定了哪些内容" class="headerlink" title="标准规定了哪些内容:"></a>标准规定了哪些内容:</h2><p>ERC20 是各个代币的标准接口。</p>
+<p>ERC20 代币仅仅是以太坊代币的子集。<br>为了充分兼容 ERC20，开发者需要将一组特定的函数（接口）集成到他们的智能合约中，以便在高层面能够执行以下操作：</p>
+<ul>
+<li>获得代币总供应量</li>
+<li>获得账户余额</li>
+<li>转让代币</li>
+<li>批准花费代币</li>
+</ul>
+<p>ERC20 让以太坊区块链上的其他智能合约和去中心化应用之间无缝交互。</p>
+<hr>
+<h2 id="ERC20-标准"><a href="#ERC20-标准" class="headerlink" title="ERC20 标准:"></a>ERC20 标准:</h2><p>ERC20 标准定义了一个兼容协议, 需要实现的函数. 具体如下.</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment">// ERC Token Standard #20 Interface</span></span><br><span class="line">  <span class="comment">// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md</span></span><br><span class="line">  <span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  contract <span class="title class_">ERC20Interface</span> &#123;</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">totalSupply</span>(<span class="params"></span>) public constant returns (uint);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address tokenOwner</span>) public constant returns (uint balance);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">allowance</span>(<span class="params">address tokenOwner, address spender</span>) public constant returns (uint remaining);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">approve</span>(<span class="params">address spender, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">transferFrom</span>(<span class="params">address <span class="keyword">from</span>, address to, uint tokens</span>) public returns (bool success); </span><br><span class="line">     event <span class="title class_">Transfer</span>(address indexed <span class="keyword">from</span>, address indexed to, uint tokens);</span><br><span class="line">     event <span class="title class_">Approval</span>(address indexed tokenOwner, address indexed spender, uint tokens);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时规定了三个必须定义的变量,分别是</p>
+<ul>
+<li>合约名称</li>
+<li>合约代号</li>
+<li>合约进制</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">string public constant name = <span class="string">&quot;Token Name&quot;</span>;</span><br><span class="line">string public constant symbol = <span class="string">&quot;SYM&quot;</span>;</span><br><span class="line">uint8 public constant decimals = <span class="number">18</span>;  <span class="comment">// 18 is the most common number of decimal places</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>cool,脚本是挺简单的，顺便了解了一下<code>erc20</code>的代币标准</p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a href="https://github.com/akhdaniel/eth-election/blob/719d5edd4127a8314c958968a195437cb0a1b088/python/test-create-account.py">create wallet web3py</a></li>
+<li><a href="https://www.jianshu.com/p/a3a59c651cc2">ERC20代币那么火爆, 那么ERC20到底是什么?</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/313299528">ERC-20是什么？</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Crypto-web3js文档方法列表</title>
     <url>/2021/65046.html</url>
     <content><![CDATA[<h1 id="web3-js-1-0中文手册"><a href="#web3-js-1-0中文手册" class="headerlink" title="web3.js 1.0中文手册"></a>web3.js 1.0中文手册</h1><h1 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h1><ul>
@@ -1421,83 +1498,6 @@
 <hr>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="http://cw.hubwiz.com/card/c/web3.js-1.0/1/8/24/">web3js中文文档</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Crypto-批量创建钱包和转账</title>
-    <url>/2021/12472.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>需求:</p>
-<ol>
-<li>创建40个bsc新钱包</li>
-<li>由1个主钱包把某代币平均分发到40个新钱包中去</li>
-</ol>
-<hr>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="创建钱包"><a href="#创建钱包" class="headerlink" title="创建钱包:"></a>创建钱包:</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3, HTTPProvider</span><br><span class="line"><span class="keyword">from</span> web3.middleware <span class="keyword">import</span> geth_poa_middleware</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_wallet</span>():</span><br><span class="line">    bscUrl = <span class="string">&quot;&quot;</span></span><br><span class="line">    web3 = Web3(HTTPProvider(bscUrl))</span><br><span class="line">    web3.middleware_stack.inject(geth_poa_middleware, layer=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    password = <span class="string">&quot;&quot;</span></span><br><span class="line">    bscAccount = web3.eth.account.create(password)</span><br><span class="line"></span><br><span class="line">    bscAddress = bscAccount.address</span><br><span class="line">    privateKey = bscAccount.privateKey.<span class="built_in">hex</span>()</span><br></pre></td></tr></table></figure>
-
-<p>这一步遇到的问题主要是，web3js的文档和web3py的有些差异，使用上需要注意。</p>
-<h2 id="转账代币"><a href="#转账代币" class="headerlink" title="转账代币:"></a>转账代币:</h2><p>这一步也很简单，调用代币合约里的<code>transfer</code>函数即可</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">contract_address = <span class="string">&#x27;&#x27;</span>  <span class="comment"># 代币地址</span></span><br><span class="line">contract = web3.eth.contract(address=contract_address, abi=abi)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转账数量</span></span><br><span class="line">amount_ether = web3.toWei(amount, <span class="string">&#x27;ether&#x27;</span>)</span><br><span class="line">logger.debug(<span class="string">&quot;[*] send amount: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(amount))</span><br><span class="line"></span><br><span class="line">nonce = web3.eth.getTransactionCount(main_address)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建交易对象</span></span><br><span class="line">token_tx = contract.functions.transfer(to_addr, amount_ether).buildTransaction(&#123;</span><br><span class="line">    <span class="string">&#x27;chainId&#x27;</span>: <span class="number">56</span>, <span class="string">&#x27;gas&#x27;</span>: <span class="number">200000</span>, <span class="string">&#x27;gasPrice&#x27;</span>: web3.toWei(<span class="string">&quot;5&quot;</span>, <span class="string">&#x27;gwei&#x27;</span>), <span class="string">&#x27;nonce&#x27;</span>: nonce</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment"># 私钥签名，然后发送交易</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="代币合约"><a href="#代币合约" class="headerlink" title="代币合约:"></a>代币合约:</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@title</span> ERC20 interface</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@dev</span> see https://github.com/ethereum/EIPs/issues/20</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">interface <span class="title class_">IERC20</span> &#123;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">totalSupply</span>(<span class="params"></span>) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address who</span>) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">allowance</span>(<span class="params">address owner, address spender</span>)</span><br><span class="line">    external view returns (uint256);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint256 value</span>) external returns (bool);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">approve</span>(<span class="params">address spender, uint256 value</span>)</span><br><span class="line">    external returns (bool);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">transferFrom</span>(<span class="params">address <span class="keyword">from</span>, address to, uint256 value</span>)</span><br><span class="line">    external returns (bool);</span><br><span class="line"></span><br><span class="line">  event <span class="title class_">Transfer</span>(</span><br><span class="line">    address indexed <span class="keyword">from</span>,</span><br><span class="line">    address indexed to,</span><br><span class="line">    uint256 value</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  event <span class="title class_">Approval</span>(</span><br><span class="line">    address indexed owner,</span><br><span class="line">    address indexed spender,</span><br><span class="line">    uint256 value</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">contract <span class="title class_">ERC20</span> is <span class="title class_">IERC20</span> &#123; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>看一下代币合约的solidity代码，可知大部分代币都是符合erc20标准的，都有几个基础函数.</p>
-<ul>
-<li>totalSupply():总供应量</li>
-<li>balanceOf():余额</li>
-<li>allowance():授权的代币数量</li>
-<li>transfer():转账</li>
-<li>approve():批准花费代币</li>
-<li>transferFrom():转账</li>
-</ul>
-<hr>
-<h1 id="ERC20"><a href="#ERC20" class="headerlink" title="ERC20:"></a>ERC20:</h1><h2 id="什么是Token（代币）？"><a href="#什么是Token（代币）？" class="headerlink" title="什么是Token（代币）？"></a>什么是Token（代币）？</h2><p>在Ethereum中，代币几乎可以代表任何东西，从在线平台的信誉点、游戏中角色的技能、彩票到金融资产债券，再到真正的商品，如公司的股份、货币、金盎司等！<br>如此强大的功能，值得也必须处理好。<br>如此强大的功能，理应也必须由一个强大的标准来处理，对吗？<br>这正是<code>ERC-20</code>的作用所在，<code>ERC-20</code>就是针对这些发布的Token（代币）制定的一个固定的基础的标准原则。</p>
-<hr>
-<h2 id="什么是-ERC20"><a href="#什么是-ERC20" class="headerlink" title="什么是 ERC20:"></a>什么是 ERC20:</h2><p><code>ERC-20</code>引入了可替代Token的标准。<br>换句话说，它们具有使每个Token与另一个Token完全相同（在类型和价值上）的属性。<br>例如，<code>ERC-20</code>，Token的行为与ETH相同，这意味着任意1个遵循ERC-20规则的Token与所有其他所有Token是平等和相同的。</p>
-<blockquote>
-<p>简单地说，任何<code>ERC-20</code>代币都能立即兼容以太坊钱包（几乎所有支持以太币的钱包，包括Jaxx、MEW、imToken等，也支持 erc-20的代币）</p>
-<p>由于交易所已经知道这些代币是如何操作的，它们可以很容易地整合这些代币。这就意味着，在很多情况下，这些代币都是可以立即进行交易的。</p>
-</blockquote>
-<p>标准化非常有利，也就意味着这些资产可以用于不同的平台和项目，否则只能用在特定的场合。</p>
-<p>代币（Token）是区块链中定义价值的方式，用于标定金融或数字资产。</p>
-<p>在以太坊上，<strong>代币使用相同的标准，这样代币之间的兑换和DAPP支持就会变得容易</strong>。</p>
-<hr>
-<h2 id="标准规定了哪些内容"><a href="#标准规定了哪些内容" class="headerlink" title="标准规定了哪些内容:"></a>标准规定了哪些内容:</h2><p>ERC20 是各个代币的标准接口。</p>
-<p>ERC20 代币仅仅是以太坊代币的子集。<br>为了充分兼容 ERC20，开发者需要将一组特定的函数（接口）集成到他们的智能合约中，以便在高层面能够执行以下操作：</p>
-<ul>
-<li>获得代币总供应量</li>
-<li>获得账户余额</li>
-<li>转让代币</li>
-<li>批准花费代币</li>
-</ul>
-<p>ERC20 让以太坊区块链上的其他智能合约和去中心化应用之间无缝交互。</p>
-<hr>
-<h2 id="ERC20-标准"><a href="#ERC20-标准" class="headerlink" title="ERC20 标准:"></a>ERC20 标准:</h2><p>ERC20 标准定义了一个兼容协议, 需要实现的函数. 具体如下.</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment">// ERC Token Standard #20 Interface</span></span><br><span class="line">  <span class="comment">// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md</span></span><br><span class="line">  <span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  contract <span class="title class_">ERC20Interface</span> &#123;</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">totalSupply</span>(<span class="params"></span>) public constant returns (uint);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address tokenOwner</span>) public constant returns (uint balance);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">allowance</span>(<span class="params">address tokenOwner, address spender</span>) public constant returns (uint remaining);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">approve</span>(<span class="params">address spender, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">transferFrom</span>(<span class="params">address <span class="keyword">from</span>, address to, uint tokens</span>) public returns (bool success); </span><br><span class="line">     event <span class="title class_">Transfer</span>(address indexed <span class="keyword">from</span>, address indexed to, uint tokens);</span><br><span class="line">     event <span class="title class_">Approval</span>(address indexed tokenOwner, address indexed spender, uint tokens);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>同时规定了三个必须定义的变量,分别是</p>
-<ul>
-<li>合约名称</li>
-<li>合约代号</li>
-<li>合约进制</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">string public constant name = <span class="string">&quot;Token Name&quot;</span>;</span><br><span class="line">string public constant symbol = <span class="string">&quot;SYM&quot;</span>;</span><br><span class="line">uint8 public constant decimals = <span class="number">18</span>;  <span class="comment">// 18 is the most common number of decimal places</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>cool,脚本是挺简单的，顺便了解了一下<code>erc20</code>的代币标准</p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a href="https://github.com/akhdaniel/eth-election/blob/719d5edd4127a8314c958968a195437cb0a1b088/python/test-create-account.py">create wallet web3py</a></li>
-<li><a href="https://www.jianshu.com/p/a3a59c651cc2">ERC20代币那么火爆, 那么ERC20到底是什么?</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/313299528">ERC-20是什么？</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -4005,66 +4005,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Sqlmap源码-checkSameHost函数的疑问</title>
-    <url>/2019/63018.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在看sqlmap源码的时候,看了它的<code>crawler</code>，用到了<code>checkSameHost</code>函数.</p>
-<p>跟进到<code>lib.core.common</code>公共函数里看<code>checkSameHost</code>函数,产生了一些疑问</p>
-<hr>
-<h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">checkSameHost</span>(<span class="params">*urls</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost(&#x27;http://www.target.com/page1.php?id=1&#x27;, &#x27;http://www.target.com/images/page2.php&#x27;)</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost(&#x27;http://www.target.com/page1.php?id=1&#x27;, &#x27;http://www.target2.com/images/page2.php&#x27;)</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">_</span>(<span class="params">value</span>): <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r&quot;\A\w+://&quot;</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">&quot;http://%s&quot;</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">all</span>(re.sub(<span class="string">r&quot;(?i)\Awww\.&quot;</span>, <span class="string">&quot;&quot;</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">&quot;&quot;</span>).netloc.split(<span class="string">&#x27;:&#x27;</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r&quot;(?i)\Awww\.&quot;</span>, <span class="string">&quot;&quot;</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">&quot;&quot;</span>).netloc.split(<span class="string">&#x27;:&#x27;</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or &quot;&quot;).netloc.split(&#x27;:&#x27;)[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r&quot;(?i)\Awww\.&quot; (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
-<ul>
-<li><code>False</code></li>
-</ul>
-</li>
-<li><p><code>http://xxx.com</code>,<code>http://www.xxx.com</code></p>
-<ul>
-<li><code>True</code></li>
-</ul>
-</li>
-<li><p><code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code></p>
-<ul>
-<li><code>False</code></li>
-<li>?????</li>
-</ul>
-</li>
-</ul>
-<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h2><p>很多时候,<code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code>这两个子域名是可以解析同一个ip上的,这种情况下<code>sameHost</code>判断应该为<code>True</code>才对,为什么这里为<code>False</code>呢?</p>
-<h2 id="answer"><a href="#answer" class="headerlink" title="answer:"></a>answer:</h2><p>这里的sameHost应该是有歧义<br>严格意义上,是否是sameHost应该通过ip来判断,但是如果url很多的话,都去其解析域名对应的ip,会消耗时间</p>
-<p>广义上看,这里的sameHost应该指的是same website.</p>
-<p>通过域名来判断是否是相同的网站,是ok的.</p>
-<hr>
-<h1 id="域名与ip的关系"><a href="#域名与ip的关系" class="headerlink" title="域名与ip的关系:"></a>域名与ip的关系:</h1><p>常见的情况下,一个域名与一个ip是对应的.</p>
-<p>但是<strong>域名与ip的关系不一定是一对一的关系,可以是多对一或者是一对多的关系</strong>.</p>
-<ul>
-<li><p>多个域名解析到一个ip:</p>
-<ul>
-<li><a href="https://jingyan.baidu.com/article/a24b33cd55c7ba19ff002b4b.html">IIS中怎么配置虚拟主机</a></li>
-<li><a href="https://segmentfault.com/q/1010000002442790">IS可否将多个域名配置到同一个IP&#x2F;端口</a></li>
-</ul>
-</li>
-<li><p>一个域名解析到多个ip:</p>
-<ul>
-<li><a href="https://www.cnblogs.com/cuihongyu3503319/archive/2012/07/09/2583129.html">负载均衡实现，一个域名对应多个IP地址</a></li>
-</ul>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>SourceCodeReading</category>
-      </categories>
-      <tags>
-        <tag>SourceCodeReading</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Sqlmap源码-请求参数的检验和解析(一)</title>
     <url>/2019/59037.html</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用sqlmap的时候,</p>
@@ -4182,6 +4122,66 @@
 <li>sqlmap会尽可能找出你的Post数据中所有可测试参数.</li>
 <li>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在注入,可以考虑<code>uri注入</code></li>
 <li><code>header</code>中可以测试的点为:- <code>user-agent</code>、<code>referer</code>、<code>host</code>、<code>cookie</code></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SourceCodeReading</category>
+      </categories>
+      <tags>
+        <tag>SourceCodeReading</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Sqlmap源码-checkSameHost函数的疑问</title>
+    <url>/2019/63018.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在看sqlmap源码的时候,看了它的<code>crawler</code>，用到了<code>checkSameHost</code>函数.</p>
+<p>跟进到<code>lib.core.common</code>公共函数里看<code>checkSameHost</code>函数,产生了一些疑问</p>
+<hr>
+<h1 id="checkSameHost函数"><a href="#checkSameHost函数" class="headerlink" title="checkSameHost函数:"></a>checkSameHost函数:</h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用来判断一堆urls是否是相同主机的.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">checkSameHost</span>(<span class="params">*urls</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Returns True if all provided urls share that same host</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost(&#x27;http://www.target.com/page1.php?id=1&#x27;, &#x27;http://www.target.com/images/page2.php&#x27;)</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; checkSameHost(&#x27;http://www.target.com/page1.php?id=1&#x27;, &#x27;http://www.target2.com/images/page2.php&#x27;)</span></span><br><span class="line"><span class="string">    False</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 用了*urls可以接受任意数量的参数,并放入tuple里,由于不知道传入url的个数是多少,所以要适当的进行判断</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> urls:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(urls) == <span class="number">1</span>: <span class="comment"># 1个url不用判断</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">_</span>(<span class="params">value</span>): <span class="comment"># _ 这个用法应该是匿名函数的意思吧?</span></span><br><span class="line">            <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> re.search(<span class="string">r&quot;\A\w+://&quot;</span>, value):</span><br><span class="line">                <span class="comment"># \A 文本开头</span></span><br><span class="line">                <span class="comment"># \w匹配英文字母、数字或下划线，等价于[a-zA-Z0-9_]。</span></span><br><span class="line">                <span class="comment"># + 量词 — 匹配 1 至 无穷 次</span></span><br><span class="line">                <span class="comment"># :// 字面匹配字符</span></span><br><span class="line">                value = <span class="string">&quot;http://%s&quot;</span> % value <span class="comment"># 没有协议的话自动加上http协议.这个判断可用来处理输入时有没带协议的情况,方便urlparse.urlparse函数进行解析</span></span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">all</span>(re.sub(<span class="string">r&quot;(?i)\Awww\.&quot;</span>, <span class="string">&quot;&quot;</span>, urlparse.urlparse(_(url) <span class="keyword">or</span> <span class="string">&quot;&quot;</span>).netloc.split(<span class="string">&#x27;:&#x27;</span>)[<span class="number">0</span>]) == re.sub(</span><br><span class="line">                <span class="string">r&quot;(?i)\Awww\.&quot;</span>, <span class="string">&quot;&quot;</span>, urlparse.urlparse(_(urls[<span class="number">0</span>]) <span class="keyword">or</span> <span class="string">&quot;&quot;</span>).netloc.split(<span class="string">&#x27;:&#x27;</span>)[<span class="number">0</span>]) <span class="keyword">for</span> url <span class="keyword">in</span> urls[<span class="number">1</span>:])</span><br><span class="line">                    <span class="comment"># all(iterable) Return True if all elements of the iterable are true (or if the iterable is empty)</span></span><br><span class="line">                    <span class="comment"># urlparse.urlparse(_(url) or &quot;&quot;).netloc.split(&#x27;:&#x27;)[0] 域名服务器</span></span><br><span class="line">                    <span class="comment"># 正则表达式 r&quot;(?i)\Awww\.&quot; (?!) Assert that the Regex below does not match</span></span><br><span class="line">                    <span class="comment"># www.开头的域名,www.baidu.com会被处理成baidu.com</span></span><br><span class="line">                    <span class="comment"># 遍历看,通过域名判断是否是sameHost</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h2><ul>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target.com/images/page2.php</code></p>
+<ul>
+<li><code>True</code></li>
+</ul>
+</li>
+<li><p><code>http://www.target.com/page1.php?id=1</code>, <code>http://www.target2.com/images/page2.php</code></p>
+<ul>
+<li><code>False</code></li>
+</ul>
+</li>
+<li><p><code>http://xxx.com</code>,<code>http://www.xxx.com</code></p>
+<ul>
+<li><code>True</code></li>
+</ul>
+</li>
+<li><p><code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code></p>
+<ul>
+<li><code>False</code></li>
+<li>?????</li>
+</ul>
+</li>
+</ul>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问:"></a>疑问:</h2><p>很多时候,<code>http://aa.xxx.com</code>,<code>http://bb.xxx.com</code>这两个子域名是可以解析同一个ip上的,这种情况下<code>sameHost</code>判断应该为<code>True</code>才对,为什么这里为<code>False</code>呢?</p>
+<h2 id="answer"><a href="#answer" class="headerlink" title="answer:"></a>answer:</h2><p>这里的sameHost应该是有歧义<br>严格意义上,是否是sameHost应该通过ip来判断,但是如果url很多的话,都去其解析域名对应的ip,会消耗时间</p>
+<p>广义上看,这里的sameHost应该指的是same website.</p>
+<p>通过域名来判断是否是相同的网站,是ok的.</p>
+<hr>
+<h1 id="域名与ip的关系"><a href="#域名与ip的关系" class="headerlink" title="域名与ip的关系:"></a>域名与ip的关系:</h1><p>常见的情况下,一个域名与一个ip是对应的.</p>
+<p>但是<strong>域名与ip的关系不一定是一对一的关系,可以是多对一或者是一对多的关系</strong>.</p>
+<ul>
+<li><p>多个域名解析到一个ip:</p>
+<ul>
+<li><a href="https://jingyan.baidu.com/article/a24b33cd55c7ba19ff002b4b.html">IIS中怎么配置虚拟主机</a></li>
+<li><a href="https://segmentfault.com/q/1010000002442790">IS可否将多个域名配置到同一个IP&#x2F;端口</a></li>
+</ul>
+</li>
+<li><p>一个域名解析到多个ip:</p>
+<ul>
+<li><a href="https://www.cnblogs.com/cuihongyu3503319/archive/2012/07/09/2583129.html">负载均衡实现，一个域名对应多个IP地址</a></li>
+</ul>
+</li>
 </ul>
 ]]></content>
       <categories>
@@ -4459,6 +4459,57 @@
       </tags>
   </entry>
   <entry>
+    <title>Unicode RTLO(Right-To-Left Override)字符欺骗</title>
+    <url>/2020/28275.html</url>
+    <content><![CDATA[<h1 id="什么是RTLO"><a href="#什么是RTLO" class="headerlink" title="什么是RTLO:"></a>什么是RTLO:</h1><p>RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： <a href="http://www.codetable.net/decimal/8238">http://www.codetable.net/decimal/8238</a></p>
+<p>可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制</p>
+<hr>
+<h1 id="创建欺骗文件"><a href="#创建欺骗文件" class="headerlink" title="创建欺骗文件:"></a>创建欺骗文件:</h1><p>1.使用名称<code>TestingRTLO[U+202E]xcod.txt</code>创建一个文件</p>
+<p>2.windows自带的character map软件中,找到对应的字符.</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103632.png" alt="20201110103632"></p>
+<p>3.复制替换<code>[U + 202E]</code>字符,保存.</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103755.png" alt="20201110103755"></p>
+<p>在软件中发送过去</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103830.png" alt="20201110103830"></p>
+<p>下载来是</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103914.png" alt="20201110103914"></p>
+<p>同理可制作一个exe结尾的。</p>
+<p>发过去是log结尾</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104003.png" alt="20201110104003"></p>
+<p>下载到本地,实际上是exe结尾的。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104018.png" alt="20201110104018"></p>
+<hr>
+<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><p>可制作以下后缀名的文件:</p>
+<ul>
+<li>.bat</li>
+<li>.exe</li>
+<li>.cmd</li>
+<li>.com</li>
+<li>.lnk</li>
+<li>.pif</li>
+<li>.scr</li>
+<li>.vb</li>
+<li>.vbe</li>
+<li>.vbs</li>
+<li>.wsh</li>
+</ul>
+<hr>
+<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>参考:<a href="https://github.com/nextcloud/server/pull/10030">https://github.com/nextcloud/server/pull/10030</a></p>
+<p>把该Unicode字符过滤掉</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104540.png" alt="20201110104540"></p>
+<hr>
+<h1 id="漏洞案例"><a href="#漏洞案例" class="headerlink" title="漏洞案例:"></a>漏洞案例:</h1><p><a href="https://hackerone.com/reports/229170">RTLO character allowed in shared files</a><br><a href="https://hackerone.com/reports/196222">RTLO char allowed in chat</a></p>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/#:~:text=What%20is%20RTLO%3F,right%2Dto%2Dleft%20order.">Spoof Using Right to Left Override (RTLO) Technique</a><br><a href="http://www.lijiejie.com/unicode-rtlo-right-to-left-override-issue/">Unicode RTLO(Right-To-Left Override) Security ISSUE</a></p>
+]]></content>
+      <categories>
+        <category>WebSecurity</category>
+      </categories>
+      <tags>
+        <tag>WebSecurity</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Uniswap-getReserves获取储备量</title>
     <url>/2022/15785.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。</p>
@@ -4559,57 +4610,6 @@
         <tag>Solidity</tag>
         <tag>SmartContract</tag>
         <tag>Uniswap</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Unicode RTLO(Right-To-Left Override)字符欺骗</title>
-    <url>/2020/28275.html</url>
-    <content><![CDATA[<h1 id="什么是RTLO"><a href="#什么是RTLO" class="headerlink" title="什么是RTLO:"></a>什么是RTLO:</h1><p>RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： <a href="http://www.codetable.net/decimal/8238">http://www.codetable.net/decimal/8238</a></p>
-<p>可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制</p>
-<hr>
-<h1 id="创建欺骗文件"><a href="#创建欺骗文件" class="headerlink" title="创建欺骗文件:"></a>创建欺骗文件:</h1><p>1.使用名称<code>TestingRTLO[U+202E]xcod.txt</code>创建一个文件</p>
-<p>2.windows自带的character map软件中,找到对应的字符.</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103632.png" alt="20201110103632"></p>
-<p>3.复制替换<code>[U + 202E]</code>字符,保存.</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103755.png" alt="20201110103755"></p>
-<p>在软件中发送过去</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103830.png" alt="20201110103830"></p>
-<p>下载来是</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103914.png" alt="20201110103914"></p>
-<p>同理可制作一个exe结尾的。</p>
-<p>发过去是log结尾</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104003.png" alt="20201110104003"></p>
-<p>下载到本地,实际上是exe结尾的。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104018.png" alt="20201110104018"></p>
-<hr>
-<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><p>可制作以下后缀名的文件:</p>
-<ul>
-<li>.bat</li>
-<li>.exe</li>
-<li>.cmd</li>
-<li>.com</li>
-<li>.lnk</li>
-<li>.pif</li>
-<li>.scr</li>
-<li>.vb</li>
-<li>.vbe</li>
-<li>.vbs</li>
-<li>.wsh</li>
-</ul>
-<hr>
-<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>参考:<a href="https://github.com/nextcloud/server/pull/10030">https://github.com/nextcloud/server/pull/10030</a></p>
-<p>把该Unicode字符过滤掉</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104540.png" alt="20201110104540"></p>
-<hr>
-<h1 id="漏洞案例"><a href="#漏洞案例" class="headerlink" title="漏洞案例:"></a>漏洞案例:</h1><p><a href="https://hackerone.com/reports/229170">RTLO character allowed in shared files</a><br><a href="https://hackerone.com/reports/196222">RTLO char allowed in chat</a></p>
-<hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/#:~:text=What%20is%20RTLO%3F,right%2Dto%2Dleft%20order.">Spoof Using Right to Left Override (RTLO) Technique</a><br><a href="http://www.lijiejie.com/unicode-rtlo-right-to-left-override-issue/">Unicode RTLO(Right-To-Left Override) Security ISSUE</a></p>
-]]></content>
-      <categories>
-        <category>WebSecurity</category>
-      </categories>
-      <tags>
-        <tag>WebSecurity</tag>
       </tags>
   </entry>
   <entry>
@@ -5663,6 +5663,101 @@
       </tags>
   </entry>
   <entry>
+    <title>w13scan-扫描插件总结-PerFolder</title>
+    <url>/2019/7544.html</url>
+    <content><![CDATA[<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
+<hr>
+<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
+<p>拆解后的目录为:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
+
+<p>然后以这些目录url为基础,拼接url去扫描</p>
+<hr>
+<h3 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描:"></a>备份文件扫描:</h3><p>原理:</p>
+<p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">&#x27;https://api.github.com/events&#x27;</span>, stream=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw</span><br><span class="line">&lt;requests.packages.urllib3.response.HTTPResponse <span class="built_in">object</span> at <span class="number">0x101194810</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw.read(<span class="number">10</span>)</span><br><span class="line"><span class="string">&#x27;\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>上网找了一个rar,试了一下输出的文件头是<code>b&#39;PK\x03\x04\x14\x00\x00\x00\x08\x00&#39;</code></p>
+<p>插件里的注释</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">* rar:526172211a0700cf9073</span><br><span class="line">* zip:504b0304140000000800</span><br><span class="line">* gz：1f8b080000000000000b</span><br><span class="line">* tar.gz: 1f8b0800</span><br></pre></td></tr></table></figure>
+
+<p>不同后缀的文件有不同的文件头特征.</p>
+<p>有一份简单的备份文件的字典列表,<code>&#39;bak.rar&#39;, &#39;bak.zip&#39;, &#39;backup.rar&#39;, &#39;backup.zip&#39;, &#39;www.zip&#39;, &#39;www.rar&#39;, &#39;web.rar&#39;, &#39;web.zip&#39;,                     &#39;wwwroot.rar&#39;,                     &#39;wwwroot.zip&#39;, &#39;log.zip&#39;, &#39;log.rar&#39;</code></p>
+<blockquote>
+<p>字典这玩意可大可小</p>
+</blockquote>
+<p>通过拼接url,如果<code>status_code</code>是200而且文件头符合,则判断为扫出了备份文件。</p>
+<hr>
+<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历:"></a>目录遍历:</h3><p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg"></p>
+<p>找出一些常见的目录遍历的页面,html源码中有这些特征</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;directory listing for&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;title&gt;directory&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;head&gt;&lt;title&gt;index of&quot;</span><br><span class="line"></span><br><span class="line">&#x27;&lt;table summary=&quot;directory listing&quot;&#x27;</span><br><span class="line"></span><br><span class="line">&#x27;last modified&lt;/a&gt;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>如果在返回包的源码中发现这些特征,则判断这个页面有目录遍历漏洞。</p>
+<hr>
+<h3 id="敏感文件扫描"><a href="#敏感文件扫描" class="headerlink" title="敏感文件扫描:"></a>敏感文件扫描:</h3><p>敏感文件字典采集于bbscan</p>
+<p>总的敏感文件有以下这些</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/config.inc</span><br><span class="line">/config.php.bak</span><br><span class="line">/db.php.bak</span><br><span class="line">/conf/config.ini</span><br><span class="line">/config.ini</span><br><span class="line">/config/config.ini</span><br><span class="line">/configuration.ini</span><br><span class="line">/configs/application.ini</span><br><span class="line">/settings.ini</span><br><span class="line">/application.ini</span><br><span class="line">/conf.ini</span><br><span class="line">/app.ini</span><br><span class="line">/config.json</span><br><span class="line">/a.out</span><br><span class="line">/key</span><br><span class="line">/keys</span><br><span class="line">/key.txt</span><br><span class="line">/temp.txt</span><br><span class="line">/tmp.txt</span><br><span class="line">/php.ini</span><br><span class="line">/sftp-config.json</span><br><span class="line">/index.php.bak</span><br><span class="line">/.index.php.swp</span><br><span class="line">/index.cgi.bak</span><br><span class="line">/config.inc.php.bak</span><br><span class="line">/.config.inc.php.swp</span><br><span class="line">/config/.config.php.swp</span><br><span class="line">/.config.php.swp</span><br><span class="line">/.settings.php.swp</span><br><span class="line">/.database.php.swp</span><br><span class="line">/.db.php.swp</span><br><span class="line">/.mysql.php.swp</span><br><span class="line">/readme</span><br><span class="line">/README</span><br><span class="line">/readme.md</span><br><span class="line">/readme.html</span><br><span class="line">/changelog.txt</span><br><span class="line">/%e6%9b%b4%e6%96%b0%e6%97%a5%e5%bf%97.txt</span><br><span class="line">/www.log</span><br><span class="line">/error.log</span><br><span class="line">/log.log</span><br><span class="line">/sql.log</span><br><span class="line">/errors.log</span><br><span class="line">/db.log</span><br><span class="line">/data.log</span><br><span class="line">/app.log</span><br><span class="line">/ntunnel_mysql.php</span><br></pre></td></tr></table></figure>
+
+<p>实际上的字典的格式为<code>&#123;&#39;path&#39;: &#39;/config.inc&#39;, &#39;tag&#39;: &#39;&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;html&#39;&#125;</code></p>
+<ul>
+<li><code>tag</code>: html源码特征</li>
+<li><code>content-type</code>: 文件拓展名</li>
+<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+</ul>
+<p>原理:</p>
+<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<ol>
+<li>符合html源码特征</li>
+<li>符合文件拓展名</li>
+<li>不在文件拓展名黑名单</li>
+</ol>
+<hr>
+<h3 id="idea-工作目录解析"><a href="#idea-工作目录解析" class="headerlink" title=".idea 工作目录解析:"></a>.idea 工作目录解析:</h3><p>原理:</p>
+<p>url拼接上<code>/.idea/workspace.xml</code></p>
+<p>如果返回包源码中能正则匹配到<code>&lt;project version=&quot;\w+&quot;&gt;</code>，正则匹配版本号,则判定为 JetBrans .idea 泄漏.</p>
+<hr>
+<h3 id="phpinfo探测解析"><a href="#phpinfo探测解析" class="headerlink" title="phpinfo探测解析:"></a>phpinfo探测解析:</h3><p>字典为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;phpinfo.php&quot;,</span><br><span class="line">&quot;pi.php&quot;,</span><br><span class="line">&quot;php.php&quot;,</span><br><span class="line">&quot;i.php&quot;,</span><br><span class="line">&quot;test.php&quot;,</span><br><span class="line">&quot;temp.php&quot;,</span><br><span class="line">&quot;info.php&quot;,</span><br></pre></td></tr></table></figure>
+
+<p>原理:</p>
+<p>拼接Url,发包访问,如果返回包中含<code>&lt;title&gt;phpinfo()&lt;/title&gt;</code>, 则判定为存在phpinfo文件</p>
+<hr>
+<h3 id="git-svn-bzr-hg泄漏"><a href="#git-svn-bzr-hg泄漏" class="headerlink" title="git svn bzr hg泄漏:"></a>git svn bzr hg泄漏:</h3><p>字典为</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">flag = &#123;</span><br><span class="line">    <span class="string">&quot;/.svn/all-wcprops&quot;</span>: <span class="string">&quot;svn:wc:ra_dav:version-url&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/.git/config&quot;</span>: <span class="string">&#x27;repositoryformatversion[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&quot;/.bzr/README&quot;</span>: <span class="string">&#x27;This\sis\sa\sBazaar[\s\S]&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/CVS/Root&#x27;</span>: <span class="string">&#x27;:pserver:[\s\S]*?:[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/.hg/requires&#x27;</span>: <span class="string">&#x27;^revlogv1.*&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>键为文件路径,值为正则匹配规则。</p>
+<p>拼接url, 正则匹配返回包内容,匹配成功则判定为目录下有仓库源码泄漏漏洞</p>
+<hr>
+<h3 id="Sftp探测"><a href="#Sftp探测" class="headerlink" title="Sftp探测:"></a>Sftp探测:</h3><p>字典:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/sftp-config.json</span><br><span class="line">/recentservers.xml</span><br></pre></td></tr></table></figure>
+
+<p>正则匹配</p>
+<p><code>(&quot;type&quot;:[\s\S]*?&quot;host&quot;:[\s\S]*?&quot;user&quot;:[\s\S]*?</code></p>
+<p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
+<p>匹配到则认为找到sftp</p>
+<hr>
+<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>规则格式和判定方式和敏感文件扫描一样。</p>
+<p>规则格式:<code>&#123;&#39;path&#39;: &#39;/fckeditor/_samples/default.html&#39;, &#39;tag&#39;: &#39;&lt;title&gt;FCKeditor&#39;, &#39;content-type&#39;: &#39;html&#39;,                      &#39;content-type_no&#39;: &#39;&#39;&#125;</code></p>
+<p>原理:</p>
+<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
+<ol>
+<li>符合html源码特征</li>
+<li>符合文件拓展名</li>
+<li>不在文件拓展名黑名单</li>
+</ol>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md">w13scan</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SourceCodeReading</category>
+      </categories>
+      <tags>
+        <tag>SourceCodeReading</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>w13scan-扫描插件总结-PerFile</title>
     <url>/2019/24549.html</url>
     <content><![CDATA[<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
@@ -5871,101 +5966,6 @@
 <li><a href="https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BPython%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#1-%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%EF%BC%9A">一篇文章带你理解漏洞之 Python 反序列化漏洞</a></li>
 <li><a href="https://www.jianshu.com/p/aef2ae0498df">SSTI模板注入</a></li>
 <li><a href="https://x.hacking8.com/post-356.html">写在w13scan第一阶段</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>SourceCodeReading</category>
-      </categories>
-      <tags>
-        <tag>SourceCodeReading</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>w13scan-扫描插件总结-PerFolder</title>
-    <url>/2019/7544.html</url>
-    <content><![CDATA[<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
-<hr>
-<h2 id="PerFolder-每个目录"><a href="#PerFolder-每个目录" class="headerlink" title="PerFolder (每个目录)"></a>PerFolder (每个目录)</h2><p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
-<p>拆解后的目录为:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
-
-<p>然后以这些目录url为基础,拼接url去扫描</p>
-<hr>
-<h3 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描:"></a>备份文件扫描:</h3><p>原理:</p>
-<p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>r = requests.get(<span class="string">&#x27;https://api.github.com/events&#x27;</span>, stream=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw</span><br><span class="line">&lt;requests.packages.urllib3.response.HTTPResponse <span class="built_in">object</span> at <span class="number">0x101194810</span>&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>r.raw.read(<span class="number">10</span>)</span><br><span class="line"><span class="string">&#x27;\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>上网找了一个rar,试了一下输出的文件头是<code>b&#39;PK\x03\x04\x14\x00\x00\x00\x08\x00&#39;</code></p>
-<p>插件里的注释</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">* rar:526172211a0700cf9073</span><br><span class="line">* zip:504b0304140000000800</span><br><span class="line">* gz：1f8b080000000000000b</span><br><span class="line">* tar.gz: 1f8b0800</span><br></pre></td></tr></table></figure>
-
-<p>不同后缀的文件有不同的文件头特征.</p>
-<p>有一份简单的备份文件的字典列表,<code>&#39;bak.rar&#39;, &#39;bak.zip&#39;, &#39;backup.rar&#39;, &#39;backup.zip&#39;, &#39;www.zip&#39;, &#39;www.rar&#39;, &#39;web.rar&#39;, &#39;web.zip&#39;,                     &#39;wwwroot.rar&#39;,                     &#39;wwwroot.zip&#39;, &#39;log.zip&#39;, &#39;log.rar&#39;</code></p>
-<blockquote>
-<p>字典这玩意可大可小</p>
-</blockquote>
-<p>通过拼接url,如果<code>status_code</code>是200而且文件头符合,则判断为扫出了备份文件。</p>
-<hr>
-<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历:"></a>目录遍历:</h3><p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg"></p>
-<p>找出一些常见的目录遍历的页面,html源码中有这些特征</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;directory listing for&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;title&gt;directory&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;head&gt;&lt;title&gt;index of&quot;</span><br><span class="line"></span><br><span class="line">&#x27;&lt;table summary=&quot;directory listing&quot;&#x27;</span><br><span class="line"></span><br><span class="line">&#x27;last modified&lt;/a&gt;&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>如果在返回包的源码中发现这些特征,则判断这个页面有目录遍历漏洞。</p>
-<hr>
-<h3 id="敏感文件扫描"><a href="#敏感文件扫描" class="headerlink" title="敏感文件扫描:"></a>敏感文件扫描:</h3><p>敏感文件字典采集于bbscan</p>
-<p>总的敏感文件有以下这些</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/config.inc</span><br><span class="line">/config.php.bak</span><br><span class="line">/db.php.bak</span><br><span class="line">/conf/config.ini</span><br><span class="line">/config.ini</span><br><span class="line">/config/config.ini</span><br><span class="line">/configuration.ini</span><br><span class="line">/configs/application.ini</span><br><span class="line">/settings.ini</span><br><span class="line">/application.ini</span><br><span class="line">/conf.ini</span><br><span class="line">/app.ini</span><br><span class="line">/config.json</span><br><span class="line">/a.out</span><br><span class="line">/key</span><br><span class="line">/keys</span><br><span class="line">/key.txt</span><br><span class="line">/temp.txt</span><br><span class="line">/tmp.txt</span><br><span class="line">/php.ini</span><br><span class="line">/sftp-config.json</span><br><span class="line">/index.php.bak</span><br><span class="line">/.index.php.swp</span><br><span class="line">/index.cgi.bak</span><br><span class="line">/config.inc.php.bak</span><br><span class="line">/.config.inc.php.swp</span><br><span class="line">/config/.config.php.swp</span><br><span class="line">/.config.php.swp</span><br><span class="line">/.settings.php.swp</span><br><span class="line">/.database.php.swp</span><br><span class="line">/.db.php.swp</span><br><span class="line">/.mysql.php.swp</span><br><span class="line">/readme</span><br><span class="line">/README</span><br><span class="line">/readme.md</span><br><span class="line">/readme.html</span><br><span class="line">/changelog.txt</span><br><span class="line">/%e6%9b%b4%e6%96%b0%e6%97%a5%e5%bf%97.txt</span><br><span class="line">/www.log</span><br><span class="line">/error.log</span><br><span class="line">/log.log</span><br><span class="line">/sql.log</span><br><span class="line">/errors.log</span><br><span class="line">/db.log</span><br><span class="line">/data.log</span><br><span class="line">/app.log</span><br><span class="line">/ntunnel_mysql.php</span><br></pre></td></tr></table></figure>
-
-<p>实际上的字典的格式为<code>&#123;&#39;path&#39;: &#39;/config.inc&#39;, &#39;tag&#39;: &#39;&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;html&#39;&#125;</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
-</ul>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h3 id="idea-工作目录解析"><a href="#idea-工作目录解析" class="headerlink" title=".idea 工作目录解析:"></a>.idea 工作目录解析:</h3><p>原理:</p>
-<p>url拼接上<code>/.idea/workspace.xml</code></p>
-<p>如果返回包源码中能正则匹配到<code>&lt;project version=&quot;\w+&quot;&gt;</code>，正则匹配版本号,则判定为 JetBrans .idea 泄漏.</p>
-<hr>
-<h3 id="phpinfo探测解析"><a href="#phpinfo探测解析" class="headerlink" title="phpinfo探测解析:"></a>phpinfo探测解析:</h3><p>字典为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;phpinfo.php&quot;,</span><br><span class="line">&quot;pi.php&quot;,</span><br><span class="line">&quot;php.php&quot;,</span><br><span class="line">&quot;i.php&quot;,</span><br><span class="line">&quot;test.php&quot;,</span><br><span class="line">&quot;temp.php&quot;,</span><br><span class="line">&quot;info.php&quot;,</span><br></pre></td></tr></table></figure>
-
-<p>原理:</p>
-<p>拼接Url,发包访问,如果返回包中含<code>&lt;title&gt;phpinfo()&lt;/title&gt;</code>, 则判定为存在phpinfo文件</p>
-<hr>
-<h3 id="git-svn-bzr-hg泄漏"><a href="#git-svn-bzr-hg泄漏" class="headerlink" title="git svn bzr hg泄漏:"></a>git svn bzr hg泄漏:</h3><p>字典为</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">flag = &#123;</span><br><span class="line">    <span class="string">&quot;/.svn/all-wcprops&quot;</span>: <span class="string">&quot;svn:wc:ra_dav:version-url&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/.git/config&quot;</span>: <span class="string">&#x27;repositoryformatversion[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&quot;/.bzr/README&quot;</span>: <span class="string">&#x27;This\sis\sa\sBazaar[\s\S]&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/CVS/Root&#x27;</span>: <span class="string">&#x27;:pserver:[\s\S]*?:[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/.hg/requires&#x27;</span>: <span class="string">&#x27;^revlogv1.*&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>键为文件路径,值为正则匹配规则。</p>
-<p>拼接url, 正则匹配返回包内容,匹配成功则判定为目录下有仓库源码泄漏漏洞</p>
-<hr>
-<h3 id="Sftp探测"><a href="#Sftp探测" class="headerlink" title="Sftp探测:"></a>Sftp探测:</h3><p>字典:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/sftp-config.json</span><br><span class="line">/recentservers.xml</span><br></pre></td></tr></table></figure>
-
-<p>正则匹配</p>
-<p><code>(&quot;type&quot;:[\s\S]*?&quot;host&quot;:[\s\S]*?&quot;user&quot;:[\s\S]*?</code></p>
-<p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
-<p>匹配到则认为找到sftp</p>
-<hr>
-<h3 id="WEB编辑器探测"><a href="#WEB编辑器探测" class="headerlink" title="WEB编辑器探测:"></a>WEB编辑器探测:</h3><p>规则格式和判定方式和敏感文件扫描一样。</p>
-<p>规则格式:<code>&#123;&#39;path&#39;: &#39;/fckeditor/_samples/default.html&#39;, &#39;tag&#39;: &#39;&lt;title&gt;FCKeditor&#39;, &#39;content-type&#39;: &#39;html&#39;,                      &#39;content-type_no&#39;: &#39;&#39;&#125;</code></p>
-<p>原理:</p>
-<p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
-<ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
-</ol>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md">w13scan</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -6527,6 +6527,33 @@
       </tags>
   </entry>
   <entry>
+    <title>记录-Centos7下root运行Chrome</title>
+    <url>/2019/12733.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在Centos7下安装好Chrome浏览器后,root直接运行Chrome的话,会有提示说</p>
+<p><code>Running as root without --no-sandbox is not supported</code></p>
+<h1 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h1><p>修改Chrome的启动脚本即可.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi /usr/bin/google-chrome</span><br></pre></td></tr></table></figure>
+
+<p>修改前</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot;</span><br></pre></td></tr></table></figure>
+
+<p>修改后</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot; --no-sandbox --user-data-dir</span><br></pre></td></tr></table></figure>
+
+<p>这个时候就可以用chrome</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://www.itzgeek.com/how-tos/linux/centos-how-tos/how-to-run-google-chrome-as-root-centos-7-rhel-7.html">How to run Google Chrome as root on CentOS 7 &#x2F; RHEL 7</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Dev</category>
+      </categories>
+      <tags>
+        <tag>Dev</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>记录-Centos7 Docker部署漏洞环境</title>
     <url>/2019/54517.html</url>
     <content><![CDATA[<h1 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装:"></a>docker安装:</h1><ul>
@@ -6593,33 +6620,6 @@
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://github.com/vulhub/vulhub">Pre-Built Vulnerable Environments Based on Docker-Compose</a></li>
 <li><a href="https://github.com/Medicean/VulApps">快速搭建各种漏洞环境(Various vulnerability environment</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Dev</category>
-      </categories>
-      <tags>
-        <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记录-Centos7下root运行Chrome</title>
-    <url>/2019/12733.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在Centos7下安装好Chrome浏览器后,root直接运行Chrome的话,会有提示说</p>
-<p><code>Running as root without --no-sandbox is not supported</code></p>
-<h1 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h1><p>修改Chrome的启动脚本即可.</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi /usr/bin/google-chrome</span><br></pre></td></tr></table></figure>
-
-<p>修改前</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot;</span><br></pre></td></tr></table></figure>
-
-<p>修改后</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># processes (http://crbug.com/376567).</span><br><span class="line">exec &lt; /dev/null</span><br><span class="line">exec &gt; &gt;(exec cat)</span><br><span class="line">exec 2&gt; &gt;(exec cat &gt;&amp;2)</span><br><span class="line"></span><br><span class="line"># Note: exec -a below is a bashism.</span><br><span class="line">exec -a &quot;$0&quot; &quot;$HERE/chrome&quot; &quot;$@&quot; --no-sandbox --user-data-dir</span><br></pre></td></tr></table></figure>
-
-<p>这个时候就可以用chrome</p>
-<hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://www.itzgeek.com/how-tos/linux/centos-how-tos/how-to-run-google-chrome-as-root-centos-7-rhel-7.html">How to run Google Chrome as root on CentOS 7 &#x2F; RHEL 7</a></li>
 </ul>
 ]]></content>
       <categories>
