@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言我们平时在使用sqlmap的时候, 一般会直接这样使用:sqlmap -u http:&#x2F;&#x2F;sqlilabs:8888&#x2F;Less-1&#x2F;?id&#x3D;1 123[10:18:54] [INFO] testing if GET parameter &amp;#x27;id&amp;#x27; is dynamic[10:18:54] [INFO] confirming that GET parameter &amp;#x27;i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqlmap源码-请求参数的检验和解析(一)">
+<meta property="og:url" content="https://jerrychan807.github.io/2019/59037.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="前言我们平时在使用sqlmap的时候, 一般会直接这样使用:sqlmap -u http:&#x2F;&#x2F;sqlilabs:8888&#x2F;Less-1&#x2F;?id&#x3D;1 123[10:18:54] [INFO] testing if GET parameter &amp;#x27;id&amp;#x27; is dynamic[10:18:54] [INFO] confirming that GET parameter &amp;#x27;i">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/tcHEIpybSNujUT2.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/4XiDBCEASfw2x1v.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/wtYPzdE9TKfQXZc.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/yE3h29wS4ibY7G8.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/T7bmUAf3IpM5co9.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/sWjDgcXxN4O6YVH.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/cEn4RwWdaOiKMCj.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/nYZNQceMXvaWois.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/w7KulXg9TW3AILv.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/zX3Ga42xeBpt5R7.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/BAprsZDNHaKjPqz.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/JMjVPST9nOByQUf.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/eUmhpauV8rtE2Mx.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/KliaP9SxsOIX7Wn.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/uXmTcNrst43kaI7.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/9VNkWtMmTFX3z7h.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/zoQvSrAnghPCs8u.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/nPFXazfGiUDNMoT.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/kTpLFKgwV59AQOE.jpg">
+<meta property="article:published_time" content="2019-03-19T06:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.506Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SourceCodeReading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2019/08/28/tcHEIpybSNujUT2.jpg">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2019/59037.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Sqlmap源码-请求参数的检验和解析(一) | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2019/59037.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sqlmap源码-请求参数的检验和解析(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-19 14:36:34" itemprop="dateCreated datePublished" datetime="2019-03-19T14:36:34+08:00">2019-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index"><span itemprop="name">SourceCodeReading</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用sqlmap的时候,</p>
+<p>一般会直接这样使用:<code>sqlmap -u http://sqlilabs:8888/Less-1/?id=1</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[10:18:54] [INFO] testing if GET parameter &#x27;id&#x27; is dynamic</span><br><span class="line">[10:18:54] [INFO] confirming that GET parameter &#x27;id&#x27; is dynamic</span><br><span class="line">[10:18:54] [INFO] GET parameter &#x27;id&#x27; is dynamic</span><br></pre></td></tr></table></figure>
+
+<p>这个时候,sqlmap会自动识别到get请求的有可测试参数<code>id</code><br>那么,sqlmap是如何解析到这个参数的呢?</p>
+<p>重点讲解一下<code>target.py</code>下的解析请求参数函数<code>_setRequestParams()</code></p>
+<h1 id="setRequestParams-函数"><a href="#setRequestParams-函数" class="headerlink" title="_setRequestParams()函数"></a>_setRequestParams()函数</h1><h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明:"></a>函数说明:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Check and set the parameters and perform checks on &#x27;data&#x27; option for</span></span><br><span class="line"><span class="string">    HTTP method POST. </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>对请求的参数进行检验和解析.</p>
+<p>这个函数是在sqlmap测试前的目标准备时做的工作.</p>
+<p>可参考一下,<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43242220">sqlmap 内核分析 I: 基础流程</a></p>
+<hr>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://i.loli.net/2019/08/28/tcHEIpybSNujUT2.jpg"></p>
+<blockquote>
+<p>画图真累人…</p>
+</blockquote>
+<p>由于代码量实在有点多,下面只能挑一些重点的来讲</p>
+<hr>
+<h2 id="匹配并解析Post数据"><a href="#匹配并解析Post数据" class="headerlink" title="匹配并解析Post数据:"></a>匹配并解析Post数据:</h2><p><img src="https://i.loli.net/2019/08/28/4XiDBCEASfw2x1v.jpg"></p>
+<p><code>sqlmap</code>支持这五种数据类型</p>
+<ul>
+<li>XML</li>
+<li>JSON</li>
+<li>JSON_LIKE</li>
+<li>MULTIPART</li>
+<li>ARRAY_LIKE</li>
+</ul>
+<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配:"></a>正则匹配:</h3><p>通过<strong>正则匹配</strong>这五种类型的数据,它们的正则表达式为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Regular expression for XML POST data</span></span><br><span class="line">XML_RECOGNITION_REGEX = <span class="string">r&quot;(?s)\A\s*&lt;[^&gt;]+&gt;(.+&gt;)?\s*\Z&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON POST data</span></span><br><span class="line">JSON_RECOGNITION_REGEX = <span class="string">r&#x27;(?s)\A(\s*\[)*\s*\&#123;.*&quot;[^&quot;]+&quot;\s*:\s*(&quot;[^&quot;]*&quot;|\d+|true|false|null).*\&#125;\s*(\]\s*)*\Z&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting JSON-like POST data</span></span><br><span class="line">JSON_LIKE_RECOGNITION_REGEX = <span class="string">r&quot;(?s)\A(\s*\[)*\s*\&#123;.*&#x27;[^&#x27;]+&#x27;\s*:\s*(&#x27;[^&#x27;]+&#x27;|\d+).*\&#125;\s*(\]\s*)*\Z&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting multipart POST data</span></span><br><span class="line">MULTIPART_RECOGNITION_REGEX = <span class="string">r&quot;(?i)Content-Disposition:[^;]+;\s*name=&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regular expression used for detecting Array-like POST data</span></span><br><span class="line">ARRAY_LIKE_RECOGNITION_REGEX = <span class="string">r&quot;(\A|%s)(\w+)\[\]=.+%s\2\[\]=&quot;</span> % (DEFAULT_GET_POST_DELIMITER, DEFAULT_GET_POST_DELIMITER)</span><br></pre></td></tr></table></figure>
+
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析:"></a>解析:</h3><p>以解析json数据为例,</p>
+<p><img src="https://i.loli.net/2019/08/28/wtYPzdE9TKfQXZc.jpg"></p>
+<p>关键是这3个正则表达式,分别解析3种模式的数据</p>
+<p>简单理解为:</p>
+<ul>
+<li>模式<code>&quot;&quot;:&quot;&quot;</code></li>
+<li>模式<code>&quot;&quot;:数字</code></li>
+<li>模式<code>&quot;&quot;:true false null类型</code></li>
+</ul>
+<p>然后调用<code>process()</code>去解析出它的<code>参数名</code>和<code>整个参数</code>.</p>
+<p><img src="https://i.loli.net/2019/08/28/yE3h29wS4ibY7G8.jpg"></p>
+<p>解析到的数据会添加到<code>hintNames列表</code></p>
+<p>举2个实例方便理解.</p>
+<h3 id="例子1-json数据"><a href="#例子1-json数据" class="headerlink" title="例子1:json数据"></a>例子1:json数据</h3><p>比如现在有一段json数据.</p>
+<p><img src="https://i.loli.net/2019/08/28/T7bmUAf3IpM5co9.jpg"></p>
+<p>经过解析后:</p>
+<p><img src="https://i.loli.net/2019/08/28/sWjDgcXxN4O6YVH.jpg"></p>
+<p>简单的说就是,经过解析处理后,整段的json数据已经分割开来了,变成了一个个<strong>可测试的参数</strong></p>
+<h3 id="例子2-MULTIPART数据"><a href="#例子2-MULTIPART数据" class="headerlink" title="例子2:MULTIPART数据:"></a>例子2:MULTIPART数据:</h3><p>比如现在有一段MULTIPART类型的数据.</p>
+<p><img src="https://i.loli.net/2019/08/28/cEn4RwWdaOiKMCj.jpg"></p>
+<p>经过解析后，也变成了一个可测试的参数.</p>
+<p><img src="https://i.loli.net/2019/08/28/nYZNQceMXvaWois.jpg"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.</p>
+<hr>
+<h2 id="URI注入"><a href="#URI注入" class="headerlink" title="URI注入:"></a>URI注入:</h2><p><img src="https://i.loli.net/2019/08/28/w7KulXg9TW3AILv.jpg"></p>
+<p><img src="https://i.loli.net/2019/08/28/zX3Ga42xeBpt5R7.jpg"></p>
+<p>通过正则匹配<code>url</code>是否符合<code>uri注入</code>的模式.</p>
+<p>正则表达式:<code>r&quot;//[^/]*/([^\.*?]+)\Z&quot;</code></p>
+<p>符合的情况:</p>
+<ul>
+<li><code>http://www.site.com/id82</code></li>
+<li><code>http://www.site.com/article</code></li>
+</ul>
+<p>不符合的情况:</p>
+<ul>
+<li><code>http://www.qqq.com</code></li>
+<li><code>http://www.site.com/article.php?id=1</code></li>
+</ul>
+<p>如果符合<code>uri注入</code>的模式,会提示你是否尝试进行<code>uri注入</code></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结:"></a>总结:</h3><p>我之前简单以为<code>url</code>有参数才存在注入的可能性.</p>
+<p>其实,<strong>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在sqli.</strong></p>
+<p>refs:<a target="_blank" rel="noopener" href="https://www.secpulse.com/archives/49018.html">同花顺某站一处URI注入</a></p>
+<p><img src="https://i.loli.net/2019/08/28/BAprsZDNHaKjPqz.jpg"></p>
+<hr>
+<h2 id="解析cookie"><a href="#解析cookie" class="headerlink" title="解析cookie:"></a>解析cookie:</h2><p><img src="https://i.loli.net/2019/08/28/JMjVPST9nOByQUf.jpg"></p>
+<p>解析<code>cookie</code>会调用到<code>paramToDict()</code>这个函数(把参数转换为可测试参数字典),这个函数也是个大函数,就不具体讲了.可能要写一篇文章才会详细讲到.</p>
+<p>比较重要的点有,<strong>一般会用<code>;</code>符号去分割解析<code>cookie</code>里面的参数.</strong></p>
+<p><img src="https://i.loli.net/2019/08/28/eUmhpauV8rtE2Mx.jpg"></p>
+<p>然后形成可测试参数列表.</p>
+<blockquote>
+<p>sqlmap会尽可能找出你的Post数据中<strong>所有可测试参数</strong>.cookie里的每个参数都不放过.</p>
+</blockquote>
+<hr>
+<h2 id="解析header"><a href="#解析header" class="headerlink" title="解析header:"></a>解析header:</h2><p><img src="https://i.loli.net/2019/08/28/KliaP9SxsOIX7Wn.jpg"></p>
+<p><img src="https://i.loli.net/2019/08/28/uXmTcNrst43kaI7.jpg"></p>
+<p><code>header</code>中可测试的点可能有:</p>
+<ul>
+<li><code>user-agent</code></li>
+<li><code>referer</code></li>
+<li><code>host</code></li>
+<li><code>cookie</code></li>
+</ul>
+<p>比如有一段数据:</p>
+<p><img src="https://i.loli.net/2019/08/28/9VNkWtMmTFX3z7h.jpg"></p>
+<p>解析后的<code>header</code>中可测试的参数为</p>
+<p><img src="https://i.loli.net/2019/08/28/zoQvSrAnghPCs8u.jpg"></p>
+<hr>
+<h2 id="识别csrf-token"><a href="#识别csrf-token" class="headerlink" title="识别csrf-token:"></a>识别csrf-token:</h2><p><img src="https://i.loli.net/2019/08/28/nPFXazfGiUDNMoT.jpg"></p>
+<p><img src="https://i.loli.net/2019/08/28/kTpLFKgwV59AQOE.jpg"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Infixes used for automatic recognition of parameters carrying anti-CSRF tokens</span></span><br><span class="line">CSRF_TOKEN_PARAMETER_INFIXES = (<span class="string">&quot;csrf&quot;</span>, <span class="string">&quot;xsrf&quot;</span>, <span class="string">&quot;token&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>尝试在<code>header</code>数据中寻找有无<code>cstf-token</code>标记的字眼,如果有认为无法注入.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elif</span> conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I):</span><br><span class="line">    testSqlInj = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+
+<p>refs:<a target="_blank" rel="noopener" href="https://www.360zhijia.com/360anquanke/178754.html">【技术分享】使用burp macros和sqlmap绕过csrf防护进行sql注入</a></p>
+<blockquote>
+<p>然而，一些像CSRF、tokens或者简单的的反自动化技术如在一个表单中包含一个隐藏值就能够阻止自动化工具正确的工作</p>
+</blockquote>
+<hr>
+<h1 id="总结-2"><a href="#总结-2" class="headerlink" title="总结:"></a>总结:</h1><ul>
+<li>sqlmap支持5种数据类型的Post数据:<code>XML</code>、<code>JSON</code>、<code>JSON_LIKE</code>、<code>MULTIPART</code>、<code>ARRAY_LIKE</code></li>
+<li>sqlmap会尽可能找出你的Post数据中所有可测试参数.</li>
+<li>url并非一定要带参数才有可能存在注入的,只要跟数据库交互的地方都有可能存在注入,可以考虑<code>uri注入</code></li>
+<li><code>header</code>中可以测试的点为:- <code>user-agent</code>、<code>referer</code>、<code>host</code>、<code>cookie</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/56271.html" rel="bookmark">Dsss源码-100行的SqliScanner-源码分析笔记</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/11158.html" rel="bookmark">Sqlmap源码-AttribDict属性字典</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/63018.html" rel="bookmark">Sqlmap源码-checkSameHost函数的疑问</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/9785.html" rel="bookmark">Sqlmap源码-请求参数的检验和解析(二)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/28684.html" rel="bookmark">XSScon源码-Simple XSS Scanner tool</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SourceCodeReading/" rel="tag"># SourceCodeReading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/64499.html" rel="prev" title="Python-dynamic typing">
+      <i class="fa fa-chevron-left"></i> Python-dynamic typing
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/9785.html" rel="next" title="Sqlmap源码-请求参数的检验和解析(二)">
+      Sqlmap源码-请求参数的检验和解析(二) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#setRequestParams-%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">_setRequestParams()函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="nav-number">2.1.</span> <span class="nav-text">函数说明:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.2.</span> <span class="nav-text">流程图:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E5%B9%B6%E8%A7%A3%E6%9E%90Post%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.</span> <span class="nav-text">匹配并解析Post数据:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D"><span class="nav-number">2.3.1.</span> <span class="nav-text">正则匹配:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90"><span class="nav-number">2.3.2.</span> <span class="nav-text">解析:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%901-json%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.3.</span> <span class="nav-text">例子1:json数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%902-MULTIPART%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.4.</span> <span class="nav-text">例子2:MULTIPART数据:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.5.</span> <span class="nav-text">总结:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URI%E6%B3%A8%E5%85%A5"><span class="nav-number">2.4.</span> <span class="nav-text">URI注入:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">2.4.1.</span> <span class="nav-text">总结:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90cookie"><span class="nav-number">2.5.</span> <span class="nav-text">解析cookie:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90header"><span class="nav-number">2.6.</span> <span class="nav-text">解析header:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%86%E5%88%ABcsrf-token"><span class="nav-number">2.7.</span> <span class="nav-text">识别csrf-token:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-2"><span class="nav-number">3.</span> <span class="nav-text">总结:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">387k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:51</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

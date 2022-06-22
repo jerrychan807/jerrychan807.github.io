@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:无意中看到这个视频，有介绍到tradingview这个网站和SuperTrend这个指标,看起来还不错,尝试写个简单的交易脚本试试水。  SuperTrend指标:简介:SuperTrend指标主要用于为投资者提供价格上涨或下跌的范围 该指标中当产品价格位于绿色线上方时，认为价格处于上涨行情中； 当价格位于红色线下方时，则认为当前的价格处于下跌行情  简单的说,会给出Buy或者Sell信号">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-SuperTrend指标_现货交易脚本">
+<meta property="og:url" content="https://jerrychan807.github.io/2021/48779.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:无意中看到这个视频，有介绍到tradingview这个网站和SuperTrend这个指标,看起来还不错,尝试写个简单的交易脚本试试水。  SuperTrend指标:简介:SuperTrend指标主要用于为投资者提供价格上涨或下跌的范围 该指标中当产品价格位于绿色线上方时，认为价格处于上涨行情中； 当价格位于红色线下方时，则认为当前的价格处于下跌行情  简单的说,会给出Buy或者Sell信号">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5DC72757-B5E7-4E13-B371-10A557367EE9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C1843CAA-777B-46DD-B03E-8647D9D13C73.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/D7DB9AF1-26AC-4D78-B645-701E5B39024B.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5CFD73E4-C26C-41D5-9635-68A71FBBB2B9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210926131021.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/AB2C4958-CB89-42EB-A5CF-89826075AEE7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/08095169-9D4A-493F-B992-697B6F3E56CB.png">
+<meta property="article:published_time" content="2021-09-26T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.470Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2021/48779.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-SuperTrend指标_现货交易脚本 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2021/48779.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-SuperTrend指标_现货交易脚本
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-26 22:36:34" itemprop="dateCreated datePublished" datetime="2021-09-26T22:36:34+08:00">2021-09-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>960</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>无意中看到这个<a target="_blank" rel="noopener" href="https://youtu.be/yPQYHxwfC1g">视频</a>，有介绍到tradingview这个网站和SuperTrend这个指标,看起来还不错,尝试写个简单的交易脚本试试水。</p>
+<hr>
+<h1 id="SuperTrend指标"><a href="#SuperTrend指标" class="headerlink" title="SuperTrend指标:"></a>SuperTrend指标:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>SuperTrend指标主要用于为投资者提供价格上涨或下跌的范围</p>
+<p>该指标中当产品价格位于绿色线上方时，认为价格处于上涨行情中；</p>
+<p>当价格位于红色线下方时，则认为当前的价格处于下跌行情</p>
+<blockquote>
+<p>简单的说,会给出<code>Buy</code>或者<code>Sell</code>信号</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png" alt="8ECBDBBC-A854-461F-A069-7A54DFE82690"></p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理:"></a>原理:</h2><p><strong>原理是判断收盘价是否突破ATR通道（通道 &#x3D; 均价上下n倍ATR）</strong></p>
+<blockquote>
+<p>Todo:还未完全理解hhh，后续补补</p>
+</blockquote>
+<h2 id="我的理解"><a href="#我的理解" class="headerlink" title="我的理解:"></a>我的理解:</h2><hr>
+<h3 id="是否可以按照信号进行交易"><a href="#是否可以按照信号进行交易" class="headerlink" title="是否可以按照信号进行交易?"></a>是否可以按照信号进行交易?</h3><blockquote>
+<p><strong>一般来说，这个指标不用于判断进场信号，但买入价位可以在绿线上方寻找，而卖出价位则可以在红线下方寻找。</strong></p>
+</blockquote>
+<p>如果严格按照<code>Buy</code>或者<code>Sell</code>信号去执行交易的话,效果可能不会很好。</p>
+<p>很有可能会在相邻的信号时，<code>Buy</code>信号的价格比<code>Sell</code>信号要高</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5DC72757-B5E7-4E13-B371-10A557367EE9.png" alt="5DC72757-B5E7-4E13-B371-10A557367EE9"></p>
+<p>例如发送了<code>Buy</code>信号,最理想的情况当然是连续的Green的K棒</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C1843CAA-777B-46DD-B03E-8647D9D13C73.png" alt="C1843CAA-777B-46DD-B03E-8647D9D13C73"></p>
+<p>也有可能,随后就遇到红色的K棒</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B.png" alt="6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B"></p>
+<p>所以嘛,指标只能作为参考,当然也和你的交易周期有关(看K棒的周期)。</p>
+<hr>
+<h3 id="信号发送频率"><a href="#信号发送频率" class="headerlink" title="信号发送频率?"></a>信号发送频率?</h3><p>跟你看线设置的周期有关:</p>
+<p>如果设置<code>1分钟</code>,那么信号频率会很高,可能几分钟就一次</p>
+<p>如果设置<code>4小时</code>,那么信号频率会很低,可能要好几天一次,胜率可能会高很多。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/D7DB9AF1-26AC-4D78-B645-701E5B39024B.png" alt="D7DB9AF1-26AC-4D78-B645-701E5B39024B"></p>
+<hr>
+<h1 id="交易脚本"><a href="#交易脚本" class="headerlink" title="交易脚本:"></a>交易脚本:</h1><h2 id="策略"><a href="#策略" class="headerlink" title="策略:"></a>策略:</h2><ul>
+<li>选择一个交易周期:45mins</li>
+<li><code>Buy</code>信号发出,很可能处于上涨行情,执行市价买入</li>
+<li>设置收益率5%,执行限价卖出</li>
+<li>暂不设置止损,选择一个我认为比较好的投资标的(币):<code>cake</code>，如果卖不出就让它套着</li>
+<li>比较适合小熊行情，这样就算被套住，也成本不高</li>
+</ul>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5CFD73E4-C26C-41D5-9635-68A71FBBB2B9.png" alt="5CFD73E4-C26C-41D5-9635-68A71FBBB2B9"></p>
+<ul>
+<li>自己提供一个api,由tradingview进行发送<code>Buy</code>信号触发</li>
+<li>触发后,市价买入x数量的币</li>
+<li>设置一个止盈收益率为5%限价卖单</li>
+<li>另外脚本监控限价卖单是否成功卖出</li>
+<li>以上每一步都设置tg提醒，入库记录</li>
+<li>暂不设置止损</li>
+</ul>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果:"></a>效果:</h2><p>tradingview设置alert,设置webhook</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210926131021.png" alt="20210926131021"></p>
+<p>市价买入:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/AB2C4958-CB89-42EB-A5CF-89826075AEE7.png" alt="AB2C4958-CB89-42EB-A5CF-89826075AEE7"></p>
+<p>限价卖出:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/08095169-9D4A-493F-B992-697B6F3E56CB.png" alt="08095169-9D4A-493F-B992-697B6F3E56CB"></p>
+<h2 id="Todo"><a href="#Todo" class="headerlink" title="Todo:"></a>Todo:</h2><p>目前是初步尝试,跑一个月看看，后面再持续优化一下以下几个参数</p>
+<ul>
+<li>仓位</li>
+<li>交易周期</li>
+<li>止盈收益率</li>
+</ul>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/145064506">SuperTrend V.1 超级趋势线系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.laohuiyou.com/baike/970.html">外汇技术指标：SuperTrend指标</a></li>
+<li><a target="_blank" rel="noopener" href="https://tw.tradingview.com/">https://tw.tradingview.com/</a></li>
+<li><a target="_blank" rel="noopener" href="https://youtu.be/yPQYHxwfC1g">https://youtu.be/yPQYHxwfC1g</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">Crypto-OpenSea制作NFT初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/1606.html" rel="prev" title="uploadlab-二次渲染绕过">
+      <i class="fa fa-chevron-left"></i> uploadlab-二次渲染绕过
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/3287.html" rel="next" title="Crypto-rarity自动冒险升级脚本">
+      Crypto-rarity自动冒险升级脚本 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SuperTrend%E6%8C%87%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">SuperTrend指标:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">原理:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">2.3.</span> <span class="nav-text">我的理解:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E6%8C%89%E7%85%A7%E4%BF%A1%E5%8F%B7%E8%BF%9B%E8%A1%8C%E4%BA%A4%E6%98%93"><span class="nav-number">2.3.1.</span> <span class="nav-text">是否可以按照信号进行交易?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E9%A2%91%E7%8E%87"><span class="nav-number">2.3.2.</span> <span class="nav-text">信号发送频率?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">交易脚本:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5"><span class="nav-number">3.1.</span> <span class="nav-text">策略:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.2.</span> <span class="nav-text">流程图:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C"><span class="nav-number">3.3.</span> <span class="nav-text">效果:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Todo"><span class="nav-number">3.4.</span> <span class="nav-text">Todo:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">4.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">387k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:51</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

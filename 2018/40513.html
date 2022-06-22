@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Celery-任务调度框架实践">
+<meta property="og:url" content="https://jerrychan807.github.io/2018/40513.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="celery架构图： Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。  Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。  Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。  Produce">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg">
+<meta property="article:published_time" content="2018-03-14T14:37:44.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.460Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2018/40513.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Celery-任务调度框架实践 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2018/40513.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Celery-任务调度框架实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-03-14 22:37:44" itemprop="dateCreated datePublished" datetime="2018-03-14T22:37:44+08:00">2018-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="celery架构图："><a href="#celery架构图：" class="headerlink" title="celery架构图："></a>celery架构图：</h1><ol>
+<li><p>Celery Beat：任务调度器，Beat进程会读取配置文件的内容，周期性地将配置中到期需要执行的任务发送给任务队列。</p>
+</li>
+<li><p>Celery Worker：执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。</p>
+</li>
+<li><p>Broker：消息代理，或者叫作消息中间件，接受任务生产者发送过来的任务消息，存进队列再按序分发给任务消费方（通常是消息队列或者数据库）。</p>
+</li>
+<li><p>Producer：调用了Celery提供的API、函数或者装饰器而产生任务并交给任务队列处理的都是任务生产者。</p>
+</li>
+<li><p>Result Backend：任务处理完后保存状态信息和结果，以供查询。Celery默认已支持Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy等方式。</p>
+</li>
+</ol>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg"></p>
+<hr>
+<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化:"></a>初始化:</h1><h2 id="1-运行celery"><a href="#1-运行celery" class="headerlink" title="1.运行celery"></a>1.运行celery</h2><p>mac环境下的celery一下载就能直接运行。<br>但是centos6.9 环境下好像下载之后并不能直接运行，估计是环境变量没有配好。<br>需要加上celery的安装路径。<br>使用<code>/usr/local/bin/celery -A your_app worker --loglevel=info</code></p>
+<hr>
+<h2 id="2-以守护进程运行celery"><a href="#2-以守护进程运行celery" class="headerlink" title="2.以守护进程运行celery:"></a>2.以守护进程运行celery:</h2><p>需要一个初始化脚本：celeryd</p>
+<ul>
+<li><p>使用方法：&#x2F;etc&#x2F;init.d&#x2F;celeryd {start|stop|restart|status}</p>
+</li>
+<li><p>配置文件:&#x2F;etc&#x2F;default&#x2F;celeryd</p>
+</li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14275821/how-to-run-celery-as-a-daemon-in-production">How to run celery as a daemon in production?</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/happyAnger6/article/details/51626516">Celery教程————-以守护进程方式运行worker</a></li>
+</ul>
+<hr>
+<h2 id="3-使用redis"><a href="#3-使用redis" class="headerlink" title="3.使用redis:"></a>3.使用redis:</h2><p>mac下安装redis</p>
+<ul>
+<li>brew install redis</li>
+<li>如果需要后台运行 redis 服务，使用命令 brew services start redis</li>
+<li>如果不需要后台服务，则使用命令 redis-server &#x2F;usr&#x2F;local&#x2F;etc&#x2F;redis.conf。</li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3bdfda703552">mac os 安装 redis</a></li>
+</ul>
+<p>安装redis后，启动时指定配置文件</p>
+<ul>
+<li><code>redis-server ./redis.conf</code></li>
+</ul>
+<p>检测后台进程是否存在  </p>
+<ul>
+<li><code>ps -ef |grep redis </code></li>
+</ul>
+<p>使用分布式时，其他worker机子无法访问redis去取任务：</p>
+<ul>
+<li>redis默认的安全策略，只准许本地访问。</li>
+<li>需要通过简单配置，完成允许外网访问。</li>
+<li>参考：<a target="_blank" rel="noopener" href="http://www.cnblogs.com/likwo/p/5903377.html">开启redis 允许外网IP 访问</a></li>
+</ul>
+<hr>
+<h1 id="celery基本操作命令："><a href="#celery基本操作命令：" class="headerlink" title="celery基本操作命令："></a>celery基本操作命令：</h1><p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://funhacks.net/explore-python/Third-Party-Modules/celery.html">Celery基础操作</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/libing_thinking/article/category/7287529">Celery-4.1 用户指南</a></li>
+</ul>
+<hr>
+<h1 id="celery-worker"><a href="#celery-worker" class="headerlink" title="celery worker:"></a>celery worker:</h1><h2 id="1-启动worker"><a href="#1-启动worker" class="headerlink" title="1.启动worker:"></a>1.启动worker:</h2><ul>
+<li><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/ </code></li>
+</ul>
+<hr>
+<h2 id="2-停止worker"><a href="#2-停止worker" class="headerlink" title="2.停止worker:"></a>2.停止worker:</h2><p><code>ps auxww | grep &#39;celery worker&#39; | awk &#39;&#123;print $2&#125;&#39; | xargs kill -9</code></p>
+<hr>
+<h2 id="3-在celery中使用多进程："><a href="#3-在celery中使用多进程：" class="headerlink" title="3.在celery中使用多进程："></a>3.在celery中使用多进程：</h2><p>我用的是<code>from multiprocessing import Pool</code>来实现多进程。<br>但是在运行过程中会直接报出这个错误<br><code>AssertionError: daemonic processes are not allowed to have children</code></p>
+<p>解决方法：</p>
+<ul>
+<li><p>重写一个Mypool<code>https://stackoverflow.com/questions/6974695/python-process-pool-non-daemonic</code></p>
+</li>
+<li><p>设置环境变量<br><code>export PYTHONOPTIMIZE=1</code></p>
+</li>
+</ul>
+<p>由于过段时间就会失效。。所以每次启动worker的时候的时候：<br><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></p>
+<p>以下 的方法没试过：</p>
+<blockquote>
+<p>there are two method to solve this problem ,disable assert：<br>1.where celery starts set export PYTHONOPTIMIZE&#x3D;1 OR start celery with this parameter -O OPTIMIZATION<br>2.disable python packet multiprocessing process.py line 102:<br>assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes are not allowed to have children’</p>
+</blockquote>
+<hr>
+<h2 id="4-调用worker、添加任务："><a href="#4-调用worker、添加任务：" class="headerlink" title="4.调用worker、添加任务："></a>4.调用worker、添加任务：</h2><p>delay()和apply_async()</p>
+<p>我们之前调用任务使用了”delay()”方法，它其实是对”apply_async()”方法的封装，使得你只要传入任务所需的参数即可。对于特殊的任务调度需求，你需要使用”apply_async()”，其常用的参数有：</p>
+<ul>
+<li>countdown: 指定多少秒后任务才被执行</li>
+<li>eta: 指定任务被调度的时间，参数类型是datetime</li>
+<li>expires: 任务过期时间，参数类型可以是int（秒），也可以是datetime</li>
+<li>retry: 任务发送失败的重试次数</li>
+<li>priority: 任务优先级，范围是0-9</li>
+<li>serializer: 参数和返回值的序列化方式</li>
+</ul>
+<hr>
+<h1 id="celery-beat-定时任务"><a href="#celery-beat-定时任务" class="headerlink" title="celery beat 定时任务"></a>celery beat 定时任务</h1><h2 id="一个时间的Bug："><a href="#一个时间的Bug：" class="headerlink" title="一个时间的Bug："></a>一个时间的Bug：</h2><ul>
+<li>当前使用pip安装的celery，默认是安装的最新版本4.1.0，但是在这个版本中在获取当前时间的逻辑中存在bug，会导致定时任务配置后并不能在指定的时间被执行</li>
+<li>回退版本 到4.0.2才行</li>
+<li><a target="_blank" rel="noopener" href="http://axiaoxin.com/article/228/">celery 4.1.0 版本定时任务执行时间 bug</a></li>
+</ul>
+<p>另一种可行但麻烦的思路：</p>
+<p>celery的定时任务会有一定时间的延迟。比如，我规定模拟登陆新浪微博任务每隔10个小时执行一次，那么定时任务第一次执行就会在开启定时任务之后的10个小时后才会执行。而我抓取微博需要马上执行，需要带上cookie，所以不能等那1个小时。这个没有一个比较好的解决方法，可以使用celery的crontab()来代替schdule做定时，它会在启动的时候就执行。我采用的方法是第一次手动执行该任务，然后再通过schedule执行。</p>
+<hr>
+<h2 id="使用命令："><a href="#使用命令：" class="headerlink" title="使用命令："></a>使用命令：</h2><p>进入到对应your_app对应的目录下：<code>cd /your_dir/your_dir/your_dir</code><br>再执行：<code>/usr/local/bin/celery -A your_app beat -l info </code></p>
+<p>最方便的是，在命令中指定工作目录，一条命令即可：</p>
+<p><code>/usr/local/bin/celery -A your_dir beat -l info --workdir=/your_dir/your_dir/your_dir/</code></p>
+<hr>
+<h2 id="定时任务参数参考表："><a href="#定时任务参数参考表：" class="headerlink" title="定时任务参数参考表："></a>定时任务参数参考表：</h2><p><img src="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg"></p>
+<hr>
+<h2 id="动态管理定时任务："><a href="#动态管理定时任务：" class="headerlink" title="动态管理定时任务："></a>动态管理定时任务：</h2><p>查过挺多资料，有两种解决方法。跟celery运行的调度器(schedule)息息相关的。</p>
+<ul>
+<li>使用第三方schedule：<br>如django-celery-beat库会将定时任务的规则存入到数据库中，而不用通过配置文件来定义。</li>
+</ul>
+<p>try to install django-celery instead of django-celery-beat. django-celery works with Celery 3 (unlike django-celery-beat). You can then, for example import PeriodicTask from djcelery.models instead of from django_celery_beat.models . This allows you to add&#x2F;delete&#x2F;manipulate tasks both dynamically AND PROGRAMMATICALLY (not only from the Django admin site). The drawback to this workaround is that if one doesn’t need django-celery for anything other than this, then it bloats one’s app. Thus, It would be better to have Celery 4.0 included in cookiecutter-django so that django-celery-beat models can be used</p>
+<p><a target="_blank" rel="noopener" href="http://www.liuliqiang.info/post/celery-advanced-topic-scheduler-and-priority/">【celery进阶】定时任务和优先级</a></p>
+<ul>
+<li>使用框架默认schedule</li>
+</ul>
+<p>我使用的是这一种方法。<br>只能管理celery的配置文件了，每次增加或减少定时任务的时候，都要对配置文件进行相应的修改。<br>每次修改完都要重启celerybeat，试过多种方法，发现用supervisor来管理celery beat的进程是比较好的。</p>
+<hr>
+<h2 id="管理celery-beat进程"><a href="#管理celery-beat进程" class="headerlink" title="管理celery beat进程"></a>管理celery beat进程</h2><p>用supervisor来管理celery beat进程。</p>
+<ul>
+<li><p>安装：<code>pip install supervisor</code></p>
+</li>
+<li><p>Supervisor配置</p>
+</li>
+<li><p><code>/usr/local/bin/echo_supervisord_conf  &gt; /etc/supervisord.conf</code></p>
+</li>
+<li><p><img src="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg"></p>
+</li>
+<li><p>操作：</p>
+</li>
+<li><p>开启:<code>supervisord -c /etc/supervisord.conf</code></p>
+</li>
+<li><p>重启：<code>supervisorctl -c /etc/supervisord.conf reload</code></p>
+</li>
+<li><p>关闭:<code>supervisorctl -c /etc/supervisord.conf shutdown</code></p>
+</li>
+</ul>
+<hr>
+<h1 id="other"><a href="#other" class="headerlink" title="other:"></a>other:</h1><h2 id="分布式："><a href="#分布式：" class="headerlink" title="分布式："></a>分布式：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.213.name/archives/1105">笔记：集群部署celery分布式任务队列</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ee14ed9e4989">《Python分布式计算》 第4章 Celery分布式应用 （Distributed Computing with Python）</a></li>
+</ul>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg"></p>
+<hr>
+<h2 id="队列："><a href="#队列：" class="headerlink" title="队列："></a>队列：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1f528c518ab5">Celery从入门到放弃</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/vintage_1/article/details/47664139">celery beat实战</a></li>
+</ul>
+<hr>
+<h2 id="flower"><a href="#flower" class="headerlink" title="flower:"></a>flower:</h2><p>图形化管理celery界面：</p>
+<p><code>/usr/local/bin/celery -A celery_app flower --port=5555</code></p>
+<hr>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mkernel.com/?p=117">Python异步神器-Celery实战之Nmap扫描</a></li>
+<li><a target="_blank" rel="noopener" href="https://hk.saowen.com/a/76cb411ce1023c1ee172406691abe47d7939a4b2d8c56a8439aab39f4486df30">企業安全實踐(基礎建設)之主動分佈式WEB資產掃描</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/junli_chen/article/details/73504343">Celery 框架学习笔记</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/kk123a/article/details/74549117">celery配置使用</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/42649.html" rel="bookmark">Celery-动态路由</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/12733.html" rel="bookmark">记录-Centos7下root运行Chrome</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/34580.html" rel="bookmark">记录-Centos7安装py环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/64204.html" rel="bookmark">记录-Centos7系统安装</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dev/" rel="tag"># Dev</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/61175.html" rel="next" title="记录-日志分析环境搭建">
+      记录-日志分析环境搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#celery%E6%9E%B6%E6%9E%84%E5%9B%BE%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">celery架构图：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">初始化:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%BF%90%E8%A1%8Ccelery"><span class="nav-number">2.1.</span> <span class="nav-text">1.运行celery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BB%A5%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E8%BF%90%E8%A1%8Ccelery"><span class="nav-number">2.2.</span> <span class="nav-text">2.以守护进程运行celery:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8redis"><span class="nav-number">2.3.</span> <span class="nav-text">3.使用redis:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">celery基本操作命令：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-worker"><span class="nav-number">4.</span> <span class="nav-text">celery worker:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%90%AF%E5%8A%A8worker"><span class="nav-number">4.1.</span> <span class="nav-text">1.启动worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%81%9C%E6%AD%A2worker"><span class="nav-number">4.2.</span> <span class="nav-text">2.停止worker:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9C%A8celery%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%BF%9B%E7%A8%8B%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">3.在celery中使用多进程：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%B0%83%E7%94%A8worker%E3%80%81%E6%B7%BB%E5%8A%A0%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="nav-number">4.4.</span> <span class="nav-text">4.调用worker、添加任务：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#celery-beat-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">celery beat 定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E6%97%B6%E9%97%B4%E7%9A%84Bug%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">一个时间的Bug：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">使用命令：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%8F%82%E6%95%B0%E5%8F%82%E8%80%83%E8%A1%A8%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">定时任务参数参考表：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%AE%A1%E7%90%86%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="nav-number">5.4.</span> <span class="nav-text">动态管理定时任务：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86celery-beat%E8%BF%9B%E7%A8%8B"><span class="nav-number">5.5.</span> <span class="nav-text">管理celery beat进程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#other"><span class="nav-number">6.</span> <span class="nav-text">other:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">分布式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">队列：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flower"><span class="nav-number">6.3.</span> <span class="nav-text">flower:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%EF%BC%9A"><span class="nav-number">6.4.</span> <span class="nav-text">参考：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">387k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:51</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

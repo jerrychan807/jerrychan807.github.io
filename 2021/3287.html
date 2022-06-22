@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Crypto-rarity自动冒险升级脚本">
+<meta property="og:url" content="https://jerrychan807.github.io/2021/3287.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png">
+<meta property="article:published_time" content="2021-09-27T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.475Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2021/3287.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Crypto-rarity自动冒险升级脚本 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2021/3287.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Crypto-rarity自动冒险升级脚本
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-27 22:36:34" itemprop="dateCreated datePublished" datetime="2021-09-27T22:36:34+08:00">2021-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
+<p>顺便熟悉一下<code>solidty</code>和<code>web3js</code></p>
+<hr>
+<h1 id="Rarity"><a href="#Rarity" class="headerlink" title="Rarity:"></a>Rarity:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
+<p>游戏共有 11 个角色，分别是野人、吟游诗人、牧师、德鲁伊、斗士、僧侣、圣骑士、游侠、巡逻兵、巫师、法师。</p>
+<hr>
+<h2 id="合约源码"><a href="#合约源码" class="headerlink" title="合约源码:"></a>合约源码:</h2><p><a target="_blank" rel="noopener" href="https://github.com/andrecronje/rarity/blob/main/core/rarity.sol">rarity solidity源码</a></p>
+<p>简单通读一下源码,发现solidity写的代码还是挺简单的，并没想象中的难，可能跟没有那么多操作要放在链上有关。</p>
+<h2 id="readContract"><a href="#readContract" class="headerlink" title="readContract:"></a>readContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract</a></p>
+<p>挑几个比较重要的函数说明下</p>
+<blockquote>
+<p>adventures_log</p>
+</blockquote>
+<ul>
+<li>查询下一次冒险的时间</li>
+<li>input:角色id</li>
+<li>output:下一次冒险的时间戳</li>
+</ul>
+<blockquote>
+<p>summoner</p>
+</blockquote>
+<ul>
+<li>查询角色信息</li>
+<li>input:角色id</li>
+<li>output:角色的经验、下一次冒险的时间戳、职业类别、等级</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png" alt="25641732-8ED4-4D10-81F4-B5E90094D83D"></p>
+<blockquote>
+<p>xp_required</p>
+</blockquote>
+<ul>
+<li>查询下一级所需经验</li>
+<li>input:等级</li>
+<li>output:下一级所需经验</li>
+</ul>
+<h2 id="writeContract"><a href="#writeContract" class="headerlink" title="writeContract:"></a>writeContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract</a></p>
+<blockquote>
+<p>adventure</p>
+</blockquote>
+<ul>
+<li>让角色去冒险,每天只能冒险一次，每次获得250xp</li>
+<li>input:角色id</li>
+</ul>
+<blockquote>
+<p>level_up</p>
+</blockquote>
+<ul>
+<li>角色升级</li>
+<li>input:角色id</li>
+</ul>
+<hr>
+<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p>自动冒险:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png" alt="DF22C901-3AC7-48EE-8D73-592181380B59"></p>
+<ul>
+<li>查出自己地址有哪些角色id</li>
+<li>调用合约的查询函数<code>summoner</code>，知道下一次冒险时间</li>
+<li>判断一下有没到冒险时间</li>
+<li>满足条件的话，调用合约的<code>adventure</code>，让角色去冒险</li>
+</ul>
+<p>自动升级:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png" alt="84454A4B-F8F1-444D-AB4A-79B47F941381"></p>
+<ul>
+<li>调用合约函数<code>summoner</code>，知道当前经验值</li>
+<li>调用合约函数<code>xp_required</code>,知道下次升级所需经验</li>
+<li>满足条件的话，调用合约的<code>level_up</code>，让角色去升级</li>
+</ul>
+<hr>
+<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题:"></a>一些问题:</h1><h1 id="gas："><a href="#gas：" class="headerlink" title="gas："></a>gas：</h1><p>自己的脚本和<code>https://rarityextended.com/</code>执行的gas费有些差异,后续有空要看一下怎么样省一下gas fee，虽然也很少钱。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png" alt="2749692E-F7D8-49E0-A22D-BD8AE0CC1040"></p>
+<h1 id="交易失败"><a href="#交易失败" class="headerlink" title="交易失败:"></a>交易失败:</h1><p>脚本定时跑起来后，常有几笔失败的交易，可能跟nonce设置有关系。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png" alt="20210927120445"></p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>脚本定时跑起来后，就不用去web页面上一个个点去冒险和升级，方便了不少，<br>写之前觉得挺麻烦的，有点无从下手，写完才发现很简单。hhh</p>
+<p>后续加点、玩副本这些，有空再研究补充下吧~</p>
+<hr>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.chainnews.com/news/322609390326.htm">Yearn Finance 创始人受 Loot 启发推出冒险游戏 Rarity</a></li>
+<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1182970312">全网最详细——AC游戏“Rarity”人物简介和加点攻略</a></li>
+<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1438014279">【百大链游】FTM上的大冒险Rarity</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/NwlpshhnEXgcqwqFF5JGbw">【DFarm】Rarity游戏基础规则超详细剖析</a></li>
+<li><a target="_blank" rel="noopener" href="https://rarityextended.com/">rarity Web1</a></li>
+<li><a target="_blank" rel="noopener" href="https://raritymmo.com/">rarity Web2</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">Crypto-OpenSea制作NFT初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/48779.html" rel="prev" title="Crypto-SuperTrend指标_现货交易脚本">
+      <i class="fa fa-chevron-left"></i> Crypto-SuperTrend指标_现货交易脚本
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/32598.html" rel="next" title="Crypto-Bp宝石回购监控脚本">
+      Crypto-Bp宝石回购监控脚本 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Rarity"><span class="nav-number">2.</span> <span class="nav-text">Rarity:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">合约源码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readContract"><span class="nav-number">2.3.</span> <span class="nav-text">readContract:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#writeContract"><span class="nav-number">2.4.</span> <span class="nav-text">writeContract:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">脚本:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">一些问题:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gas%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">gas：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E5%A4%B1%E8%B4%A5"><span class="nav-number">6.</span> <span class="nav-text">交易失败:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">387k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:51</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

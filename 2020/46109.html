@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="威胁情报和漏洞的区别:漏洞的概念较明确，而情报比较宽泛。 威胁情报并不是虚的。 其中存在假情报和难追溯的情报。 情报一般分为线索和事件: 我上报了一个黑客组织，可以作为线索； 公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个事件。 威胁情报并不一定是提前预知 作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。 情报分技术型情报和业务型情报 漏洞属于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notes-安全应急响应中心之威胁情报探索—JSRC-2">
+<meta property="og:url" content="https://jerrychan807.github.io/2020/46109.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="威胁情报和漏洞的区别:漏洞的概念较明确，而情报比较宽泛。 威胁情报并不是虚的。 其中存在假情报和难追溯的情报。 情报一般分为线索和事件: 我上报了一个黑客组织，可以作为线索； 公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个事件。 威胁情报并不一定是提前预知 作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。 情报分技术型情报和业务型情报 漏洞属于">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-15T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-14T02:59:44.489Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2020/46109.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Notes-安全应急响应中心之威胁情报探索—JSRC-2 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2020/46109.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="nothing to say :)">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Notes-安全应急响应中心之威胁情报探索—JSRC-2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-15 22:36:34" itemprop="dateCreated datePublished" datetime="2020-01-15T22:36:34+08:00">2020-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index"><span itemprop="name">Security</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="威胁情报和漏洞的区别"><a href="#威胁情报和漏洞的区别" class="headerlink" title="威胁情报和漏洞的区别:"></a>威胁情报和漏洞的区别:</h2><p>漏洞的概念较明确，而情报比较宽泛。</p>
+<p>威胁情报并不是虚的。 其中存在假情报和难追溯的情报。</p>
+<p><strong>情报一般分为线索和事件:</strong></p>
+<p>我上报了一个黑客组织，可以作为<strong>线索</strong>；</p>
+<p>公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个<strong>事件</strong>。</p>
+<p>威胁情报并不一定是提前预知</p>
+<p>作为甲方公司，很多已经发生的漏洞利用资金损失，我们也有很多没有发现的，这些也都是情报。</p>
+<p><strong>情报分技术型情报和业务型情报</strong></p>
+<p>漏洞属于技术型情报。有的情报很全，有的只能算是线索。</p>
+<p>业务型的最难判定，我们这边也分两个维度，<strong>危害维度</strong>和<strong>完整度维度</strong>。</p>
+<hr>
+<h2 id="获取情报的来源渠道"><a href="#获取情报的来源渠道" class="headerlink" title="获取情报的来源渠道:"></a>获取情报的来源渠道:</h2><p>这个看业务了。</p>
+<p>举个栗子，有的白帽子已经成功混迹在高端游戏玩家群里，黑产卖异常装备的时候，就来举报。</p>
+<p>比较聪明的同学，会<strong>关注黑产变现的渠道</strong>。</p>
+<blockquote>
+<p>whole chain</p>
+</blockquote>
+<hr>
+<h2 id="暂时没用的线索"><a href="#暂时没用的线索" class="headerlink" title="暂时没用的线索:"></a>暂时没用的线索:</h2><p>如果一条线索过来了，只是证明存在但不能做什么事。这种对于平台来说是不是一种成本浪费？</p>
+<p><strong>溯源是一种能力，线索是一种沉淀。</strong></p>
+<p>被证明有价值的情报，是一种线索沉淀，不会是浪费的。</p>
+<p>安全行业内，不管是漏洞还是情报，都是要不断求证的。</p>
+<p>只要<strong>投入产出比可控</strong>即可。</p>
+<p>这其实也是一个二八原则。</p>
+<p>此外，没有产生价值的，可能只是当前没有产生价值，后面业务变化了，可能就会产生相应价值。</p>
+<hr>
+<h2 id="建立威胁情报的目的"><a href="#建立威胁情报的目的" class="headerlink" title="建立威胁情报的目的:"></a>建立威胁情报的目的:</h2><p>无疑是<strong>为了预知未来的风险</strong>！</p>
+<p>个人认为，威胁情报对于各公司来说可以把<strong>风险感知再次往前提</strong>，能够通过各渠道来源，分析后续的破坏行为。</p>
+<hr>
+<h2 id="威胁情报的评定指标"><a href="#威胁情报的评定指标" class="headerlink" title="威胁情报的评定指标:"></a>威胁情报的评定指标:</h2><p>主要看<strong>情报的详细程度和对业务的影响</strong>，来评定情报的等级。</p>
+<p>不过低价值的情报分值不高。大致是看详细程度、涉及业务、目前和潜在的影响.</p>
+<p>有一条就是基于漏洞的情报，不会比按漏洞标准评定低就是了。</p>
+<p>目前来看提交者比较理性，大都是遇到事件了来提交，线索其实没那么多。</p>
+<p>不同公司关注的情报不一样，建议大家在看情报的时候，先看看这个公司关注什么，根据公司实际业务多磨合磨合。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h2><ul>
+<li><p>情报一般分为线索和事件:</p>
+<ul>
+<li>我上报了一个黑客组织，可以作为<strong>线索</strong>；</li>
+<li>公司根据这个线索发现了之前一个案子和他们有关，就可能引申出一个<strong>事件</strong>。</li>
+</ul>
+</li>
+<li><p>对于暂时没用的线索:</p>
+<ul>
+<li><strong>溯源是一种能力，线索是一种沉淀。</strong></li>
+<li>被证明有价值的情报，是一种线索沉淀，不会是浪费的。</li>
+<li>安全行业内，不管是漏洞还是情报，都是要不断求证的。只要<strong>投入产出比可控</strong>即可。</li>
+</ul>
+</li>
+<li><p>威胁情报的评定指标:</p>
+<ul>
+<li>主要看<strong>情报的详细程度和对业务的影响</strong>，来评定情报的等级。</li>
+</ul>
+</li>
+<li><p>获取情报的来源渠道:</p>
+<ul>
+<li>可重点关注<strong>黑产变现的渠道</strong></li>
+</ul>
+</li>
+<li><p>建立威胁情报的目的:</p>
+<ul>
+<li>预知未来的风险</li>
+<li>风险感知再次往前提</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/02-%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E4%B8%AD%E5%BF%83%E4%B9%8B%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%8E%A2%E7%B4%A2.pdf">安全应急响应中心之威胁情报探索</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2020/20063.html" rel="bookmark">Notes-论安全漏洞响应机制扩展—JSRC-3</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/26.html" rel="bookmark">SQL injection cheat sheet</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/13187.html" rel="bookmark">Sqli-注入的分类</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2020/9254.html" rel="bookmark">堡垒机的一些知识</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/23101.html" rel="bookmark">暗链案例初探</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Security/" rel="tag"># Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/65272.html" rel="prev" title="Notes-Wooyun安卓漏洞库">
+      <i class="fa fa-chevron-left"></i> Notes-Wooyun安卓漏洞库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/9254.html" rel="next" title="堡垒机的一些知识">
+      堡垒机的一些知识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E5%92%8C%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">威胁情报和漏洞的区别:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%83%85%E6%8A%A5%E7%9A%84%E6%9D%A5%E6%BA%90%E6%B8%A0%E9%81%93"><span class="nav-number">2.</span> <span class="nav-text">获取情报的来源渠道:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E6%97%B6%E6%B2%A1%E7%94%A8%E7%9A%84%E7%BA%BF%E7%B4%A2"><span class="nav-number">3.</span> <span class="nav-text">暂时没用的线索:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="nav-number">4.</span> <span class="nav-text">建立威胁情报的目的:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E7%9A%84%E8%AF%84%E5%AE%9A%E6%8C%87%E6%A0%87"><span class="nav-number">5.</span> <span class="nav-text">威胁情报的评定指标:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number"></span> <span class="nav-text">refs:</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">nothing to say :)</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">387k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">5:51</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
