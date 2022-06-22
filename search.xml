@@ -2679,166 +2679,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Project-CoolErc20-four_way-区分买卖添加移除流动性行为</title>
-    <url>//14814.html</url>
-    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到<code>Transfer()</code>函数,在代码层面上是只有转移的行为。<br>那么如何在solidity里区分这几个行为呢？<br>如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。</p>
-<p>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/four_way</code></p>
-<h1 id="Token转移："><a href="#Token转移：" class="headerlink" title="Token转移："></a>Token转移：</h1><p>token发生转移时，会有发送方<code>sender</code>,接收方<code>recipient</code><br>可以把Buy、Sell、AddLiquidity、RemoveLiquidity分类为下面两种情况。</p>
-<ol>
-<li><code>sender</code>为Pair，<code>recipient</code>为Token</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Buy:</span><br><span class="line">Usdt ——&gt; Pair ——&gt; Token</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RemoveLiquidity:</span><br><span class="line">LpToken ——&gt; Pair ——&gt; Usdt、Token</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><code>sender</code>为Token，<code>recipient</code>为Pair</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sell:</span><br><span class="line">Token ——&gt; Pair ——&gt; Usdt</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AddLiquidity:</span><br><span class="line">Usdt、Token ——&gt; Pair ——&gt; LpToken</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>sender</th>
-<th>recipient</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-</tbody></table>
-<p>那如何在smart contract里区分这四种行为呢？</p>
-<h1 id="在smart-contract里区分："><a href="#在smart-contract里区分：" class="headerlink" title="在smart contract里区分："></a>在smart contract里区分：</h1><p>关键的判断代码如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询uniswap储备量</span></span><br><span class="line"><span class="comment">// 实例化pair</span></span><br><span class="line"><span class="title class_">IUniswapV</span>2Pair uniswapV2Pair = <span class="title class_">IUniswapV</span>2Pair(uniswapV2PairAddress);</span><br><span class="line"><span class="comment">// 获取上一次swap的结果</span></span><br><span class="line">(uint112 reserve0, uint112 reserve1,) = uniswapV2Pair.<span class="title function_">getReserves</span>();</span><br><span class="line"><span class="comment">// Buy: Usdt↑ Token↓</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token0</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve1) </span><br><span class="line">|| (<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token1</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve0)) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过储备量的变化情况，来区分开这四种行为。</p>
-<h1 id="测试情况："><a href="#测试情况：" class="headerlink" title="测试情况："></a>测试情况：</h1><h2 id="手动测试网测试"><a href="#手动测试网测试" class="headerlink" title="手动测试网测试:"></a>手动测试网测试:</h2><table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Fee</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>10%</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>10%</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Result</th>
-<th>tx</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x8e937af584c94bfbd1f5280c2a382a2812301178f9d5f3498fe3a75dc24bf285">tx</a></td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>fail</td>
-<td>tx</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x7ed0f97a08896a0f1059ae15c2ff42dcd16370f755f386aafad76d861da51879">tx</a></td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>ok</td>
-<td><a href="https://testnet.bscscan.com/tx/0x2e837f4e94c9f8e47490911f1c2d9953ed92e598f4976724444076f160da2cb3">tx</a></td>
-</tr>
-</tbody></table>
-<h2 id="hardhat测试："><a href="#hardhat测试：" class="headerlink" title="hardhat测试："></a>hardhat测试：</h2><p>也是<code>Sell</code>这一步骤没能成功</p>
-<h1 id="一些知识点："><a href="#一些知识点：" class="headerlink" title="一些知识点："></a>一些知识点：</h1><h2 id="Uniswap的getreserves获取储备量函数"><a href="#Uniswap的getreserves获取储备量函数" class="headerlink" title="Uniswap的getreserves获取储备量函数"></a>Uniswap的getreserves获取储备量函数</h2><p>可以通过<code>getreserves()</code>获取pair里两类币种的储备量。</p>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>reserve0(USDT)储备量变化</th>
-<th>reserve1（XToken）储备量变化</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Buy</td>
-<td>↓</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>↑</td>
-<td>↓</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>↑</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>↓</td>
-<td>↓</td>
-</tr>
-</tbody></table>
-<h2 id="在合约里调用其他合约"><a href="#在合约里调用其他合约" class="headerlink" title="在合约里调用其他合约"></a>在合约里调用其他合约</h2><p>interface + 地址</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;./IUniswapV2Factory.sol&quot;</span>;</span><br><span class="line"><span class="comment">// bsc testnet addr</span></span><br><span class="line">address v2FactoryAddress = <span class="number">0x182859893230dC89b114d6e2D547BFFE30474a21</span>;</span><br><span class="line"><span class="title class_">IUniswapV</span>2Factory uniswapv2Factory = <span class="title class_">IUniswapV</span>2Factory(v2FactoryAddress);</span><br><span class="line">uniswapV2PairAddress = uniswapv2Factory.<span class="title function_">createPair</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), usdtAddress);</span><br></pre></td></tr></table></figure>
-
-<h2 id="验证多合约源码："><a href="#验证多合约源码：" class="headerlink" title="验证多合约源码："></a>验证多合约源码：</h2><ol>
-<li>etherscan、bscscan直接将多个源代码文件上传即可</li>
-<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
-</ol>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
-<li><a href="https://solveforum.com/forums/threads/solved-hardhat-testing-on-testnet-rinkeby.467949/">[Solved] Hardhat testing on testnet (Rinkeby)</a></li>
-<li><a href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>Project</category>
-      </categories>
-      <tags>
-        <tag>SmartContract</tag>
-        <tag>Project</tag>
-        <tag>CoolErc20</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Project-CryptoZombie僵尸世界NFT游戏</title>
     <url>//60348.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。<br>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
@@ -7547,6 +7387,198 @@
         <tag>Solidity</tag>
         <tag>SmartContract</tag>
         <tag>Uniswap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</title>
+    <url>//14814.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到<code>Transfer()</code>函数,在代码层面上是只有转移的行为。<br>那么如何在solidity里区分这几个行为呢？<br>如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。</p>
+<p>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/four_way</code></p>
+<h1 id="Token转移："><a href="#Token转移：" class="headerlink" title="Token转移："></a>Token转移：</h1><p>token发生转移时，会有发送方<code>sender</code>,接收方<code>recipient</code><br>可以把Buy、Sell、AddLiquidity、RemoveLiquidity分类为下面两种情况。</p>
+<ol>
+<li><code>sender</code>为Pair，<code>recipient</code>为Token</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Buy:</span><br><span class="line">Usdt ——&gt; Pair ——&gt; Token</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RemoveLiquidity:</span><br><span class="line">LpToken ——&gt; Pair ——&gt; Usdt、Token</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>sender</code>为Token，<code>recipient</code>为Pair</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sell:</span><br><span class="line">Token ——&gt; Pair ——&gt; Usdt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AddLiquidity:</span><br><span class="line">Usdt、Token ——&gt; Pair ——&gt; LpToken</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>sender</th>
+<th>recipient</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>Pair</td>
+<td>Token</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>Token</td>
+<td>Pair</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>Token</td>
+<td>Pair</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>Pair</td>
+<td>Token</td>
+</tr>
+</tbody></table>
+<p>那如何在smart contract里区分这四种行为呢？</p>
+<h1 id="在smart-contract里区分："><a href="#在smart-contract里区分：" class="headerlink" title="在smart contract里区分："></a>在smart contract里区分：</h1><p>关键的判断代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询uniswap储备量</span></span><br><span class="line"><span class="comment">// 实例化pair</span></span><br><span class="line"><span class="title class_">IUniswapV</span>2Pair uniswapV2Pair = <span class="title class_">IUniswapV</span>2Pair(uniswapV2PairAddress);</span><br><span class="line"><span class="comment">// 获取上一次swap的结果</span></span><br><span class="line">(uint112 reserve0, uint112 reserve1,) = uniswapV2Pair.<span class="title function_">getReserves</span>();</span><br><span class="line"><span class="comment">// Buy: Usdt↑ Token↓</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token0</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve1) </span><br><span class="line">|| (<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token1</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve0)) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过储备量的变化情况，来区分开这四种行为。</p>
+<h1 id="测试情况："><a href="#测试情况：" class="headerlink" title="测试情况："></a>测试情况：</h1><h2 id="手动测试网测试"><a href="#手动测试网测试" class="headerlink" title="手动测试网测试:"></a>手动测试网测试:</h2><table>
+<thead>
+<tr>
+<th>行为</th>
+<th>Fee</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>5%</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>10%</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>5%</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>10%</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>Result</th>
+<th>tx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x8e937af584c94bfbd1f5280c2a382a2812301178f9d5f3498fe3a75dc24bf285">tx</a></td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>fail</td>
+<td>tx</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x7ed0f97a08896a0f1059ae15c2ff42dcd16370f755f386aafad76d861da51879">tx</a></td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>ok</td>
+<td><a href="https://testnet.bscscan.com/tx/0x2e837f4e94c9f8e47490911f1c2d9953ed92e598f4976724444076f160da2cb3">tx</a></td>
+</tr>
+</tbody></table>
+<h2 id="hardhat测试："><a href="#hardhat测试：" class="headerlink" title="hardhat测试："></a>hardhat测试：</h2><p>也是<code>Sell</code>这一步骤没能成功</p>
+<h1 id="一些知识点："><a href="#一些知识点：" class="headerlink" title="一些知识点："></a>一些知识点：</h1><h2 id="Uniswap的getreserves获取储备量函数"><a href="#Uniswap的getreserves获取储备量函数" class="headerlink" title="Uniswap的getreserves获取储备量函数"></a>Uniswap的getreserves获取储备量函数</h2><p>可以通过<code>getreserves()</code>获取pair里两类币种的储备量。</p>
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>reserve0(USDT)储备量变化</th>
+<th>reserve1（XToken）储备量变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buy</td>
+<td>↓</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>Sell</td>
+<td>↑</td>
+<td>↓</td>
+</tr>
+<tr>
+<td>AddLiquidity</td>
+<td>↑</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>RemoveLiquidity</td>
+<td>↓</td>
+<td>↓</td>
+</tr>
+</tbody></table>
+<h2 id="在合约里调用其他合约"><a href="#在合约里调用其他合约" class="headerlink" title="在合约里调用其他合约"></a>在合约里调用其他合约</h2><p>interface + 地址</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;./IUniswapV2Factory.sol&quot;</span>;</span><br><span class="line"><span class="comment">// bsc testnet addr</span></span><br><span class="line">address v2FactoryAddress = <span class="number">0x182859893230dC89b114d6e2D547BFFE30474a21</span>;</span><br><span class="line"><span class="title class_">IUniswapV</span>2Factory uniswapv2Factory = <span class="title class_">IUniswapV</span>2Factory(v2FactoryAddress);</span><br><span class="line">uniswapV2PairAddress = uniswapv2Factory.<span class="title function_">createPair</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), usdtAddress);</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证多合约源码："><a href="#验证多合约源码：" class="headerlink" title="验证多合约源码："></a>验证多合约源码：</h2><ol>
+<li>etherscan、bscscan直接将多个源代码文件上传即可</li>
+<li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
+</ol>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
+<li><a href="https://solveforum.com/forums/threads/solved-hardhat-testing-on-testnet-rinkeby.467949/">[Solved] Hardhat testing on testnet (Rinkeby)</a></li>
+<li><a href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-CoolErc20-pauseable-可暂停代币</title>
+    <url>//35217.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>参考OpenZeppelin的<code>ERC20Pausable.sol</code>，实现一个可暂停的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/pauseable</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
+<li>管理员可配置暂停开关</li>
+<li>暂停后无法正常<code>transfer</code></li>
+<li>解除暂停后可正常<code>transfer</code></li>
+</ul>
+<h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>出bug的时候，可以由管理员设置暂停开关，阻止代币的传输、铸造和燃烧等功能，相当于一个紧急停止机制。</p>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>无</p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="可不写super关键字"><a href="#可不写super关键字" class="headerlink" title="可不写super关键字"></a>可不写super关键字</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 父类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_pause</span>(<span class="params"></span>) internal virtual whenNotPaused &#123;</span><br><span class="line">    _paused = <span class="literal">true</span>;</span><br><span class="line">    emit <span class="title class_">Paused</span>(<span class="title function_">_msgSender</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 子类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">setPause</span>(<span class="params"></span>) public <span class="title function_">onlyOwner</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// super._pause();</span></span><br><span class="line">    <span class="title function_">_pause</span>();  <span class="comment">// 这两种写法都可以</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用父类的函数时，不一定都要写<code>super</code>，当在<strong>继承关系图谱</strong>中存在唯一的父类函数，这种情况下可以不显示写<code>super</code>关键字</p>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><p>简单合约的话，依旧是在remix上简单编写，做语法check<br>然后放到hardhat框架里写测试script</p>
+<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    can&#x27;t transfer after set pause,can transfer after set Unpause</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Pause: </span><br><span class="line">【Step 3】tokenOwner Set Pause: </span><br><span class="line">【Step 3】paused Switch: true</span><br><span class="line"> After setting pause, try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line"> UnPause: </span><br><span class="line">【Step 5】tokenOwner Set UnPause: </span><br><span class="line">【Step 5】paused Switch: false</span><br><span class="line"> After setting Unpause, try to transfer: </span><br><span class="line">【Step 6】 expect : tokenOwner -&gt; 100-&gt; user0 to be not reverted</span><br><span class="line">【Step 6】userBalance(Ether): 200.0</span><br><span class="line">      ✔  (1446ms)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br><span class="line">✨  Done in 5.12s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
       </tags>
   </entry>
 </search>
