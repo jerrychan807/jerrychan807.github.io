@@ -22,26 +22,22 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+  <meta name="description" content="Pre:实现一个具有白名单功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;whitelist 需求: 白名单用户才能正常transfer 管理员可配置白名单里的地址  业务场景：给白名单用户提供一些优惠的条件  降低手续费、费率优惠 设置某个区块时间内，只有白名单可以交易  不一定将白名单判断置于">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Crypto-rarity自动冒险升级脚本">
-<meta property="og:url" content="https://jerrychan807.github.io/2021/3287.html">
+<meta property="og:title" content="Project-CoolErc20-whitelist-具备白名单代币">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/30342.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+<meta property="og:description" content="Pre:实现一个具有白名单功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;whitelist 需求: 白名单用户才能正常transfer 管理员可配置白名单里的地址  业务场景：给白名单用户提供一些优惠的条件  降低手续费、费率优惠 设置某个区块时间内，只有白名单可以交易  不一定将白名单判断置于">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png">
-<meta property="article:published_time" content="2021-09-27T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T02:59:44.475Z">
+<meta property="article:published_time" content="2022-06-23T15:36:34.000Z">
+<meta property="article:modified_time" content="2022-06-23T15:54:59.395Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="Project">
+<meta property="article:tag" content="CoolErc20">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png">
 
-<link rel="canonical" href="https://jerrychan807.github.io/2021/3287.html">
+<link rel="canonical" href="https://jerrychan807.github.io/2022/30342.html">
 
 
 <script id="page-configurations">
@@ -54,7 +50,7 @@
   };
 </script>
 
-  <title>Crypto-rarity自动冒险升级脚本 | Black House</title>
+  <title>Project-CoolErc20-whitelist-具备白名单代币 | Black House</title>
   
 
 
@@ -187,7 +183,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2021/3287.html">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/30342.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
@@ -200,7 +196,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Crypto-rarity自动冒险升级脚本
+          Project-CoolErc20-whitelist-具备白名单代币
         </h1>
 
         <div class="post-meta">
@@ -209,23 +205,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2021-09-27 22:36:34" itemprop="dateCreated datePublished" datetime="2021-09-27T22:36:34+08:00">2021-09-27</time>
+              <time title="Created: 2022-06-23 23:36:34 / Modified: 23:54:59" itemprop="dateCreated datePublished" datetime="2022-06-23T23:36:34+08:00">2022-06-23</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
+                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
                 </span>
             </span>
 
@@ -261,88 +251,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
-<p>顺便熟悉一下<code>solidty</code>和<code>web3js</code></p>
-<hr>
-<h1 id="Rarity"><a href="#Rarity" class="headerlink" title="Rarity:"></a>Rarity:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
-<p>游戏共有 11 个角色，分别是野人、吟游诗人、牧师、德鲁伊、斗士、僧侣、圣骑士、游侠、巡逻兵、巫师、法师。</p>
-<hr>
-<h2 id="合约源码"><a href="#合约源码" class="headerlink" title="合约源码:"></a>合约源码:</h2><p><a target="_blank" rel="noopener" href="https://github.com/andrecronje/rarity/blob/main/core/rarity.sol">rarity solidity源码</a></p>
-<p>简单通读一下源码,发现solidity写的代码还是挺简单的，并没想象中的难，可能跟没有那么多操作要放在链上有关。</p>
-<h2 id="readContract"><a href="#readContract" class="headerlink" title="readContract:"></a>readContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract</a></p>
-<p>挑几个比较重要的函数说明下</p>
-<blockquote>
-<p>adventures_log</p>
-</blockquote>
-<ul>
-<li>查询下一次冒险的时间</li>
-<li>input:角色id</li>
-<li>output:下一次冒险的时间戳</li>
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个具有白名单功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/whitelist</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
+<li>白名单用户才能正常<code>transfer</code></li>
+<li>管理员可配置白名单里的地址</li>
 </ul>
-<blockquote>
-<p>summoner</p>
-</blockquote>
+<h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>给白名单用户提供一些优惠的条件</p>
 <ul>
-<li>查询角色信息</li>
-<li>input:角色id</li>
-<li>output:角色的经验、下一次冒险的时间戳、职业类别、等级</li>
+<li>降低手续费、费率优惠</li>
+<li>设置某个区块时间内，只有白名单可以交易</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png" alt="25641732-8ED4-4D10-81F4-B5E90094D83D"></p>
-<blockquote>
-<p>xp_required</p>
-</blockquote>
-<ul>
-<li>查询下一级所需经验</li>
-<li>input:等级</li>
-<li>output:下一级所需经验</li>
-</ul>
-<h2 id="writeContract"><a href="#writeContract" class="headerlink" title="writeContract:"></a>writeContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract</a></p>
-<blockquote>
-<p>adventure</p>
-</blockquote>
-<ul>
-<li>让角色去冒险,每天只能冒险一次，每次获得250xp</li>
-<li>input:角色id</li>
-</ul>
-<blockquote>
-<p>level_up</p>
-</blockquote>
-<ul>
-<li>角色升级</li>
-<li>input:角色id</li>
-</ul>
-<hr>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p>自动冒险:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png" alt="DF22C901-3AC7-48EE-8D73-592181380B59"></p>
-<ul>
-<li>查出自己地址有哪些角色id</li>
-<li>调用合约的查询函数<code>summoner</code>，知道下一次冒险时间</li>
-<li>判断一下有没到冒险时间</li>
-<li>满足条件的话，调用合约的<code>adventure</code>，让角色去冒险</li>
-</ul>
-<p>自动升级:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png" alt="84454A4B-F8F1-444D-AB4A-79B47F941381"></p>
-<ul>
-<li>调用合约函数<code>summoner</code>，知道当前经验值</li>
-<li>调用合约函数<code>xp_required</code>,知道下次升级所需经验</li>
-<li>满足条件的话，调用合约的<code>level_up</code>，让角色去升级</li>
-</ul>
-<hr>
-<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题:"></a>一些问题:</h1><h1 id="gas："><a href="#gas：" class="headerlink" title="gas："></a>gas：</h1><p>自己的脚本和<code>https://rarityextended.com/</code>执行的gas费有些差异,后续有空要看一下怎么样省一下gas fee，虽然也很少钱。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png" alt="2749692E-F7D8-49E0-A22D-BD8AE0CC1040"></p>
-<h1 id="交易失败"><a href="#交易失败" class="headerlink" title="交易失败:"></a>交易失败:</h1><p>脚本定时跑起来后，常有几笔失败的交易，可能跟nonce设置有关系。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png" alt="20210927120445"></p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>脚本定时跑起来后，就不用去web页面上一个个点去冒险和升级，方便了不少，<br>写之前觉得挺麻烦的，有点无从下手，写完才发现很简单。hhh</p>
-<p>后续加点、玩副本这些，有空再研究补充下吧~</p>
-<hr>
+<p>不一定将白名单判断置于<code>transfer</code>的逻辑里，基于需求可以置于铸币、初始销售ido等流程里</p>
+<p>但白名单有点非黑即白的感觉，如果遇到多级营销分红的场景，可能不太适用，需要使用贴合场景的数据结构。</p>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>无</p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="白名单初始化："><a href="#白名单初始化：" class="headerlink" title="白名单初始化："></a>白名单初始化：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 构造函数</span><br><span class="line">constructor() public ERC20(&quot;JToken&quot;, &quot;JToken&quot;) &#123;</span><br><span class="line">    _mint(msg.sender, _totalSupply);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于一开始需要铸币给管理员地址，所以需要提前把管理员的地址加入白名单（看白名单具体的判定条件，可能<code>0x00</code>地址也需要加入白名单），不然deploy就会失败。</p>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="revert："><a href="#revert：" class="headerlink" title="revert："></a>revert：</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正确写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(users[<span class="number">0</span>].<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">1</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br><span class="line"><span class="comment">// 错误写法</span></span><br><span class="line">expect <span class="title function_">await</span>(users[<span class="number">0</span>].<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">1</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
+
+<p>多查文档:<a target="_blank" rel="noopener" href="https://ethereum-waffle.readthedocs.io/en/latest/matchers.html">Chai matchers</a></p>
+<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><p>符合预期：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">   Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100 -&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Transfer: user0 -&gt; 100-&gt; user1</span><br><span class="line">【Step 3】user0 -&gt; 100-&gt; user1 to be reverted</span><br><span class="line"> Set whiteList: </span><br><span class="line">【Step 4】tokenOwner Set user0 in WhiteList: </span><br><span class="line">【Step 4】user0IfwhiteList: true</span><br><span class="line"> After setting whitelist, try to transfer: </span><br><span class="line">【Step 5】 expect : users[0] -&gt; 100-&gt; user1 to be not reverted</span><br><span class="line">【Step 5】user0Balance(Ether): 0.0</span><br><span class="line">【Step 5】user1Balance(Ether): 100.0</span><br><span class="line">      ✔ only transfer after setting whiteList (1253ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br></pre></td></tr></table></figure>
+
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.chainnews.com/news/322609390326.htm">Yearn Finance 创始人受 Loot 启发推出冒险游戏 Rarity</a></li>
-<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1182970312">全网最详细——AC游戏“Rarity”人物简介和加点攻略</a></li>
-<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1438014279">【百大链游】FTM上的大冒险Rarity</a></li>
-<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/NwlpshhnEXgcqwqFF5JGbw">【DFarm】Rarity游戏基础规则超详细剖析</a></li>
-<li><a target="_blank" rel="noopener" href="https://rarityextended.com/">rarity Web1</a></li>
-<li><a target="_blank" rel="noopener" href="https://raritymmo.com/">rarity Web2</a></li>
+<li><a target="_blank" rel="noopener" href="https://ethereum-waffle.readthedocs.io/en/latest/matchers.html">Chai matchers</a></li>
 </ul>
 
     </div>
@@ -354,26 +286,28 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
+      <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+              <a href="/tags/CoolErc20/" rel="tag"># CoolErc20</a>
           </div>
 
         
@@ -382,13 +316,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/48779.html" rel="prev" title="Crypto-SuperTrend指标_现货交易脚本">
-      <i class="fa fa-chevron-left"></i> Crypto-SuperTrend指标_现货交易脚本
+    <a href="/2022/32598.html" rel="prev" title="Crypto-OpenSea制作NFT初步使用">
+      <i class="fa fa-chevron-left"></i> Crypto-OpenSea制作NFT初步使用
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/32598.html" rel="next" title="Crypto-Bp宝石回购监控脚本">
-      Crypto-Bp宝石回购监控脚本 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -454,7 +385,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Rarity"><span class="nav-number">2.</span> <span class="nav-text">Rarity:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">合约源码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readContract"><span class="nav-number">2.3.</span> <span class="nav-text">readContract:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#writeContract"><span class="nav-number">2.4.</span> <span class="nav-text">writeContract:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">脚本:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">一些问题:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gas%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">gas：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E5%A4%B1%E8%B4%A5"><span class="nav-number">6.</span> <span class="nav-text">交易失败:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BD%E5%90%8D%E5%8D%95%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">白名单初始化：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#revert%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">revert：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

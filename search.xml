@@ -2543,7 +2543,7 @@
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个具有黑名单功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
 <h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
 <li>黑名单用户无法正常<code>transfer</code></li>
-<li>管理员可配置黑白名单里的地址</li>
+<li>管理员可配置黑名单里的地址</li>
 </ul>
 <h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>暂时能想到的</p>
 <table>
@@ -3306,7 +3306,6 @@
 
 <h2 id="验证合约源码："><a href="#验证合约源码：" class="headerlink" title="验证合约源码："></a>验证合约源码：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">example:合约源代码、部署网络、合约的地址</span></span><br><span class="line">yarn hardhat verify --contract contracts/JToken.sol:JToken --network bsc_testnet 0x582cA468bcE2a68D1147D5411814256E52590103</span><br></pre></td></tr></table></figure>
 
-<hr>
 <h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>构建一个hardhat项目，一般需要以下几个步骤</p>
 <ul>
 <li>环境安装</li>
@@ -3316,9 +3315,7 @@
 <li>验证合约源码</li>
 <li>编写测试脚本 test</li>
 </ul>
-<hr>
 <h1 id="Inspire："><a href="#Inspire：" class="headerlink" title="Inspire："></a>Inspire：</h1><p>search或构建一个适合某类项目的hardhat脚手架，就不用每次都一步步setup了。</p>
-<hr>
 <h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
 <li><a href="https://learnblockchain.cn/article/2354">hardhat 教程及 hardhat-deploy 插件使用</a></li>
 <li><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></li>
@@ -7614,6 +7611,44 @@
       </categories>
       <tags>
         <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-CoolErc20-whitelist-具备白名单代币</title>
+    <url>/2022/30342.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个具有白名单功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/whitelist</code></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
+<li>白名单用户才能正常<code>transfer</code></li>
+<li>管理员可配置白名单里的地址</li>
+</ul>
+<h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>给白名单用户提供一些优惠的条件</p>
+<ul>
+<li>降低手续费、费率优惠</li>
+<li>设置某个区块时间内，只有白名单可以交易</li>
+</ul>
+<p>不一定将白名单判断置于<code>transfer</code>的逻辑里，基于需求可以置于铸币、初始销售ido等流程里</p>
+<p>但白名单有点非黑即白的感觉，如果遇到多级营销分红的场景，可能不太适用，需要使用贴合场景的数据结构。</p>
+<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>无</p>
+<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="白名单初始化："><a href="#白名单初始化：" class="headerlink" title="白名单初始化："></a>白名单初始化：</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 构造函数</span><br><span class="line">constructor() public ERC20(&quot;JToken&quot;, &quot;JToken&quot;) &#123;</span><br><span class="line">    _mint(msg.sender, _totalSupply);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于一开始需要铸币给管理员地址，所以需要提前把管理员的地址加入白名单（看白名单具体的判定条件，可能<code>0x00</code>地址也需要加入白名单），不然deploy就会失败。</p>
+<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="revert："><a href="#revert：" class="headerlink" title="revert："></a>revert：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 正确写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(users[<span class="number">0</span>].<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">1</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br><span class="line"><span class="comment">// 错误写法</span></span><br><span class="line">expect <span class="title function_">await</span>(users[<span class="number">0</span>].<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">1</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
+
+<p>多查文档:<a href="https://ethereum-waffle.readthedocs.io/en/latest/matchers.html">Chai matchers</a></p>
+<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><p>符合预期：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">   Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100 -&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Transfer: user0 -&gt; 100-&gt; user1</span><br><span class="line">【Step 3】user0 -&gt; 100-&gt; user1 to be reverted</span><br><span class="line"> Set whiteList: </span><br><span class="line">【Step 4】tokenOwner Set user0 in WhiteList: </span><br><span class="line">【Step 4】user0IfwhiteList: true</span><br><span class="line"> After setting whitelist, try to transfer: </span><br><span class="line">【Step 5】 expect : users[0] -&gt; 100-&gt; user1 to be not reverted</span><br><span class="line">【Step 5】user0Balance(Ether): 0.0</span><br><span class="line">【Step 5】user1Balance(Ether): 100.0</span><br><span class="line">      ✔ only transfer after setting whiteList (1253ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://ethereum-waffle.readthedocs.io/en/latest/matchers.html">Chai matchers</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
       </tags>
   </entry>
 </search>
