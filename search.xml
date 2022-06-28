@@ -4337,7 +4337,7 @@
     <title>StudyRecord-solidity可升级模式-接口模式</title>
     <url>/2022/35725.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a href="https://medium.com/@shub.sharma350/upgradability-patterns-in-solidity-part-1-13e23ce1f144">Upgradability patterns in Solidity — Part 1</a> 学习记录</p>
-<p>原作者示例代码<a href="">github地址</a><br>我的调试代码<a href="">github地址</a></p>
+<p>原作者示例代码<a href="https://github.com/shu-boom/upgradability">github地址</a><br>我的调试代码<a href="https://github.com/jerrychan807/my-awesome-solidity/tree/main/upgradability">github地址</a></p>
 <h1 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h1><p>软件开发是一个迭代过程，好的软件系统需要经常更新以消除现有错误并添加新功能。</p>
 <p>智能合约是存储在区块链上的不可变程序。<br>每个智能合约都有一个唯一的地址。<br>用户将交易发送到智能合约的地址，以执行存储在该合约中的代码。</p>
 <p>每次升级都可以上传新的智能合约，并在每次合约升级时为用户提供一个新地址。然而，这不是一个非常用户友好的设计模式。</p>
@@ -4432,7 +4432,7 @@
 </ul>
 ]]></content>
       <categories>
-        <category>StudyRecord</category>
+        <category>Crypto</category>
       </categories>
       <tags>
         <tag>Crypto</tag>
