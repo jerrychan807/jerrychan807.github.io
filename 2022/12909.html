@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:Upgradability patterns in Solidity — Part 2 学习记录原作者示例代码github地址我的调试代码github地址 存储模式：接着part1结尾的出现存储冲突的问题，我们可以通过采用良好的存储模式来避免存储冲突。**三种流行的模式是继承存储、非结构化存储和永久存储(Inherited Storage, Unstructured Storage, an">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-solidity可升级模式part2">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/12909.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:Upgradability patterns in Solidity — Part 2 学习记录原作者示例代码github地址我的调试代码github地址 存储模式：接着part1结尾的出现存储冲突的问题，我们可以通过采用良好的存储模式来避免存储冲突。**三种流行的模式是继承存储、非结构化存储和永久存储(Inherited Storage, Unstructured Storage, an">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629145421.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629155154.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629155214.png">
+<meta property="article:published_time" content="2022-06-28T08:00:34.000Z">
+<meta property="article:modified_time" content="2022-06-29T08:05:49.771Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629145421.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/12909.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-solidity可升级模式part2 | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/12909.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="Done > Perfect">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-solidity可升级模式part2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-06-28 16:00:34" itemprop="dateCreated datePublished" datetime="2022-06-28T16:00:34+08:00">2022-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-29 16:05:49" itemprop="dateModified" datetime="2022-06-29T16:05:49+08:00">2022-06-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>12 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a target="_blank" rel="noopener" href="https://medium.com/@shub.sharma350/upgradability-patterns-in-solidity-part-2-8a2e531d80f8">Upgradability patterns in Solidity — Part 2</a> 学习记录<br>原作者示例代码<a target="_blank" rel="noopener" href="https://github.com/shu-boom/upgradability">github地址</a><br>我的调试代码<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/my-awesome-solidity/tree/main/upgradability">github地址</a></p>
+<h1 id="存储模式："><a href="#存储模式：" class="headerlink" title="存储模式："></a>存储模式：</h1><p>接着part1结尾的出现存储冲突的问题，我们可以通过采用良好的存储模式来避免存储冲突。<br>**三种流行的模式是继承存储、非结构化存储和永久存储(Inherited Storage, Unstructured Storage, and Eternal Storage)**。</p>
+<h2 id="继承存储："><a href="#继承存储：" class="headerlink" title="继承存储："></a>继承存储：</h2><p>避免状态冲突的一种方法是在<code>逻辑</code>和<code>代理合约</code>之间保持相同的存储顺序。<br>让我们检查一个示例实现以获得更好的理解。</p>
+<h3 id="Proxy-sol"><a href="#Proxy-sol" class="headerlink" title="Proxy.sol:"></a>Proxy.sol:</h3><p><code>Proxy.sol</code> 是一个简单的代理合约，它有一个 <code>upgradeTo 方法</code>，这是一个回退方法。该合约的状态变量存在于 <code>CommonStorage.sol</code> 中</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Proxy.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./CommonStorage.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Proxy</span> is <span class="title class_">CommonStorage</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">upgradeTo</span>(<span class="params">address _implementation</span>) public &#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Only Owner&quot;</span>);</span><br><span class="line">        implementation = _implementation;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">fallback</span>() external&#123;</span><br><span class="line">        implementation = <span class="title function_">getImplementationAddress</span>();</span><br><span class="line">        assembly &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="attr">ptr</span>:=<span class="title function_">mload</span>(<span class="number">0x40</span>)</span><br><span class="line">            <span class="title function_">calldatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">calldatasize</span>())</span><br><span class="line">            <span class="keyword">let</span> result := <span class="title function_">delegatecall</span>(</span><br><span class="line">                <span class="title function_">gas</span>(),</span><br><span class="line">                <span class="title function_">sload</span>(implementation.<span class="property">slot</span>),</span><br><span class="line">                ptr,</span><br><span class="line">                <span class="title function_">calldatasize</span>(),</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                <span class="number">0</span></span><br><span class="line">            )</span><br><span class="line">            <span class="title function_">returndatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">returndatasize</span>())</span><br><span class="line">            <span class="keyword">switch</span> result</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> &#123; <span class="title function_">revert</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">            <span class="keyword">default</span> &#123; <span class="keyword">return</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CommonStorage-sol"><a href="#CommonStorage-sol" class="headerlink" title="CommonStorage.sol:"></a>CommonStorage.sol:</h3><p><code>CommonStorage 合约</code>由<code>代理合约</code>和<code>逻辑合约</code>共享。<code>CommonStorage 合约</code>还提供了一个公共方法来查看存储合约内部存储的当前实现地址。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CommonStorage.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line"></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">CommonStorage</span> &#123;</span><br><span class="line">    address internal implementation;</span><br><span class="line">    address internal owner;</span><br><span class="line">    string internal firstName;</span><br><span class="line">    string internal lastName;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * Returns the implementation address</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getImplementationAddress</span>(<span class="params"></span>) public view <span class="title function_">returns</span>(<span class="params">address</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> implementation;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LogicV1-sol-amp-LogicV2-sol"><a href="#LogicV1-sol-amp-LogicV2-sol" class="headerlink" title="LogicV1.sol &amp; LogicV2.sol:"></a>LogicV1.sol &amp; LogicV2.sol:</h3><p>在这个实现中有两个逻辑合约。<br><code>LogicV1 合约</code>具有用户名的访问器。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LogicV1.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./CommonStorage.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">LogicV1</span> is <span class="title class_">CommonStorage</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getFirstName</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">string memory</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> firstName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getLastName</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">string memory</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> lastName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setFirstName</span>(<span class="params">string calldata _firstName</span>) external &#123;</span><br><span class="line">        firstName = _firstName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setLastName</span>(<span class="params">string calldata _lastName</span>) external &#123;</span><br><span class="line">        lastName = _lastName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如下所示，<code>LogicV2 合约</code>扩展了 <code>LogicV1 合约</code>，后者又扩展了 <code>CommonStorage 合约</code>。<br>由于继承，<code>LogicV2 合约</code>已经知道其父合约的状态变量。<code>LogicV2 合约</code>还为用户的年龄添加了新的状态变量和访问器。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LogicV2.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line"></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./LogicV1.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">LogicV2</span> is <span class="title class_">LogicV1</span> &#123;</span><br><span class="line">    uint256 internal age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getAge</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">uint256</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setAge</span>(<span class="params">uint256 _age</span>) external &#123;</span><br><span class="line">        age = _age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，下面的测试用例利用这个实现来表明在之前的实现中遇到的状态冲突现在已经解决了。</p>
+<h3 id="测试用例："><a href="#测试用例：" class="headerlink" title="测试用例："></a>测试用例：</h3><p><a href="">测试用例</a></p>
+<h3 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    <span class="built_in">test</span></span><br><span class="line">Proxy try to upgrade ImplementationAddress To LogicV1.address</span><br><span class="line">[*]test_proxy_pattern_implementation_equals_to_logic_address</span><br><span class="line">Proxy setImplementationAddress successfully</span><br><span class="line">[*]test_can_set_and_get_names_from_logicv1</span><br><span class="line">   firstName: John</span><br><span class="line">   lastName: Doe</span><br><span class="line">[*]test_can_set_value_from_proxy</span><br><span class="line">Proxy try to upgrade ImplementationAddress To LogicV2.address</span><br><span class="line">[*]test_can_set_and_get_names_from_logicv2</span><br><span class="line">   firstName: Paul</span><br><span class="line">   lastName: Walker</span><br><span class="line">[*]test_can_get_and_set_age_from_proxy</span><br><span class="line">      ✔  (2274ms)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  1 passing (2s)</span><br><span class="line"></span><br><span class="line">✨  Done <span class="keyword">in</span> 6.76s.</span><br></pre></td></tr></table></figure>
+
+<p>继承存储方法通过为<code>代理</code>和<code>逻辑合约</code>所需的<code>状态变量</code><strong>提供严格的存储顺序来解决存储冲突</strong>。</p>
+<p><code>代理合约</code>正在委托对逻辑合约的调用；因此，只有代理合约的存储在使用中。</p>
+<p>继承<code>公共存储合约</code>的<code>代理合约</code>可以访问其父合约的所有状态变量。<br>每个状态变量根据其索引占用适当的内存位置。<br><code>LogicV1 合约</code>也继承了通用存储合约，它知道状态变量是如何存储在代理合约内部的。</p>
+<p>当用户尝试设置 firstName 变量时，第三个内存槽在代理合约中被修改。同样，当代理的所有者尝试升级合约时，第一个内存槽被修改。</p>
+<p>请注意，<code>LogicV2 合约</code>继承了之前的 <code>LogicV1合约</code>并指定了一个名为 age 的状态变量。<br>在 LogicV2 中继承 LogicV1 通过保持先前声明的状态变量的顺序来防止冲突。需要继承旧合约以防止存储冲突。</p>
+<p>如果 <code>LogicV2 合约</code>不继承 <code>LogicV1 合约</code>，<code>age</code> 变量将修改代理合约中的第一个存储槽。</p>
+<p>这会在实现变量和年龄变量之间产生冲突。</p>
+<h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><p>虽然继承存储通过可升级合约解决了存储冲突问题，但这种方法也有其自身的缺点。</p>
+<p>由于需要将所有先前声明的状态变量都复制到新部署的版本，因此升级变得昂贵。<br>其中一些可能没有被使用并最终不必要地占用内存。</p>
+<p><strong>由于通用的存储模式，逻辑合约与代理合约紧密耦合</strong>。因此，无法将这些逻辑合约与任何其他不继承通用存储合约的代理一起使用。这些问题可以通过其他存储模式有效解决。</p>
+<h2 id="永久存储："><a href="#永久存储：" class="headerlink" title="永久存储："></a>永久存储：</h2><p>这种方法的目标是<strong>最小化存储复制要求</strong>，如我们上一个示例所示。<br>在这种方法中，<strong>一个单独的合约被维护为一个“永久的”存储合约</strong>。</p>
+<p>因此，所有的逻辑合约都使用这个永恒的存储合约来满足他们的存储需求。因此，从<strong>升级模式中删除了存储复制要求</strong>。这种方法显着降低了升级成本。</p>
+<h3 id="EternalStorage-sol"><a href="#EternalStorage-sol" class="headerlink" title="EternalStorage.sol:"></a>EternalStorage.sol:</h3><p><code>EternalStorage 合约</code>维护映射作为它的状态变量。<br>它还定义了访问这些映射的方法。</p>
+<p><code>EternalStorage 合约</code>是不可变的；<br>因此，最好的方法是在部署此合约之前放置所有<code>映射</code>和<code>访问器</code>。<br>这将允许<code>逻辑合约</code>在这个<code>永久存储合约</code>中存储和检索任何类型的应用程序数据。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EternalStorage.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">EternalStorage</span> &#123;</span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> address) _addressStorage;</span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> uint256) _uintStorage;</span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> string) _stringStorage;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUint</span>(<span class="params">bytes32 key</span>) public view returns (uint256) &#123;</span><br><span class="line">      <span class="keyword">return</span> _uintStorage[key];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getAddress</span>(<span class="params">bytes32 key</span>) public view returns (address) &#123;</span><br><span class="line">      <span class="keyword">return</span> _addressStorage[key];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getString</span>(<span class="params">bytes32 key</span>) public view returns (string memory) &#123;</span><br><span class="line">      <span class="keyword">return</span> _stringStorage[key];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUint</span>(<span class="params">bytes32 key, uint256 value</span>) public &#123;</span><br><span class="line">        _uintStorage[key] = value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setAddress</span>(<span class="params">bytes32 key, address value</span>) public &#123;</span><br><span class="line">        _addressStorage[key] = value;</span><br><span class="line">    &#125; </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setString</span>(<span class="params">bytes32 key, string memory value</span>) public &#123;</span><br><span class="line">        _stringStorage[key] = value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="EternalLogicLibrary-sol"><a href="#EternalLogicLibrary-sol" class="headerlink" title="EternalLogicLibrary.sol:"></a>EternalLogicLibrary.sol:</h3><p><code>逻辑合约</code>可以使用<code>接口</code>和<code>库</code>进一步划分。<br>在此示例中，使用<code>库合约</code>从<code>逻辑合约</code>中抽象出逻辑。<br><strong>库为代码抽象和可重用性提供了很好的案例</strong>。</p>
+<p>库类型合约不能有状态变量，不能持有以太币，也不能继承合约。<br>将公共代码部署为库是经济的，因为合约大小会影响 gas 成本。以下库抽象了一些通用代码。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EternalLogicLibrary.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;.././EternalStorage.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">library <span class="title class_">EternalLogicLibrary</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserAge</span>(<span class="params">address _storageAddress</span>) external view <span class="title function_">returns</span>(<span class="params">uint256</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">EternalStorage</span>(_storageAddress).<span class="title function_">getUint</span>(<span class="string">&quot;age&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserName</span>(<span class="params">address _storageAddress</span>) external view <span class="title function_">returns</span>(<span class="params">string memory</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">EternalStorage</span>(_storageAddress).<span class="title function_">getString</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    &#125;   </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getOwner</span>(<span class="params">address eternalStorage</span>) external view <span class="title function_">returns</span>(<span class="params">address</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">EternalStorage</span>(eternalStorage).<span class="title function_">getAddress</span>(<span class="string">&quot;owner&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserAge</span>(<span class="params">address _storageAddress, uint256 age</span>) external&#123;</span><br><span class="line">        <span class="title class_">EternalStorage</span>(_storageAddress).<span class="title function_">setUint</span>(<span class="string">&quot;age&quot;</span>, age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserName</span>(<span class="params">address _storageAddress, string memory name</span>) external &#123;</span><br><span class="line">        <span class="title class_">EternalStorage</span>(_storageAddress).<span class="title function_">setString</span>(<span class="string">&quot;name&quot;</span>, name);</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="EternalLogicV1-sol-amp-EternalLogicV2-sol"><a href="#EternalLogicV1-sol-amp-EternalLogicV2-sol" class="headerlink" title="EternalLogicV1.sol &amp; EternalLogicV2.sol:"></a>EternalLogicV1.sol &amp; EternalLogicV2.sol:</h3><p>指定库后，是时候实现<code>逻辑合约</code>了。</p>
+<p><code>EternalLogicV1 合约</code>为用户的年龄和姓名提供访问器。<code>EternalLogicV2合约</code>升级了<code>EternalLogicV1合约</code>，增加了一个只允许合约拥有者设置属性的修饰符。</p>
+<p>两个逻辑合约都使用 <code>EternalLogicLibrary </code>作为地址类型。<br>他们还指定永久存储地址来检索和修改用户的属性。<br>请记住，永久存储在库内使用。</p>
+<p>因此，<code>永久存储合约</code>与<code>逻辑库</code>挂钩。<br>这样一来，永久的存储地址就知道了库中实现的所有方法</p>
+<p><code>EternalLogicV1.sol</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EternalLogicV1.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./libraries/EternalLogicLibrary.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">EternalLogicV1</span> &#123;</span><br><span class="line">    using <span class="title class_">EternalLogicLibrary</span> <span class="keyword">for</span> address; </span><br><span class="line">    address public _storage; </span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address __storage</span>)&#123;</span><br><span class="line">        _storage = __storage;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserAge</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">uint256</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> _storage.<span class="title function_">getUserAge</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserName</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">string memory</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> _storage.<span class="title function_">getUserName</span>();</span><br><span class="line">    &#125;   </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserAge</span>(<span class="params">uint256 age</span>) external&#123;</span><br><span class="line">         _storage.<span class="title function_">setUserAge</span>(age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserName</span>(<span class="params">string memory name</span>) external &#123;</span><br><span class="line">         _storage.<span class="title function_">setUserName</span>(name);</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>EternalLogicV2.sol</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./libraries/EternalLogicLibrary.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">EternalLogicV2</span> &#123;</span><br><span class="line">    using <span class="title class_">EternalLogicLibrary</span> <span class="keyword">for</span> address; </span><br><span class="line">    address public _storage; </span><br><span class="line">    </span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address __storage</span>)&#123;</span><br><span class="line">        _storage = __storage;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier onlyOwner &#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == _storage.<span class="title function_">getOwner</span>(), <span class="string">&quot;Only Owner&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserAge</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">uint256</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> _storage.<span class="title function_">getUserAge</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getUserName</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">string memory</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> _storage.<span class="title function_">getUserName</span>();</span><br><span class="line">    &#125;   </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserAge</span>(<span class="params">uint256 age</span>) onlyOwner external&#123;</span><br><span class="line">         _storage.<span class="title function_">setUserAge</span>(age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setUserName</span>(<span class="params">string memory name</span>) onlyOwner external &#123;</span><br><span class="line">         _storage.<span class="title function_">setUserName</span>(name);</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="EternalProxy-sol"><a href="#EternalProxy-sol" class="headerlink" title="EternalProxy.sol:"></a>EternalProxy.sol:</h3><p>最后，编写一个简单的代理来委托对逻辑合约的调用了。<br>代理和永久合约是不可变的。</p>
+<p>代理合约还与永久存储合约进行通信，以访问与代理相关的状态变量，如所有者和实现地址。以下是<code>代理合约</code>的示例：</p>
+<p><code>EternalProxy.sol</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EternalProxy.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./EternalStorage.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">EternalProxy</span>&#123;</span><br><span class="line">    <span class="title class_">EternalStorage</span> _storage;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">EternalStorage __storage</span>)&#123;</span><br><span class="line">        _storage = __storage;</span><br><span class="line">        _storage.<span class="title function_">setAddress</span>(<span class="string">&quot;owner&quot;</span>, msg.<span class="property">sender</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getImplementationAddress</span>(<span class="params"></span>) public view <span class="title function_">returns</span>(<span class="params">address</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span>  _storage.<span class="title function_">getAddress</span>(<span class="string">&quot;implementation&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setImplementationAddress</span>(<span class="params">address _implementation</span>) public &#123;</span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span>==_storage.<span class="title function_">getAddress</span>(<span class="string">&quot;owner&quot;</span>), <span class="string">&quot;Owner only&quot;</span>);</span><br><span class="line">         _storage.<span class="title function_">setAddress</span>(<span class="string">&quot;implementation&quot;</span>, _implementation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getOwnerAddress</span>(<span class="params"></span>) public view <span class="title function_">returns</span>(<span class="params">address</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> _storage.<span class="title function_">getAddress</span>(<span class="string">&quot;owner&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="title function_">fallback</span>() external&#123;</span><br><span class="line">        address implementation = <span class="title function_">getImplementationAddress</span>();</span><br><span class="line">        assembly &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="attr">ptr</span>:=<span class="title function_">mload</span>(<span class="number">0x40</span>) </span><br><span class="line">            <span class="title function_">calldatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">calldatasize</span>()) </span><br><span class="line">            <span class="keyword">let</span> response := <span class="title function_">delegatecall</span>(</span><br><span class="line">                <span class="title function_">gas</span>(), </span><br><span class="line">                implementation, </span><br><span class="line">                ptr, </span><br><span class="line">                <span class="title function_">calldatasize</span>(), </span><br><span class="line">                <span class="number">0</span>, </span><br><span class="line">                <span class="number">0</span> </span><br><span class="line">            )</span><br><span class="line">            <span class="title function_">returndatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">returndatasize</span>()) </span><br><span class="line">            <span class="keyword">switch</span> response </span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> &#123; <span class="title function_">revert</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">            <span class="keyword">default</span> &#123; <span class="keyword">return</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="测试用例：-1"><a href="#测试用例：-1" class="headerlink" title="测试用例："></a>测试用例：</h3><p><a href="">测试用例</a></p>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### 测试结果</span></span><br><span class="line">  Token contract</span><br><span class="line">    <span class="built_in">test</span></span><br><span class="line">Proxy try to upgrade ImplementationAddress To EternalLogicV1.address</span><br><span class="line">[*]test_proxy_pattern_owner_is_correct</span><br><span class="line">[*]test_proxy_pattern_implementation_equals_to_logic_address</span><br><span class="line">[*]test_can_set_and_get_val_from_logicv1</span><br><span class="line">[*]test_can_set_and_get_names_from_logicv1</span><br><span class="line">[*]test_proxy_pattern_implementation_equals_to_new_logic_address</span><br><span class="line">Proxy try to upgrade ImplementationAddress To EternalLogicV2.address</span><br><span class="line">[*]test_can_set_and_get_val_from_logicv2</span><br><span class="line">[*]test_can_set_and_get_names_from_logicv2</span><br><span class="line">      ✔  (2653ms)</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">  1 passing (3s)</span><br><span class="line"></span><br><span class="line">✨  Done <span class="keyword">in</span> 7.09s.</span><br></pre></td></tr></table></figure>
+
+<h3 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h3><p>尽管这种模式非常具有成本效益，但这种方法存在一些问题。在编写 EternalStorage 合约时，必须确定所有基本变量类型。</p>
+<p>永久存储的访问模式不是很简单。<br>永久存储模式需要一个专用的存储合约，并且不适用于现有合约。</p>
+<p>还有另一种流行的方法可以提供无缝升级体验。</p>
+<h2 id="非结构化存储"><a href="#非结构化存储" class="headerlink" title="非结构化存储:"></a>非结构化存储:</h2><p>在这种模式下，<code>代理合约</code>往往是具有一些基本功能的简约合约，并且大部分业务逻辑都在<code>逻辑合约</code>内部完成。</p>
+<p><strong>新的<code>逻辑合约</code>维护最新实现合约中存在的状态变量的顺序。</strong></p>
+<p><code>代理合约</code>通常需要所有者和实现地址来维护所有权和版本控制。<br><code>代理合约</code>将这些属性指定为常量，并在合约的字节码中设置它们。<code>OpenZepplin</code> 将非结构化存储模式用于其可升级的合约服务。</p>
+<p>下面是此模式的简单实现</p>
+<h3 id="UnstructuredLogicV1-sol"><a href="#UnstructuredLogicV1-sol" class="headerlink" title="UnstructuredLogicV1.sol:"></a>UnstructuredLogicV1.sol:</h3><p><code>UnstructuredLogicV1.sol</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UnstructuredLogicV1</span> &#123;</span><br><span class="line">    uint256 val;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getVal</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">uint256</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setVal</span>(<span class="params">uint256 _newVal</span>) external &#123;</span><br><span class="line">        val = _newVal;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>UnstructuredLogicV1 合约</code>简单地为一个名为 val 的值提供访问器。</p>
+<h3 id="UnstructuredLogicV2-sol"><a href="#UnstructuredLogicV2-sol" class="headerlink" title="UnstructuredLogicV2.sol:"></a>UnstructuredLogicV2.sol:</h3><p><code>UnstructuredLogicV2.sol</code></p>
+<figure class="highlight js"><figcaption><span>UnstructuredLogicV2.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UnstructuredLogicV2</span> &#123;</span><br><span class="line">    <span class="comment">// 由于 `UnstructuredProxy` 的第一个存储槽被 `val` 变量占用，</span></span><br><span class="line">    <span class="comment">//`UnstructuredLogicV2` 必须在声明上一个逻辑合约的变量后声明自己的状态变量。</span></span><br><span class="line">    uint256 val;</span><br><span class="line">    uint256 newVal;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getVal</span>(<span class="params"></span>) external view returns (uint256) &#123;</span><br><span class="line">        <span class="keyword">return</span> newVal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setVal</span>(<span class="params">uint256 _newVal</span>) external &#123;</span><br><span class="line">        newVal = _newVal;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>同样，<code>UnstructuredLogicV2 合约</code>通过添加一个名为 <code>newVal</code> 的新变量来升级 <code>UnstructuredLogicV1 合约</code>。</p>
+<p>请注意，<code>UnstructuredLogicV2</code> 还包含在 <code>UnstructuredLogicV1 合约</code>中定义的状态变量。</p>
+<h3 id="UnstructuredProxy-sol"><a href="#UnstructuredProxy-sol" class="headerlink" title="UnstructuredProxy.sol:"></a>UnstructuredProxy.sol:</h3><p><code>UnstructuredProxy.sol</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">UnstructuredProxy</span> &#123;</span><br><span class="line">    bytes32 private constant ownerPosition = <span class="title function_">bytes32</span>(<span class="title function_">uint256</span>(</span><br><span class="line">    <span class="title function_">keccak256</span>(<span class="string">&#x27;eip1967.proxy.owner&#x27;</span>)) - <span class="number">1</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    bytes32 private constant implementationPosition = <span class="title function_">bytes32</span>(<span class="title function_">uint256</span>(</span><br><span class="line">    <span class="title function_">keccak256</span>(<span class="string">&#x27;eip1967.proxy.implementation&#x27;</span>)) - <span class="number">1</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getImplementationAddress</span>(<span class="params"></span>) public view <span class="title function_">returns</span>(<span class="params">address impl</span>)&#123;</span><br><span class="line">        bytes32 _implementationPosition = implementationPosition;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            impl := <span class="title function_">sload</span>(_implementationPosition)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setImplementationAddress</span>(<span class="params">address _implementationAddress</span>) public &#123;</span><br><span class="line">        bytes32 _implementationPosition = implementationPosition;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            <span class="title function_">sstore</span>(_implementationPosition, _implementationAddress)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getOwnerAddress</span>(<span class="params"></span>) external view <span class="title function_">returns</span>(<span class="params">address ownr</span>)&#123;</span><br><span class="line">        bytes32 _ownerPosition = ownerPosition;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            ownr := <span class="title function_">sload</span>(_ownerPosition)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setOwnerAddress</span>(<span class="params">address _ownerAddress</span>) external &#123;</span><br><span class="line">        bytes32 _ownerPosition = ownerPosition;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            <span class="title function_">sstore</span>(_ownerPosition, _ownerAddress)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">fallback</span>() external&#123;</span><br><span class="line">        address implementation = <span class="title function_">getImplementationAddress</span>();</span><br><span class="line">        assembly &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="attr">ptr</span>:=<span class="title function_">mload</span>(<span class="number">0x40</span>)</span><br><span class="line">            <span class="title function_">calldatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">calldatasize</span>())</span><br><span class="line">            <span class="keyword">let</span> result := <span class="title function_">delegatecall</span>(</span><br><span class="line">                <span class="title function_">gas</span>(),</span><br><span class="line">                implementation,</span><br><span class="line">                ptr,</span><br><span class="line">                <span class="title function_">calldatasize</span>(),</span><br><span class="line">                <span class="number">0</span>,</span><br><span class="line">                <span class="number">0</span></span><br><span class="line">            )</span><br><span class="line">            <span class="title function_">returndatacopy</span>(ptr, <span class="number">0</span>, <span class="title function_">returndatasize</span>())</span><br><span class="line">            <span class="keyword">switch</span> result</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> &#123; <span class="title function_">revert</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">            <span class="keyword">default</span> &#123; <span class="keyword">return</span>(ptr, <span class="title function_">returndatasize</span>()) &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>即使解决了<code>代理合约</code>和<code>逻辑合约</code>之间的状态冲突问题，不同逻辑合约的状态变量之间仍然可能发生冲突。</p>
+<p>这是因为在第一个逻辑合约中声明的变量占用了代理内部可用的第一个存储槽。<strong>请记住，程序将实现和所有权变量的值存储在相当随机的位置</strong>。</p>
+<p>由于 <code>UnstructuredProxy</code> 的第一个存储槽被 <code>val</code> 变量占用，<code>UnstructuredLogicV2</code> 必须在声明上一个逻辑合约的变量后声明自己的状态变量。</p>
+<p><strong>这种方法在代理存储内部保持严格的存储顺序，并有助于避免意外覆盖存储变量</strong></p>
+<h3 id="测试用例：-2"><a href="#测试用例：-2" class="headerlink" title="测试用例："></a>测试用例：</h3><p><a href="">测试用例</a></p>
+<h3 id="测试结果-1"><a href="#测试结果-1" class="headerlink" title="测试结果:"></a>测试结果:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    <span class="built_in">test</span></span><br><span class="line">Proxy try to upgrade ImplementationAddress To UnstructuredLogicV1.address</span><br><span class="line">[*]test_proxy_pattern_implementation_equals_to_logic_address</span><br><span class="line">Proxy setImplementationAddress successfully</span><br><span class="line">[*]test_can_set_and_get_val_from_logicv1</span><br><span class="line">[*]test_proxy_pattern_implementation_equals_to_new_logic_address</span><br><span class="line">Proxy try to upgrade ImplementationAddress To UnstructuredLogicV2.address</span><br><span class="line">[*]test_can_set_and_get_names_from_logicv2</span><br><span class="line">      ✔  (1719ms)</span><br><span class="line"></span><br><span class="line">  1 passing (2s)</span><br><span class="line"></span><br><span class="line">✨  Done <span class="keyword">in</span> 5.73s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p>继承存储：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629145421.png" alt="20220629145421"></p>
+<p>永久存储：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629155154.png" alt="20220629155154"></p>
+<p>非结构化存储:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220629155214.png" alt="20220629155214"></p>
+<p>，如我们上一个示例所示。<br>在这种方法中，。</p>
+<p>因此，因此，从升级模式中删除了存储复制要求</p>
+<table>
+<thead>
+<tr>
+<th>存储模式</th>
+<th>改进点</th>
+<th>特点</th>
+<th>目的</th>
+<th>缺点1</th>
+<th>缺点2</th>
+<th>缺点3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>继承存储</td>
+<td>逻辑和代理合约之间保持相同的存储顺序，从而避免状态冲突</td>
+<td>—</td>
+<td>解决存储冲突问题</td>
+<td>1.升级时，需要同步之前的状态变量,耗费gas</td>
+<td>2.一些未使用的变量占用了内存</td>
+<td>3.逻辑合约与代理合约紧密耦合,无法将这些逻辑合约与任何其他不继承通用存储合约的代理一起使用</td>
+</tr>
+<tr>
+<td>永久存储</td>
+<td>逻辑合约不存状态变量，一个单独的合约被维护为一个“永久的”存储合约</td>
+<td>所有的逻辑合约都使用这个永久存储合约来满足他们的存储需求。</td>
+<td>最小化存储复制要求</td>
+<td>1.在编写永久存储合约时，必须确定所有基本变量类型。</td>
+<td>2.永久存储的访问模式不是很简单</td>
+<td>3.永久存储模式需要一个专用的存储合约，并且不适用于现有合约。</td>
+</tr>
+<tr>
+<td>非结构化存储</td>
+<td>不需要一个专用的存储合约</td>
+<td><code>代理合约</code>通常需要所有者和实现地址来维护所有权和版本控制，<code>代理合约</code>将这些属性指定为常量，并在合约的字节码中设置它们。</td>
+<td></td>
+<td>——</td>
+<td>——</td>
+<td>——</td>
+</tr>
+</tbody></table>
+<p>具有继承、永久或非结构化存储的基于代理的可升级模式为智能合约提供了一个不错的可升级架构。</p>
+<p>还有一些高级可升级模式。<br>这些模式可以更好地控制可升级性，同时解决 Solidity 语言施加的一些基本限制。让我们在本系列的下一部分详细了解一些高级可升级模式</p>
+<blockquote>
+<p>还不是完全理解，后续再反复看看</p>
+</blockquote>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@shub.sharma350/upgradability-patterns-in-solidity-part-2-8a2e531d80f8">Upgradability patterns in Solidity — Part 2</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/13101.html" rel="bookmark">StudyRecord-solidity可升级模式part1</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/13101.html" rel="prev" title="StudyRecord-solidity可升级模式part1">
+      <i class="fa fa-chevron-left"></i> StudyRecord-solidity可升级模式part1
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%A8%A1%E5%BC%8F%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">存储模式：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E5%AD%98%E5%82%A8%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">继承存储：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxy-sol"><span class="nav-number">2.1.1.</span> <span class="nav-text">Proxy.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CommonStorage-sol"><span class="nav-number">2.1.2.</span> <span class="nav-text">CommonStorage.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LogicV1-sol-amp-LogicV2-sol"><span class="nav-number">2.1.3.</span> <span class="nav-text">LogicV1.sol &amp; LogicV2.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%EF%BC%9A"><span class="nav-number">2.1.4.</span> <span class="nav-text">测试用例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">2.1.5.</span> <span class="nav-text">测试结果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="nav-number">2.1.6.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B0%B8%E4%B9%85%E5%AD%98%E5%82%A8%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">永久存储：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EternalStorage-sol"><span class="nav-number">2.2.1.</span> <span class="nav-text">EternalStorage.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EternalLogicLibrary-sol"><span class="nav-number">2.2.2.</span> <span class="nav-text">EternalLogicLibrary.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EternalLogicV1-sol-amp-EternalLogicV2-sol"><span class="nav-number">2.2.3.</span> <span class="nav-text">EternalLogicV1.sol &amp; EternalLogicV2.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EternalProxy-sol"><span class="nav-number">2.2.4.</span> <span class="nav-text">EternalProxy.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%EF%BC%9A-1"><span class="nav-number">2.2.5.</span> <span class="nav-text">测试用例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">2.2.6.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A-1"><span class="nav-number">2.2.7.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%BB%93%E6%9E%84%E5%8C%96%E5%AD%98%E5%82%A8"><span class="nav-number">2.3.</span> <span class="nav-text">非结构化存储:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UnstructuredLogicV1-sol"><span class="nav-number">2.3.1.</span> <span class="nav-text">UnstructuredLogicV1.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UnstructuredLogicV2-sol"><span class="nav-number">2.3.2.</span> <span class="nav-text">UnstructuredLogicV2.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UnstructuredProxy-sol"><span class="nav-number">2.3.3.</span> <span class="nav-text">UnstructuredProxy.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%EF%BC%9A-2"><span class="nav-number">2.3.4.</span> <span class="nav-text">测试用例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-1"><span class="nav-number">2.3.5.</span> <span class="nav-text">测试结果:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">3.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">4.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">Done > Perfect</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">408k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">6:11</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
