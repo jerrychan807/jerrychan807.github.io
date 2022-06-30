@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220630113434.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220630130540.png">
 <meta property="article:published_time" content="2022-06-29T12:00:34.000Z">
-<meta property="article:modified_time" content="2022-06-30T10:47:37.857Z">
+<meta property="article:modified_time" content="2022-06-30T10:56:30.282Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="SmartContract">
 <meta property="article:tag" content="StudyRecord">
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-30 18:47:37" itemprop="dateModified" datetime="2022-06-30T18:47:37+08:00">2022-06-30</time>
+                <time title="Modified: 2022-06-30 18:56:30" itemprop="dateModified" datetime="2022-06-30T18:56:30+08:00">2022-06-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -380,8 +380,7 @@
 <h3 id="测试结果：-2"><a href="#测试结果：-2" class="headerlink" title="测试结果："></a>测试结果：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">k: 000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266</span><br><span class="line">p: 0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">valueSlotPos: 0x723077b8a1b173adc35e5f0e7e3662fd1208212cb629f9c128551ea7168da722</span><br><span class="line">tokenOwnerBalanceAtStorage: 0x00000000000000000000000000000000000000000000003635c9adc5dea00000</span><br><span class="line">0x3635c9adc5dea00000</span><br><span class="line">tokenOwnerBalanceAtStorageInt: 1e+21</span><br><span class="line">tokenOwnerBalanceAtStorageSring: 1000000000000000000000</span><br><span class="line">ownerBalance: 1000000000000000000000</span><br><span class="line">ownerBalanceNumber: 1000000000000000000000</span><br></pre></td></tr></table></figure>
 
 
-<h1 id="Summary："><a href="#Summary：" class="headerlink" title="Summary："></a>Summary：</h1><p>介绍了usdcV2的现况，需要安全地进行升级。<br>虽然一般情况下智能合约一旦发布就不可修改，但可以通过代理合约的方式来进行升级。</p>
-<p>代理合约升级的原理：<code>代理合约</code>使用<code>fallback()</code>函数来捕获用户任意的函数调用，通过<code>delegatecall</code>传递函数调用给<code>执行合约</code>。</p>
+<h1 id="Summary："><a href="#Summary：" class="headerlink" title="Summary："></a>Summary：</h1><p>介绍了usdcV2的现况，需要安全地进行升级。<br>虽然一般情况下智能合约一旦发布就不可修改，但可以通过代理合约的方式来进行升级。<br>代理合约升级的原理：<code>代理合约</code>使用<code>fallback()</code>函数来捕获用户任意的函数调用，通过<code>delegatecall</code>传递函数调用给<code>执行合约</code>。</p>
 <p>在升级过程中，为了防止数据丢失，要注意的点：</p>
 <pre><code>1. 状态变量在合约存储中的布局方式 :从位置零开始，按顺序排列在存储槽中
 2. 合约状态变量存储在代理合约里而不是在执行合约里。
@@ -394,10 +393,7 @@
 <li>使用 EVM 操作码<code>SLOAD</code>和<code>SSTORE</code>直接指定存储槽。</li>
 <li>可以考虑较新的设计模式，例如EIP-2535 Diamond 标准</li>
 </ul>
-<p>在usdcV2升级过程中，为了验证是否保留了原始存储槽的顺序，创建了单元测试脚本：去读取、验证各类型的状态变量在存储槽中的值</p>
-<p>除了单元测试以外，还fork了主网在本地进行更多的手工测试。</p>
-<p>在真正升级时，准备了完备的升级脚本：保证升级操作在在一个原子事务中完成，如果检测到问题，它会回滚整个升级过程。</p>
-<p>最后，成功升级</p>
+<p>在usdcV2升级过程中，为了验证是否保留了原始存储槽的顺序，创建了单元测试脚本：去读取、验证各类型的状态变量在存储槽中的值<br>除了单元测试以外，还fork了主网在本地进行更多的手工测试。<br>在真正升级时，准备了完备的升级脚本：保证升级操作在在一个原子事务中完成，如果检测到问题，它会回滚整个升级过程。<br>最后，成功升级</p>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://blog.coinbase.com/usdc-v2-upgrading-a-multi-billion-dollar-erc-20-token-b57cd9437096">USDC v2: Upgrading a multi-billion dollar ERC-20 token</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/aurora-is-near/hardhat-storage-layout">hardhat-storage-layout</a></li>
@@ -418,10 +414,10 @@
       <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/13101.html" rel="bookmark">StudyRecord-solidity可升级模式part1</a></div>
+      <div class="popular-posts-title"><a href="/2022/12909.html" rel="bookmark">StudyRecord-Upgradability_patterns_in_Solidity_Part2</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/12909.html" rel="bookmark">StudyRecord-solidity可升级模式part2</a></div>
+      <div class="popular-posts-title"><a href="/2022/13101.html" rel="bookmark">StudyRecord-Upgradability_patterns_in_Solidity_Part1</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
@@ -441,8 +437,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/12909.html" rel="prev" title="StudyRecord-solidity可升级模式part2">
-      <i class="fa fa-chevron-left"></i> StudyRecord-solidity可升级模式part2
+    <a href="/2022/12909.html" rel="prev" title="StudyRecord-Upgradability_patterns_in_Solidity_Part2">
+      <i class="fa fa-chevron-left"></i> StudyRecord-Upgradability_patterns_in_Solidity_Part2
     </a></div>
       <div class="post-nav-item"></div>
     </div>
