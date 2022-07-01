@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:OpenZeppelin代码库概览，了解有什么功能的库，方便后续使用 文件夹：   folder 模块功能 简述    Access 权限控制 限制谁可以访问合约功能或何时可以访问的方法   crosschain 跨链 代币可跨链   finance 金融系统原型 支付拆分模式(单笔支付可自定义比例拆分成ether、erc20)、退休金模式(合约锁仓、按自定义时间释放给受益人)   gov">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenZeppelin-代码库QuickView">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/23566.html">
+<meta property="og:site_name" content="Black House">
+<meta property="og:description" content="Pre:OpenZeppelin代码库概览，了解有什么功能的库，方便后续使用 文件夹：   folder 模块功能 简述    Access 权限控制 限制谁可以访问合约功能或何时可以访问的方法   crosschain 跨链 代币可跨链   finance 金融系统原型 支付拆分模式(单笔支付可自定义比例拆分成ether、erc20)、退休金模式(合约锁仓、按自定义时间释放给受益人)   gov">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-22T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-07-01T09:46:33.744Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="SmartContract">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/23566.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>OpenZeppelin-代码库QuickView | Black House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Black House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/23566.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="Done > Perfect">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenZeppelin-代码库QuickView
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-06-22 22:36:34" itemprop="dateCreated datePublished" datetime="2022-06-22T22:36:34+08:00">2022-06-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-01 17:46:33" itemprop="dateModified" datetime="2022-07-01T17:46:33+08:00">2022-07-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SmartContract/" itemprop="url" rel="index"><span itemprop="name">SmartContract</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>OpenZeppelin代码库概览，了解有什么功能的库，方便后续使用</p>
+<h1 id="文件夹："><a href="#文件夹：" class="headerlink" title="文件夹："></a>文件夹：</h1><table>
+<thead>
+<tr>
+<th>folder</th>
+<th>模块功能</th>
+<th>简述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Access</td>
+<td>权限控制</td>
+<td>限制谁可以访问合约功能或何时可以访问的方法</td>
+</tr>
+<tr>
+<td>crosschain</td>
+<td>跨链</td>
+<td>代币可跨链</td>
+</tr>
+<tr>
+<td>finance</td>
+<td>金融系统原型</td>
+<td>支付拆分模式(单笔支付可自定义比例拆分成ether、erc20)、退休金模式(合约锁仓、按自定义时间释放给受益人)</td>
+</tr>
+<tr>
+<td>governance</td>
+<td>链上治理</td>
+<td>链上投票协议</td>
+</tr>
+<tr>
+<td>interfaces</td>
+<td>标准接口</td>
+<td>各类erc提案的标准接口库</td>
+</tr>
+<tr>
+<td>metatx</td>
+<td>元交易</td>
+<td>——</td>
+</tr>
+<tr>
+<td>mocks</td>
+<td>模拟</td>
+<td>——</td>
+</tr>
+<tr>
+<td>proxy</td>
+<td>可升级的代理合约模式</td>
+<td>Transparent(可由管理员升级的代理)、UUPS(基于UUPS设计的可升级机制)</td>
+</tr>
+<tr>
+<td>security</td>
+<td>安全库</td>
+<td>常见的安全实践：防重入、紧急响应机制</td>
+</tr>
+<tr>
+<td>token</td>
+<td>代币</td>
+<td>ERC20(可替代代币)、ERC721(不可替代代币)、ERC1155(可&#x2F;半可&#x2F;不可替代代币)、ERC777(erc20+转账通知机制)</td>
+</tr>
+<tr>
+<td>utils</td>
+<td>实用工具</td>
+<td>处理新数据类型、签名验证、安全数学计算等</td>
+</tr>
+<tr>
+<td>vendor</td>
+<td>第三方合约库</td>
+<td>arbitrum、compound、optimism等</td>
+</tr>
+</tbody></table>
+<h1 id="QuickView："><a href="#QuickView：" class="headerlink" title="QuickView："></a>QuickView：</h1><h2 id="access-权限控制"><a href="#access-权限控制" class="headerlink" title="access (权限控制)"></a>access (权限控制)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── access (权限控制)</span><br><span class="line">│   ├── AccessControl.sol (基于角色的访问控制机制)</span><br><span class="line">│   ├── AccessControlCrossChain.sol (扩展：跨链)</span><br><span class="line">│   ├── AccessControlEnumerable.sol (扩展：可枚举各角色的成员)</span><br><span class="line">│   ├── IAccessControl.sol</span><br><span class="line">│   ├── IAccessControlEnumerable.sol</span><br><span class="line">│   ├── Ownable.sol (管理员访问控制机制)</span><br></pre></td></tr></table></figure>
+
+<h2 id="crosschain-跨链"><a href="#crosschain-跨链" class="headerlink" title="crosschain (跨链)"></a>crosschain (跨链)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">├── crosschain (跨链)</span><br><span class="line">│   ├── CrossChainEnabled.sol (接收跨链消息时的控制执行流程)</span><br><span class="line">│   │</span><br><span class="line">│   ├── amb (在两个evm链之间中继任意数据)</span><br><span class="line">│   │   ├── CrossChainEnabledAMB.sol (基于amb bridge)</span><br><span class="line">│   │   └── LibAMB.sol</span><br><span class="line">│   ├── arbitrum</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL1.sol (基于ArbitrumL1 bridge)</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL2.sol (基于ArbitrumL2 bridge)</span><br><span class="line">│   │   ├── LibArbitrumL1.sol </span><br><span class="line">│   │   └── LibArbitrumL2.sol </span><br><span class="line">│   ├── errors.sol</span><br><span class="line">│   ├── optimism</span><br><span class="line">│   │   ├── CrossChainEnabledOptimism.sol (基于Optimism bridge)</span><br><span class="line">│   │   └── LibOptimism.sol</span><br><span class="line">│   └── polygon</span><br><span class="line">│       └── CrossChainEnabledPolygonChild.sol (基于Polygon bridge)</span><br></pre></td></tr></table></figure>
+
+<h2 id="finance-金融系统原型"><a href="#finance-金融系统原型" class="headerlink" title="finance (金融系统原型)"></a>finance (金融系统原型)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── finance (金融系统原型)</span><br><span class="line">│   ├── PaymentSplitter.sol (支付拆分模式:单笔支付可自定义比例拆分成ether、erc20)</span><br><span class="line">│   └── VestingWallet.sol (退休金模式:锁仓、按自定义时间释放给受益人) </span><br><span class="line">├── governance (链上治理)</span><br><span class="line">│   ├── Governor.sol (抽象合约:只包含治理系统的核心部分，需要用其他模块进行拓展)</span><br><span class="line">│   ├── IGovernor.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── TimelockController.sol (时间锁控制器)</span><br><span class="line">│   ├── compatibility (兼容层)</span><br><span class="line">│   │   ├── GovernorCompatibilityBravo.sol</span><br><span class="line">│   │   └── IGovernorCompatibilityBravo.sol</span><br><span class="line">│   ├── extensions (拓展方案)</span><br><span class="line">│   │   ├── GovernorCountingSimple.sol (简单的投票机制,有3个投票选项:反对、赞成和弃权)</span><br><span class="line">│   │   ├── GovernorPreventLateQuorum.sol (防止持票巨鲸最后时刻控制投票结果)</span><br><span class="line">│   │   ├── GovernorProposalThreshold.sol (限制具有最低余额的代币持有者的提案)</span><br><span class="line">│   │   ├── GovernorSettings.sol (可更新治理方案的设置)</span><br><span class="line">│   │   ├── GovernorTimelockCompound.sol (加上复合时间锁)</span><br><span class="line">│   │   ├── GovernorTimelockControl.sol (加上时间锁)</span><br><span class="line">│   │   ├── GovernorVotes.sol (从代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesComp.sol (从多个代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesQuorumFraction.sol (从代币和法定人数中提取投票权重)</span><br><span class="line">│   │   └── IGovernorTimelock.sol </span><br><span class="line">│   └── utils</span><br><span class="line">│       ├── IVotes.sol</span><br><span class="line">│       └── Votes.sol (抽象合约：投票权可转移/委托,可汇集给代表代投)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="interfaces-标准接口"><a href="#interfaces-标准接口" class="headerlink" title="interfaces (标准接口):"></a>interfaces (标准接口):</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">├── interfaces (标准接口)</span><br><span class="line">│   ├── IERC1155.sol (单合约可存多个代币)</span><br><span class="line">│   ├── IERC1155MetadataURI.sol</span><br><span class="line">│   ├── IERC1155Receiver.sol</span><br><span class="line">│   ├── IERC1271.sol (让智能合约验证其它智能合约的签名)</span><br><span class="line">│   ├── IERC1363.sol (在单个交易中,在转移/批准后允许回调)</span><br><span class="line">│   ├── IERC1363Receiver.sol</span><br><span class="line">│   ├── IERC1363Spender.sol</span><br><span class="line">│   ├── IERC165.sol (检测合约实现了哪些接口)</span><br><span class="line">│   ├── IERC1820Implementer.sol</span><br><span class="line">│   ├── IERC1820Registry.sol</span><br><span class="line">│   ├── IERC20.sol (可替代代币)</span><br><span class="line">│   ├── IERC20Metadata.sol</span><br><span class="line">│   ├── IERC2981.sol (NFT版权标准)</span><br><span class="line">│   ├── IERC3156.sol (闪电贷)</span><br><span class="line">│   ├── IERC3156FlashBorrower.sol</span><br><span class="line">│   ├── IERC3156FlashLender.sol</span><br><span class="line">│   ├── IERC4626.sol (代币化的金库)</span><br><span class="line">│   ├── IERC721.sol (不可替代代币)</span><br><span class="line">│   ├── IERC721Enumerable.sol</span><br><span class="line">│   ├── IERC721Metadata.sol</span><br><span class="line">│   ├── IERC721Receiver.sol</span><br><span class="line">│   ├── IERC777.sol (erc20+转账通知机制)</span><br><span class="line">│   ├── IERC777Recipient.sol</span><br><span class="line">│   ├── IERC777Sender.sol</span><br><span class="line">│   ├── draft-IERC1822.sol</span><br><span class="line">│   └── draft-IERC2612.sol</span><br></pre></td></tr></table></figure>
+
+<h2 id="metatx-元交易"><a href="#metatx-元交易" class="headerlink" title="metatx (元交易):"></a>metatx (元交易):</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">├── metatx (元交易)</span><br><span class="line">│   ├── ERC2771Context.sol</span><br><span class="line">│   └── MinimalForwarder.sol</span><br></pre></td></tr></table></figure>
+
+<h2 id="mocks-模拟"><a href="#mocks-模拟" class="headerlink" title="mocks (模拟)"></a>mocks (模拟)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">│   </span><br><span class="line">├── mocks (模拟)</span><br><span class="line">│   ├── AccessControlCrossChainMock.sol</span><br><span class="line">│   ├── AccessControlEnumerableMock.sol</span><br><span class="line">│   ├── AccessControlMock.sol</span><br><span class="line">│   ├── AddressImpl.sol</span><br><span class="line">│   ├── ArraysImpl.sol</span><br><span class="line">│   ├── BadBeacon.sol</span><br><span class="line">│   ├── Base64Mock.sol</span><br><span class="line">│   ├── BitmapMock.sol</span><br><span class="line">│   ├── CallReceiverMock.sol</span><br><span class="line">│   ├── CheckpointsImpl.sol</span><br><span class="line">│   ├── ClashingImplementation.sol</span><br><span class="line">│   ├── ClonesMock.sol</span><br><span class="line">│   ├── ConditionalEscrowMock.sol</span><br><span class="line">│   ├── ContextMock.sol</span><br><span class="line">│   ├── CountersImpl.sol</span><br><span class="line">│   ├── Create2Impl.sol</span><br><span class="line">│   ├── DoubleEndedQueueMock.sol</span><br><span class="line">│   ├── DummyImplementation.sol</span><br><span class="line">│   ├── ECDSAMock.sol</span><br><span class="line">│   ├── EIP712External.sol</span><br><span class="line">│   ├── ERC1155BurnableMock.sol</span><br><span class="line">│   ├── ERC1155Mock.sol</span><br><span class="line">│   ├── ERC1155PausableMock.sol</span><br><span class="line">│   ├── ERC1155ReceiverMock.sol</span><br><span class="line">│   ├── ERC1155SupplyMock.sol</span><br><span class="line">│   ├── ERC1155URIStorageMock.sol</span><br><span class="line">│   ├── ERC1271WalletMock.sol</span><br><span class="line">│   ├── ERC165</span><br><span class="line">│   │   ├── ERC165InterfacesSupported.sol</span><br><span class="line">│   │   ├── ERC165MissingData.sol</span><br><span class="line">│   │   └── ERC165NotSupported.sol</span><br><span class="line">│   ├── ERC165CheckerMock.sol</span><br><span class="line">│   ├── ERC165Mock.sol</span><br><span class="line">│   ├── ERC165StorageMock.sol</span><br><span class="line">│   ├── ERC1820ImplementerMock.sol</span><br><span class="line">│   ├── ERC20BurnableMock.sol</span><br><span class="line">│   ├── ERC20CappedMock.sol</span><br><span class="line">│   ├── ERC20DecimalsMock.sol</span><br><span class="line">│   ├── ERC20FlashMintMock.sol</span><br><span class="line">│   ├── ERC20Mock.sol</span><br><span class="line">│   ├── ERC20PausableMock.sol</span><br><span class="line">│   ├── ERC20PermitMock.sol</span><br><span class="line">│   ├── ERC20SnapshotMock.sol</span><br><span class="line">│   ├── ERC20TokenizedVaultMock.sol</span><br><span class="line">│   ├── ERC20VotesCompMock.sol</span><br><span class="line">│   ├── ERC20VotesMock.sol</span><br><span class="line">│   ├── ERC20WrapperMock.sol</span><br><span class="line">│   ├── ERC2771ContextMock.sol</span><br><span class="line">│   ├── ERC3156FlashBorrowerMock.sol</span><br><span class="line">│   ├── ERC721BurnableMock.sol</span><br><span class="line">│   ├── ERC721EnumerableMock.sol</span><br><span class="line">│   ├── ERC721Mock.sol</span><br><span class="line">│   ├── ERC721PausableMock.sol</span><br><span class="line">│   ├── ERC721ReceiverMock.sol</span><br><span class="line">│   ├── ERC721RoyaltyMock.sol</span><br><span class="line">│   ├── ERC721URIStorageMock.sol</span><br><span class="line">│   ├── ERC721VotesMock.sol</span><br><span class="line">│   ├── ERC777Mock.sol</span><br><span class="line">│   ├── ERC777SenderRecipientMock.sol</span><br><span class="line">│   ├── EnumerableMapMock.sol</span><br><span class="line">│   ├── EnumerableSetMock.sol</span><br><span class="line">│   ├── EtherReceiverMock.sol</span><br><span class="line">│   ├── GovernorCompMock.sol</span><br><span class="line">│   ├── GovernorCompatibilityBravoMock.sol</span><br><span class="line">│   ├── GovernorMock.sol</span><br><span class="line">│   ├── GovernorPreventLateQuorumMock.sol</span><br><span class="line">│   ├── GovernorTimelockCompoundMock.sol</span><br><span class="line">│   ├── GovernorTimelockControlMock.sol</span><br><span class="line">│   ├── GovernorVoteMock.sol</span><br><span class="line">│   ├── GovernorWithParamsMock.sol</span><br><span class="line">│   ├── InitializableMock.sol</span><br><span class="line">│   ├── MathMock.sol</span><br><span class="line">│   ├── MerkleProofWrapper.sol</span><br><span class="line">│   ├── MulticallTest.sol</span><br><span class="line">│   ├── MulticallTokenMock.sol</span><br><span class="line">│   ├── MultipleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── OwnableMock.sol</span><br><span class="line">│   ├── PausableMock.sol</span><br><span class="line">│   ├── PullPaymentMock.sol</span><br><span class="line">│   ├── ReentrancyAttack.sol</span><br><span class="line">│   ├── ReentrancyMock.sol</span><br><span class="line">│   ├── RegressionImplementation.sol</span><br><span class="line">│   ├── SafeCastMock.sol</span><br><span class="line">│   ├── SafeERC20Helper.sol</span><br><span class="line">│   ├── SafeMathMock.sol</span><br><span class="line">│   ├── SignatureCheckerMock.sol</span><br><span class="line">│   ├── SignedMathMock.sol</span><br><span class="line">│   ├── SignedSafeMathMock.sol</span><br><span class="line">│   ├── SingleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── StorageSlotMock.sol</span><br><span class="line">│   ├── StringsMock.sol</span><br><span class="line">│   ├── TimersBlockNumberImpl.sol</span><br><span class="line">│   ├── TimersTimestampImpl.sol</span><br><span class="line">│   ├── UUPS</span><br><span class="line">│   │   ├── UUPSLegacy.sol</span><br><span class="line">│   │   └── UUPSUpgradeableMock.sol</span><br><span class="line">│   ├── VotesMock.sol</span><br><span class="line">│   ├── compound</span><br><span class="line">│   │   └── CompTimelock.sol</span><br><span class="line">│   ├── crosschain</span><br><span class="line">│   │   ├── bridges.sol</span><br><span class="line">│   │   └── receivers.sol</span><br><span class="line">│   └── wizard</span><br><span class="line">│       ├── MyGovernor1.sol</span><br><span class="line">│       ├── MyGovernor2.sol</span><br><span class="line">│       └── MyGovernor3.sol</span><br><span class="line">│</span><br></pre></td></tr></table></figure>
+
+<h2 id="proxy-代理模式"><a href="#proxy-代理模式" class="headerlink" title="proxy (代理模式):"></a>proxy (代理模式):</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">├── proxy (代理模式)</span><br><span class="line">│   ├── Clones.sol (部署最简单代理合约的标准)</span><br><span class="line">│   ├── ERC1967</span><br><span class="line">│   │   ├── ERC1967Proxy.sol (调用委托给可更改的执行合约，防存储冲突)</span><br><span class="line">│   │   └── ERC1967Upgrade.sol</span><br><span class="line">│   ├── Proxy.sol</span><br><span class="line">│   ├── beacon</span><br><span class="line">│   │   ├── BeaconProxy.sol (执行合约地址存储在uint256(keccak256(&#x27;eip1967.proxy.beacon&#x27;)) - 1中，防存储冲突)</span><br><span class="line">│   │   ├── IBeacon.sol</span><br><span class="line">│   │   └── UpgradeableBeacon.sol</span><br><span class="line">│   ├── transparent (透明代理)</span><br><span class="line">│   │   ├── ProxyAdmin.sol</span><br><span class="line">│   │   └── TransparentUpgradeableProxy.sol (可由管理员升级的代理。管理员可以访问管理功能，调用不会被转发)</span><br><span class="line">│   └── utils </span><br><span class="line">│       ├── Initializable.sol (基础合约，用于编写可升级合约)</span><br><span class="line">│       └── UUPSUpgradeable.sol (为 UUPS 代理设计的可升级机制)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="security-安全机制库"><a href="#security-安全机制库" class="headerlink" title="security (安全机制库)"></a>security (安全机制库)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">├── security (安全机制库)</span><br><span class="line">│   ├── Pausable.sol (一种可用于避免重入攻击的模式)</span><br><span class="line">│   ├── PullPayment.sol (在某些功能期间可以防止重入的修饰符)</span><br><span class="line">│   └── ReentrancyGuard.sol (一种常见的紧急响应机制，可以在修复待处理时暂停合约)</span><br></pre></td></tr></table></figure>
+
+<h2 id="token-代币"><a href="#token-代币" class="headerlink" title="token (代币)"></a>token (代币)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">├── token (代币)</span><br><span class="line">│   ├── ERC1155</span><br><span class="line">│   │   ├── ERC1155.sol</span><br><span class="line">│   │   ├── IERC1155.sol</span><br><span class="line">│   │   ├── IERC1155Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC1155Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC1155Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC1155Supply.sol (可跟踪每个id的总供应量)</span><br><span class="line">│   │   │   ├── ERC1155URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   └── IERC1155MetadataURI.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   ├── ERC1155PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── ERC1155Holder.sol</span><br><span class="line">│   │       └── ERC1155Receiver.sol</span><br><span class="line">│   ├── ERC20 (同质化代币)</span><br><span class="line">│   │   ├── ERC20.sol</span><br><span class="line">│   │   ├── IERC20.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC20Burnable.sol (销毁自己的代币)</span><br><span class="line">│   │   │   ├── ERC20Capped.sol (在铸币时对总供应量设定一个不可变的上限值)</span><br><span class="line">│   │   │   ├── ERC20FlashMint.sol (支持闪电贷)</span><br><span class="line">│   │   │   ├── ERC20Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC20Snapshot.sol (有效存储过去的代币余额/供应量，以便以后随时查询)</span><br><span class="line">│   │   │   ├── ERC20TokenizedVault.sol</span><br><span class="line">│   │   │   ├── ERC20Votes.sol (支持投票和投票委托)</span><br><span class="line">│   │   │   ├── ERC20VotesComp.sol (支持投票和投票委托,兼容Compound的token，有uint96限制)</span><br><span class="line">│   │   │   ├── ERC20Wrapper.sol</span><br><span class="line">│   │   │   ├── IERC20Metadata.sol</span><br><span class="line">│   │   │   ├── draft-ERC20Permit.sol</span><br><span class="line">│   │   │   └── draft-IERC20Permit.sol</span><br><span class="line">│   │   ├── presets (预设、已废弃)</span><br><span class="line">│   │   │   ├── ERC20PresetFixedSupply.sol (预设固定供应量)</span><br><span class="line">│   │   │   ├── ERC20PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── SafeERC20.sol</span><br><span class="line">│   │       └── TokenTimelock.sol (时间锁)</span><br><span class="line">│   ├── ERC721 非同质化代币</span><br><span class="line">│   │   ├── ERC721.sol</span><br><span class="line">│   │   ├── IERC721.sol</span><br><span class="line">│   │   ├── IERC721Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC721Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── ERC721Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC721Royalty.sol ()</span><br><span class="line">│   │   │   ├── ERC721URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   ├── IERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── IERC721Metadata.sol</span><br><span class="line">│   │   │   └── draft-ERC721Votes.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   └── ERC721PresetMinterPauserAutoId.sol</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       └── ERC721Holder.sol</span><br><span class="line">│   ├── ERC777 (ERC20+转账通知机制)</span><br><span class="line">│   │   ├── ERC777.sol</span><br><span class="line">│   │   ├── IERC777.sol</span><br><span class="line">│   │   ├── IERC777Recipient.sol</span><br><span class="line">│   │   ├── IERC777Sender.sol</span><br><span class="line">│   │   └── presets</span><br><span class="line">│   │       └── ERC777PresetFixedSupply.sol</span><br><span class="line">│   └── common</span><br><span class="line">│       └── ERC2981.sol</span><br></pre></td></tr></table></figure>
+
+<h2 id="utils-实用工具库"><a href="#utils-实用工具库" class="headerlink" title="utils (实用工具库)"></a>utils (实用工具库)</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">├── utils (实用工具库)</span><br><span class="line">│   ├── Address.sol</span><br><span class="line">│   ├── Arrays.sol</span><br><span class="line">│   ├── Base64.sol</span><br><span class="line">│   ├── Checkpoints.sol</span><br><span class="line">│   ├── Context.sol</span><br><span class="line">│   ├── Counters.sol</span><br><span class="line">│   ├── Create2.sol</span><br><span class="line">│   ├── Multicall.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── StorageSlot.sol</span><br><span class="line">│   ├── Strings.sol</span><br><span class="line">│   ├── Timers.sol</span><br><span class="line">│   ├── cryptography</span><br><span class="line">│   │   ├── ECDSA.sol</span><br><span class="line">│   │   ├── MerkleProof.sol</span><br><span class="line">│   │   ├── SignatureChecker.sol</span><br><span class="line">│   │   └── draft-EIP712.sol</span><br><span class="line">│   ├── escrow</span><br><span class="line">│   │   ├── ConditionalEscrow.sol</span><br><span class="line">│   │   ├── Escrow.sol</span><br><span class="line">│   │   └── RefundEscrow.sol</span><br><span class="line">│   ├── introspection</span><br><span class="line">│   │   ├── ERC165.sol</span><br><span class="line">│   │   ├── ERC165Checker.sol</span><br><span class="line">│   │   ├── ERC165Storage.sol</span><br><span class="line">│   │   ├── ERC1820Implementer.sol</span><br><span class="line">│   │   ├── IERC165.sol</span><br><span class="line">│   │   ├── IERC1820Implementer.sol</span><br><span class="line">│   │   └── IERC1820Registry.sol</span><br><span class="line">│   ├── math</span><br><span class="line">│   │   ├── Math.sol</span><br><span class="line">│   │   ├── SafeCast.sol</span><br><span class="line">│   │   ├── SafeMath.sol</span><br><span class="line">│   │   ├── SignedMath.sol</span><br><span class="line">│   │   └── SignedSafeMath.sol</span><br><span class="line">│   └── structs</span><br><span class="line">│       ├── BitMaps.sol</span><br><span class="line">│       ├── DoubleEndedQueue.sol</span><br><span class="line">│       ├── EnumerableMap.sol</span><br><span class="line">│       └── EnumerableSet.sol</span><br></pre></td></tr></table></figure>
+
+<h3 id="vendor-第三方库"><a href="#vendor-第三方库" class="headerlink" title="vendor (第三方库)"></a>vendor (第三方库)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">└── vendor (第三方库)</span><br><span class="line">    ├── amb</span><br><span class="line">    │   └── IAMB.sol</span><br><span class="line">    ├── arbitrum</span><br><span class="line">    │   ├── IArbSys.sol</span><br><span class="line">    │   ├── IBridge.sol</span><br><span class="line">    │   ├── IInbox.sol</span><br><span class="line">    │   ├── IMessageProvider.sol</span><br><span class="line">    │   └── IOutbox.sol</span><br><span class="line">    ├── compound</span><br><span class="line">    │   └── ICompoundTimelock.sol</span><br><span class="line">    │   </span><br><span class="line">    ├── optimism</span><br><span class="line">    │   └── ICrossDomainMessenger.sol</span><br><span class="line">    │</span><br><span class="line">    └── polygon</span><br><span class="line">        └── IFxMessageProcessor.sol</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>EIP-Ethereum Improvement Proposals 以太坊改进提案</li>
+<li>ERC-Ethereum Request for Comment 以太坊意见征求稿</li>
+</ul>
+</blockquote>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://eips.ethereum.org/erc">erc标准</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Kw9R-N2m98I">教程：以太坊智能合约(三十一) | Openzeppelin合约代码向导</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/access">openzeppelin Docs</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/15785.html" rel="bookmark">Uniswap-getReserves获取储备量</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/54061.html" rel="bookmark">Uniswap-恒定乘积公式原理</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/32598.html" rel="prev" title="StudyRecord-OpenSea制作NFT初步使用">
+      <i class="fa fa-chevron-left"></i> StudyRecord-OpenSea制作NFT初步使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/30342.html" rel="next" title="Project-CoolErc20-whitelist-具备白名单代币">
+      Project-CoolErc20-whitelist-具备白名单代币 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">文件夹：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QuickView%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">QuickView：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#access-%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">access (权限控制)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crosschain-%E8%B7%A8%E9%93%BE"><span class="nav-number">3.2.</span> <span class="nav-text">crosschain (跨链)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#finance-%E9%87%91%E8%9E%8D%E7%B3%BB%E7%BB%9F%E5%8E%9F%E5%9E%8B"><span class="nav-number">3.3.</span> <span class="nav-text">finance (金融系统原型)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interfaces-%E6%A0%87%E5%87%86%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">interfaces (标准接口):</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metatx-%E5%85%83%E4%BA%A4%E6%98%93"><span class="nav-number">3.5.</span> <span class="nav-text">metatx (元交易):</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mocks-%E6%A8%A1%E6%8B%9F"><span class="nav-number">3.6.</span> <span class="nav-text">mocks (模拟)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.7.</span> <span class="nav-text">proxy (代理模式):</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#security-%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6%E5%BA%93"><span class="nav-number">3.8.</span> <span class="nav-text">security (安全机制库)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#token-%E4%BB%A3%E5%B8%81"><span class="nav-number">3.9.</span> <span class="nav-text">token (代币)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#utils-%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7%E5%BA%93"><span class="nav-number">3.10.</span> <span class="nav-text">utils (实用工具库)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vendor-%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93"><span class="nav-number">3.10.1.</span> <span class="nav-text">vendor (第三方库)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">4.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">Done > Perfect</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">431k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">6:32</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
