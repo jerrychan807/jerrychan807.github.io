@@ -8158,4 +8158,165 @@
         <tag>SmartContract</tag>
       </tags>
   </entry>
+  <entry>
+    <title>StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</title>
+    <url>/2022/46486.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a href="https://blog.qtum.org/diving-into-the-ethereum-vm-6e8d5d2f3c30">Diving Into The Ethereum Virtual Machine</a> StudyRecord</p>
+<h1 id="Article-pre"><a href="#Article-pre" class="headerlink" title="Article pre:"></a>Article pre:</h1><p>Solidity offers many high-level language abstractions, but these features make it hard to understand what’s really going on when my program is running.</p>
+<p>Reading the Solidity documentation still left me confused over very basic things.</p>
+<p>What are the differences between string, bytes32, byte[], bytes?</p>
+<ul>
+<li>Which one do I use, when?</li>
+<li>What’s happening when I cast a string to bytes? Can I cast to byte[]?</li>
+<li>How much do they cost?</li>
+</ul>
+<p>How are mappings stored by the EVM?</p>
+<ul>
+<li>Why can’t I delete a mapping?</li>
+<li>Can I have mappings of mappings? (Yes, but how does that work?)</li>
+<li>Why is there storage mapping, but no memory mapping?</li>
+</ul>
+<p>How does a compiled contract look to the EVM?</p>
+<ul>
+<li>How is a contract created?</li>
+<li>What is a constructor, really?</li>
+<li>What is the fallback function?</li>
+</ul>
+<h1 id="One-Storage-Variables"><a href="#One-Storage-Variables" class="headerlink" title="One Storage Variables:"></a>One Storage Variables:</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// c1.sol</span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.11</span>;</span><br><span class="line">contract C &#123; <span class="comment">// a constructor</span></span><br><span class="line">    uint256 a; <span class="comment">// a state variable</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">C</span>(<span class="params"></span>) &#123;</span><br><span class="line">      a = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Compile this contract with solc:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 利用docker环境里的solc-select</span></span><br><span class="line">solc-select use 0.4.12</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$  solc --bin --asm c1.sol</span><br><span class="line"></span><br><span class="line">======= c1.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;c1.sol&quot;:35:102  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;c1.sol&quot;:67:100  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;c1.sol&quot;:92:93  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;c1.sol&quot;:88:89  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;c1.sol&quot;:88:93  a = 1 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;c1.sol&quot;:67:100  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;c1.sol&quot;:35:102  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;c1.sol&quot;:35:102  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">auxdata: 0xa165627a7a72305820ddb16b0f7c271651b06d31b94a319888a30cd4644e30518f4079851a5ee37a210029</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b60016000819055505b5b60368060266000396000f30060606040525b600080fd00a165627a7a72305820ddb16b0f7c271651b06d31b94a319888a30cd4644e30518f4079851a5ee37a210029</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+
+<p>编译出来的Binary和原文有些不同，但应该问题不大。<br>evm实际跑的是<code>Binary</code>里的数据</p>
+<h2 id="In-Baby-Steps："><a href="#In-Baby-Steps：" class="headerlink" title="In Baby Steps："></a>In Baby Steps：</h2><p>从storage variable assignment看起：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a = 1</span><br></pre></td></tr></table></figure>
+
+<p>This assignment is represented by the bytecode <code>6001600081905550</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">60 01</span><br><span class="line">60 00</span><br><span class="line">81</span><br><span class="line">90</span><br><span class="line">55</span><br><span class="line">50</span><br></pre></td></tr></table></figure>
+
+<p>The EVM is basically a loop that execute each instruction from top to bottom</p>
+<p>把上面<code>tgs_2</code>的内容换个格式；</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag_2:</span><br><span class="line">  // 60 01</span><br><span class="line">  0x1</span><br><span class="line">  // 60 00</span><br><span class="line">  0x0</span><br><span class="line">  // 81</span><br><span class="line">  dup2</span><br><span class="line">  // 90</span><br><span class="line">  swap1</span><br><span class="line">  // 55</span><br><span class="line">  sstore</span><br><span class="line">  // 50</span><br><span class="line">  pop</span><br></pre></td></tr></table></figure>
+
+<p><code>0x1</code>在汇编代码中实际上是<code>push(0x1)</code>. 该指令将数字 1 压入堆栈。</p>
+<h2 id="Simulating-The-EVM"><a href="#Simulating-The-EVM" class="headerlink" title="Simulating The EVM:"></a>Simulating The EVM:</h2><p>The EVM is a stack machine.<br>Instructions指令 might use values on the stack as arguments, and push values onto the stack as results. Let’s consider the operation <code>add</code>.</p>
+<p>栈里有两个值</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[1 2]</span><br></pre></td></tr></table></figure>
+
+<p>When the EVM sees add, it adds the top 2 items together, and pushes the answer back onto the stack, resulting in:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[3]</span><br></pre></td></tr></table></figure>
+
+<h3 id="符号表示："><a href="#符号表示：" class="headerlink" title="符号表示："></a>符号表示：</h3><p>In what follows, we’ll notate the <code>stack</code> with <code>[]</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// The empty stack</span><br><span class="line">stack: []</span><br><span class="line">// Stack with three items. The top item is 3. The bottom item is 1.</span><br><span class="line">stack: [3 2 1]</span><br></pre></td></tr></table></figure>
+
+<p>And notate the contract <code>storage</code> with <code>&#123;&#125;</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Nothing in storage.</span><br><span class="line">store: &#123;&#125;</span><br><span class="line">// The value 0x1 is stored at the position 0x0.</span><br><span class="line">store: &#123; 0x0 =&gt; 0x1 &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="模拟："><a href="#模拟：" class="headerlink" title="模拟："></a>模拟：</h3><p>Let’s now look at some real bytecode. We’ll simulate the bytecode sequence <code>6001600081905550</code>(a&#x3D;1) as EVM would, and print out the machine state after each instruction:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 60 01: pushes 1 onto stack</span><br><span class="line">0x1</span><br><span class="line">  stack: [0x1]</span><br><span class="line">// 60 00: pushes 0 onto stack</span><br><span class="line">0x0</span><br><span class="line">  stack: [0x0 0x1]</span><br><span class="line">// 81: duplicate the second item on the stack</span><br><span class="line">dup2</span><br><span class="line">  stack: [0x1 0x0 0x1]</span><br><span class="line">// 90: swap the top two items</span><br><span class="line">swap1</span><br><span class="line">  stack: [0x0 0x1 0x1]</span><br><span class="line">// 55: store the value 0x1 at position 0x0</span><br><span class="line">// This instruction consumes消费 the top 2 items</span><br><span class="line">sstore</span><br><span class="line">  stack: [0x1]</span><br><span class="line">  store: &#123; 0x0 =&gt; 0x1 &#125;</span><br><span class="line">// 50: pop (throw away the top item)</span><br><span class="line">pop</span><br><span class="line">  stack: []</span><br><span class="line">  store: &#123; 0x0 =&gt; 0x1 &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220705214842.png" alt="20220705214842"></p>
+<p>The end. The stack is empty, and there’s one item in storage.</p>
+<p>What’s worth noting is that Solidity had decided to store the state variable <code>uint256 a</code> at the position <code>0x0</code>.<br>It’s perfectly possible for other languages to choose to store the state variable elsewhere.</p>
+<h3 id="等价表示："><a href="#等价表示：" class="headerlink" title="等价表示："></a>等价表示：</h3><p>In pseudocode, what the EVM does for <code>6001600081905550</code> is essentially:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// a = 1</span><br><span class="line">sstore(0x0, 0x1)</span><br></pre></td></tr></table></figure>
+
+<p>其中,<code>dup2</code>, <code>swap1</code>, <code>pop</code>是多余的，汇编代码可以更简单</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x1</span><br><span class="line">0x0</span><br><span class="line">sstore</span><br></pre></td></tr></table></figure>
+
+<p>You could try to simulate the above 3 instructions, and satisfy yourself that they indeed result in the same machine state:</p>
+<blockquote>
+<p>怎么自己模拟指令呢。。。通过推演的方式？</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stack: []</span><br><span class="line">store: &#123; 0x0 =&gt; 0x1 &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Two-Storage-Variables"><a href="#Two-Storage-Variables" class="headerlink" title="Two Storage Variables:"></a>Two Storage Variables:</h1><p>add one extra storage variable</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// c2.sol</span></span><br><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.11</span>;</span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    uint256 b;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">C</span>(<span class="params"></span>) &#123;</span><br><span class="line">      a = <span class="number">1</span>;</span><br><span class="line">      b = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Compile, focusing on <code>tag_2</code>:</p>
+<p>继续自己编译一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ solc --bin --asm c2.sol</span><br><span class="line"></span><br><span class="line">======= c2.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;c2.sol&quot;:36:136  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;c2.sol&quot;:84:134  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;c2.sol&quot;:111:112  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;c2.sol&quot;:107:108  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;c2.sol&quot;:107:112  a = 1 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;c2.sol&quot;:126:127  2 */</span><br><span class="line">  0x2</span><br><span class="line">    /* &quot;c2.sol&quot;:122:123  b */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;c2.sol&quot;:122:127  b = 2 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;c2.sol&quot;:84:134  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;c2.sol&quot;:36:136  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;c2.sol&quot;:36:136  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">    auxdata: 0xa165627a7a7230582070e0c9efb38b3859709be0dc598f0f59277f9499ee8c60ab2e0043222726f9a60029</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b600160008190555060026001819055505b5b603680602e6000396000f30060606040525b600080fd00a165627a7a7230582070e0c9efb38b3859709be0dc598f0f59277f9499ee8c60ab2e0043222726f9a60029</span><br></pre></td></tr></table></figure>
+
+
+<p>The assembly in pseudocode伪代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// a = 1</span><br><span class="line">sstore(0x0, 0x1)</span><br><span class="line">// b = 2</span><br><span class="line">sstore(0x1, 0x2)</span><br></pre></td></tr></table></figure>
+
+<p>What we learn here is that the two storage variables are positioned one after the other, with <code>a</code> in position <code>0x0</code> and <code>b</code> in position <code>0x1</code>.</p>
+<h1 id="Storage-Packing"><a href="#Storage-Packing" class="headerlink" title="Storage Packing:"></a>Storage Packing:</h1><p><strong>Each slot storage can store 32 bytes. It’d be wasteful to use all 32 bytes if a variable only needs 16 bytes.<br>Solidity optimizes for storage efficiency by packing two smaller data types into one storage slot if possible.</strong></p>
+<p>Let’s change <code>a</code> and <code>b</code> so they are only 16 bytes each:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line">contract C &#123;</span><br><span class="line">    uint128 a;</span><br><span class="line">    uint128 b;</span><br><span class="line">    function C() &#123;</span><br><span class="line">      a = 1;</span><br><span class="line">      b = 2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Compile</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ solc --bin --asm c3.sol</span><br><span class="line"></span><br><span class="line">======= c3.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;c3.sol&quot;:26:126  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;c3.sol&quot;:74:124  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;c3.sol&quot;:101:102  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;c3.sol&quot;:97:98  a */</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">    /* &quot;c3.sol&quot;:97:102  a = 1 */</span><br><span class="line">  0x100</span><br><span class="line">  exp</span><br><span class="line">  dup2</span><br><span class="line">  sload</span><br><span class="line">  dup2</span><br><span class="line">  0xffffffffffffffffffffffffffffffff</span><br><span class="line">  mul</span><br><span class="line">  not</span><br><span class="line">  and</span><br><span class="line">  swap1</span><br><span class="line">  dup4</span><br><span class="line">  0xffffffffffffffffffffffffffffffff</span><br><span class="line">  and</span><br><span class="line">  mul</span><br><span class="line">  or</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;c3.sol&quot;:116:117  2 */</span><br><span class="line">  0x2</span><br><span class="line">    /* &quot;c3.sol&quot;:112:113  b */</span><br><span class="line">  0x0</span><br><span class="line">  0x10</span><br><span class="line">    /* &quot;c3.sol&quot;:112:117  b = 2 */</span><br><span class="line">  0x100</span><br><span class="line">  exp</span><br><span class="line">  dup2</span><br><span class="line">  sload</span><br><span class="line">  dup2</span><br><span class="line">  0xffffffffffffffffffffffffffffffff</span><br><span class="line">  mul</span><br><span class="line">  not</span><br><span class="line">  and</span><br><span class="line">  swap1</span><br><span class="line">  dup4</span><br><span class="line">  0xffffffffffffffffffffffffffffffff</span><br><span class="line">  and</span><br><span class="line">  mul</span><br><span class="line">  or</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;c3.sol&quot;:74:124  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;c3.sol&quot;:26:126  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;c3.sol&quot;:26:126  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">    auxdata: 0xa165627a7a723058205c61ec381fa987a743b915be31883e35d32dccd6b264c9408a6563273d683e5d0029</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b60016000806101000a8154816fffffffffffffffffffffffffffffffff02191690836fffffffffffffffffffffffffffffffff1602179055506002600060106101000a8154816fffffffffffffffffffffffffffffffff02191690836fffffffffffffffffffffffffffffffff1602179055505b5b60368060916000396000f30060606040525b600080fd00a165627a7a723058205c61ec381fa987a743b915be31883e35d32dccd6b264c9408a6563273d683e5d0029</span><br></pre></td></tr></table></figure>
+
+<p>The above assembly code packs these two variables together in one storage position (<code>0x0</code>), like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[         b         ][         a         ]</span><br><span class="line">[16 bytes / 128 bits][16 bytes / 128 bits]</span><br></pre></td></tr></table></figure>
+
+<p>The reason to pack is because the most expensive operations by far are <strong>storage usage</strong>:</p>
+<ul>
+<li><code>sstore</code> costs 20000 gas for first write to a new position.</li>
+<li><code>sstore</code> costs 5000 gas for subsequent writes to an existing position.</li>
+<li><code>sload</code> costs 500 gas.</li>
+<li>Most instructions costs 3~10 gases.</li>
+</ul>
+<p><strong>By using the same storage position, Solidity pays 5000 for the second store variable instead of 20000, saving us 15000 in gas.</strong></p>
+<h2 id="More-Optimization"><a href="#More-Optimization" class="headerlink" title="More Optimization:"></a>More Optimization:</h2><p>Instead of storing <code>a</code> and <code>b</code> with two separate <code>sstore</code> instructions, it should be possible to pack the two 128 bits numbers together in memory, then store them using just one <code>sstore</code>, saving an additional 5000 gas.</p>
+<p>You can ask Solidity to make this optimization by turning on the optimize flag:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ solc --bin --asm --optimize c3.sol</span><br></pre></td></tr></table></figure>
+
+<p>Which produces assembly code that uses just one <code>sload</code> and one <code>sstore</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tag_2:</span><br><span class="line">    /* &quot;c3.sol&quot;:97:98  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;c3.sol&quot;:97:102  a = 1 */</span><br><span class="line">  dup1</span><br><span class="line">  sload</span><br><span class="line">    /* &quot;c3.sol&quot;:112:117  b = 2 */</span><br><span class="line">  0x200000000000000000000000000000000</span><br><span class="line">  not(sub(exp(0x2, 0x80), 0x1))</span><br><span class="line">    /* &quot;c3.sol&quot;:97:102  a = 1 */</span><br><span class="line">  swap1</span><br><span class="line">  swap2</span><br><span class="line">  and</span><br><span class="line">    /* &quot;c3.sol&quot;:101:102  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;c3.sol&quot;:97:102  a = 1 */</span><br><span class="line">  or</span><br><span class="line">  sub(exp(0x2, 0x80), 0x1)</span><br><span class="line">    /* &quot;c3.sol&quot;:112:117  b = 2 */</span><br><span class="line">  and</span><br><span class="line">  or</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">    /* &quot;c3.sol&quot;:74:124  function C() &#123;... */</span><br><span class="line">    </span><br><span class="line">...</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b600080547002000000000000000000000000000000006001608060020a03199091166001176001608060020a03161790555b5b603680604f6000396000f30060606040525b600080fd00a165627a7a7230582037e97488c5ea276798eb3a3e48ab39f5d02bb4e2936813cde904a02bbd43abb10029</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>加了优化参数，少了不少汇编代码</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706014839.png" alt="20220706014839"></p>
+<p>The bytecode is:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">600080547002000000000000000000000000000000006001608060020a03199091166001176001608060020a0316179055</span><br></pre></td></tr></table></figure>
+
+<p>And formatting the bytecode to one instruction per line:</p>
+<blockquote>
+<p>TODO:这步操作可以多熟悉熟悉，或者看看有没其他工具可以帮助看汇编代码的</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// push 0x0</span><br><span class="line">60 00</span><br><span class="line">// dup1</span><br><span class="line">80</span><br><span class="line">// sload</span><br><span class="line">54</span><br><span class="line">// push17 push the the next 17 bytes as a 32 bytes number</span><br><span class="line">70 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</span><br><span class="line">/* not(sub(exp(0x2, 0x80), 0x1)) */</span><br><span class="line">// push 0x1</span><br><span class="line">60 01</span><br><span class="line">// push 0x80 (32)</span><br><span class="line">60 80</span><br><span class="line">// push 0x80 (2)</span><br><span class="line">60 02</span><br><span class="line">// exp</span><br><span class="line">0a</span><br><span class="line">// sub</span><br><span class="line">03</span><br><span class="line">// not</span><br><span class="line">19</span><br><span class="line">// swap1</span><br><span class="line">90</span><br><span class="line">// swap2</span><br><span class="line">91</span><br><span class="line">// and</span><br><span class="line">16</span><br><span class="line">// push 0x1</span><br><span class="line">60 01</span><br><span class="line">// or</span><br><span class="line">17</span><br><span class="line">/* sub(exp(0x2, 0x80), 0x1) */</span><br><span class="line">// push 0x1</span><br><span class="line">60 01</span><br><span class="line">// push 0x80</span><br><span class="line">60 80</span><br><span class="line">// push 0x02</span><br><span class="line">60 02</span><br><span class="line">// exp</span><br><span class="line">0a</span><br><span class="line">// sub</span><br><span class="line">03</span><br><span class="line">// and</span><br><span class="line">16</span><br><span class="line">// or</span><br><span class="line">17</span><br><span class="line">// swap1</span><br><span class="line">90</span><br><span class="line">// sstore</span><br><span class="line">55</span><br></pre></td></tr></table></figure>
+
+<p>There are four magic values used in the assembly code:</p>
+<ul>
+<li>0x1 (16 bytes), using lower 16 bytes</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Represented as 0x01 in bytecode</span><br><span class="line">16:32 0x00000000000000000000000000000000</span><br><span class="line">00:16 0x00000000000000000000000000000001</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>0x2 (16 bytes), using higher 16bytes</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Represented as 0x200000000000000000000000000000000 in bytecode</span><br><span class="line">16:32 0x00000000000000000000000000000002</span><br><span class="line">00:16 0x00000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>not(sub(exp(0x2, 0x80), 0x1))</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Bitmask for the upper 16 bytes</span><br><span class="line">16:32 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</span><br><span class="line">00:16 0x00000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>sub(exp(0x2, 0x80), 0x1)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Bitmask for the lower 16 bytes</span><br><span class="line">16:32 0x00000000000000000000000000000000 </span><br><span class="line">00:16 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</span><br></pre></td></tr></table></figure>
+
+<p>The code does some bits-shuffling移位 with these values to arrive at the desired result:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">16:32 0x00000000000000000000000000000002 </span><br><span class="line">00:16 0x00000000000000000000000000000001</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>TODO:需要回看。。。</p>
+</blockquote>
+<p>Finally, this 32bytes value is stored at position <code>0x0</code>.</p>
+<h1 id="Summary："><a href="#Summary：" class="headerlink" title="Summary："></a>Summary：</h1><h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><p>- </p>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
 </search>
