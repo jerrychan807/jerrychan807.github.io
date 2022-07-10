@@ -22,20 +22,33 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:对安卓的app漏洞不太熟悉,所以看看一些漏洞类型，做些笔记  案例:客户端:设计缺陷&#x2F;逻辑错误: 金山词霸安卓app越权问题（signature算法太弱轻松破解）   登录后每一个数据包都带signature字段，没有cookie和session认证，那么破解signature后就能自己组包生成signature了，以达到越权的目的。  前段时间也遇到过,app对每个数据包做签名">
+  <meta name="description" content="Pre:朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程:Erc20合约：一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个cryptogem">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Notes-Wooyun安卓漏洞库">
-<meta property="og:url" content="https://jerrychan807.github.io/2020/65272.html">
+<meta property="og:title" content="Crypto-pancakeSwap开启收税的简单分析">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/56133.html">
 <meta property="og:site_name" content="Black House">
-<meta property="og:description" content="Pre:对安卓的app漏洞不太熟悉,所以看看一些漏洞类型，做些笔记  案例:客户端:设计缺陷&#x2F;逻辑错误: 金山词霸安卓app越权问题（signature算法太弱轻松破解）   登录后每一个数据包都带signature字段，没有cookie和session认证，那么破解signature后就能自己组包生成signature了，以达到越权的目的。  前段时间也遇到过,app对每个数据包做签名">
+<meta property="og:description" content="Pre:朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程:Erc20合约：一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个cryptogem">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-01-03T06:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T02:59:44.486Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png">
+<meta property="article:published_time" content="2022-07-11T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-07-10T17:40:27.173Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="AndroidSecurity">
+<meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png">
 
-<link rel="canonical" href="https://jerrychan807.github.io/2020/65272.html">
+<link rel="canonical" href="https://jerrychan807.github.io/2022/56133.html">
 
 
 <script id="page-configurations">
@@ -48,7 +61,7 @@
   };
 </script>
 
-  <title>Notes-Wooyun安卓漏洞库 | Black House</title>
+  <title>Crypto-pancakeSwap开启收税的简单分析 | Black House</title>
   
 
 
@@ -181,7 +194,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2020/65272.html">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/56133.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
@@ -194,7 +207,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Notes-Wooyun安卓漏洞库
+          Crypto-pancakeSwap开启收税的简单分析
         </h1>
 
         <div class="post-meta">
@@ -203,23 +216,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-01-03 14:36:34" itemprop="dateCreated datePublished" datetime="2020-01-03T14:36:34+08:00">2020-01-03</time>
+              <time title="Created: 2022-07-11 22:36:34 / Modified: 01:40:27" itemprop="dateCreated datePublished" datetime="2022-07-11T22:36:34+08:00">2022-07-11</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/AndroidSecurity/" itemprop="url" rel="index"><span itemprop="name">AndroidSecurity</span></a>
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
                 </span>
             </span>
 
@@ -236,7 +243,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>426</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -255,38 +262,47 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>对安卓的app漏洞不太熟悉,所以看看一些漏洞类型，做些笔记</p>
-<hr>
-<h1 id="案例"><a href="#案例" class="headerlink" title="案例:"></a>案例:</h1><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端:"></a>客户端:</h2><h3 id="设计缺陷-x2F-逻辑错误"><a href="#设计缺陷-x2F-逻辑错误" class="headerlink" title="设计缺陷&#x2F;逻辑错误:"></a>设计缺陷&#x2F;逻辑错误:</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0190106.html">金山词霸安卓app越权问题（signature算法太弱轻松破解）</a></p>
-<p>  登录后每一个数据包都带signature字段，没有cookie和session认证，那么破解signature后就能自己组包生成signature了，以达到越权的目的。</p>
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342"></p>
+<h1 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程:"></a>分析过程:</h1><h2 id="Erc20合约："><a href="#Erc20合约：" class="headerlink" title="Erc20合约："></a>Erc20合约：</h2><p>一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee</p>
+<p>用这个<a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a>网站查很方便,确实有tax fee</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png" alt="20220711010514"></p>
+<p>但去合约代码里查，<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址不是erc20合约里的预留地址&#x2F;收税地址，那就不是代币合约的问题。。。</p>
+<h2 id="Google"><a href="#Google" class="headerlink" title="Google:"></a>Google:</h2><p>google搜索了一下<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址，发现也有部分人有遇到同样的问题，他们也没有讨论出个所以然来。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png" alt="20220711004630"></p>
 <blockquote>
-<p>前段时间也遇到过,app对每个数据包做签名,导致无法进行篡改.</p>
+<p>一度怀疑，他们是用同一个erc20合约自动生成工具，去发布token，被开发者预留了收税地址，强行收税。。。</p>
 </blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0132255.html">聚美优品安卓客户端组件暴露可实现钓鱼</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0135403.html">去哪儿安卓客户端组件暴露可实现钓鱼</a></p>
-<p>  由于组件暴露问题，第三方应用可以启动应用<br>  这2个应该是看manifest文件<br>  TODOTODO</p>
-</li>
-</ul>
-<hr>
-<h3 id="非授权访问-x2F-认证绕过"><a href="#非授权访问-x2F-认证绕过" class="headerlink" title="非授权访问&#x2F;认证绕过:"></a>非授权访问&#x2F;认证绕过:</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0148550.html">91金融安卓APP客户端升级过程存在缺陷可被中间人攻击利用植入木马</a></p>
-<p>  拦截回包,修改更新包的地址<br>  升级过程存在缺陷，，校验过程不严格，可被中间人攻击利用植入木马</p>
-</li>
-</ul>
-<hr>
-<h3 id="远程代码执行"><a href="#远程代码执行" class="headerlink" title="远程代码执行"></a>远程代码执行</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0188311.html">巴士管家安卓app远程代码执行</a></p>
-</li>
-<li><p>[]</p>
-<p>  TODOTODO</p>
-</li>
-</ul>
-<hr>
-<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端:"></a>服务端:</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0172231.html">漫画岛安卓app服务器SQL注入</a></li>
+<h2 id="Bscscan"><a href="#Bscscan" class="headerlink" title="Bscscan:"></a>Bscscan:</h2><p>先去bscscan查查这个地址，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307"><br>该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br><code>0xc06e6ed003763d173b5b9f35960ad359d0339c96</code></p>
+<p>继续查一下<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421"></p>
+<p>执行合约名称为<code>PCSFeeHandler</code>，可能跟pancake有关系，还是没看出个所以然来。。。</p>
+<h2 id="tenderly"><a href="#tenderly" class="headerlink" title="tenderly"></a>tenderly</h2><p>去<code>tenderly</code> Debug一下，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150"></p>
+<p>先关注几个<code>transfer</code>相关的函数，也没看到<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>的踪影。</p>
+<p>然后在debugger里的参数里有看到这个地址出现。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212"></p>
+<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324"></p>
+<h3 id="mint函数流程："><a href="#mint函数流程：" class="headerlink" title="mint函数流程："></a>mint函数流程：</h3><p>接着就去看一下PancakePair<a target="_blank" rel="noopener" href="https://github.com/pancakeswap/pancake-swap-core/blob/master/contracts/PancakePair.sol">代码</a>里的<code>mint</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png" alt="20220711011758"></p>
+<ol>
+<li><code>feeOn</code>开关由<code>_mintFee</code>函数控制</li>
+<li>查询工厂函数的<code>feeTo</code>地址</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png" alt="20220711012157"></p>
+<ol start="3">
+<li><code>feeTo</code>地址不为0地址，则<code>feeOn</code>收税开关为开启</li>
+</ol>
+<p>所以就是，添加流动性的时候，由于<code>pancakeswap</code>开启了收税开关，<code>mint</code>出来的部分<code>lptoken</code>打到了官方的收税地址里了。</p>
+<h3 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h3><p>随便找两个和<code>router</code><a target="_blank" rel="noopener" href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e">合约</a>交互，调用了<code>addLiquidity</code>函数的tx看看,都是同样有被官方收税。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643"></p>
+<p>确实是被官方收税了,Done！</p>
+<blockquote>
+<p>1.之前应该是没开启收税，现在开启了</p>
+<p>2.做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</p>
+<p>3.去中心的代码，中心化的规则指定😆😆😆 Fun~</p>
+</blockquote>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://tenderly.co/">tenderly</a></li>
+<li><a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a></li>
 </ul>
 
     </div>
@@ -295,11 +311,29 @@
     
     
       
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
+    </li>
+  </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/AndroidSecurity/" rel="tag"># AndroidSecurity</a>
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
           </div>
 
         
@@ -308,13 +342,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/35818.html" rel="prev" title="记录-brup&xray配置使用">
-      <i class="fa fa-chevron-left"></i> 记录-brup&xray配置使用
+    <a href="/2022/46265.html" rel="prev" title="StudyRecord-Hitchhikers_Guide_to_the_EVM">
+      <i class="fa fa-chevron-left"></i> StudyRecord-Hitchhikers_Guide_to_the_EVM
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/46109.html" rel="next" title="Notes-安全应急响应中心之威胁情报探索—JSRC-2">
-      Notes-安全应急响应中心之威胁情报探索—JSRC-2 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -380,7 +411,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">案例:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.1.</span> <span class="nav-text">客户端:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%BC%BA%E9%99%B7-x2F-%E9%80%BB%E8%BE%91%E9%94%99%E8%AF%AF"><span class="nav-number">2.1.1.</span> <span class="nav-text">设计缺陷&#x2F;逻辑错误:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE-x2F-%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87"><span class="nav-number">2.1.2.</span> <span class="nav-text">非授权访问&#x2F;认证绕过:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C"><span class="nav-number">2.1.3.</span> <span class="nav-text">远程代码执行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">2.2.</span> <span class="nav-text">服务端:</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">分析过程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Erc20%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">Erc20合约：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Google"><span class="nav-number">2.2.</span> <span class="nav-text">Google:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bscscan"><span class="nav-number">2.3.</span> <span class="nav-text">Bscscan:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tenderly"><span class="nav-number">2.4.</span> <span class="nav-text">tenderly</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mint%E5%87%BD%E6%95%B0%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.4.1.</span> <span class="nav-text">mint函数流程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%EF%BC%9A"><span class="nav-number">2.4.2.</span> <span class="nav-text">验证：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">3.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -8623,4 +8623,57 @@
         <tag>EVM</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Crypto-pancakeSwap开启收税的简单分析</title>
+    <url>/2022/56133.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342"></p>
+<h1 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程:"></a>分析过程:</h1><h2 id="Erc20合约："><a href="#Erc20合约：" class="headerlink" title="Erc20合约："></a>Erc20合约：</h2><p>一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee</p>
+<p>用这个<a href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a>网站查很方便,确实有tax fee</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png" alt="20220711010514"></p>
+<p>但去合约代码里查，<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址不是erc20合约里的预留地址&#x2F;收税地址，那就不是代币合约的问题。。。</p>
+<h2 id="Google"><a href="#Google" class="headerlink" title="Google:"></a>Google:</h2><p>google搜索了一下<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址，发现也有部分人有遇到同样的问题，他们也没有讨论出个所以然来。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png" alt="20220711004630"></p>
+<blockquote>
+<p>一度怀疑，他们是用同一个erc20合约自动生成工具，去发布token，被开发者预留了收税地址，强行收税。。。</p>
+</blockquote>
+<h2 id="Bscscan"><a href="#Bscscan" class="headerlink" title="Bscscan:"></a>Bscscan:</h2><p>先去bscscan查查这个地址，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307"><br>该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br><code>0xc06e6ed003763d173b5b9f35960ad359d0339c96</code></p>
+<p>继续查一下<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421"></p>
+<p>执行合约名称为<code>PCSFeeHandler</code>，可能跟pancake有关系，还是没看出个所以然来。。。</p>
+<h2 id="tenderly"><a href="#tenderly" class="headerlink" title="tenderly"></a>tenderly</h2><p>去<code>tenderly</code> Debug一下，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150"></p>
+<p>先关注几个<code>transfer</code>相关的函数，也没看到<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>的踪影。</p>
+<p>然后在debugger里的参数里有看到这个地址出现。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212"></p>
+<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324"></p>
+<h3 id="mint函数流程："><a href="#mint函数流程：" class="headerlink" title="mint函数流程："></a>mint函数流程：</h3><p>接着就去看一下PancakePair<a href="https://github.com/pancakeswap/pancake-swap-core/blob/master/contracts/PancakePair.sol">代码</a>里的<code>mint</code>函数</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png" alt="20220711011758"></p>
+<ol>
+<li><code>feeOn</code>开关由<code>_mintFee</code>函数控制</li>
+<li>查询工厂函数的<code>feeTo</code>地址</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png" alt="20220711012157"></p>
+<ol start="3">
+<li><code>feeTo</code>地址不为0地址，则<code>feeOn</code>收税开关为开启</li>
+</ol>
+<p>所以就是，添加流动性的时候，由于<code>pancakeswap</code>开启了收税开关，<code>mint</code>出来的部分<code>lptoken</code>打到了官方的收税地址里了。</p>
+<h3 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h3><p>随便找两个和<code>router</code><a href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e">合约</a>交互，调用了<code>addLiquidity</code>函数的tx看看,都是同样有被官方收税。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643"></p>
+<p>确实是被官方收税了,Done！</p>
+<blockquote>
+<p>1.之前应该是没开启收税，现在开启了</p>
+<p>2.做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</p>
+<p>3.去中心的代码，中心化的规则指定😆😆😆 Fun~</p>
+</blockquote>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://tenderly.co/">tenderly</a></li>
+<li><a href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
 </search>
