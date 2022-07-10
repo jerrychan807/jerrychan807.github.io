@@ -8340,7 +8340,9 @@
 <li>编译字节码的时候，虚拟机如何对其进行优化？</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706162442.png" alt="20220706162442"></p>
-<p>图来源：<a href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">https://cypherpunks-core.github.io/ethereumbook/13evm.html</a></p>
+<p><a href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">图来源</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706211400.png" alt="20220706211400"></p>
+<p><a href="https://www.youtube.com/watch?v=HfTTbxQWWvg">图来源</a></p>
 <h1 id="从一个例子开始："><a href="#从一个例子开始：" class="headerlink" title="从一个例子开始："></a>从一个例子开始：</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    function C() &#123; // 旧的构造函数写法</span><br><span class="line">      a = 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="编译："><a href="#编译：" class="headerlink" title="编译："></a>编译：</h1><h2 id="进行solc编译"><a href="#进行solc编译" class="headerlink" title="进行solc编译:"></a>进行solc编译:</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ solc --bin --asm file_name.sol</span><br><span class="line"></span><br><span class="line">======= file_name.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;file_name.sol&quot;:83:84  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:80  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:84  a = 1 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">    auxdata: 0xa165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b60016000819055505b5b60368060266000396000f30060606040525b600080fd00a165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br></pre></td></tr></table></figure>
@@ -8509,6 +8511,107 @@
 <li><a href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</li>
 <li><a href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a>   黄皮书里的附录</li>
 <li><a href="https://www.arcblock.io/blog/zh/post/2018/12/08/evm-part-1/">深入探索EVM : 编译和部署智能合约</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+        <tag>EVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-Hitchhikers_Guide_to_the_EVM</title>
+    <url>/2022/46265.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a href="https://www.youtube.com/watch?v=zgukojxyHKc">Alex Roan: Hitchhiker’s Guide to the EVM</a> 学习记录</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095117.png" alt="20220707095117"></p>
+<p>有很多主题想讨论，但有一个最重要的概念：</p>
+<h1 id="Gas-Golfing"><a href="#Gas-Golfing" class="headerlink" title="Gas Golfing"></a>Gas Golfing</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095719.png" alt="20220707095719"></p>
+<p>gas golfing is the process of optimizing the existing functionality of your contract to to do the same things to be able to perform the same functions but just cheaper and more efficiently</p>
+<p>高尔夫最终目的就是想打进球洞，过程中需要不断优化去减少杆数<br>gas优化也是一样，一个函数同样的功能怎么才能更便宜<br>这里特指，优化对<code>storage</code>的使用</p>
+<h1 id="What-is-Storage-in-Solidity"><a href="#What-is-Storage-in-Solidity" class="headerlink" title="What is Storage in Solidity?"></a>What is Storage in Solidity?</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h2><p>storage is data that is persistent between transactions it’s stored in a contract for extended periods of time and it can be accessed and changed in future transactions</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子:"></a>例子:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100134.png" alt="20220707100134"></p>
+<p>图中有个storage 变量，在其他编程语言中可能被称为<code>instance variables</code>或<code>class variables</code></p>
+<p>but in solidity there is a catch so it is one of the most <code>gas-intensive</code> things that a contract can play around with accessing it changing it is disproportionately expensive in comparison with what we associate with normal disk storage</p>
+<p>不同之处在于，在别的编程语言中，持久化存储变量可能只是占用硬盘空间，但在solidity中持久化存储变量，在读写这类变量的数据都跟钱有很大关系。</p>
+<h1 id="Why-is-Storage-Expensive？"><a href="#Why-is-Storage-Expensive？" class="headerlink" title="Why is Storage Expensive？"></a>Why is Storage Expensive？</h1><h2 id="中心化世界："><a href="#中心化世界：" class="headerlink" title="中心化世界："></a>中心化世界：</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100745.png" alt="20220707100745"></p>
+<p>在中心化的世界中，持久化存储的特点:</p>
+<ul>
+<li>单个硬盘</li>
+<li>总成本低</li>
+<li>易扩容</li>
+</ul>
+<h2 id="去中心化世界："><a href="#去中心化世界：" class="headerlink" title="去中心化世界："></a>去中心化世界：</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101232.png" alt="20220707101232"></p>
+<p>换到去中心化的世界中，存储不再是存在一个服务器的一个硬盘里，而是存在整个网络里的每一块硬盘上。<br>Evm里有两个很贵的<code>op code</code>：</p>
+<ul>
+<li><code>SSTORE</code>: store this piece of data in this storage slot</li>
+<li><code>SLOAD</code>: read this data from this specific slot any time that we set a storage variable in a function somewhere</li>
+</ul>
+<h1 id="省gas的五个方法："><a href="#省gas的五个方法：" class="headerlink" title="省gas的五个方法："></a>省gas的五个方法：</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101850.png" alt="20220707101850"></p>
+<h2 id="非必要的话，不存Storage"><a href="#非必要的话，不存Storage" class="headerlink" title="非必要的话，不存Storage:"></a>非必要的话，不存Storage:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102201.png" alt="20220707102201"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102425.png" alt="20220707102425"></p>
+<p>一般情况下，合约都不会再次使用这部分数据（转账记录），所以用<code>event</code>代替<code>Storage</code>。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102454.png" alt="20220707102454"></p>
+<p>对于gas的影响:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102925.png" alt="20220707102925"></p>
+<h2 id="尽量用constant或immutable"><a href="#尽量用constant或immutable" class="headerlink" title="尽量用constant或immutable:"></a>尽量用constant或immutable:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707104558.png" alt="20220707104558"></p>
+<p>有不变量就尽量用<code>constant</code>或<code>immutable</code><br>用关键字<code>constant</code>或<code>immutable</code>会影响opcode <code>slot</code></p>
+<ul>
+<li>constant：constant value must be hard coded into the declaration rather than set in the constructor</li>
+<li>immutable：set it in the constructor but as soon as that constructor is finished that value that we set for link can never change again只能仅仅一次在构造函数中设置值</li>
+</ul>
+<p>区别在于初始化赋值的位置不一样。</p>
+<h3 id="gas影响"><a href="#gas影响" class="headerlink" title="gas影响:"></a>gas影响:</h3><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707105356.png" alt="20220707105356"></p>
+<p>用了不变量关键词后，读取一次数据对gas的影响。如果经常会读取到该变量，那么累计下来会节省很多gas</p>
+<h3 id="自己测试"><a href="#自己测试" class="headerlink" title="自己测试:"></a>自己测试:</h3><h4 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// constant1.sol</span></span><br><span class="line">pragma solidity ^ <span class="number">0.8</span><span class="number">.11</span>;</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">    address public <span class="variable constant_">LINK</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address tokenAddr</span>) &#123;</span><br><span class="line">        <span class="variable constant_">LINK</span> = tokenAddr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>耗费gas:133322</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// constant2.sol</span></span><br><span class="line">pragma solidity ^ <span class="number">0.8</span><span class="number">.11</span>;</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">    address public constant <span class="variable constant_">LINK</span> = <span class="number">0x302c98e6d6A65Bf15255b81972f9EaA1F45438C8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>耗费gas:104187</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// constant3.sol</span></span><br><span class="line">pragma solidity ^ <span class="number">0.8</span><span class="number">.11</span>;</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">    address public immutable <span class="variable constant_">LINK</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address tokenAddr</span>) &#123;</span><br><span class="line">        <span class="variable constant_">LINK</span> = tokenAddr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>耗费gas:110824</p>
+<h4 id="读取"><a href="#读取" class="headerlink" title="读取:"></a>读取:</h4><ul>
+<li><code>constant1.sol</code>:耗费gas 23553</li>
+<li><code>constant2.sol</code>:耗费gas 21420</li>
+</ul>
+<h2 id="明确表示Storage-Variable"><a href="#明确表示Storage-Variable" class="headerlink" title="明确表示Storage Variable:"></a>明确表示Storage Variable:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093400.png" alt="20220710093400"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093440.png" alt="20220710093440"></p>
+<p>后面写函数的时候，提醒自己在操作的是Storage的变量，会比较耗费gas</p>
+<h2 id="不要频繁读写："><a href="#不要频繁读写：" class="headerlink" title="不要频繁读写："></a>不要频繁读写：</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093801.png" alt="20220710093801"></p>
+<p>状态变量在循环、多条件判断的时候，注意观察接触<code>touch</code>状态变量的次数，读写超过两次(<code>Slod</code>+<code>SStore</code>)</p>
+<p>做法：先把状态变量加载到内存里的临时变量，再去频繁读写</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710094037.png" alt="20220710094037"></p>
+<p>提及了EIP-2929里的<code>Cold and Warm</code>的概念：读过的slot后，状态:<code>cold</code>-&gt;<code>warm</code>,下次读写会更便宜。<br><a href="https://medium.com/taipei-ethereum-meetup/eip2929-eip2930-%E7%B0%A1%E4%BB%8B-14a8b580a141">EIP2929, EIP2930 簡介</a></p>
+<blockquote>
+<p>在实作层，EVM会维系一个本笔交易读取过所有交易的Set。每次有尚未读取过的slot时，就会先收取一笔CLOD_SLOAD_COST (2100)，然后把这个slot加入这个set中，下次读写就会比较便宜。</p>
+<p>对于已经读取过的Slot，再次写入的OpcodeSSTORE之gas cost为会降低为<br><code>5000 — COLD_SLOAD_COST (2100) = 2900</code></p>
+<p>简单的说，单纯只操作一次<code>SSTORE</code>的总gas 会维持一样在5000 。但如果这个slot是之前有读过的，则写入的gas cost就会降低。近一步来说，一个x +&#x3D; 100，其实会变得更便宜:</p>
+<p>Pre-EIP-2929: <code>800 SLOAD + 5000 SSTORE = 5800</code><br>Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
+</blockquote>
+<h3 id="gas影响；"><a href="#gas影响；" class="headerlink" title="gas影响；"></a>gas影响；</h3><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095126.png" alt="20220710095126"></p>
+<ul>
+<li><code>warm slot</code>还是不如在内存里读取便宜</li>
+<li>可能每次仅省了一丢丢<code>gas</code>,成千上万的<code>tx</code>就会显现出<code>gas优化</code>的好处</li>
+</ul>
+<h2 id="Pack-Your-Struct-打包结构体："><a href="#Pack-Your-Struct-打包结构体：" class="headerlink" title="Pack Your Struct 打包结构体："></a>Pack Your Struct 打包结构体：</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095620.png" alt="20220710095620"></p>
+<p>在EVM中，32是一个重要的数字，要记住！</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095827.png" alt="20220710095827"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710100155.png" alt="20220710100155"></p>
+<p>评估一下第二个变量，如果存的内容较小，就可以定义长度小一点的。<br>然后evm就会把两个变量压缩在slot1里面。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710102044.png" alt="20220710102044"></p>
+<p>squeezes  挤挤总会有的</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710103109.png" alt="20220710103109"><br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710141301.png" alt="20220710141301"></p>
+<p>对变量适当的排序、选择适当的size，可以减少slot的使用</p>
+<blockquote>
+<p>不知道有没类似的工具可以提示优化的</p>
+</blockquote>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://www.youtube.com/watch?v=zgukojxyHKc">Alex Roan: Hitchhiker’s Guide to the EVM</a> </li>
+<li><a href="https://downsub.com/">导出youtube字幕,然后再用Chrome打开</a></li>
 </ul>
 ]]></content>
       <categories>
