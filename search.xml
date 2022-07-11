@@ -8624,7 +8624,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Crypto-pancakeSwap开启收税的简单分析</title>
+    <title>Crypto-pancakeSwap收税地址的简单分析</title>
     <url>/2022/56133.html</url>
     <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342"></p>
@@ -8659,11 +8659,24 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643"></p>
 <p>确实是被官方收税了,Done！</p>
-<blockquote>
-<p>1.之前应该是没开启收税，现在开启了</p>
-<p>2.做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</p>
-<p>3.去中心的代码，中心化的规则指定😆😆😆 Fun~</p>
-</blockquote>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h1><ol>
+<li>之前应该是没开启收税，现在开启了 </li>
+<li>做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</li>
+<li>去中心的代码，中心化的规则指定😆😆😆 Fun~</li>
+</ol>
+<p>2022.7.11更新</p>
+<p>之前的添加流动性也是有交税的，应该tax fee比较低，无感知。<br>所以tax开关是一直开启的，并不是最近才开启的。</p>
+<h1 id="bitquery数据分析"><a href="#bitquery数据分析" class="headerlink" title="bitquery数据分析:"></a>bitquery数据分析:</h1><p>看看收税地址的<a href="https://explorer.bitquery.io/zh/bsc/smart_contract/0x0ed943ce24baebf257488771759f9bf482c39706/inflow?from=2022-01-01&till=2022-07-11">入账情况</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711182547.png" alt="20220711182547"></p>
+<p>能发现到一些有趣的信息，<br>交税次数最多的token：<a href="https://bscscan.com/address/0x20f663cea80face82acdfa3aae6862d246ce0333"> DRIP Token (DRIP)</a>，还以为是bnb这类主流token呢。。</p>
+<p>一些信息：</p>
+<ul>
+<li><a href="https://drip.community/">官网</a></li>
+<li><a href="https://coinmarketcap.com/currencies/drip-network/">coinmarketcap地址</a></li>
+<li><a href="https://www.bsc.news/post/exploring-the-drip-platform-with-forex-sharks">BscNews-Exploring the Drip Platform With Forex Shark</a></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711222207.png" alt="20220711222207"></p>
+<p>有一定热度，代币机制有10%的税，会自动添加流动性，所以才会频繁mint LpToken，频繁交税。</p>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a href="https://tenderly.co/">tenderly</a></li>
 <li><a href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a></li>
