@@ -9012,4 +9012,153 @@
         <tag>SecurityTools</tag>
       </tags>
   </entry>
+  <entry>
+    <title>StudyRecord-Solidity异常处理</title>
+    <url>/2022/18978.html</url>
+    <content><![CDATA[<h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a href="https://github.com/AmazingAng/WTFSolidity/issues/93">require和assert的gas消耗对比问题</a>，学习记录</p>
+<p>写智能合约经常会出<code>bug</code>，<code>solidity</code>中的异常命令帮助我们<code>debug</code>，也可以提示用户发生了什么错误。</p>
+<p>有4个关键词：</p>
+<ul>
+<li>error</li>
+<li>require</li>
+<li>assert</li>
+<li>revert</li>
+</ul>
+<h1 id="error"><a href="#error" class="headerlink" title="error:"></a>error:</h1><p><code>error</code>是<code>solidity 0.8</code>版本新加的内容，方便且高效（省<code>gas</code>）地向用户解释操作失败的原因。<br>人们可以在contract之外定义异常。(模块化的前提，代码更易读)</p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法:"></a>使用方法:</h2><p>下面，我们定义一个<code>TransferNotOwner</code>异常，当用户不是代币<code>owner</code>的时候尝试转账，会抛出错误：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">error <span class="title class_">TransferNotOwner</span>(); <span class="comment">// 自定义error</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在执行当中，error必须搭配revert（回退）命令使用。</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">transferOwner1</span>(<span class="params">uint256 tokenId, address newOwner</span>) public &#123;</span><br><span class="line">        <span class="keyword">if</span>(_owners[tokenId] != msg.<span class="property">sender</span>)&#123;</span><br><span class="line">            revert <span class="title class_">TransferNotOwner</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        _owners[tokenId] = newOwner;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="require"><a href="#require" class="headerlink" title="require:"></a>require:</h1><p><code>require</code> is used to validate inputs and conditions before execution<br>用于在代码执行之前验证输入和条件，常见3种使用场景：</p>
+<ul>
+<li>外部input的参数</li>
+<li>在执行某段逻辑前，判断条件（条件很多，要通过测试不断补充）</li>
+<li>其他函数的返回值</li>
+</ul>
+<p><code>require</code>命令是<code>solidity 0.8</code>版本之前抛出异常的常用方法，目前很多主流合约仍然还在使用它。</p>
+<p>缺点就是<code>gas</code>随着描述异常的字符串长度增加，比<code>error</code>命令要高。</p>
+<h2 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法:"></a>使用方法:</h2><p><code>require(检查条件，&quot;异常的描述&quot;)</code>，当检查条件不成立的时候，就会抛出异常。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">transferOwner2</span>(<span class="params">uint256 tokenId, address newOwner</span>) public &#123;</span><br><span class="line">    <span class="built_in">require</span>(_owners[tokenId] == msg.<span class="property">sender</span>, <span class="string">&quot;Transfer Not Owner&quot;</span>);</span><br><span class="line">    _owners[tokenId] = newOwner;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Uni例子"><a href="#Uni例子" class="headerlink" title="Uni例子:"></a>Uni例子:</h2><p>看看成熟代码里怎么用</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// @inheritdoc IUniswapV3Factory</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">createPool</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address tokenA,</span></span><br><span class="line"><span class="params">    address tokenB,</span></span><br><span class="line"><span class="params">    uint24 fee</span></span><br><span class="line"><span class="params"></span>) external override noDelegateCall returns (address pool) &#123;</span><br><span class="line">    <span class="built_in">require</span>(tokenA != tokenB);</span><br><span class="line">    (address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA);</span><br><span class="line">    <span class="built_in">require</span>(token0 != <span class="title function_">address</span>(<span class="number">0</span>));</span><br><span class="line">    int24 tickSpacing = feeAmountTickSpacing[fee];</span><br><span class="line">    <span class="built_in">require</span>(tickSpacing != <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">require</span>(getPool[token0][token1][fee] == <span class="title function_">address</span>(<span class="number">0</span>));</span><br><span class="line">    pool = <span class="title function_">deploy</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), token0, token1, fee, tickSpacing);</span><br><span class="line">    getPool[token0][token1][fee] = pool;</span><br><span class="line">    <span class="comment">// populate mapping in the reverse direction, deliberate choice to avoid the cost of comparing addresses</span></span><br><span class="line">    getPool[token1][token0][fee] = pool;</span><br><span class="line">    emit <span class="title class_">PoolCreated</span>(token0, token1, fee, tickSpacing, pool);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// @inheritdoc IUniswapV3Factory</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">setOwner</span>(<span class="params">address _owner</span>) external override &#123;</span><br><span class="line">    <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner);</span><br><span class="line">    emit <span class="title class_">OwnerChanged</span>(owner, _owner);</span><br><span class="line">    owner = _owner;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="revert"><a href="#revert" class="headerlink" title="revert:"></a>revert:</h1><p><code>revert</code> 类似 <code>require</code>，相比可选填写异常描述的<code>require</code>，准确的描述会更user friendly，但遇到复杂的检验条件时，<br>会选用<code>revert</code>.</p>
+<h1 id="assert"><a href="#assert" class="headerlink" title="assert:"></a>assert:</h1><p><code>assert</code> is used to check for code that should never be false.<br>Failing assertion probably means that there is a bug.</p>
+<p>断言真假，常用于<code>after execution</code>的位置</p>
+<p>使用场景：一般用于用于内部错误检查或去检查一些不变量，因为它不能解释抛出异常的原因,所以不是对外使用的，是在内部使用的。</p>
+<h2 id="使用方法-2"><a href="#使用方法-2" class="headerlink" title="使用方法:"></a>使用方法:</h2><p>它的用法很简单，assert(检查条件），当检查条件不成立的时候，就会抛出异常。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">transferOwner3</span>(<span class="params">uint256 tokenId, address newOwner</span>) public &#123;</span><br><span class="line">    <span class="title function_">assert</span>(_owners[tokenId] == msg.<span class="property">sender</span>);</span><br><span class="line">    _owners[tokenId] = newOwner;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Uni例子-1"><a href="#Uni例子-1" class="headerlink" title="Uni例子:"></a>Uni例子:</h2><p>看看成熟代码里怎么用</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">check_liquidityNet_invariant</span>(<span class="params"></span>) internal &#123;</span><br><span class="line">    int128 liquidityNet = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (uint256 i = <span class="number">0</span>; i &lt; usedTicks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">        (, int128 tickLiquidityNet, , ) = pool.<span class="title function_">ticks</span>(usedTicks[i]);</span><br><span class="line">        int128 result = liquidityNet + tickLiquidityNet;</span><br><span class="line">        <span class="title function_">assert</span>(</span><br><span class="line">            (tickLiquidityNet &gt;= <span class="number">0</span> &amp;&amp; result &gt;= liquidityNet) || (tickLiquidityNet &lt; <span class="number">0</span> &amp;&amp; result &lt; liquidityNet)</span><br><span class="line">        );</span><br><span class="line">        liquidityNet = result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// prop #20  常用于尾部，执行逻辑后</span></span><br><span class="line">    <span class="title function_">assert</span>(liquidityNet == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">check_liquidity_invariant</span>(<span class="params"></span>) internal &#123;</span><br><span class="line">    (, int24 currentTick, , , , , ) = pool.<span class="title function_">slot0</span>();</span><br><span class="line"></span><br><span class="line">    int128 liquidity = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (uint256 i = <span class="number">0</span>; i &lt; usedTicks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">        int24 tick = usedTicks[i];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (tick &lt;= currentTick) &#123;</span><br><span class="line">            (, int128 tickLiquidityNet, , ) = pool.<span class="title function_">ticks</span>(tick);</span><br><span class="line"></span><br><span class="line">            int128 result = liquidity + tickLiquidityNet;</span><br><span class="line">            <span class="title function_">assert</span>((tickLiquidityNet &gt;= <span class="number">0</span> &amp;&amp; result &gt;= liquidity) || (tickLiquidityNet &lt; <span class="number">0</span> &amp;&amp; result &lt; liquidity));</span><br><span class="line">            liquidity = result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// prop #21</span></span><br><span class="line">    <span class="title function_">assert</span>(<span class="title function_">uint128</span>(liquidity) == pool.<span class="title function_">liquidity</span>());</span><br><span class="line">    <span class="title function_">assert</span>(liquidity &gt;= <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="gas对比"><a href="#gas对比" class="headerlink" title="gas对比:"></a>gas对比:</h1><p>基于<a href="https://github.com/AmazingAng/WTFSolidity/blob/main/15_Errors/Error.sol">代码</a>,简单对比,好像没啥意义。。。😨😨😨<br>仅仅是小小gas优化的，单个交易看不出啥，multi tx才能看出来。</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>gas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>require</td>
+<td>24440</td>
+</tr>
+<tr>
+<td>assert</td>
+<td>24446</td>
+</tr>
+<tr>
+<td>error</td>
+<td>24457</td>
+</tr>
+<tr>
+<td>require带异常描述字符串</td>
+<td>24743</td>
+</tr>
+</tbody></table>
+<h1 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h1><h2 id="Q1-revert返还gas吗"><a href="#Q1-revert返还gas吗" class="headerlink" title="Q1: revert返还gas吗?"></a>Q1: revert返还gas吗?</h2><blockquote>
+<p>理论上require的报错会将余下的gas返回给user，而assert会全部没收，而15_Error中实验结果，是assert比require更少的损耗，问题出在哪里? —— <a href="https://github.com/AmazingAng/WTFSolidity/issues/93">issue</a></p>
+</blockquote>
+<p>群友回复:</p>
+<p>0.8版本之前 <code>assert()</code>会消耗完所有gas </p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140615.png" alt="20220714140615"></p>
+<p>0.8版本后assert(）在编译时将操作码从<code>FE</code>改为了<code>FD</code>不会消耗完gas</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140629.png" alt="20220714140629"></p>
+<p><a href="https://learnblockchain.cn/docs/solidity/080-breaking-changes.html">Solidity v0.8.0 重大更新</a>：</p>
+<blockquote>
+<p>Failing <code>assertions</code> and other internal checks like division by zero or arithmetic overflow do not use the <code>invalid opcode</code> but instead the <code>revert opcode</code></p>
+<p>This will save gas on errors</p>
+</blockquote>
+<p>assert的操作码改变了：<code>invalid opcode</code> -&gt;<code>revert opcode</code>,会返还<code>gas</code></p>
+<h2 id="Q2-require带错误描述为啥更耗gas"><a href="#Q2-require带错误描述为啥更耗gas" class="headerlink" title="Q2: require带错误描述为啥更耗gas?"></a>Q2: require带错误描述为啥更耗gas?</h2><p><code>ErrorRequire.evm</code> Vs <code>ErrorRequireText.evm</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714142719.png" alt="20220714142719"></p>
+<blockquote>
+<p>所有命运赠送的礼物，早已在暗中标好了价格 —— 茨威格</p>
+</blockquote>
+<p>每个opcode都有其gas price,多了字符串要存储，就多了opcode,就多了gas</p>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>特点</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>require</td>
+<td>外部输入，before execution</td>
+<td>1.外部input的参数 2.在执行某段逻辑前判断条件 3.其他函数的返回值</td>
+</tr>
+<tr>
+<td>error</td>
+<td>升级版require,错误可模块化</td>
+<td>—</td>
+</tr>
+<tr>
+<td>revert</td>
+<td>偷懒版require不写异常描述，复杂的检验条件</td>
+<td>复杂的检验条件</td>
+</tr>
+<tr>
+<td>assert</td>
+<td>断言真假，after execution</td>
+<td>常用于func尾部</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">function (input):</span><br><span class="line">   |</span><br><span class="line">   |</span><br><span class="line">require/升级用error/偷懒用revert</span><br><span class="line">   |</span><br><span class="line">   | before execution</span><br><span class="line">   |</span><br><span class="line">   | 某个函数() / 某段执行逻辑</span><br><span class="line">   |</span><br><span class="line">   | after execution</span><br><span class="line">   |</span><br><span class="line">assert 断言某些输出真假</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输入用<code>require</code></li>
+<li>升级用<code>Error</code></li>
+<li>偷懒用<code>revert</code></li>
+<li>输出用<code>assert</code> 😋😋😋</li>
+</ul>
+<p>opcode大法好: 0.8.0版本前后，assert的操作码改变了：<code>invalid opcode</code> -&gt;<code>revert opcode</code>,会返还<code>gas</code></p>
+<p>给自己的建议：</p>
+<ul>
+<li>多看英文资料，中文资料有毒，思路好乱 🤪🤪🤪</li>
+<li>学语法就学语法，要注重使用场景，多写多使用，gas优化这类进阶知识，要学了evm、opcode先</li>
+<li>多积累基础知识，少超前诠释知识</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714144530.png" alt="20220714144530"></p>
+<ul>
+<li>除了细读文档，还要看看版本更新了啥新特性，太难了</li>
+<li>新版本出的新特性优先使用，既省gas，又可以将错误模块化，不用满天星<code>require</code>语句。双倍快乐😁😁😁</li>
+<li>change view step by step，think step ↓</li>
+<li>evm、opcode大法好 🤙</li>
+</ul>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a href="https://github.com/AmazingAng/WTFSolidity/tree/main/15_Errors">Solidity极简入门: 15. 异常</a></li>
+<li><a href="https://github.com/djrtwo/evm-opcode-gas-costs/blob/master/opcode-gas-costs_EIP-150_revision-1e18248_2017-04-12.csv">evm-opcode-gas-costs</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
 </search>
