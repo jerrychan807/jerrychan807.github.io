@@ -265,7 +265,7 @@ span.exturl:hover {
 iframe,
 img,
 video {
-  display: block;
+  display: inline-block;
   margin-left: auto;
   margin-right: auto;
   max-width: 100%;
@@ -1241,7 +1241,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #5cff22;
+  background: #461ca1;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
