@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre:逆向分析以太坊智能合约（part2） 学习记录+Demo测试原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts-pt2&#x2F; 在part1中，我们初步逆向分析了Greeter.sol合约。我们仔细研究了Greeter.sol的dispatcher。作为合约的一部分，dispatch可以接收交易数据，决定应该发送哪">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-逆向分析以太坊智能合约Part2">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/15939.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre:逆向分析以太坊智能合约（part2） 学习记录+Demo测试原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts-pt2&#x2F; 在part1中，我们初步逆向分析了Greeter.sol合约。我们仔细研究了Greeter.sol的dispatcher。作为合约的一部分，dispatch可以接收交易数据，决定应该发送哪">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717224554.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717225237.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717225858.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717230328.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717230520.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717233753.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717234724.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717234850.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717235727.png">
+<meta property="article:published_time" content="2022-07-17T15:00:34.000Z">
+<meta property="article:modified_time" content="2022-07-17T16:15:36.692Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
+<meta property="article:tag" content="EVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717224554.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/15939.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-逆向分析以太坊智能合约Part2 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/15939.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-逆向分析以太坊智能合约Part2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-17 23:00:34" itemprop="dateCreated datePublished" datetime="2022-07-17T23:00:34+08:00">2022-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-18 00:15:36" itemprop="dateModified" datetime="2022-07-18T00:15:36+08:00">2022-07-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/106984">逆向分析以太坊智能合约（part2）</a> 学习记录+Demo测试<br>原文地址：<a target="_blank" rel="noopener" href="https://arvanaghi.com/blog/reversing-ethereum-smart-contracts-pt2/">https://arvanaghi.com/blog/reversing-ethereum-smart-contracts-pt2/</a></p>
+<p>在part1中，我们初步逆向分析了<code>Greeter.sol</code>合约。我们仔细研究了<code>Greeter.sol</code>的<code>dispatcher</code>。<br>作为合约的一部分，dispatch可以接收交易数据，决定应该发送哪个函数。</p>
+<p><code>Greeter.sol</code>:</p>
+<blockquote>
+<p>part1原文里的<code>Greeter.sol</code>是稍微简单一些的，但我是直接去github找的代码，是跟part2里的一样的</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=<span class="number">0.4</span><span class="number">.22</span> &lt;<span class="number">0.6</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Mortal</span> &#123;</span><br><span class="line">    <span class="comment">/* Define variable owner of the type address */</span></span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* This constructor is executed at initialization and sets the owner of the contract */</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) public &#123; owner = msg.<span class="property">sender</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Function to recover the funds on the contract */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">kill</span>(<span class="params"></span>) public &#123; <span class="keyword">if</span> (msg.<span class="property">sender</span> == owner) <span class="title function_">selfdestruct</span>(msg.<span class="property">sender</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Greeter</span> is <span class="title class_">Mortal</span> &#123;</span><br><span class="line">    <span class="comment">/* Define variable greeting of the type string */</span></span><br><span class="line">    string greeting;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* This runs when the contract is executed */</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">string memory _greeting</span>) public &#123;</span><br><span class="line">        greeting = _greeting;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Main function */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">greet</span>(<span class="params"></span>) public view returns (string memory) &#123;</span><br><span class="line">        <span class="keyword">return</span> greeting;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这次让我们分析一下<code>kill()</code>方法。</p>
+<p>每份智能合约中都存在<code>dispatcher</code>。<br><code>kill()</code>的函数标识符为<code>0x41c0e1b5</code>，这是因为该ID是<code>kill()</code>方法 <code>keccak256哈希</code>的前4个字节：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keccak256(&quot;kill()&quot;) = 41c0e1b5...</span><br></pre></td></tr></table></figure>
+
+<p><code>Dispatcher</code>会检查发往合约的交易数据，决定是否要与<code>kill()</code>函数进行通信。<br>大家可以回顾之前那篇文章，详细了解我们分解过的那些指令。<br>回顾一下。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717224554.png" alt="20220717224554"></p>
+<p>这里我们分析下当dispatcher把我们带到这个函数时会发生什么情况。</p>
+<h1 id="kill"><a href="#kill" class="headerlink" title="kill():"></a>kill():</h1><p><code>Greeter.sol</code>中的<code>kill()</code>函数实际上继承自上一层的<code>mortal</code>合约:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">contract mortal &#123;</span><br><span class="line">    <span class="comment">/* Define variable owner of the type address */</span></span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Function to recover the funds on the contract */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">kill</span>(<span class="params"></span>) &#123; <span class="keyword">if</span> (msg.<span class="property">sender</span> == owner) <span class="title function_">selfdestruct</span>(owner); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract greeter is mortal &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于<code>greeter is mortal</code>，因此<code>greeter</code>可以访问<code>mortal</code>的所有函数以及成员。<br>即便我们只是把<code>greeter</code>的字节码加载到<code>Binary Ninja</code>中，由于存在这种继承关系，该字节码中也会包含<code>mortal</code>的所有函数。</p>
+<p><code>kill()</code>函数有以下执行逻辑：</p>
+<p>1、检查发送交易的地址是否与合约的<code>address owner</code>成员相匹配。<br>2、如果相匹配，<code>kill()</code>就会调用内置的<code>selfdestruct</code>函数，将<code>owner</code>地址以参数形式传入。</p>
+<p><code>selfdestruct</code>实际上是一种操作码（opcode），因此其实已经内置在EVM（以太坊虚拟机）中。<br>理论上讲，这是我们从以太坊区块链上删除智能合约的唯一方法。<br>如果你的合约接收以太币（ether），那么你以参数形式传递给<code>selfdestruct</code>的那个地址会在合约代码被删除前接收存储在你合约中的所有以太币。</p>
+<p><code>selfdestruct</code>（EIP6之前称为<code>suicide</code>）的功能是允许人们通过删除旧的或者未使用的合约来清理区块链。<br>如果有人将以太币发送给已经销毁的合约，那么这些以太币将永远丢失，因为合约地址已经不再具备将以太币转移到另一个地址的任何代码。<br>大家可以访问此<a target="_blank" rel="noopener" href="http://solidity.readthedocs.io/en/develop/introduction-to-smart-contracts.html#self-destruct">链接</a>了解关于<code>selfdestruct</code>的更多信息。</p>
+<h1 id="反汇编kill-函数"><a href="#反汇编kill-函数" class="headerlink" title="反汇编kill()函数:"></a>反汇编kill()函数:</h1><p>接下来让我们反汇编<code>kill()</code>，检查相关操作码。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717225237.png" alt="20220717225237"></p>
+<blockquote>
+<p>与原文的图不同，以我自己反编译出来的图为准，参考思路，自己推导</p>
+</blockquote>
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化:"></a>优化:</h1><p>作为一门高级语言，在编写智能合约这样艰巨的任务方面Solidity已经表现得非常不错。<br>然而，由于这门语言仍属于较新颖的一门语言（对于以太坊来说也是如此），因此Solidity编译器solc在编译出来的字节码中仍然会产生冗余的指令。</p>
+<p><code>solc</code>编译器有一个<code>optimizer</code>标志，可以很好地解决这些冗余问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solc --bin-runtime --optimize --optimize-runs 200 Greeter.sol</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin-runtime --optimize --optimize-runs 200 Greeter.sol</span><br><span class="line"></span><br><span class="line">======= Greeter.sol:Greeter =======</span><br><span class="line">Binary of the runtime part:</span><br><span class="line">608060405234801561001057600080fd5b50600436106100365760003560e01c806341c0e1b51461003b578063cfae321714610045575b600080fd5b6100436100c2565b005b61004d6100da565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561008757818101518382015260200161006f565b50505050905090810190601f1680156100b45780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6000546001600160a01b03163314156100d85733ff5b565b60018054604080516020601f600260001961010087891615020190951694909404938401819004810282018101909252828152606093909290918301828280156101655780601f1061013a57610100808354040283529160200191610165565b820191906000526020600020905b81548152906001019060200180831161014857829003601f168201915b505050505090509056fea265627a7a72315820f0f8fc027bc72a7f7a88206c8888b78ea298d3406b28656dade0edc239a06b0b64736f6c63430005110032</span><br><span class="line"></span><br><span class="line">======= Greeter.sol:Mortal =======</span><br><span class="line">Binary of the runtime part:</span><br><span class="line">6080604052348015600f57600080fd5b506004361060285760003560e01c806341c0e1b514602d575b600080fd5b60336035565b005b6000546001600160a01b0316331415604a5733ff5b56fea265627a7a72315820195b62087d88b621dfcba99834f4c148a593ab135f2a30aea71437ef0cc9491e64736f6c63430005110032</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717225858.png" alt="20220717225858"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717230328.png" alt="20220717230328"></p>
+<p>优化后的opcode确实短一些，相应的图也简洁一些了。<br>我们会继续分析经过优化后的字节码。</p>
+<h1 id="进入kill-函数"><a href="#进入kill-函数" class="headerlink" title="进入kill()函数:"></a>进入kill()函数:</h1><p>继续分析<code>kill()</code>的指令：<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717230520.png" alt="20220717230520"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717233753.png" alt="20220717233753"></p>
+<p>模拟栈的操作过程中，暂时搞不清楚左位移怎么计算，暂时先跳过。<br>直接看<a target="_blank" rel="noopener" href="https://ethervm.io/decompile">online decompile</a>的输出好了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Inputs[2]</span></span><br><span class="line">	<span class="comment">// &#123;</span></span><br><span class="line">	<span class="comment">//     @00C5  storage[0x00] // contract owner&#x27;s address</span></span><br><span class="line">	<span class="comment">//     @00CF  msg.sender</span></span><br><span class="line">	<span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Block ends with conditional jump to 0x00d8, if !(msg.sender == (0x01 &lt;&lt; 0xa0) - 0x01 &amp; storage[0x00])</span></span><br></pre></td></tr></table></figure>
+
+<p><code>EQ</code>那里会检查 调用者地址 是否等于 合约所有者的地址。</p>
+<p>其实这对应于<code>kill()</code>函数中<code>if (msg.sender == owner)</code>这条语句。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Function to recover the funds on the contract */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">kill</span>(<span class="params"></span>) &#123; <span class="keyword">if</span> (msg.<span class="property">sender</span> == owner) <span class="title function_">selfdestruct</span>(owner); &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717234724.png" alt="20220717234724"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717234850.png" alt="20220717234850"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CALLER  // msg.sender压入栈顶，经过前面的判断也就是owner了</span><br><span class="line">SELFDESTRUCT // destroys the contract and sends all funds to addr.</span><br></pre></td></tr></table></figure>
+
+<p>这个指令块的最后一条指令是<code>SELFDESTRUCT</code>，该指令会将栈顶元素当成存储以太币的所有合约的目的地址，然后删除所有合约的代码。<br>现在我们的合约代码已经被删除，存储在合约中的所有以太币已经发送到owner。Over…</p>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717235727.png" alt="20220717235727"></p>
+<p>原文没有给出编译器的版本，我用的0.5.17,比较新<br>升级过的编译器应该是采用了<code>EIP-145</code>的建议：</p>
+<ul>
+<li>EVM 缺少按 位移位运算符，但支持其他逻辑和算术运算符。</li>
+<li>移位操作可以通过算术运算符实现，但成本更高，并且需要主机更多的处理时间。</li>
+<li>实现SHL和SHR使用算术每 35 个 gas，而建议的指令需要 3 个 gas。</li>
+</ul>
+<p>所以，新编译器的结果少了很多指令，与原文的汇编代码和图都有很大的出入。<br>但思路是差不多的，可以自己参考推导，模拟栈的操作。</p>
+<p>evm的很多优化升级都是围绕着<code>gas</code>进行的，不断追求地去降低交易成本。<br>每个opcode都有它对应的gas消耗量，新版编译器(带优化参数)能编译出更短的opcode，可大大降低gas。<br>每个函数都降低一些gas,那成千上万的交易就会省下很多gas.</p>
+<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">https://cypherpunks-core.github.io/ethereumbook/13evm.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/epik-systems/understanding-solidity-assembly-using-shr-and-shl-for-byte-manipulation-a9f3503cc8d9">Understanding Solidity Assembly: Using <code>shr</code> and <code>shl</code> for Byte Manipulation</a></li>
+<li><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-145">EIP-145：EVM 中的按位移位指令 </a></li>
+<li><a target="_blank" rel="noopener" href="https://ethervm.io/decompile">online decompile</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md">https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md</a> (每个opcode的出入参个数)</li>
+<li><a target="_blank" rel="noopener" href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</li>
+<li><a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a> 黄皮书里的附录</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/60923.html" rel="bookmark">StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/42891.html" rel="bookmark">StudyRecord-深入探索EVM—编译和部署智能合约</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/16132.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part1</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+              <a href="/tags/EVM/" rel="tag"># EVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/16132.html" rel="prev" title="StudyRecord-逆向分析以太坊智能合约Part1">
+      <i class="fa fa-chevron-left"></i> StudyRecord-逆向分析以太坊智能合约Part1
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kill"><span class="nav-number">2.</span> <span class="nav-text">kill():</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8D%E6%B1%87%E7%BC%96kill-%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">反汇编kill()函数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">优化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5kill-%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">进入kill()函数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">541k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">8:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

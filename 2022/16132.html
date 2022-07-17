@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:逆向分析以太坊智能合约（part1） 学习记录+Demo测试 原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts&#x2F; 介绍以太坊虚拟机（Ethereum Virtual Machine，EVM）的工作原理，以及如何对智能合约（smart contract）进行逆向分析。 以太坊虚拟机:以太坊虚拟机（EVM）是一">
+  <meta name="description" content="Pre:逆向分析以太坊智能合约（part1） 学习记录+Demo测试原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts&#x2F; 介绍以太坊虚拟机（Ethereum Virtual Machine，EVM）的工作原理，以及如何对智能合约（smart contract）进行逆向分析。 以太坊虚拟机:以太坊虚拟机（EVM）是一种">
 <meta property="og:type" content="article">
 <meta property="og:title" content="StudyRecord-逆向分析以太坊智能合约Part1">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/16132.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:逆向分析以太坊智能合约（part1） 学习记录+Demo测试 原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts&#x2F; 介绍以太坊虚拟机（Ethereum Virtual Machine，EVM）的工作原理，以及如何对智能合约（smart contract）进行逆向分析。 以太坊虚拟机:以太坊虚拟机（EVM）是一">
+<meta property="og:description" content="Pre:逆向分析以太坊智能合约（part1） 学习记录+Demo测试原文地址：https:&#x2F;&#x2F;arvanaghi.com&#x2F;blog&#x2F;reversing-ethereum-smart-contracts&#x2F; 介绍以太坊虚拟机（Ethereum Virtual Machine，EVM）的工作原理，以及如何对智能合约（smart contract）进行逆向分析。 以太坊虚拟机:以太坊虚拟机（EVM）是一种">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717140120.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717141936.png">
@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183206.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183235.png">
 <meta property="article:published_time" content="2022-07-17T04:00:34.000Z">
-<meta property="article:modified_time" content="2022-07-17T12:25:21.066Z">
+<meta property="article:modified_time" content="2022-07-17T14:39:40.551Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="SmartContract">
 <meta property="article:tag" content="StudyRecord">
@@ -219,7 +219,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-07-17 12:00:34 / Modified: 20:25:21" itemprop="dateCreated datePublished" datetime="2022-07-17T12:00:34+08:00">2022-07-17</time>
+              <time title="Created: 2022-07-17 12:00:34 / Modified: 22:39:40" itemprop="dateCreated datePublished" datetime="2022-07-17T12:00:34+08:00">2022-07-17</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,8 +263,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=zgukojxyHKc">逆向分析以太坊智能合约（part1）</a> 学习记录+Demo测试</p>
-<p>原文地址：<a target="_blank" rel="noopener" href="https://arvanaghi.com/blog/reversing-ethereum-smart-contracts/">https://arvanaghi.com/blog/reversing-ethereum-smart-contracts/</a></p>
+        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/101979">逆向分析以太坊智能合约（part1）</a> 学习记录+Demo测试<br>原文地址：<a target="_blank" rel="noopener" href="https://arvanaghi.com/blog/reversing-ethereum-smart-contracts/">https://arvanaghi.com/blog/reversing-ethereum-smart-contracts/</a></p>
 <p>介绍以太坊虚拟机（Ethereum Virtual Machine，EVM）的工作原理，以及如何对智能合约（smart contract）进行逆向分析。</p>
 <h1 id="以太坊虚拟机"><a href="#以太坊虚拟机" class="headerlink" title="以太坊虚拟机:"></a>以太坊虚拟机:</h1><p>以太坊虚拟机（EVM）是一种<strong>基于栈</strong>的、<strong>准图灵完备</strong>(quasi-Turing complete)的虚拟机。</p>
 <h2 id="基于栈："><a href="#基于栈：" class="headerlink" title="基于栈："></a>基于栈：</h2><p>EVM并不依赖寄存器，任何操作都会在栈中完成。操作数、运算符以及函数调用都置于栈中，并且EVM知道如何处理数据、执行智能合约。</p>
@@ -350,7 +349,7 @@
 <p>(6) kill()的函数标识符与 tx的函数标识符比对，跳转到kill函数</p>
 <h1 id="Online-Solidity-Decompiler"><a href="#Online-Solidity-Decompiler" class="headerlink" title="Online Solidity Decompiler:"></a>Online Solidity Decompiler:</h1><p><a target="_blank" rel="noopener" href="https://ethervm.io/decompile">online decompile</a></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183206.png" alt="20220717183206"><br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183235.png" alt="20220717183235"></p>
-<p>有一些提示信息不错，伪代码，反编译块的输入和输出，可以不用自己手动模拟stack的操作了。。</p>
+<p>有一些提示信息不错，伪代码，反编译块的输入和输出，前期不熟悉的时候可以自己手动模拟stack的操作了，后期可以直接看input&#x2F;output。</p>
 <h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">https://cypherpunks-core.github.io/ethereumbook/13evm.html</a></li>
 <li><a target="_blank" rel="noopener" href="https://medium.com/epik-systems/understanding-solidity-assembly-using-shr-and-shl-for-byte-manipulation-a9f3503cc8d9">Understanding Solidity Assembly: Using <code>shr</code> and <code>shl</code> for Byte Manipulation</a></li>
@@ -384,7 +383,7 @@
       <div class="popular-posts-title"><a href="/2022/42891.html" rel="bookmark">StudyRecord-深入探索EVM—编译和部署智能合约</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+      <div class="popular-posts-title"><a href="/2022/15939.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part2</a></div>
     </li>
   </ul>
 
@@ -405,7 +404,10 @@
     <a href="/2022/60923.html" rel="prev" title="StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录">
       <i class="fa fa-chevron-left"></i> StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/15939.html" rel="next" title="StudyRecord-逆向分析以太坊智能合约Part2">
+      StudyRecord-逆向分析以太坊智能合约Part2 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -487,7 +489,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -542,12 +544,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">536k</span>
+    <span title="Symbols count total">541k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:07</span>
+    <span title="Reading time total">8:12</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
