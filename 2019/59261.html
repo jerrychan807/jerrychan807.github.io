@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="整体流程图  PerScheme (每个域名)如有url:www.baidu.com&#x2F;aaa&#x2F;a.php 取其中的域名www.baidu.com为基础 其实就是相当于web的根目录  基于域名备份文件:原理:">
+  <meta name="description" content="整体流程图   PerScheme (每个域名) 如有url:www.baidu.com&#x2F;aaa&#x2F;a.php 取其中的域名www.baidu.com为基础 其实就是相当于web的根目录  基于域名备份文件: 原理:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="w13scan-扫描插件总结-PerScheme">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/59261.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="整体流程图  PerScheme (每个域名)如有url:www.baidu.com&#x2F;aaa&#x2F;a.php 取其中的域名www.baidu.com为基础 其实就是相当于web的根目录  基于域名备份文件:原理:">
+<meta property="og:description" content="整体流程图   PerScheme (每个域名) 如有url:www.baidu.com&#x2F;aaa&#x2F;a.php 取其中的域名www.baidu.com为基础 其实就是相当于web的根目录  基于域名备份文件: 原理:">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png">
 <meta property="article:published_time" content="2019-12-19T06:36:34.000Z">
@@ -238,14 +238,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>7.2k</span>
+              <span>7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>7 mins.</span>
+              <span>6 mins.</span>
             </span>
 
         </div>
@@ -257,121 +257,172 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
+        <h1>整体流程图</h1>
+<p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
 <hr>
-<h2 id="PerScheme-每个域名"><a href="#PerScheme-每个域名" class="headerlink" title="PerScheme (每个域名)"></a>PerScheme (每个域名)</h2><p>如有url:<code>www.baidu.com/aaa/a.php</code></p>
+<h2 id="PerScheme-每个域名">PerScheme (每个域名)</h2>
+<p>如有url:<code>www.baidu.com/aaa/a.php</code></p>
 <p>取其中的域名<code>www.baidu.com</code>为基础</p>
 <p>其实就是相当于web的根目录</p>
 <hr>
-<h3 id="基于域名备份文件"><a href="#基于域名备份文件" class="headerlink" title="基于域名备份文件:"></a>基于域名备份文件:</h3><p>原理:</p>
+<h3 id="基于域名备份文件">基于域名备份文件:</h3>
+<p>原理:</p>
 <p>以域名的信息作为构造备份文件url的基础.</p>
 <p>例如url: <code>www.baidu.com</code></p>
 <p>则会构造出以下url去发包:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www.baidu.com/www.rar</span><br><span class="line">www.baidu.com/www.zip</span><br><span class="line">www.baidu.com/baidu.rar</span><br><span class="line">www.baidu.com/baidu.zip</span><br><span class="line">www.baidu.com/com.rar</span><br><span class="line">www.baidu.com/com.zip</span><br></pre></td></tr></table></figure>
-
 <p>判定方式为 文件头特征。</p>
 <hr>
-<h3 id="通用敏感文件扫描"><a href="#通用敏感文件扫描" class="headerlink" title="通用敏感文件扫描:"></a>通用敏感文件扫描:</h3><p>字典收集自BBScan的插件,如下</p>
+<h3 id="通用敏感文件扫描">通用敏感文件扫描:</h3>
+<p>字典收集自BBScan的插件,如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">/core</span><br><span class="line">/crossdomain.xml</span><br><span class="line">/debug.txt</span><br><span class="line">/.bash_history</span><br><span class="line">/.rediscli_history</span><br><span class="line">/.bashrc</span><br><span class="line">/.bash_profile</span><br><span class="line">/.bash_logout</span><br><span class="line">/.vimrc</span><br><span class="line">/.DS_Store</span><br><span class="line">/.history</span><br><span class="line">/.htaccess</span><br><span class="line">/htaccess.bak</span><br><span class="line">/.htpasswd</span><br><span class="line">/.htpasswd.bak</span><br><span class="line">/htpasswd.bak</span><br><span class="line">/nohup.out</span><br><span class="line">/.mysql_history</span><br><span class="line">/httpd.conf</span><br><span class="line">/web.config</span><br><span class="line">/server-status</span><br><span class="line">/solr/</span><br><span class="line">/examples/</span><br><span class="line">/examples/servlets/servlet/SessionExample</span><br><span class="line">/config/database.yml</span><br><span class="line">/database.yml</span><br><span class="line">/db.conf</span><br><span class="line">/db.ini</span><br><span class="line">/jmx-console/HtmlAdaptor</span><br><span class="line">/cacti/</span><br><span class="line">/zabbix/</span><br><span class="line">/jenkins/static/f3a41d2f/css/style.css</span><br><span class="line">/static/f3a41d2f/css/style.css</span><br><span class="line">/script</span><br><span class="line">/jenkins/script</span><br><span class="line">/exit</span><br><span class="line">/memadmin/index.php</span><br><span class="line">/phpmyadmin/index.php</span><br><span class="line">/phpMyAdmin/index.php</span><br><span class="line">/_phpmyadmin/index.php</span><br><span class="line">/pma/index.php</span><br><span class="line">/ganglia/</span><br><span class="line">/resin-doc/resource/tutorial/jndi-appconfig/test?inputFile=/etc/profile</span><br><span class="line">/resin-doc/viewfile/?contextpath=/&amp;servletpath=&amp;file=index.jsp</span><br><span class="line">/resin-admin/</span><br><span class="line">/.ssh/known_hosts</span><br><span class="line">/.ssh/id_rsa</span><br><span class="line">/id_rsa</span><br><span class="line">/.ssh/id_rsa.pub</span><br><span class="line">/.ssh/id_dsa</span><br><span class="line">/id_dsa</span><br><span class="line">/.ssh/id_dsa.pub</span><br><span class="line">/.ssh/authorized_keys</span><br><span class="line">/data.txt</span><br><span class="line">/install.txt</span><br><span class="line">/INSTALL.TXT</span><br><span class="line">/upload.do</span><br><span class="line">/upload.jsp</span><br><span class="line">/upload.php</span><br><span class="line">/upfile.php</span><br><span class="line">/upload.html</span><br></pre></td></tr></table></figure>
-
 <p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>&#123;&#39;path&#39;: &#39;/core&#39;, &#39;tag&#39;: &#39;ELF&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;&#39;&#125;</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+<p>规则格式:<code>&#123;'path': '/core', 'tag': 'ELF', 'content-type': '', 'content-type_no': ''&#125;</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>tag</code>: html源码特征</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type</code>: 文件拓展名</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type_no</code>: 文件拓展名黑名单</p>
+</li>
 </ul>
 <p>原理:</p>
 <p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
 <ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
+<li class="lvl-3">
+<p>符合html源码特征</p>
+</li>
+<li class="lvl-3">
+<p>符合文件拓展名</p>
+</li>
+<li class="lvl-3">
+<p>不在文件拓展名黑名单</p>
+</li>
 </ol>
 <hr>
-<h3 id="目录穿越扫描"><a href="#目录穿越扫描" class="headerlink" title="目录穿越扫描:"></a>目录穿越扫描:</h3><p>字典收集自BBScan的插件,如下</p>
+<h3 id="目录穿越扫描">目录穿越扫描:</h3>
+<p>字典收集自BBScan的插件,如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/etc/passwd</span><br><span class="line">/proc/meminfo</span><br><span class="line">/etc/profile</span><br><span class="line">/file:///etc/passwd</span><br><span class="line">/../../../../../../../../../../../../../etc/passwd</span><br><span class="line"></span><br><span class="line">/../../../../../../../../../../../../../etc/profile</span><br><span class="line"></span><br><span class="line">//././././././././././././././././././././././././../../../../../../../../etc/profile</span><br><span class="line"></span><br><span class="line">/aa/../../cc/../../bb/../../dd/../../aa/../../cc/../../bb/../../dd/../../bb/../../dd/../../bb/../../dd/../../bb/../../dd/../../ee/../../etc/profile</span><br><span class="line"></span><br><span class="line">/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/profile</span><br><span class="line"></span><br><span class="line">/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd</span><br><span class="line"></span><br><span class="line">/..%252F..%252F..%252F..%252F..%252F..%252F..%252F..%252F..%252Fetc%252Fpasswd</span><br><span class="line"></span><br><span class="line">/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd</span><br><span class="line"></span><br><span class="line">/resource/tutorial/jndi-appconfig/test?inputFile=/etc/passwd</span><br></pre></td></tr></table></figure>
-
-
 <p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>&#123;&#39;path&#39;: &#39;/etc/passwd&#39;, &#39;tag&#39;: &#39;root:x:&#39;, &#39;content-type&#39;: &#39;&#39;, &#39;content-type_no&#39;: &#39;&#39;&#125;</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+<p>规则格式:<code>&#123;'path': '/etc/passwd', 'tag': 'root:x:', 'content-type': '', 'content-type_no': ''&#125;</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>tag</code>: html源码特征</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type</code>: 文件拓展名</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type_no</code>: 文件拓展名黑名单</p>
+</li>
 </ul>
 <p>原理:</p>
 <p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
 <ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
+<li class="lvl-3">
+<p>符合html源码特征</p>
+</li>
+<li class="lvl-3">
+<p>符合文件拓展名</p>
+</li>
+<li class="lvl-3">
+<p>不在文件拓展名黑名单</p>
+</li>
 </ol>
 <hr>
-<h3 id="dz-xss探测"><a href="#dz-xss探测" class="headerlink" title="dz xss探测:"></a>dz xss探测:</h3><p>路径:<code>static/image/common/flvplayer.swf?file=1.flv&amp;linkfromdisplay=true&amp;link=javascript:alert(document.cookie);</code></p>
+<h3 id="dz-xss探测">dz xss探测:</h3>
+<p>路径:<code>static/image/common/flvplayer.swf?file=1.flv&amp;linkfromdisplay=true&amp;link=javascript:alert(document.cookie);</code></p>
 <p>判定依据: 状态码200 且 源码含<code>CWS</code>这个字符串</p>
 <p>路径:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">payloads = [<span class="string">&#x27;config/config_ucenter.php.bak&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;config/.config_ucenter.php.swp&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;config/.config_global.php.swp&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;config/config_global.php.1&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;uc_server/data/config.inc.php.bak&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;config/config_global.php.bak&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;include/config.inc.php.tmp&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
 <p>判定依据: 状态码200或206 且 源码含<code>&lt;?php</code>这个字符串</p>
-<p>路径:<code>static/image/admincp/getcolor.htm&#39;</code></p>
-<p>判定依据:源码含<code>if(fun) eval(&#39;parent.&#39;+fun+&#39;</code></p>
+<p>路径:<code>static/image/admincp/getcolor.htm'</code></p>
+<p>判定依据:源码含<code>if(fun) eval('parent.'+fun+'</code></p>
 <hr>
-<h3 id="错误页面信息泄漏"><a href="#错误页面信息泄漏" class="headerlink" title="错误页面信息泄漏:"></a>错误页面信息泄漏:</h3><p>访问一个不存在的错误页面，可以从这个页面中获取一些信息</p>
+<h3 id="错误页面信息泄漏">错误页面信息泄漏:</h3>
+<p>访问一个不存在的错误页面，可以从这个页面中获取一些信息</p>
 <p>随机生成一个url: <code>www.xxxx.com/随机字符串.jsp</code>,去访问</p>
 <p>然后去正则匹配看是以下哪一类:</p>
-<ul>
-<li><code>ASPNETPathDisclosure</code></li>
-<li><code>Struts2DevMod</code></li>
-<li><code>Django DEBUG MODEL</code></li>
-<li><code>RailsDevMode</code></li>
-<li><code>RequiredParameter</code></li>
-<li><code>Thinkphp3 Debug</code></li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>ASPNETPathDisclosure</code></p>
+</li>
+<li class="lvl-2">
+<p><code>Struts2DevMod</code></p>
+</li>
+<li class="lvl-2">
+<p><code>Django DEBUG MODEL</code></p>
+</li>
+<li class="lvl-2">
+<p><code>RailsDevMode</code></p>
+</li>
+<li class="lvl-2">
+<p><code>RequiredParameter</code></p>
+</li>
+<li class="lvl-2">
+<p><code>Thinkphp3 Debug</code></p>
+</li>
 </ul>
 <p>正则规则如下:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">re_list = &#123;</span><br><span class="line">    <span class="string">&quot;ASPNETPathDisclosure&quot;</span>: <span class="string">&quot;&lt;title&gt;Invalid\sfile\sname\sfor\smonitoring:\s&#x27;([^&#x27;]*)&#x27;\.\sFile\snames\sfor\smonitoring\smust\shave\sabsolute\spaths\,\sand\sno\swildcards\.&lt;\/title&gt;&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;Struts2DevMod&quot;</span>: <span class="string">&quot;You are seeing this page because development mode is enabled.  Development mode, or devMode, enables extra&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;Django DEBUG MODEL&quot;</span>: <span class="string">&quot;You&#x27;re seeing this error because you have &lt;code&gt;DEBUG = True&lt;\/code&gt; in&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;RailsDevMode&quot;</span>: <span class="string">&quot;&lt;title&gt;Action Controller: Exception caught&lt;\/title&gt;&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;RequiredParameter&quot;</span>: <span class="string">&quot;Required\s\w+\sparameter\s&#x27;([^&#x27;]+?)&#x27;\sis\snot\spresent&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;Thinkphp3 Debug&quot;</span>: <span class="string">&#x27;&lt;p class=&quot;face&quot;&gt;:\(&lt;/p&gt;&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <hr>
-<h3 id="flash-xss探测"><a href="#flash-xss探测" class="headerlink" title="flash xss探测:"></a>flash xss探测:</h3><p>文件字典如下:</p>
+<h3 id="flash-xss探测">flash xss探测:</h3>
+<p>文件字典如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">common/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">adminsoft/js/swfupload.swf</span><br><span class="line"></span><br><span class="line">statics/js/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">images/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">js/upload/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">addons/theme/stv1/_static/js/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">admin/kindeditor/plugins/multiimage/images/swfupload.swf</span><br><span class="line"></span><br><span class="line">includes/js/upload.swf</span><br><span class="line">js/swfupload/swfupload.swf</span><br><span class="line">Plus/swfupload/swfupload/swfupload.swf</span><br><span class="line"></span><br><span class="line">e/incs/fckeditor/editor/plugins/swfupload/js/swfupload.swf</span><br><span class="line"></span><br><span class="line">include/lib/js/uploadify/uploadify.swf</span><br><span class="line">lib/swf/swfupload.swf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p>最终url为 <code>www.xxx.com/xxx.swf?movieName=%22]%29&#125;catch%28e%29&#123;if%28!window.x%29&#123;window.x=1;alert%28%22xss%22%29&#125;&#125;//</code></p>
 <p>访问,再通过md5来判断.</p>
 <hr>
-<h3 id="iis解析漏洞"><a href="#iis解析漏洞" class="headerlink" title="iis解析漏洞:"></a>iis解析漏洞:</h3><p>url : <code>domain/robots.txt/.php</code></p>
+<h3 id="iis解析漏洞">iis解析漏洞:</h3>
+<p>url : <code>domain/robots.txt/.php</code></p>
 <p>判定依据: <code>user-agent</code>在源码 和 <code>Content-Type</code>不含<code>text/plain</code></p>
 <hr>
-<h3 id="java-web目录探测"><a href="#java-web目录探测" class="headerlink" title="java web目录探测"></a>java web目录探测</h3><p>路径字典:</p>
+<h3 id="java-web目录探测">java web目录探测</h3>
+<p>路径字典:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">/WEB-INF/web.xml</span><br><span class="line">/WEB-INF/web.xml.bak</span><br><span class="line">/WEB-INF/applicationContext.xml</span><br><span class="line">/WEB-INF/config.xml</span><br><span class="line">/WEB-INF/spring.xml</span><br><span class="line">/WEB-INF/struts-config.xml</span><br><span class="line">/WEB-INF/struts-front-config.xml</span><br><span class="line">/WEB-INF/struts/struts-config.xml</span><br><span class="line">/WEB-INF/classes/spring.xml</span><br><span class="line">/WEB-INF/classes/struts.xml</span><br><span class="line">/WEB-INF/classes/struts_manager.xml</span><br><span class="line">/WEB-INF/classes/conf/datasource.xml</span><br><span class="line">/WEB-INF/classes/data.xml</span><br><span class="line">/WEB-INF/classes/config/applicationContext.xml</span><br><span class="line">/WEB-INF/classes/applicationContext.xml</span><br><span class="line">/WEB-INF/classes/conf/spring/applicationContext-datasource.xml</span><br><span class="line">/WEB-INF/config/db/dataSource.xml</span><br><span class="line">/WEB-INF/spring-cfg/applicationContext.xml</span><br><span class="line">/WEB-INF/dwr.xml</span><br><span class="line">/WEB-INF/classes/hibernate.cfg.xml</span><br><span class="line">/WEB-INF/classes/rabbitmq.xml</span><br><span class="line">/WEB-INF/conf/activemq.xml</span><br><span class="line">/server.xml</span><br><span class="line">/config/database.yml</span><br><span class="line">/configprops</span><br><span class="line">/WEB-INF/database.properties</span><br><span class="line">/WEB-INF/web.properties</span><br><span class="line">/WEB-INF/log4j.properties</span><br><span class="line">/WEB-INF/classes/dataBase.properties</span><br><span class="line">/WEB-INF/classes/application.properties</span><br><span class="line">/WEB-INF/classes/jdbc.properties</span><br><span class="line">/WEB-INF/classes/db.properties</span><br><span class="line">/WEB-INF/classes/conf/jdbc.properties</span><br><span class="line">/WEB-INF/classes/security.properties</span><br><span class="line">/WEB-INF/conf/database_config.properties</span><br><span class="line">/WEB-INF/config/dbconfig</span><br></pre></td></tr></table></figure>
-
 <p>规则格式和判定方式和Perfolder里的敏感文件扫描一样。</p>
-<p>规则格式:<code>&#123;&#39;path&#39;: &#39;/WEB-INF/web.xml&#39;, &#39;tag&#39;: &#39;&lt;?xml&#39;, &#39;content-type&#39;: &#39;xml&#39;, &#39;content-type_no&#39;: &#39;&#39;</code></p>
-<ul>
-<li><code>tag</code>: html源码特征</li>
-<li><code>content-type</code>: 文件拓展名</li>
-<li><code>content-type_no</code>: 文件拓展名黑名单</li>
+<p>规则格式:<code>&#123;'path': '/WEB-INF/web.xml', 'tag': '&lt;?xml', 'content-type': 'xml', 'content-type_no': ''</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>tag</code>: html源码特征</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type</code>: 文件拓展名</p>
+</li>
+<li class="lvl-2">
+<p><code>content-type_no</code>: 文件拓展名黑名单</p>
+</li>
 </ul>
 <p>原理:</p>
 <p>拼接url,发包访问,返回码为200且同时满足以下3种条件</p>
 <ol>
-<li>符合html源码特征</li>
-<li>符合文件拓展名</li>
-<li>不在文件拓展名黑名单</li>
+<li class="lvl-3">
+<p>符合html源码特征</p>
+</li>
+<li class="lvl-3">
+<p>符合文件拓展名</p>
+</li>
+<li class="lvl-3">
+<p>不在文件拓展名黑名单</p>
+</li>
 </ol>
 <hr>
-<h3 id="敏感目录探测"><a href="#敏感目录探测" class="headerlink" title="敏感目录探测"></a>敏感目录探测</h3><p>字典:</p>
+<h3 id="敏感目录探测">敏感目录探测</h3>
+<p>字典:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">folders = [<span class="string">&#x27;/admin&#x27;</span>, <span class="string">&#x27;/bak&#x27;</span>, <span class="string">&#x27;/backup&#x27;</span>, <span class="string">&#x27;/conf&#x27;</span>, <span class="string">&#x27;/config&#x27;</span>, <span class="string">&#x27;/db&#x27;</span>, <span class="string">&#x27;/debug&#x27;</span>, <span class="string">&#x27;/data&#x27;</span>, <span class="string">&#x27;/database&#x27;</span>, <span class="string">&#x27;/deploy&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;/WEB-INF&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;/install&#x27;</span>, <span class="string">&#x27;/manage&#x27;</span>, <span class="string">&#x27;/manager&#x27;</span>, <span class="string">&#x27;/monitor&#x27;</span>, <span class="string">&#x27;/tmp&#x27;</span>, <span class="string">&#x27;/temp&#x27;</span>, <span class="string">&#x27;/test&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
-
-
 <hr>
-<h3 id="wordpress-备份文件"><a href="#wordpress-备份文件" class="headerlink" title="wordpress 备份文件"></a>wordpress 备份文件</h3><p>字典</p>
+<h3 id="wordpress-备份文件">wordpress 备份文件</h3>
+<p>字典</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url_lst = [<span class="string">&#x27;/wp-config.php.inc&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;/wp-config.inc&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;/wp-config.bak&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;/wp-config.php~&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;/.wp-config.php.swp&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;/wp-config.php.bak&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
 <p>判定依据: 状态码为200且 源码含<code>&lt;?php</code></p>
 <hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md">w13scan</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/w-digital-scanner/w13scan/blob/master/README_CN.md">w13scan</a></p>
+</li>
 </ul>
 
     </div>
@@ -386,6 +437,9 @@
       <div class="popular-posts-title"><a href="/2019/56271.html" rel="bookmark">Dsss源码-100行的SqliScanner-源码分析笔记</a></div>
     </li>
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/11158.html" rel="bookmark">Sqlmap源码-AttribDict属性字典</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/63018.html" rel="bookmark">Sqlmap源码-checkSameHost函数的疑问</a></div>
     </li>
     <li class="popular-posts-item">
@@ -393,9 +447,6 @@
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/9785.html" rel="bookmark">Sqlmap源码-请求参数的检验和解析(二)</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2019/11158.html" rel="bookmark">Sqlmap源码-AttribDict属性字典</a></div>
     </li>
   </ul>
 
@@ -483,7 +534,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PerScheme-%E6%AF%8F%E4%B8%AA%E5%9F%9F%E5%90%8D"><span class="nav-number">1.1.</span> <span class="nav-text">PerScheme (每个域名)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%9F%9F%E5%90%8D%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">基于域名备份文件:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E6%89%AB%E6%8F%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">通用敏感文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%A9%BF%E8%B6%8A%E6%89%AB%E6%8F%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">目录穿越扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dz-xss%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">dz xss探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F"><span class="nav-number">1.1.5.</span> <span class="nav-text">错误页面信息泄漏:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flash-xss%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.6.</span> <span class="nav-text">flash xss探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iis%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="nav-number">1.1.7.</span> <span class="nav-text">iis解析漏洞:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-web%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.8.</span> <span class="nav-text">java web目录探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%8F%E6%84%9F%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.9.</span> <span class="nav-text">敏感目录探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wordpress-%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.10.</span> <span class="nav-text">wordpress 备份文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">2.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PerScheme-%E6%AF%8F%E4%B8%AA%E5%9F%9F%E5%90%8D"><span class="nav-number">1.1.</span> <span class="nav-text">PerScheme (每个域名)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%9F%9F%E5%90%8D%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">基于域名备份文件:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E6%95%8F%E6%84%9F%E6%96%87%E4%BB%B6%E6%89%AB%E6%8F%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">通用敏感文件扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%A9%BF%E8%B6%8A%E6%89%AB%E6%8F%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">目录穿越扫描:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dz-xss%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">dz xss探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F"><span class="nav-number">1.1.5.</span> <span class="nav-text">错误页面信息泄漏:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flash-xss%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.6.</span> <span class="nav-text">flash xss探测:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iis%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="nav-number">1.1.7.</span> <span class="nav-text">iis解析漏洞:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-web%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.8.</span> <span class="nav-text">java web目录探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%8F%E6%84%9F%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="nav-number">1.1.9.</span> <span class="nav-text">敏感目录探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wordpress-%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.10.</span> <span class="nav-text">wordpress 备份文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -499,7 +550,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -554,12 +605,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

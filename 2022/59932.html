@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:熟悉一下SLITHER该工具的使用，主要想用它的graph来帮助阅读sol源码 slither Usage 介绍： Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：    自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：link 自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。 代码理解。Slither能够绘制合约的继承拓扑图">
+  <meta name="description" content="Pre: 熟悉一下SLITHER该工具的使用，主要想用它的graph来帮助阅读sol源码 slither Usage 介绍：  Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：     自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：link   自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。   代码理解。Slither能够绘制合">
 <meta property="og:type" content="article">
 <meta property="og:title" content="StudyRecord-以太坊合约静态分析工具Slither使用记录">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/59932.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:熟悉一下SLITHER该工具的使用，主要想用它的graph来帮助阅读sol源码 slither Usage 介绍： Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：    自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：link 自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。 代码理解。Slither能够绘制合约的继承拓扑图">
+<meta property="og:description" content="Pre: 熟悉一下SLITHER该工具的使用，主要想用它的graph来帮助阅读sol源码 slither Usage 介绍：  Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：     自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：link   自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。   代码理解。Slither能够绘制合">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png">
@@ -263,67 +263,100 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>熟悉一下<code>SLITHER</code>该工具的使用，主要想用它的<code>graph</code>来帮助阅读sol源码</p>
+        <h1>Pre:</h1>
+<p>熟悉一下<code>SLITHER</code>该工具的使用，主要想用它的<code>graph</code>来帮助阅读sol源码</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Usage">slither Usage</a></p>
-<h1 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h1><blockquote>
+<h1>介绍：</h1>
+<blockquote>
 <p>Slither是一个用Python 3编写的智能合约静态分析框架，提供如下功能：</p>
 </blockquote>
 <blockquote>
-<ul>
-<li>自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：<a target="_blank" rel="noopener" href="https://github.com/crytic/slither#detectors">link</a></li>
-<li>自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。</li>
-<li>代码理解。Slither能够绘制合约的继承拓扑图，合约方法调用关系图等，帮助开发者理解代码。</li>
-<li>辅助代码审查。用户可以通过API与Slither进行交互。</li>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>自动化漏洞检测。提供多项的漏洞检查模型，模型列表详见：<a target="_blank" rel="noopener" href="https://github.com/crytic/slither#detectors">link</a></p>
+</li>
+<li class="lvl-2">
+<p>自动优化检测。Slither可以检测编译器遗漏的代码优化项并给出优化建议。</p>
+</li>
+<li class="lvl-2">
+<p>代码理解。Slither能够绘制合约的继承拓扑图，合约方法调用关系图等，帮助开发者理解代码。</p>
+</li>
+<li class="lvl-2">
+<p>辅助代码审查。用户可以通过API与Slither进行交互。</p>
+</li>
 </ul>
 </blockquote>
-<h1 id="安装与启动："><a href="#安装与启动：" class="headerlink" title="安装与启动："></a>安装与启动：</h1><h2 id="docker安装："><a href="#docker安装：" class="headerlink" title="docker安装："></a>docker安装：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安裝 docker image：</span></span><br><span class="line">docker pull trailofbits/eth-security-toolbox</span><br></pre></td></tr></table></figure>
-
-<h2 id="docker共享目录volume"><a href="#docker共享目录volume" class="headerlink" title="docker共享目录volume:"></a>docker共享目录volume:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker里创建目录:</span></span><br><span class="line"><span class="comment"># 源代码文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> contracts</span><br><span class="line"><span class="comment"># 库文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> @openzeppelin</span><br></pre></td></tr></table></figure>
-
-<p>我是使用图形化工具共享目录<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png" alt="EC7266A8-3812-4827-8BCD-2CBFAA44330B"></p>
+<h1>安装与启动：</h1>
+<h2 id="docker安装：">docker安装：</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安裝 docker image：</span></span><br><span class="line">docker pull trailofbits/eth-security-toolbox</span><br></pre></td></tr></table></figure>
+<h2 id="docker共享目录volume">docker共享目录volume:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker里创建目录:</span></span><br><span class="line"><span class="comment"># 源代码文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> contracts</span><br><span class="line"><span class="comment"># 库文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> @openzeppelin</span><br></pre></td></tr></table></figure>
+<p>我是使用图形化工具共享目录<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png" alt="EC7266A8-3812-4827-8BCD-2CBFAA44330B"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 共享源文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/openzeppelin-contracts/contracts </span><br><span class="line"></span><br><span class="line">/home/contracts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 共享库文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/cool-erc20/blacklist/node_modules/@openzeppelin</span><br><span class="line"></span><br><span class="line">/home/@openzeppelin</span><br></pre></td></tr></table></figure>
-
-<h1 id="SLITHER使用"><a href="#SLITHER使用" class="headerlink" title="SLITHER使用:"></a>SLITHER使用:</h1><h2 id="检查solc版本"><a href="#检查solc版本" class="headerlink" title="检查solc版本:"></a>检查solc版本:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已安装的solc版本列表</span></span><br><span class="line">solc-select versions</span><br><span class="line"><span class="comment"># 用use命令切换编译器版本</span></span><br></pre></td></tr></table></figure>
-
-
-<h2 id="漏洞检测："><a href="#漏洞检测：" class="headerlink" title="漏洞检测："></a>漏洞检测：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开始扫描</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/ERC20Snapshot.sol</span><br></pre></td></tr></table></figure>
-
-<p>报错，不支持相对导入<code> import &quot;../ERC20.sol&quot;;</code><br>修改import语句，成<code>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</code></p>
+<h1>SLITHER使用:</h1>
+<h2 id="检查solc版本">检查solc版本:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看已安装的solc版本列表</span></span><br><span class="line">solc-select versions</span><br><span class="line"><span class="comment"># 用use命令切换编译器版本</span></span><br></pre></td></tr></table></figure>
+<h2 id="漏洞检测：">漏洞检测：</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开始扫描</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/ERC20Snapshot.sol</span><br></pre></td></tr></table></figure>
+<p>报错，不支持相对导入<code> import &quot;../ERC20.sol&quot;;</code>修改import语句，成<code>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 指定 --solc-remaps 来告诉编译器 openzeppelin 的具体位置</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ </span><br></pre></td></tr></table></figure>
-
-<p>扫描结果：<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png" alt="2859ABE2-0593-4DC4-9786-E6CDC6F945BF"></p>
-<h2 id="输出合约继承关系图："><a href="#输出合约继承关系图：" class="headerlink" title="输出合约继承关系图："></a>输出合约继承关系图：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出合约继承关系 --print inheritance-graph</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> inheritance-graph</span><br></pre></td></tr></table></figure>
-
-<p>执行结果:<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/881C71ED-C4E0-476D-81D8-879BE8B4D25A.png" alt="881C71ED-C4E0-476D-81D8-879BE8B4D25A"></p>
-<p>生成的是<code>.dot文件</code><br>使用在线工具，转换一下<code>.dot</code>格式的文件，来输出图形</p>
+<p>扫描结果：<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png" alt="2859ABE2-0593-4DC4-9786-E6CDC6F945BF"></p>
+<h2 id="输出合约继承关系图：">输出合约继承关系图：</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出合约继承关系 --print inheritance-graph</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> inheritance-graph</span><br></pre></td></tr></table></figure>
+<p>执行结果:<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/881C71ED-C4E0-476D-81D8-879BE8B4D25A.png" alt="881C71ED-C4E0-476D-81D8-879BE8B4D25A"></p>
+<p>生成的是<code>.dot文件</code>使用在线工具，转换一下<code>.dot</code>格式的文件，来输出图形</p>
 <p><a target="_blank" rel="noopener" href="https://dreampuf.github.io/GraphvizOnline/#digraph%20G%20%7B%0A%0A%20%20subgraph%20cluster_0%20%7B%0A%20%20%20%20style%3Dfilled%3B%0A%20%20%20%20color%3Dlightgrey%3B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%2Ccolor%3Dwhite%5D%3B%0A%20%20%20%20a0%20-%3E%20a1%20-%3E%20a2%20-%3E%20a3%3B%0A%20%20%20%20label%20%3D%20%22process%20%231%22%3B%0A%20%20%7D%0A%0A%20%20subgraph%20cluster_1%20%7B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%5D%3B%0A%20%20%20%20b0%20-%3E%20b1%20-%3E%20b2%20-%3E%20b3%3B%0A%20%20%20%20label%20%3D%20%22process%20%232%22%3B%0A%20%20%20%20color%3Dblue%0A%20%20%7D%0A%20%20start%20-%3E%20a0%3B%0A%20%20start%20-%3E%20b0%3B%0A%20%20a1%20-%3E%20b3%3B%0A%20%20b2%20-%3E%20a3%3B%0A%20%20a3%20-%3E%20a0%3B%0A%20%20a3%20-%3E%20end%3B%0A%20%20b3%20-%3E%20end%3B%0A%0A%20%20start%20%5Bshape%3DMdiamond%5D%3B%0A%20%20end%20%5Bshape%3DMsquare%5D%3B%0A%7D">Graphviz在线使用</a></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3ADC3166-CCB2-43A5-B9F8-52CE1EB66491.png" alt="3ADC3166-CCB2-43A5-B9F8-52CE1EB66491"></p>
 <p>图示说明：</p>
-<ul>
-<li>如果合约具有多重继承，则在连接线将按声明顺序标记。</li>
-<li><strong>以橙色突出显示的函数会覆盖父函数</strong>。（看override的情况）</li>
-<li>不直接相互覆盖（但由于多重继承而冲突）的函数将在受影响的合约节点底部以灰色字体突出显示。</li>
-<li>以红色突出显示的变量掩盖了父变量声明。</li>
-<li>类型变量contract以蓝色字体在括号中指定合约名称。</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>如果合约具有多重继承，则在连接线将按声明顺序标记。</p>
+</li>
+<li class="lvl-2">
+<p><strong>以橙色突出显示的函数会覆盖父函数</strong>。（看override的情况）</p>
+</li>
+<li class="lvl-2">
+<p>不直接相互覆盖（但由于多重继承而冲突）的函数将在受影响的合约节点底部以灰色字体突出显示。</p>
+</li>
+<li class="lvl-2">
+<p>以红色突出显示的变量掩盖了父变量声明。</p>
+</li>
+<li class="lvl-2">
+<p>类型变量contract以蓝色字体在括号中指定合约名称。</p>
+</li>
 </ul>
 <blockquote>
 <p>Useful！！！</p>
 </blockquote>
-<h2 id="输出合同的快速摘要"><a href="#输出合同的快速摘要" class="headerlink" title="输出合同的快速摘要:"></a>输出合同的快速摘要:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print contract-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> contract-summary</span><br></pre></td></tr></table></figure>
-
+<h2 id="输出合同的快速摘要">输出合同的快速摘要:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print contract-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> contract-summary</span><br></pre></td></tr></table></figure>
 <p>这跟继承关系差不多，呈现的方式有些不一样。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C37B62B5-7370-4BFA-A83C-9D0B56BDA109.png" alt="C37B62B5-7370-4BFA-A83C-9D0B56BDA109"></p>
 <p>更多打印功能，可看<a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a>，这个工具还是蛮实用和有趣的,So cool ~</p>
-<h2 id="输出可读的合同摘要"><a href="#输出可读的合同摘要" class="headerlink" title="输出可读的合同摘要:"></a>输出可读的合同摘要:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print human-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> human-summary</span><br></pre></td></tr></table></figure>
-
+<h2 id="输出可读的合同摘要">输出可读的合同摘要:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print human-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> human-summary</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/150FDB31-BD8C-4A9D-83B2-A6A768631844.png" alt="150FDB31-BD8C-4A9D-83B2-A6A768631844"></p>
 <p>内容大概有：代码总行数、汇编代码总行数、漏洞检测汇总信息等。</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/1301#3-3-%E5%90%88%E7%BA%A6%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB">以太坊合约静态分析工具Slither简介与使用</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.frank.hk/blog/slither-solidity-scanner/">使用 SLITHER 來檢測你的 SOLIDITY 智能合約程式碼</a></li>
-<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041329191">Graphviz的使用指南</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Usage">slither Usage</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/1301#3-3-%E5%90%88%E7%BA%A6%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB">以太坊合约静态分析工具Slither简介与使用</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.frank.hk/blog/slither-solidity-scanner/">使用 SLITHER 來檢測你的 SOLIDITY 智能合約程式碼</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041329191">Graphviz的使用指南</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Usage">slither Usage</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a></p>
+</li>
 </ul>
 
     </div>
@@ -436,7 +469,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">介绍：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">安装与启动：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">docker安装：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95volume"><span class="nav-number">3.2.</span> <span class="nav-text">docker共享目录volume:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SLITHER%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">SLITHER使用:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5solc%E7%89%88%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">检查solc版本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E6%A3%80%E6%B5%8B%EF%BC%9A"><span class="nav-number">4.2.</span> <span class="nav-text">漏洞检测：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%90%88%E7%BA%A6%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB%E5%9B%BE%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">输出合约继承关系图：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%90%88%E5%90%8C%E7%9A%84%E5%BF%AB%E9%80%9F%E6%91%98%E8%A6%81"><span class="nav-number">4.4.</span> <span class="nav-text">输出合同的快速摘要:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%8F%AF%E8%AF%BB%E7%9A%84%E5%90%88%E5%90%8C%E6%91%98%E8%A6%81"><span class="nav-number">4.5.</span> <span class="nav-text">输出可读的合同摘要:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">介绍：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">安装与启动：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">docker安装：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95volume"><span class="nav-number">3.2.</span> <span class="nav-text">docker共享目录volume:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">SLITHER使用:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5solc%E7%89%88%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">检查solc版本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E6%A3%80%E6%B5%8B%EF%BC%9A"><span class="nav-number">4.2.</span> <span class="nav-text">漏洞检测：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%90%88%E7%BA%A6%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB%E5%9B%BE%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">输出合约继承关系图：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%90%88%E5%90%8C%E7%9A%84%E5%BF%AB%E9%80%9F%E6%91%98%E8%A6%81"><span class="nav-number">4.4.</span> <span class="nav-text">输出合同的快速摘要:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%8F%AF%E8%AF%BB%E7%9A%84%E5%90%88%E5%90%8C%E6%91%98%E8%A6%81"><span class="nav-number">4.5.</span> <span class="nav-text">输出可读的合同摘要:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -452,7 +485,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -507,12 +540,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:查了一些有关uniswap源码解析的文章，找到这篇Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。 恒定乘积公式无手续费:1x * y &#x3D; k   令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y">
+  <meta name="description" content="Pre: 查了一些有关uniswap源码解析的文章，找到这篇Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。 恒定乘积公式 无手续费: 1x * y &#x3D; k   令交易的两虚拟货币为 X 和 Y，各自数量为 x 和">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Uniswap-恒定乘积公式原理">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/54061.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:查了一些有关uniswap源码解析的文章，找到这篇Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。 恒定乘积公式无手续费:1x * y &#x3D; k   令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y">
+<meta property="og:description" content="Pre: 查了一些有关uniswap源码解析的文章，找到这篇Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。 恒定乘积公式 无手续费: 1x * y &#x3D; k   令交易的两虚拟货币为 X 和 Y，各自数量为 x 和">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png">
@@ -279,13 +279,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>查了一些有关uniswap源码解析的文章，找到这篇<a target="_blank" rel="noopener" href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a><br>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
-<h1 id="恒定乘积公式"><a href="#恒定乘积公式" class="headerlink" title="恒定乘积公式"></a>恒定乘积公式</h1><h2 id="无手续费"><a href="#无手续费" class="headerlink" title="无手续费:"></a>无手续费:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</li>
-<li>两货币数量的乘积 x * y 恆等于 k</li>
-<li>k 值是由第一笔注入的流动性所决定</li>
+        <h1>Pre:</h1>
+<p>查了一些有关uniswap源码解析的文章，找到这篇<a target="_blank" rel="noopener" href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
+<h1>恒定乘积公式</h1>
+<h2 id="无手续费">无手续费:</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</p>
+</li>
+<li class="lvl-2">
+<p>两货币数量的乘积 x * y 恆等于 k</p>
+</li>
+<li class="lvl-2">
+<p>k 值是由第一笔注入的流动性所决定</p>
+</li>
 </ul>
 <p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
 <p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
@@ -300,10 +308,11 @@
 <p>推导<code>∆y</code></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
 <p>第一个图里的公式，都推导完了。</p>
-<h2 id="计入手续费"><a href="#计入手续费" class="headerlink" title="计入手续费:"></a>计入手续费:</h2><p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
+<h2 id="计入手续费">计入手续费:</h2>
+<p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
 <p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
-<p>手续费 ρ &#x3D; 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
+<p>手续费 ρ = 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
 <p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
 <p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
@@ -319,11 +328,11 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
 <p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
-<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 &#x3D;&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
-<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 &#x3D; 0.3% 对于 k 值的影响极小。</p>
-<h2 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码:"></a>相关代码:</h2><p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
+<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 =&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
+<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 = 0.3% 对于 k 值的影响极小。</p>
+<h2 id="相关代码">相关代码:</h2>
+<p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>上面已知</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
 <p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
@@ -334,36 +343,57 @@
 <p>将代码和公式结合起来：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
 <p>getAmountOut函数，通过入参：</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountIn —— ∆x —— ∆x数量的x币</p>
+</li>
+<li class="lvl-2">
+<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
+</li>
+<li class="lvl-2">
+<p>reserveOut —— y —— y币的储备量</p>
+</li>
 </ul>
 <p>计算出参:</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountOut —— ∆y —— ∆y数量的y币</p>
+</li>
 </ul>
 <p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
 <p>将代码和公式结合起来：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
 <p>getAmountIn函数，通过入参：</p>
-<ul>
-<li>amountOut —— ∆y —— ∆y数量的y币</li>
-<li>reserveIn —— x —— x币的储备量&#x2F;池子原有的x币数量</li>
-<li>reserveOut —— y —— y币的储备量</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountOut —— ∆y —— ∆y数量的y币</p>
+</li>
+<li class="lvl-2">
+<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
+</li>
+<li class="lvl-2">
+<p>reserveOut —— y —— y币的储备量</p>
+</li>
 </ul>
 <p>计算出参:</p>
-<ul>
-<li>amountIn —— ∆x —— ∆x数量的x币</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountIn —— ∆x —— ∆x数量的x币</p>
+</li>
 </ul>
-<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>+1之后，交易者需要付出多一点点</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></li>
-<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></li>
+<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>
++1之后，交易者需要付出多一点点</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></p>
+</li>
 </ul>
 
     </div>
@@ -478,7 +508,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E5%85%AC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">恒定乘积公式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E6%89%8B%E7%BB%AD%E8%B4%B9"><span class="nav-number">2.1.</span> <span class="nav-text">无手续费:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E5%85%A5%E6%89%8B%E7%BB%AD%E8%B4%B9"><span class="nav-number">2.2.</span> <span class="nav-text">计入手续费:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">相关代码:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">3.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">恒定乘积公式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E6%89%8B%E7%BB%AD%E8%B4%B9"><span class="nav-number">2.1.</span> <span class="nav-text">无手续费:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E5%85%A5%E6%89%8B%E7%BB%AD%E8%B4%B9"><span class="nav-number">2.2.</span> <span class="nav-text">计入手续费:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">相关代码:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -494,7 +524,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -549,12 +579,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

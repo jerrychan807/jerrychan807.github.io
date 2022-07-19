@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="什么是RTLO:RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： http:&#x2F;&#x2F;www.codetable.net&#x2F;decimal&#x2F;8238 可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制  创建欺骗文件:1.使用名称TestingRTLO[U+202E]xcod.txt创建一个文件 2.windows自带的character map软件中,">
+  <meta name="description" content="什么是RTLO: RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： http:&#x2F;&#x2F;www.codetable.net&#x2F;decimal&#x2F;8238 可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制  创建欺骗文件: 1.使用名称TestingRTLO[U+202E]xcod.txt创建一个文件 2.windows自带的character map软件">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unicode RTLO(Right-To-Left Override)字符欺骗">
 <meta property="og:url" content="https://jerrychan807.github.io/2020/28275.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="什么是RTLO:RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： http:&#x2F;&#x2F;www.codetable.net&#x2F;decimal&#x2F;8238 可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制  创建欺骗文件:1.使用名称TestingRTLO[U+202E]xcod.txt创建一个文件 2.windows自带的character map软件中,">
+<meta property="og:description" content="什么是RTLO: RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： http:&#x2F;&#x2F;www.codetable.net&#x2F;decimal&#x2F;8238 可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制  创建欺骗文件: 1.使用名称TestingRTLO[U+202E]xcod.txt创建一个文件 2.windows自带的character map软件">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103632.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103755.png">
@@ -263,10 +263,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="什么是RTLO"><a href="#什么是RTLO" class="headerlink" title="什么是RTLO:"></a>什么是RTLO:</h1><p>RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： <a target="_blank" rel="noopener" href="http://www.codetable.net/decimal/8238">http://www.codetable.net/decimal/8238</a></p>
+        <h1>什么是RTLO:</h1>
+<p>RTLO是一个8238的Unicode字符，它的作用是让紧跟在后面的字符串倒序： <a target="_blank" rel="noopener" href="http://www.codetable.net/decimal/8238">http://www.codetable.net/decimal/8238</a></p>
 <p>可以用来欺骗用户打开可执行文件（钓鱼攻击），或者欺骗后端应用的检查机制</p>
 <hr>
-<h1 id="创建欺骗文件"><a href="#创建欺骗文件" class="headerlink" title="创建欺骗文件:"></a>创建欺骗文件:</h1><p>1.使用名称<code>TestingRTLO[U+202E]xcod.txt</code>创建一个文件</p>
+<h1>创建欺骗文件:</h1>
+<p>1.使用名称<code>TestingRTLO[U+202E]xcod.txt</code>创建一个文件</p>
 <p>2.windows自带的character map软件中,找到对应的字符.</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110103632.png" alt="20201110103632"></p>
 <p>3.复制替换<code>[U + 202E]</code>字符,保存.</p>
@@ -281,28 +283,56 @@
 <p>下载到本地,实际上是exe结尾的。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104018.png" alt="20201110104018"></p>
 <hr>
-<h1 id="危害"><a href="#危害" class="headerlink" title="危害:"></a>危害:</h1><p>可制作以下后缀名的文件:</p>
-<ul>
-<li>.bat</li>
-<li>.exe</li>
-<li>.cmd</li>
-<li>.com</li>
-<li>.lnk</li>
-<li>.pif</li>
-<li>.scr</li>
-<li>.vb</li>
-<li>.vbe</li>
-<li>.vbs</li>
-<li>.wsh</li>
+<h1>危害:</h1>
+<p>可制作以下后缀名的文件:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>.bat</p>
+</li>
+<li class="lvl-2">
+<p>.exe</p>
+</li>
+<li class="lvl-2">
+<p>.cmd</p>
+</li>
+<li class="lvl-2">
+<p>.com</p>
+</li>
+<li class="lvl-2">
+<p>.lnk</p>
+</li>
+<li class="lvl-2">
+<p>.pif</p>
+</li>
+<li class="lvl-2">
+<p>.scr</p>
+</li>
+<li class="lvl-2">
+<p>.vb</p>
+</li>
+<li class="lvl-2">
+<p>.vbe</p>
+</li>
+<li class="lvl-2">
+<p>.vbs</p>
+</li>
+<li class="lvl-2">
+<p>.wsh</p>
+</li>
 </ul>
 <hr>
-<h1 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案:"></a>修复方案:</h1><p>参考:<a target="_blank" rel="noopener" href="https://github.com/nextcloud/server/pull/10030">https://github.com/nextcloud/server/pull/10030</a></p>
+<h1>修复方案:</h1>
+<p>参考:<a target="_blank" rel="noopener" href="https://github.com/nextcloud/server/pull/10030">https://github.com/nextcloud/server/pull/10030</a></p>
 <p>把该Unicode字符过滤掉</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201110104540.png" alt="20201110104540"></p>
 <hr>
-<h1 id="漏洞案例"><a href="#漏洞案例" class="headerlink" title="漏洞案例:"></a>漏洞案例:</h1><p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/229170">RTLO character allowed in shared files</a><br><a target="_blank" rel="noopener" href="https://hackerone.com/reports/196222">RTLO char allowed in chat</a></p>
+<h1>漏洞案例:</h1>
+<p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/229170">RTLO character allowed in shared files</a><br>
+<a target="_blank" rel="noopener" href="https://hackerone.com/reports/196222">RTLO char allowed in chat</a></p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><p><a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/#:~:text=What%20is%20RTLO%3F,right%2Dto%2Dleft%20order.">Spoof Using Right to Left Override (RTLO) Technique</a><br><a target="_blank" rel="noopener" href="http://www.lijiejie.com/unicode-rtlo-right-to-left-override-issue/">Unicode RTLO(Right-To-Left Override) Security ISSUE</a></p>
+<h1>refs:</h1>
+<p><a target="_blank" rel="noopener" href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/#:~:text=What%20is%20RTLO%3F,right%2Dto%2Dleft%20order.">Spoof Using Right to Left Override (RTLO) Technique</a><br>
+<a target="_blank" rel="noopener" href="http://www.lijiejie.com/unicode-rtlo-right-to-left-override-issue/">Unicode RTLO(Right-To-Left Override) Security ISSUE</a></p>
 
     </div>
 
@@ -413,7 +443,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRTLO"><span class="nav-number">1.</span> <span class="nav-text">什么是RTLO:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%AC%BA%E9%AA%97%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">创建欺骗文件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%B1%E5%AE%B3"><span class="nav-number">3.</span> <span class="nav-text">危害:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">修复方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E6%A1%88%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">漏洞案例:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">什么是RTLO:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">创建欺骗文件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">危害:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">修复方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">漏洞案例:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -429,7 +459,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -484,12 +514,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

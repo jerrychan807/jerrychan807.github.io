@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:Goal:使用fortify扫描完后,需要导出并解析它的结果。  工具ReportGenerator:ReportGenerator.bat  使用该工具可以设置模板、导出指定格式的报告. 任务参数:  解析有3种格式:">
+  <meta name="description" content="Pre: Goal:使用fortify扫描完后,需要导出并解析它的结果。  工具ReportGenerator: ReportGenerator.bat  使用该工具可以设置模板、导出指定格式的报告. 任务参数:  解析有3种格式:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="fortify结果解析">
 <meta property="og:url" content="https://jerrychan807.github.io/2020/50872.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:Goal:使用fortify扫描完后,需要导出并解析它的结果。  工具ReportGenerator:ReportGenerator.bat  使用该工具可以设置模板、导出指定格式的报告. 任务参数:  解析有3种格式:">
+<meta property="og:description" content="Pre: Goal:使用fortify扫描完后,需要导出并解析它的结果。  工具ReportGenerator: ReportGenerator.bat  使用该工具可以设置模板、导出指定格式的报告. 任务参数:  解析有3种格式:">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143418.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143603.png">
@@ -270,70 +270,101 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Goal:使用<code>fortify</code>扫描完后,需要导出并解析它的结果。</p>
+        <h1>Pre:</h1>
+<p>Goal:使用<code>fortify</code>扫描完后,需要导出并解析它的结果。</p>
 <hr>
-<h1 id="工具ReportGenerator"><a href="#工具ReportGenerator" class="headerlink" title="工具ReportGenerator:"></a>工具ReportGenerator:</h1><p><code>ReportGenerator.bat</code></p>
+<h1>工具ReportGenerator:</h1>
+<p><code>ReportGenerator.bat</code></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143418.png" alt="20200727143418"></p>
 <p>使用该工具可以设置模板、导出指定格式的报告.</p>
 <p>任务参数:</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143603.png" alt="20200727143603"></p>
 <p>解析有3种格式:</p>
-<ul>
-<li>pdf</li>
-<li>rtf</li>
-<li>xml</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>pdf</p>
+</li>
+<li class="lvl-2">
+<p>rtf</p>
+</li>
+<li class="lvl-2">
+<p>xml</p>
+</li>
 </ul>
 <p>此处,我选了xml的格式。</p>
 <hr>
-<h1 id="xml解析"><a href="#xml解析" class="headerlink" title="xml解析:"></a>xml解析:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721102113.png" alt="20200721102113"></p>
+<h1>xml解析:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721102113.png" alt="20200721102113"></p>
 <p>整体分成3部分:</p>
-<ul>
-<li>Report Overview 报告总览<ul>
-<li>Report Summary 报告摘要</li>
-<li>Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Report Overview 报告总览</p>
+<ul class="lvl-2">
+<li class="lvl-4">Report Summary 报告摘要</li>
+<li class="lvl-4">Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</li>
 </ul>
 </li>
-<li>Issue Summary 问题摘要<ul>
-<li>Overall number of results 结果总数</li>
-<li>Issues By Category 类别问题</li>
+<li class="lvl-2">
+<p>Issue Summary 问题摘要</p>
+<ul class="lvl-2">
+<li class="lvl-4">Overall number of results 结果总数</li>
+<li class="lvl-4">Issues By Category 类别问题</li>
 </ul>
 </li>
-<li>Results Outline 结果概要<ul>
-<li>Vulnerability Examples by Category 按类别列出的漏洞示例</li>
+<li class="lvl-2">
+<p>Results Outline 结果概要</p>
+<ul class="lvl-2">
+<li class="lvl-4">Vulnerability Examples by Category 按类别列出的漏洞示例</li>
 </ul>
 </li>
 </ul>
 <hr>
-<h1 id="第一部分-Report-Overview报告总览"><a href="#第一部分-Report-Overview报告总览" class="headerlink" title="第一部分-Report Overview报告总览:"></a>第一部分-Report Overview报告总览:</h1><h2 id="Report-Summary-报告摘要"><a href="#Report-Summary-报告摘要" class="headerlink" title="Report Summary 报告摘要"></a>Report Summary 报告摘要</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721102635.png" alt="20200721102635"></p>
+<h1>第一部分-Report Overview报告总览:</h1>
+<h2 id="Report-Summary-报告摘要">Report Summary 报告摘要</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721102635.png" alt="20200721102635"></p>
 <p>对应于</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721104903.png" alt="20200721104903"></p>
-<h2 id="Issue-Summary-by-Fortify-Priority-Order-问题摘要-根据优先级排序"><a href="#Issue-Summary-by-Fortify-Priority-Order-问题摘要-根据优先级排序" class="headerlink" title="Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)"></a>Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</h2><p>每个级别的统计数据</p>
+<h2 id="Issue-Summary-by-Fortify-Priority-Order-问题摘要-根据优先级排序">Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</h2>
+<p>每个级别的统计数据</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721103449.png" alt="20200721103449"></p>
 <p>filter set选择<code>Security Auditor View</code>后,对应于<code>Audit Workbench</code>这里的数据</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721103529.png" alt="20200721103529"></p>
 <hr>
-<h1 id="第二部分-Issue-Summary问题摘要"><a href="#第二部分-Issue-Summary问题摘要" class="headerlink" title="第二部分-Issue Summary问题摘要:"></a>第二部分-Issue Summary问题摘要:</h1><h2 id="Overall-number-of-results结果总数"><a href="#Overall-number-of-results结果总数" class="headerlink" title="Overall number of results结果总数:"></a>Overall number of results结果总数:</h2><p>问题总数<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721105039.png" alt="20200721105039"></p>
+<h1>第二部分-Issue Summary问题摘要:</h1>
+<h2 id="Overall-number-of-results结果总数">Overall number of results结果总数:</h2>
+<p>问题总数<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721105039.png" alt="20200721105039"></p>
 <p>对应于</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727144734.png" alt="20200727144734"></p>
 <hr>
-<h2 id="Issues-By-Category类别问题"><a href="#Issues-By-Category类别问题" class="headerlink" title="Issues By Category类别问题:"></a>Issues By Category类别问题:</h2><p>问题分类统计</p>
+<h2 id="Issues-By-Category类别问题">Issues By Category类别问题:</h2>
+<p>问题分类统计</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721105254.png" alt="20200721105254"></p>
 <p>对应于</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200721105400.png" alt="20200721105400"></p>
 <hr>
-<h1 id="第三部分-Results-Outline-结果概要"><a href="#第三部分-Results-Outline-结果概要" class="headerlink" title="第三部分:Results Outline 结果概要"></a>第三部分:Results Outline 结果概要</h1><p>Vulnerability Examples by Category 按类别列出的漏洞示例</p>
+<h1>第三部分:Results Outline 结果概要</h1>
+<p>Vulnerability Examples by Category 按类别列出的漏洞示例</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727144915.png" alt="20200727144915"></p>
 <p>对应于:</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727145912.png" alt="20200727145912"></p>
 <hr>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他:"></a>其他:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143959.png" alt="20200727143959"></p>
+<h1>其他:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200727143959.png" alt="20200727143959"></p>
 <p>默认的模板对列出的风险有个数的限制,我们要自定义模板，才可以导出所有的风险。</p>
 <p>做法可参考<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33288065/how-do-i-generate-a-report-that-has-all-the-issues">how-do-i-generate-a-report-that-has-all-the-issues</a></p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li>HPE_SCA_Guide_17.20.pdf</li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33288065/how-do-i-generate-a-report-that-has-all-the-issues">how-do-i-generate-a-report-that-has-all-the-issues</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/yingshang/banruo">banruo</a></li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>HPE_SCA_Guide_17.20.pdf</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33288065/how-do-i-generate-a-report-that-has-all-the-issues">how-do-i-generate-a-report-that-has-all-the-issues</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/yingshang/banruo">banruo</a></p>
+</li>
 </ul>
 
     </div>
@@ -445,7 +476,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7ReportGenerator"><span class="nav-number">2.</span> <span class="nav-text">工具ReportGenerator:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xml%E8%A7%A3%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">xml解析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86-Report-Overview%E6%8A%A5%E5%91%8A%E6%80%BB%E8%A7%88"><span class="nav-number">4.</span> <span class="nav-text">第一部分-Report Overview报告总览:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Report-Summary-%E6%8A%A5%E5%91%8A%E6%91%98%E8%A6%81"><span class="nav-number">4.1.</span> <span class="nav-text">Report Summary 报告摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Issue-Summary-by-Fortify-Priority-Order-%E9%97%AE%E9%A2%98%E6%91%98%E8%A6%81-%E6%A0%B9%E6%8D%AE%E4%BC%98%E5%85%88%E7%BA%A7%E6%8E%92%E5%BA%8F"><span class="nav-number">4.2.</span> <span class="nav-text">Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86-Issue-Summary%E9%97%AE%E9%A2%98%E6%91%98%E8%A6%81"><span class="nav-number">5.</span> <span class="nav-text">第二部分-Issue Summary问题摘要:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overall-number-of-results%E7%BB%93%E6%9E%9C%E6%80%BB%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">Overall number of results结果总数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Issues-By-Category%E7%B1%BB%E5%88%AB%E9%97%AE%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text">Issues By Category类别问题:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86-Results-Outline-%E7%BB%93%E6%9E%9C%E6%A6%82%E8%A6%81"><span class="nav-number">6.</span> <span class="nav-text">第三部分:Results Outline 结果概要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">7.</span> <span class="nav-text">其他:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">8.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">工具ReportGenerator:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">xml解析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">第一部分-Report Overview报告总览:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Report-Summary-%E6%8A%A5%E5%91%8A%E6%91%98%E8%A6%81"><span class="nav-number">4.1.</span> <span class="nav-text">Report Summary 报告摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Issue-Summary-by-Fortify-Priority-Order-%E9%97%AE%E9%A2%98%E6%91%98%E8%A6%81-%E6%A0%B9%E6%8D%AE%E4%BC%98%E5%85%88%E7%BA%A7%E6%8E%92%E5%BA%8F"><span class="nav-number">4.2.</span> <span class="nav-text">Issue Summary by Fortify Priority Order 问题摘要(根据优先级排序)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">第二部分-Issue Summary问题摘要:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overall-number-of-results%E7%BB%93%E6%9E%9C%E6%80%BB%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">Overall number of results结果总数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Issues-By-Category%E7%B1%BB%E5%88%AB%E9%97%AE%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text">Issues By Category类别问题:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">第三部分:Results Outline 结果概要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">其他:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -461,7 +492,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -516,12 +547,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

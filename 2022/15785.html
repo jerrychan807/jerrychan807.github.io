@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构根据文档简单过一遍 Event:  Mint 创造流动性token时触发 Burn 销毁流动性token时触发 Swap 交换时触发 Sync 储备量被更新时(mint、burn、swap、sync)触发  Read-Only Functions:  MINIMUM_LIQUIDITY 常量值1">
+  <meta name="description" content="Pre: 简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构 根据文档简单过一遍 Event:   Mint 创造流动性token时触发   Burn 销毁流动性token时触发   Swap 交换时触发   Sync 储备量被更新时(mint、burn、swap、sync)触发   Read-Only Functions:   MINIMUM_LIQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Uniswap-getReserves获取储备量">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/15785.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构根据文档简单过一遍 Event:  Mint 创造流动性token时触发 Burn 销毁流动性token时触发 Swap 交换时触发 Sync 储备量被更新时(mint、burn、swap、sync)触发  Read-Only Functions:  MINIMUM_LIQUIDITY 常量值1">
+<meta property="og:description" content="Pre: 简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。 合约结构 根据文档简单过一遍 Event:   Mint 创造流动性token时触发   Burn 销毁流动性token时触发   Swap 交换时触发   Sync 储备量被更新时(mint、burn、swap、sync)触发   Read-Only Functions:   MINIMUM_LIQ">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png">
@@ -261,39 +261,78 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。</p>
-<h1 id="合约结构"><a href="#合约结构" class="headerlink" title="合约结构"></a>合约结构</h1><p>根据文档简单过一遍</p>
+        <h1>Pre:</h1>
+<p>简单过一下uniswap的Pair合约的内容，主要了解清楚getReserves函数。</p>
+<h1>合约结构</h1>
+<p>根据文档简单过一遍</p>
 <p><strong>Event:</strong></p>
-<ul>
-<li>Mint 创造流动性token时触发</li>
-<li>Burn 销毁流动性token时触发</li>
-<li>Swap 交换时触发</li>
-<li>Sync 储备量被更新时(mint、burn、swap、sync)触发</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Mint 创造流动性token时触发</p>
+</li>
+<li class="lvl-2">
+<p>Burn 销毁流动性token时触发</p>
+</li>
+<li class="lvl-2">
+<p>Swap 交换时触发</p>
+</li>
+<li class="lvl-2">
+<p>Sync 储备量被更新时(mint、burn、swap、sync)触发</p>
+</li>
 </ul>
 <p><strong>Read-Only Functions:</strong></p>
-<ul>
-<li>MINIMUM_LIQUIDITY 常量值1000</li>
-<li>factory 返回工厂地址</li>
-<li>token0 排序较低的token地址</li>
-<li>token1 排序较高的token地址</li>
-<li>getReserves 返回token0和token1的储备量，用于交易或分配流动性</li>
-<li>price0CumulativeLast</li>
-<li>price1CumulativeLast</li>
-<li>kLast</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>MINIMUM_LIQUIDITY 常量值1000</p>
+</li>
+<li class="lvl-2">
+<p>factory 返回工厂地址</p>
+</li>
+<li class="lvl-2">
+<p>token0 排序较低的token地址</p>
+</li>
+<li class="lvl-2">
+<p>token1 排序较高的token地址</p>
+</li>
+<li class="lvl-2">
+<p>getReserves 返回token0和token1的储备量，用于交易或分配流动性</p>
+</li>
+<li class="lvl-2">
+<p>price0CumulativeLast</p>
+</li>
+<li class="lvl-2">
+<p>price1CumulativeLast</p>
+</li>
+<li class="lvl-2">
+<p>kLast</p>
+</li>
 </ul>
 <p><strong>State-Changing Functions:</strong></p>
-<ul>
-<li>mint 创建token</li>
-<li>burn 销毁</li>
-<li>swap 交换</li>
-<li>skim</li>
-<li>sync 同步</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>mint 创建token</p>
+</li>
+<li class="lvl-2">
+<p>burn 销毁</p>
+</li>
+<li class="lvl-2">
+<p>swap 交换</p>
+</li>
+<li class="lvl-2">
+<p>skim</p>
+</li>
+<li class="lvl-2">
+<p>sync 同步</p>
+</li>
 </ul>
-<h1 id="getReserves获取储备量"><a href="#getReserves获取储备量" class="headerlink" title="getReserves获取储备量"></a>getReserves获取储备量</h1><p>getReserves</p>
+<h1>getReserves获取储备量</h1>
+<p>getReserves</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getReserves</span>(<span class="params"></span>) external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);</span><br></pre></td></tr></table></figure>
-<p>Returns the reserves of token0 and token1 used to price trades and distribute liquidity. See Pricing.<br>Also returns the block.timestamp (mod 2**32) of the last block during which an interaction occured for the pair.</p>
+<p>Returns the reserves of token0 and token1 used to price trades and distribute liquidity. See Pricing.<br>
+Also returns the block.timestamp (mod 2**32) of the last block during which an interaction occured for the pair.</p>
 <p>主要是返回Pair里token0和token1的储备量</p>
-<h1 id="token0-amp-token1"><a href="#token0-amp-token1" class="headerlink" title="token0 &amp; token1"></a>token0 &amp; token1</h1><p>token0</p>
+<h1>token0 &amp; token1</h1>
+<p>token0</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">token0</span>(<span class="params"></span>) external view returns (address);</span><br></pre></td></tr></table></figure>
 <p>Returns the address of the pair token with the lower sort order.</p>
 <p>token1</p>
@@ -301,22 +340,21 @@
 <p>Returns the address of the pair token with the higher sort order.</p>
 <p>可以在pair的合约里查到token0和token1分别的address</p>
 <img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153407.png" width="50%" height="50%" />
-
-<h1 id="测试储备量的变化："><a href="#测试储备量的变化：" class="headerlink" title="测试储备量的变化："></a>测试储备量的变化：</h1><h2 id="AddLiquidity"><a href="#AddLiquidity" class="headerlink" title="AddLiquidity:"></a>AddLiquidity:</h2><p>在添加流动性之前，查询结果</p>
+<h1>测试储备量的变化：</h1>
+<h2 id="AddLiquidity">AddLiquidity:</h2>
+<p>在添加流动性之前，查询结果</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  5462692571130940(0.00546269257113094) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  5383891113691435(0.005383891113691435) Token</span><br></pre></td></tr></table></figure>
-
 <img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220525153952.png" width="50%" height="50%" />
-
 <p>分别添加流动性，各10个后，pair里的储备量结果发生变化</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT ↑</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
-
-<h2 id="Sell："><a href="#Sell：" class="headerlink" title="Sell："></a>Sell：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token</span><br></pre></td></tr></table></figure>
-
+<h2 id="Sell：">Sell：</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 <p>token卖成USDT</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  9669575752865546229(9.669575752865546229) USDT ↓</span><br><span class="line">&gt;  _reserve1   uint112 :  10505383891113691435(10.505383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
-
-<p>token传进pair，token储备量增加<br>pair流出USDT，USDT储备量减少</p>
-<h2 id="Buy"><a href="#Buy" class="headerlink" title="Buy:"></a>Buy:</h2><p>与Sell行为相反，USDT ↑、Token↓</p>
+<p>token传进pair，token储备量增加<br>
+pair流出USDT，USDT储备量减少</p>
+<h2 id="Buy">Buy:</h2>
+<p>与Sell行为相反，USDT ↑、Token↓</p>
 <table>
 <thead>
 <tr>
@@ -325,7 +363,8 @@
 <th>token1储备量（Token）</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>Buy</td>
 <td>↑</td>
 <td>↓</td>
@@ -345,10 +384,16 @@
 <td>↓</td>
 <td>↓</td>
 </tr>
-</tbody></table>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></li>
-<li><a target="_blank" rel="noopener" href="https://pancake.kiemtienonline360.com/#/swap">pancake swap测试网</a></li>
+</tbody>
+</table>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://pancake.kiemtienonline360.com/#/swap">pancake swap测试网</a></p>
+</li>
 </ul>
 
     </div>
@@ -463,7 +508,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">合约结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#getReserves%E8%8E%B7%E5%8F%96%E5%82%A8%E5%A4%87%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">getReserves获取储备量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#token0-amp-token1"><span class="nav-number">4.</span> <span class="nav-text">token0 &amp; token1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%82%A8%E5%A4%87%E9%87%8F%E7%9A%84%E5%8F%98%E5%8C%96%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">测试储备量的变化：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AddLiquidity"><span class="nav-number">5.1.</span> <span class="nav-text">AddLiquidity:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sell%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">Sell：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buy"><span class="nav-number">5.3.</span> <span class="nav-text">Buy:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">合约结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">getReserves获取储备量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">token0 &amp; token1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">测试储备量的变化：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AddLiquidity"><span class="nav-number">5.1.</span> <span class="nav-text">AddLiquidity:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sell%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">Sell：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buy"><span class="nav-number">5.3.</span> <span class="nav-text">Buy:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -479,7 +524,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -534,12 +579,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

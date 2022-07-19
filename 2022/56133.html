@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程:Erc20合约：一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个cryptogem">
+  <meta name="description" content="Pre: 朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程: Erc20合约： 一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个crypto">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Crypto-pancakeSwap收税地址的简单分析">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/56133.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程:Erc20合约：一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个cryptogem">
+<meta property="og:description" content="Pre: 朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了0x0ed943ce24baebf257488771759f9bf482c39706这个地址里，觉得很奇怪。。叫我看一下原因。  分析过程: Erc20合约： 一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee 用这个crypto">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png">
@@ -264,60 +264,99 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
+        <h1>Pre:</h1>
+<p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342"></p>
-<h1 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程:"></a>分析过程:</h1><h2 id="Erc20合约："><a href="#Erc20合约：" class="headerlink" title="Erc20合约："></a>Erc20合约：</h2><p>一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee</p>
-<p>用这个<a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a>网站查很方便,确实有tax fee</p>
+<h1>分析过程:</h1>
+<h2 id="Erc20合约：">Erc20合约：</h2>
+<p>一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee</p>
+<p>用这个<a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&amp;blockchain=bsc">cryptogems</a>网站查很方便,确实有tax fee</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png" alt="20220711010514"></p>
-<p>但去合约代码里查，<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址不是erc20合约里的预留地址&#x2F;收税地址，那就不是代币合约的问题。。。</p>
-<h2 id="Google"><a href="#Google" class="headerlink" title="Google:"></a>Google:</h2><p>google搜索了一下<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址，发现也有部分人有遇到同样的问题，他们也没有讨论出个所以然来。</p>
+<p>但去合约代码里查，<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址不是erc20合约里的预留地址/收税地址，那就不是代币合约的问题。。。</p>
+<h2 id="Google">Google:</h2>
+<p>google搜索了一下<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址，发现也有部分人有遇到同样的问题，他们也没有讨论出个所以然来。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png" alt="20220711004630"></p>
 <blockquote>
 <p>一度怀疑，他们是用同一个erc20合约自动生成工具，去发布token，被开发者预留了收税地址，强行收税。。。</p>
 </blockquote>
-<h2 id="Bscscan"><a href="#Bscscan" class="headerlink" title="Bscscan:"></a>Bscscan:</h2><p>先去bscscan查查这个地址，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307"><br>该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br><code>0xc06e6ed003763d173b5b9f35960ad359d0339c96</code></p>
-<p>继续查一下<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421"></p>
+<h2 id="Bscscan">Bscscan:</h2>
+<p>先去bscscan查查这个地址，<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307"><br>
+该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br>
+<code>0xc06e6ed003763d173b5b9f35960ad359d0339c96</code></p>
+<p>继续查一下<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421"></p>
 <p>执行合约名称为<code>PCSFeeHandler</code>，可能跟pancake有关系，还是没看出个所以然来。。。</p>
-<h2 id="tenderly"><a href="#tenderly" class="headerlink" title="tenderly"></a>tenderly</h2><p>去<code>tenderly</code> Debug一下，<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150"></p>
+<h2 id="tenderly">tenderly</h2>
+<p>去<code>tenderly</code> Debug一下，<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150"></p>
 <p>先关注几个<code>transfer</code>相关的函数，也没看到<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>的踪影。</p>
-<p>然后在debugger里的参数里有看到这个地址出现。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212"></p>
-<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324"></p>
-<h3 id="mint函数流程："><a href="#mint函数流程：" class="headerlink" title="mint函数流程："></a>mint函数流程：</h3><p>接着就去看一下PancakePair<a target="_blank" rel="noopener" href="https://github.com/pancakeswap/pancake-swap-core/blob/master/contracts/PancakePair.sol">代码</a>里的<code>mint</code>函数</p>
+<p>然后在debugger里的参数里有看到这个地址出现。<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212"></p>
+<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324"></p>
+<h3 id="mint函数流程：">mint函数流程：</h3>
+<p>接着就去看一下PancakePair<a target="_blank" rel="noopener" href="https://github.com/pancakeswap/pancake-swap-core/blob/master/contracts/PancakePair.sol">代码</a>里的<code>mint</code>函数</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png" alt="20220711011758"></p>
 <ol>
-<li><code>feeOn</code>开关由<code>_mintFee</code>函数控制</li>
-<li>查询工厂函数的<code>feeTo</code>地址</li>
+<li class="lvl-3">
+<p><code>feeOn</code>开关由<code>_mintFee</code>函数控制</p>
+</li>
+<li class="lvl-3">
+<p>查询工厂函数的<code>feeTo</code>地址</p>
+</li>
 </ol>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png" alt="20220711012157"></p>
 <ol start="3">
-<li><code>feeTo</code>地址不为0地址，则<code>feeOn</code>收税开关为开启</li>
+<li class="lvl-3">
+<p><code>feeTo</code>地址不为0地址，则<code>feeOn</code>收税开关为开启</p>
+</li>
 </ol>
 <p>所以就是，添加流动性的时候，由于<code>pancakeswap</code>开启了收税开关，<code>mint</code>出来的部分<code>lptoken</code>打到了官方的收税地址里了。</p>
-<h3 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h3><p>随便找两个和<code>router</code><a target="_blank" rel="noopener" href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e">合约</a>交互，调用了<code>addLiquidity</code>函数的tx看看,都是同样有被官方收税。</p>
+<h3 id="验证：-2">验证：</h3>
+<p>随便找两个和<code>router</code><a target="_blank" rel="noopener" href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e">合约</a>交互，调用了<code>addLiquidity</code>函数的tx看看,都是同样有被官方收税。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643"></p>
 <p>确实是被官方收税了,Done！</p>
-<h1 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h1><ol>
-<li>之前应该是没开启收税，现在开启了 </li>
-<li>做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</li>
-<li>去中心的代码，中心化的规则指定😆😆😆 Fun~</li>
+<h1>小结:</h1>
+<ol>
+<li class="lvl-3">
+<p>之前应该是没开启收税，现在开启了</p>
+</li>
+<li class="lvl-3">
+<p>做平台真赚钱，先免费做大，流量多了，后面再一键开启收税</p>
+</li>
+<li class="lvl-3">
+<p>去中心的代码，中心化的规则指定😆😆😆 Fun~</p>
+</li>
 </ol>
 <p>2022.7.11更新</p>
-<p>之前的添加流动性也是有交税的，应该tax fee比较低，无感知。<br>所以tax开关是一直开启的，并不是最近才开启的。</p>
-<h1 id="bitquery数据分析"><a href="#bitquery数据分析" class="headerlink" title="bitquery数据分析:"></a>bitquery数据分析:</h1><p>看看收税地址的<a target="_blank" rel="noopener" href="https://explorer.bitquery.io/zh/bsc/smart_contract/0x0ed943ce24baebf257488771759f9bf482c39706/inflow?from=2022-01-01&till=2022-07-11">入账情况</a>:</p>
+<p>之前的添加流动性也是有交税的，应该tax fee比较低，无感知。所以tax开关是一直开启的，并不是最近才开启的。</p>
+<h1>bitquery数据分析:</h1>
+<p>看看收税地址的<a target="_blank" rel="noopener" href="https://explorer.bitquery.io/zh/bsc/smart_contract/0x0ed943ce24baebf257488771759f9bf482c39706/inflow?from=2022-01-01&amp;till=2022-07-11">入账情况</a>:</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711182547.png" alt="20220711182547"></p>
-<p>能发现到一些有趣的信息，<br>交税次数最多的token：<a target="_blank" rel="noopener" href="https://bscscan.com/address/0x20f663cea80face82acdfa3aae6862d246ce0333"> DRIP Token (DRIP)</a>，还以为是bnb这类主流token呢。。</p>
+<p>能发现到一些有趣的信息，交税次数最多的token：<a target="_blank" rel="noopener" href="https://bscscan.com/address/0x20f663cea80face82acdfa3aae6862d246ce0333"> DRIP Token (DRIP)</a>，还以为是bnb这类主流token呢。。</p>
 <p>一些信息：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://drip.community/">官网</a></li>
-<li><a target="_blank" rel="noopener" href="https://coinmarketcap.com/currencies/drip-network/">coinmarketcap地址</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.bsc.news/post/exploring-the-drip-platform-with-forex-sharks">BscNews-Exploring the Drip Platform With Forex Shark</a></li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://drip.community/">官网</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://coinmarketcap.com/currencies/drip-network/">coinmarketcap地址</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.bsc.news/post/exploring-the-drip-platform-with-forex-sharks">BscNews-Exploring the Drip Platform With Forex Shark</a></p>
+</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711222207.png" alt="20220711222207"></p>
 <p>有一定热度，代币机制有10%的税，会自动添加流动性，所以才会频繁mint LpToken，频繁交税。</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://tenderly.co/">tenderly</a></li>
-<li><a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&blockchain=bsc">cryptogems</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://tenderly.co/">tenderly</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&amp;blockchain=bsc">cryptogems</a></p>
+</li>
 </ul>
 
     </div>
@@ -429,7 +468,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">分析过程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Erc20%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">Erc20合约：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Google"><span class="nav-number">2.2.</span> <span class="nav-text">Google:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bscscan"><span class="nav-number">2.3.</span> <span class="nav-text">Bscscan:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tenderly"><span class="nav-number">2.4.</span> <span class="nav-text">tenderly</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mint%E5%87%BD%E6%95%B0%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.4.1.</span> <span class="nav-text">mint函数流程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%EF%BC%9A"><span class="nav-number">2.4.2.</span> <span class="nav-text">验证：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bitquery%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">bitquery数据分析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">分析过程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Erc20%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">Erc20合约：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Google"><span class="nav-number">2.2.</span> <span class="nav-text">Google:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bscscan"><span class="nav-number">2.3.</span> <span class="nav-text">Bscscan:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tenderly"><span class="nav-number">2.4.</span> <span class="nav-text">tenderly</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mint%E5%87%BD%E6%95%B0%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.4.1.</span> <span class="nav-text">mint函数流程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%EF%BC%9A-2"><span class="nav-number">2.4.2.</span> <span class="nav-text">验证：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">bitquery数据分析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -445,7 +484,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -500,12 +539,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

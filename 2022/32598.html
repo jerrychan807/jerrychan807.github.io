@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:OpenSea制作NFT初步使用 部署ERC721合约：KILLAz.sol源代码 将KILLAz.sol通过remix部署到rinkeby测试网上部署时，填入_reserveAddress网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量 上传图片及NFT元数据文件：我这里暂用自己的github public仓库作为存储的地方 原项目KILLAz的元数据文件：h">
+  <meta name="description" content="Pre: OpenSea制作NFT初步使用 部署ERC721合约： KILLAz.sol源代码 将KILLAz.sol通过remix部署到rinkeby测试网上部署时，填入_reserveAddress网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量 上传图片及NFT元数据文件： 我这里暂用自己的github public仓库作为存储的地方 原项目KILLAz的元数据文">
 <meta property="og:type" content="article">
 <meta property="og:title" content="StudyRecord-OpenSea制作NFT初步使用">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/32598.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:OpenSea制作NFT初步使用 部署ERC721合约：KILLAz.sol源代码 将KILLAz.sol通过remix部署到rinkeby测试网上部署时，填入_reserveAddress网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量 上传图片及NFT元数据文件：我这里暂用自己的github public仓库作为存储的地方 原项目KILLAz的元数据文件：h">
+<meta property="og:description" content="Pre: OpenSea制作NFT初步使用 部署ERC721合约： KILLAz.sol源代码 将KILLAz.sol通过remix部署到rinkeby测试网上部署时，填入_reserveAddress网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量 上传图片及NFT元数据文件： 我这里暂用自己的github public仓库作为存储的地方 原项目KILLAz的元数据文">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png">
@@ -265,29 +265,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>OpenSea制作NFT初步使用</p>
-<h1 id="部署ERC721合约："><a href="#部署ERC721合约：" class="headerlink" title="部署ERC721合约："></a>部署ERC721合约：</h1><p><a target="_blank" rel="noopener" href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
-<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上<br>部署时，填入<code>_reserveAddress</code>网页售卖收款地址。<br>在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
-<h1 id="上传图片及NFT元数据文件："><a href="#上传图片及NFT元数据文件：" class="headerlink" title="上传图片及NFT元数据文件："></a>上传图片及NFT元数据文件：</h1><p>我这里暂用自己的github public仓库作为存储的地方</p>
+        <h1>Pre:</h1>
+<p>OpenSea制作NFT初步使用</p>
+<h1>部署ERC721合约：</h1>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
+<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上部署时，填入<code>_reserveAddress</code>网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
+<h1>上传图片及NFT元数据文件：</h1>
+<p>我这里暂用自己的github public仓库作为存储的地方</p>
 <p>原项目<code>KILLAz</code>的元数据文件：<code>https://gateway.pinata.cloud/ipfs/QmeLBX1hPFeZTk61rtJAxdrjFdTttR7D6Q9XFuXU5fSoEQ/1</code></p>
 <p>copy原项目的数据，新建txt文档，文档中存储构造符合OpenSea标准的NFT 元数据（元数据中保存了图片的url），如下：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.txt</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Background&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Beige&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Body&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Ancient One&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Weapon&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Katana&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Clothing&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Mask&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Primary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Spirit Necklace&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Secondary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;KILLAz #1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;image&quot;</span><span class="punctuation">:</span><span class="string">&quot;https://raw.githubusercontent.com/jerrychan807/imggg/master/721/1.jpg&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png" alt="20220622190753"></p>
-<h1 id="合约初始化设置："><a href="#合约初始化设置：" class="headerlink" title="合约初始化设置："></a>合约初始化设置：</h1><h2 id="打开售卖开关："><a href="#打开售卖开关：" class="headerlink" title="打开售卖开关："></a>打开售卖开关：</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550"></p>
-<h2 id="设置baseUri"><a href="#设置baseUri" class="headerlink" title="设置baseUri:"></a>设置baseUri:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719"></p>
-<h2 id="铸造nft："><a href="#铸造nft：" class="headerlink" title="铸造nft："></a>铸造nft：</h2><p>铸造3个，单价0.029，总价0.087</p>
+<h1>合约初始化设置：</h1>
+<h2 id="打开售卖开关：">打开售卖开关：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550"></p>
+<h2 id="设置baseUri">设置baseUri:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719"></p>
+<h2 id="铸造nft：">铸造nft：</h2>
+<p>铸造3个，单价0.029，总价0.087</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192005.png" alt="20220622192005"></p>
-<h1 id="导入opensea："><a href="#导入opensea：" class="headerlink" title="导入opensea："></a>导入opensea：</h1><p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
+<h1>导入opensea：</h1>
+<p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192229.png" alt="20220622192229"></p>
 <p>发布成功：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192313.png" alt="20220622192313"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192333.png" alt="20220622192333"></p>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
+<h1>Bug:</h1>
+<p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622193055.png" alt="20220622193055"></p>
 <p>基于合约发的nft可以很轻松的做到批量的效果。</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></p>
+</li>
 </ul>
 
     </div>
@@ -302,13 +313,13 @@
       <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/49924.html" rel="bookmark">StudyRecord-SushiSwap_MasterChef质押收益计算原理</a></div>
@@ -400,7 +411,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2ERC721%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">部署ERC721合约：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E5%9B%BE%E7%89%87%E5%8F%8ANFT%E5%85%83%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">上传图片及NFT元数据文件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">合约初始化设置：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E5%94%AE%E5%8D%96%E5%BC%80%E5%85%B3%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">打开售卖开关：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEbaseUri"><span class="nav-number">4.2.</span> <span class="nav-text">设置baseUri:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%B8%E9%80%A0nft%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">铸造nft：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5opensea%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">导入opensea：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bug"><span class="nav-number">6.</span> <span class="nav-text">Bug:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">部署ERC721合约：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">上传图片及NFT元数据文件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">合约初始化设置：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E5%94%AE%E5%8D%96%E5%BC%80%E5%85%B3%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">打开售卖开关：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEbaseUri"><span class="nav-number">4.2.</span> <span class="nav-text">设置baseUri:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%B8%E9%80%A0nft%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">铸造nft：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">导入opensea：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Bug:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -416,7 +427,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -471,12 +482,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

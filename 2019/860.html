@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="为什么要搜集子域名? 这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度:对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限. 为">
+  <meta name="description" content="为什么要搜集子域名?  这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度: 对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="子域名搜集">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/860.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="为什么要搜集子域名? 这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度:对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限. 为">
+<meta property="og:description" content="为什么要搜集子域名?  这些子域名都是与企业的资产相关联的.发现更多的子域名,意味着发现了更多的企业资产. 攻击者的角度: 对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面attack face,接着选取一个最脆弱的目标进行攻击.  在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7443e383.jpg">
@@ -260,34 +260,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="为什么要搜集子域名"><a href="#为什么要搜集子域名" class="headerlink" title="为什么要搜集子域名?"></a>为什么要搜集子域名?</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg"></p>
+        <h1>为什么要搜集子域名?</h1>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d743199d5.jpg" alt=""></p>
 <p>这些子域名都是与<strong>企业的资产</strong>相关联的.发现更多的子域名,意味着发现了更多的企业资产.</p>
-<h2 id="攻击者的角度"><a href="#攻击者的角度" class="headerlink" title="攻击者的角度:"></a>攻击者的角度:</h2><p>对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面<code>attack face</code>,接着选取一个最脆弱的目标进行攻击.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7443e383.jpg"></p>
+<h2 id="攻击者的角度">攻击者的角度:</h2>
+<p>对于攻击者来说,意义在于可以发现更多的攻击点,增大攻击面<code>attack face</code>,接着选取一个最脆弱的目标进行攻击.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7443e383.jpg" alt=""></p>
 <p>在《Metasploit渗透测试指南》里面有提到,真正的攻击者是不会造成很多噪声的,意味着他会选择一条代价最小、收益最高的攻击路径,来获取他目标系统的高权限.</p>
 <p>为此他需要先找到一个最脆弱的目标.也就是找到企业资产中最脆弱的一部分来进行攻击.</p>
 <p>而通过对子域名进行搜集,便是发现脆弱资产当中必要的一步.</p>
-<h2 id="防御者的角度"><a href="#防御者的角度" class="headerlink" title="防御者的角度:"></a>防御者的角度:</h2><p>对于防御者来说,意义在于能够对资产进行更好的管理.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d74575511.jpg"></p>
+<h2 id="防御者的角度">防御者的角度:</h2>
+<p>对于防御者来说,意义在于能够对资产进行更好的管理.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d74575511.jpg" alt=""></p>
 <p>企业大部分做的安全工作都是围绕企业的资产来进行的。</p>
 <p>可现状是,由于企业大、业务线多、管理难等问题,很多时候企业会匆忙上线一个新的应用或服务,这样就会造成出现很多“在野资产”.</p>
 <p>这种“在野资产”往往是等到出现安全事件后,去追责才会被发现。</p>
 <p>这种时候,如果能够提前对新增、新上线的资产进行发现的话，就能更好的保障企业的资产安全.</p>
 <p>而通过对子域名进行搜集,便是发现“在野资产”当中必要的一步.</p>
 <hr>
-<h1 id="搜集途径"><a href="#搜集途径" class="headerlink" title="搜集途径:"></a>搜集途径:</h1><h2 id="外部搜集途径"><a href="#外部搜集途径" class="headerlink" title="外部搜集途径:"></a>外部搜集途径:</h2><p>在外部,可以通过很多方式进行搜集,这张思维导图列出来的已经比较详细了。</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g09uim238mj30u00z7npd.jpg"></p>
+<h1>搜集途径:</h1>
+<h2 id="外部搜集途径">外部搜集途径:</h2>
+<p>在外部,可以通过很多方式进行搜集,这张思维导图列出来的已经比较详细了。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g09uim238mj30u00z7npd.jpg" alt=""></p>
 <p>其他接口:</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="http://ce.baidu.com/index/getRelatedSites?site_address=bgy.com.cn">百度云观测接口</a></li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="http://ce.baidu.com/index/getRelatedSites?site_address=bgy.com.cn">百度云观测接口</a></p>
+</li>
 </ul>
-<h2 id="内部搜集途径"><a href="#内部搜集途径" class="headerlink" title="内部搜集途径:"></a>内部搜集途径:</h2><p>除了通过互联网,在外部进行必要的搜集以外,也是需要内部对子域名进行搜集来进行补充的.</p>
+<h2 id="内部搜集途径">内部搜集途径:</h2>
+<p>除了通过互联网,在外部进行必要的搜集以外,也是需要内部对子域名进行搜集来进行补充的.</p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/zdresearch/OWASP-Nettacker/blob/85cbaab94415c8f994250d2f3d2ddb8394853f4d/lib/scan/subdomain/engine.py">OWASP-Nettacker</a></li>
-<li><a target="_blank" rel="noopener" href="https://speakerdeck.com/yamakira/esoteric-sub-domain-enumeration-techniques?slide=8">esoteric-sub-domain-enumeration-techniques</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/bit4woo/teemo">teemo</a></li>
-<li>《Metasploit渗透测试指南》</li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/zdresearch/OWASP-Nettacker/blob/85cbaab94415c8f994250d2f3d2ddb8394853f4d/lib/scan/subdomain/engine.py">OWASP-Nettacker</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://speakerdeck.com/yamakira/esoteric-sub-domain-enumeration-techniques?slide=8">esoteric-sub-domain-enumeration-techniques</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/bit4woo/teemo">teemo</a></p>
+</li>
+<li class="lvl-2">
+<p>《Metasploit渗透测试指南》</p>
+</li>
 </ul>
 
     </div>
@@ -399,7 +416,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%90%9C%E9%9B%86%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="nav-number">1.</span> <span class="nav-text">为什么要搜集子域名?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E8%80%85%E7%9A%84%E8%A7%92%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">攻击者的角度:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E5%BE%A1%E8%80%85%E7%9A%84%E8%A7%92%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">防御者的角度:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%9C%E9%9B%86%E9%80%94%E5%BE%84"><span class="nav-number">2.</span> <span class="nav-text">搜集途径:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E6%90%9C%E9%9B%86%E9%80%94%E5%BE%84"><span class="nav-number">2.1.</span> <span class="nav-text">外部搜集途径:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E6%90%9C%E9%9B%86%E9%80%94%E5%BE%84"><span class="nav-number">2.2.</span> <span class="nav-text">内部搜集途径:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">为什么要搜集子域名?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E8%80%85%E7%9A%84%E8%A7%92%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">攻击者的角度:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E5%BE%A1%E8%80%85%E7%9A%84%E8%A7%92%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">防御者的角度:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">搜集途径:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E6%90%9C%E9%9B%86%E9%80%94%E5%BE%84"><span class="nav-number">2.1.</span> <span class="nav-text">外部搜集途径:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E6%90%9C%E9%9B%86%E9%80%94%E5%BE%84"><span class="nav-number">2.2.</span> <span class="nav-text">内部搜集途径:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,7 +432,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -470,12 +487,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

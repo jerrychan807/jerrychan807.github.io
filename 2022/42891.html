@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:深入探索EVM : 编译和部署智能合约 学习记录+Demo测试 导读:以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。 Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或者调">
+  <meta name="description" content="Pre: 深入探索EVM : 编译和部署智能合约 学习记录+Demo测试 导读: 以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。 Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或">
 <meta property="og:type" content="article">
 <meta property="og:title" content="StudyRecord-深入探索EVM—编译和部署智能合约">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/42891.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:深入探索EVM : 编译和部署智能合约 学习记录+Demo测试 导读:以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。 Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或者调">
+<meta property="og:description" content="Pre: 深入探索EVM : 编译和部署智能合约 学习记录+Demo测试 导读: 以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。 Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706162442.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706211400.png">
@@ -265,188 +265,248 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><a target="_blank" rel="noopener" href="https://www.arcblock.io/blog/zh/post/2018/12/08/evm-part-1/">深入探索EVM : 编译和部署智能合约</a> 学习记录+Demo测试</p>
-<h1 id="导读"><a href="#导读" class="headerlink" title="导读:"></a>导读:</h1><p>以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。</p>
-<p>Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或者调用智能合约的交易。<br>智能合约（Smart Contract）是由虚拟机执行的代码，用以完成复杂的业务逻辑。</p>
-<p>Solidity 是目前最流行的编写智能合约的高级语言。<br>由 Solidity 编写的智能合约会先被编译成可被虚拟机直接接受的字节码，然后会被用户以 Transaction 的方式发送给以太坊从而进行智能合约部署。<br>在这之后，用户便可以调用智能合约的函数来完成业务逻辑。</p>
+        <h1>Pre:</h1>
+<p><a target="_blank" rel="noopener" href="https://www.arcblock.io/blog/zh/post/2018/12/08/evm-part-1/">深入探索EVM : 编译和部署智能合约</a> 学习记录+Demo测试</p>
+<h1>导读:</h1>
+<p>以太坊虚拟机（Ethereum Virtual Machine）是以太坊的基础，它负责执行所有的交易（Transaction），并且根据这些 Transaction 来维护整个以太坊的账户状态，或者更准确的称之为 World State。</p>
+<p>Transaction 分很多种，有最简单的以太币（Ether）交易，有部署或者调用智能合约的交易。智能合约（Smart Contract）是由虚拟机执行的代码，用以完成复杂的业务逻辑。</p>
+<p>Solidity 是目前最流行的编写智能合约的高级语言。由 Solidity 编写的智能合约会先被编译成可被虚拟机直接接受的字节码，然后会被用户以 Transaction 的方式发送给以太坊从而进行智能合约部署。在这之后，用户便可以调用智能合约的函数来完成业务逻辑。</p>
 <p>那么在整个流程中，</p>
-<ul>
-<li>Solidity 代码是如何被编译成字节码的？</li>
-<li>字节码在虚拟机中又是如何运行的？</li>
-<li>编译字节码的时候，虚拟机如何对其进行优化？</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Solidity 代码是如何被编译成字节码的？</p>
+</li>
+<li class="lvl-2">
+<p>字节码在虚拟机中又是如何运行的？</p>
+</li>
+<li class="lvl-2">
+<p>编译字节码的时候，虚拟机如何对其进行优化？</p>
+</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706162442.png" alt="20220706162442"></p>
 <p><a target="_blank" rel="noopener" href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">图来源</a></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706211400.png" alt="20220706211400"></p>
 <p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HfTTbxQWWvg">图来源</a></p>
-<h1 id="从一个例子开始："><a href="#从一个例子开始：" class="headerlink" title="从一个例子开始："></a>从一个例子开始：</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    function C() &#123; // 旧的构造函数写法</span><br><span class="line">      a = 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="编译："><a href="#编译：" class="headerlink" title="编译："></a>编译：</h1><h2 id="进行solc编译"><a href="#进行solc编译" class="headerlink" title="进行solc编译:"></a>进行solc编译:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin --asm file_name.sol</span><br><span class="line"></span><br><span class="line">======= file_name.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;file_name.sol&quot;:83:84  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:80  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:84  a = 1 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">    auxdata: 0xa165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b60016000819055505b5b60368060266000396000f30060606040525b600080fd00a165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用remix编译"><a href="#使用remix编译" class="headerlink" title="使用remix编译:"></a>使用remix编译:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;linkReferences&quot;: &#123;&#125;,</span><br><span class="line">	&quot;object&quot;: &quot;60606040523415600b57fe5b5b60016000819055505b5b60338060236000396000f30060606040525bfe00a165627a7a72305820ae4e46818f9f69832c210ff67b80210d9bc5c5863f97d91286c7278d4c5240d30029&quot;,</span><br><span class="line">	&quot;opcodes&quot;: &quot;PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xB JUMPI INVALID JUMPDEST JUMPDEST PUSH1 0x1 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMPDEST JUMPDEST PUSH1 0x33 DUP1 PUSH1 0x23 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x60 PUSH1 0x40 MSTORE JUMPDEST INVALID STOP LOG1 PUSH6 0x627A7A723058 SHA3 0xae 0x4e 0x46 DUP2 DUP16 SWAP16 PUSH10 0x832C210FF67B80210D9B 0xc5 0xc5 DUP7 0x3f SWAP8 0xd9 SLT DUP7 0xc7 0x27 DUP14 0x4c MSTORE BLOCKHASH 0xd3 STOP 0x29 &quot;,</span><br><span class="line">	&quot;sourceMap&quot;: &quot;26:67:0:-;;;58:33;;;;;;;83:1;79;:5;;;;58:33;26:67;;;;;;;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h1>从一个例子开始：</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    function C() &#123; // 旧的构造函数写法</span><br><span class="line">      a = 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>编译：</h1>
+<h2 id="进行solc编译">进行solc编译:</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin --asm file_name.sol</span><br><span class="line"></span><br><span class="line">======= file_name.sol:C =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  0x0</span><br><span class="line">  dup1</span><br><span class="line">  revert</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">    /* &quot;file_name.sol&quot;:83:84  1 */</span><br><span class="line">  0x1</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:80  a */</span><br><span class="line">  0x0</span><br><span class="line">    /* &quot;file_name.sol&quot;:79:84  a = 1 */</span><br><span class="line">  dup2</span><br><span class="line">  swap1</span><br><span class="line">  sstore</span><br><span class="line">  pop</span><br><span class="line">    /* &quot;file_name.sol&quot;:58:91  function C() &#123;... */</span><br><span class="line">tag_3:</span><br><span class="line">    /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">tag_4:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;file_name.sol&quot;:26:93  contract C &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      0x0</span><br><span class="line">      dup1</span><br><span class="line">      revert</span><br><span class="line"></span><br><span class="line">    auxdata: 0xa165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600e57600080fd5b5b60016000819055505b5b60368060266000396000f30060606040525b600080fd00a165627a7a72305820142c04ffb9430b805f0c95b45fe0ced073cc017dffca3c288c5c45dd913025080029</span><br></pre></td></tr></table></figure>
+<h2 id="使用remix编译">使用remix编译:</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;linkReferences&quot;: &#123;&#125;,</span><br><span class="line">	&quot;object&quot;: &quot;60606040523415600b57fe5b5b60016000819055505b5b60338060236000396000f30060606040525bfe00a165627a7a72305820ae4e46818f9f69832c210ff67b80210d9bc5c5863f97d91286c7278d4c5240d30029&quot;,</span><br><span class="line">	&quot;opcodes&quot;: &quot;PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xB JUMPI INVALID JUMPDEST JUMPDEST PUSH1 0x1 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMPDEST JUMPDEST PUSH1 0x33 DUP1 PUSH1 0x23 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x60 PUSH1 0x40 MSTORE JUMPDEST INVALID STOP LOG1 PUSH6 0x627A7A723058 SHA3 0xae 0x4e 0x46 DUP2 DUP16 SWAP16 PUSH10 0x832C210FF67B80210D9B 0xc5 0xc5 DUP7 0x3f SWAP8 0xd9 SLT DUP7 0xc7 0x27 DUP14 0x4c MSTORE BLOCKHASH 0xd3 STOP 0x29 &quot;,</span><br><span class="line">	&quot;sourceMap&quot;: &quot;26:67:0:-;;;58:33;;;;;;;83:1;79;:5;;;;58:33;26:67;;;;;;;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>使用remix编译的opcodes输出格式看起来还不错</p>
-<h1 id="bytecode-amp-amp-OpCodes："><a href="#bytecode-amp-amp-OpCodes：" class="headerlink" title="bytecode &amp;&amp; OpCodes："></a>bytecode &amp;&amp; OpCodes：</h1><p>编译后的代码我们称之为<code>字节码（bytecode）</code>,如下所示：</p>
+<h1>bytecode &amp;&amp; OpCodes：</h1>
+<p>编译后的代码我们称之为<code>字节码（bytecode）</code>,如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自己编译出来的跟原文的有些不同，可能跟编译器的版本和参数有关，还是先用原文的bytecode</span></span><br><span class="line">60606040523415600e57600080fd5b600160008190555060358060236000396000f3006060604052600080fd00a165627a7a72305820d315875f56b532ab371cf9aa86a62850e13eb6ab194847011dcd641b9a9d2f8d0029</span><br></pre></td></tr></table></figure>
-
 <p><strong>在这段字节码中，每个字符代表一个 16 进制数，每两个字符代表一个字节。</strong></p>
-<p>这段字节码就是直接运行在虚拟机上的代码，虚拟机只需要按照事先定义好的规则，解释并且执行每个字节即可。<br>但是对人类来说，直接阅读这些字节码太过繁琐，所以我们可以将其转换成对人类更友好的形式，操作码（OpCodes），如下所示:</p>
+<p>这段字节码就是直接运行在虚拟机上的代码，虚拟机只需要按照事先定义好的规则，解释并且执行每个字节即可。但是对人类来说，直接阅读这些字节码太过繁琐，所以我们可以将其转换成对人类更友好的形式，操作码（OpCodes），如下所示:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># opcode也不同，还是先用原文的</span></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x1 PUSH1 0x0 DUP2 SWAP1 SSTORE POP PUSH1 0x35 DUP1 PUSH1 0x23 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x60 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xd3 ISZERO DUP8 0x5f JUMP 0xb5 ORIGIN 0xab CALLDATACOPY SHR 0xf9 0xaa DUP7 0xa6 0x28 POP 0xe1 RETURNDATACOPY 0xb6 0xab NOT 0x48 0x47 ADD SAR 0xcd PUSH5 0x1B9A9D2F8D STOP 0x29</span><br></pre></td></tr></table></figure>
-
 <p><strong>上面的字节码或者操作码是等价的</strong>，它们都可以被分为三个部分：</p>
 <blockquote>
 <p>TODO:换个新合约的bytecode和opcode要学会自己分part</p>
 </blockquote>
-<ul>
-<li>部署智能合约的代码</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>部署智能合约的代码</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">60606040523415600e57600080fd5b600160008190555060358060236000396000f300</span><br><span class="line"></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x1 PUSH1 0x0 DUP2 SWAP1 SSTORE POP PUSH1 0x35 DUP1 PUSH1 0x23 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>智能合约本身的代码</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>智能合约本身的代码</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">6060604052600080fd00</span><br><span class="line"></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT STOP</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Auxdata</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Auxdata</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a165627a7a72305820d315875f56b532ab371cf9aa86a62850e13eb6ab194847011dcd641b9a9d2f8d0029</span><br><span class="line"></span><br><span class="line">LOG1 PUSH6 0x627A7A723058 KECCAK256 0xd3 ISZERO DUP8 0x5f JUMP 0xb5 ORIGIN 0xab CALLDATACOPY SHR 0xf9 0xaa DUP7 0xa6 0x28 POP 0xe1 RETURNDATACOPY 0xb6 0xab NOT 0x48 0x47 ADD SAR 0xcd PUSH5 0x1B9A9D2F8D STOP 0x29</span><br></pre></td></tr></table></figure>
-
-
 <p>下面让我们来逐步讲解每个部分，看看它们都是怎么工作的。</p>
-<h1 id="部署合约的流程："><a href="#部署合约的流程：" class="headerlink" title="部署合约的流程："></a>部署合约的流程：</h1><h2 id="部署智能合约的代码"><a href="#部署智能合约的代码" class="headerlink" title="部署智能合约的代码:"></a>部署智能合约的代码:</h2><p>第一部分代码是事实上把智能合约部署到以太坊上的代码，也是我们重点讨论的部分。这段代码又可以被划分为三个部分：</p>
-<ul>
-<li>Payable 检查</li>
+<h1>部署合约的流程：</h1>
+<h2 id="部署智能合约的代码">部署智能合约的代码:</h2>
+<p>第一部分代码是事实上把智能合约部署到以太坊上的代码，也是我们重点讨论的部分。这段代码又可以被划分为三个部分：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Payable 检查</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">60606040523415600e57600080fd</span><br><span class="line"></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1 REVERT</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>执行构造函数</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>执行构造函数</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">5b6001600081905550</span><br><span class="line"></span><br><span class="line">JUMPDEST PUSH1 0x1 PUSH1 0x0 DUP2 SWAP1 SSTORE POP</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>复制代码，并将其返回给内存</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>复制代码，并将其返回给内存</p>
+</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">60358060236000396000f300</span><br><span class="line"></span><br><span class="line">PUSH1 0x35 DUP1 PUSH1 0x23 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP</span><br></pre></td></tr></table></figure>
-
-<h3 id="Payable-检查"><a href="#Payable-检查" class="headerlink" title="Payable 检查:"></a>Payable 检查:</h3><p><code>payable</code>是 <code>Solidity</code> 的一个关键字，如果一个函数被其标记，那么用户在调用该函数的同时还可以发送以太币到该智能合约。<br>而这部分字节码的意义就在于阻止用户在调用没有被 <code>payable</code> 标记的函数时，向该智能合约发送以太币。<br>下面这张图是对这段代码进一步演算，左边两列分别是字节码和操作码，最右边一列是执行完该条语句之后栈的状态。</p>
-<h4 id="自己演算一遍"><a href="#自己演算一遍" class="headerlink" title="自己演算一遍:"></a>自己演算一遍:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bytecode</span></span><br><span class="line">60606040523415600e57600080fd</span><br><span class="line"><span class="comment"># opcode</span></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1 REV</span><br></pre></td></tr></table></figure>
-
+<h3 id="Payable-检查">Payable 检查:</h3>
+<p><code>payable</code>是 <code>Solidity</code> 的一个关键字，如果一个函数被其标记，那么用户在调用该函数的同时还可以发送以太币到该智能合约。而这部分字节码的意义就在于阻止用户在调用没有被 <code>payable</code> 标记的函数时，向该智能合约发送以太币。下面这张图是对这段代码进一步演算，左边两列分别是字节码和操作码，最右边一列是执行完该条语句之后栈的状态。</p>
+<h4 id="自己演算一遍">自己演算一遍:</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bytecode</span></span><br><span class="line">60606040523415600e57600080fd</span><br><span class="line"><span class="comment"># opcode</span></span><br><span class="line">PUSH1 0x60 PUSH1 0x40 MSTORE CALLVALUE ISZERO PUSH1 0xE JUMPI PUSH1 0x0 DUP1 REV</span><br></pre></td></tr></table></figure>
 <p>↓ 每两个字符代表一个字节，逐个字节拆分</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">60 60  PUSH1 0x60 </span><br><span class="line">60 40  PUSH1 0x40 </span><br><span class="line">52     MSTORE</span><br><span class="line">34     CALLVALUE</span><br><span class="line">15     ISZERO</span><br><span class="line">60 0e  PUSH1 0xE </span><br><span class="line">57     JUMPI</span><br><span class="line">60 00  PUSH1 0x0</span><br><span class="line">80     DUP1</span><br><span class="line">fd     REVERT</span><br></pre></td></tr></table></figure>
-
 <p>参考:</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md">https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md</a>    (有介绍到pyethereum客户端的列表，maybe有空可以看看)</li>
-<li><a target="_blank" rel="noopener" href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</li>
-<li><a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a>   黄皮书里的附录</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md">https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md</a>    (有介绍到pyethereum客户端的列表，maybe有空可以看看)</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a>   黄皮书里的附录</p>
+</li>
 </ul>
 <p>演算stack里的变化</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153345.png" alt="20220706153345"></p>
 <p>原文的演算图：</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153716.png" alt="20220706153716"></p>
-<p>在上图中，前三句是将内存中从<code>0x40</code>开始往后 <code>32 个字节</code>的地址赋上<code>0x60</code>这个值，这是虚拟机保留的内存地址。<br>后面的几句就是在通过查看发送的以太币是否为 0 来做 payable 检查。如果是 0 的话，那么虚拟机程序计数器（<code>PC</code>）跳转到<code>0xe</code>的位置继续执行，如果不是的话，终止程序。</p>
+<p>在上图中，前三句是将内存中从<code>0x40</code>开始往后 <code>32 个字节</code>的地址赋上<code>0x60</code>这个值，这是虚拟机保留的内存地址。后面的几句就是在通过查看发送的以太币是否为 0 来做 payable 检查。如果是 0 的话，那么虚拟机程序计数器（<code>PC</code>）跳转到<code>0xe</code>的位置继续执行，如果不是的话，终止程序。</p>
 <p>在这里需要说明一下，stack 里面的每一个元素都是 32 字节长度，在这里为了方便，省略了高位的 0。</p>
-<h3 id="执行构造函数"><a href="#执行构造函数" class="headerlink" title="执行构造函数:"></a>执行构造函数:</h3><p>智能合约部署代码的第二部分是用来执行合约的构造函数的。<br>如下图所示，在执行完这段字节码之后，heap 里面0x0的地址就被赋上了值0x1。</p>
+<h3 id="执行构造函数">执行构造函数:</h3>
+<p>智能合约部署代码的第二部分是用来执行合约的构造函数的。如下图所示，在执行完这段字节码之后，heap 里面0x0的地址就被赋上了值0x1。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706171429.png" alt="20220706171429"></p>
-<p>在上图中，<code>JUMPDEST</code>对应上面的<code>0xe</code>，它代表了如果通过上面的 payable 检查，我们应该跳转到这里继续执行代码。<br><code>SSTORE</code>命令是用来将栈上的值存储到 <code>World State</code> 上的。</p>
+<p>在上图中，<code>JUMPDEST</code>对应上面的<code>0xe</code>，它代表了如果通过上面的 payable 检查，我们应该跳转到这里继续执行代码。<code>SSTORE</code>命令是用来将栈上的值存储到 <code>World State</code> 上的。</p>
 <p>在图中用了 <code>heap</code> 来代表 <code>World State</code> 是因为它们俩有很多相似之处。</p>
-<p>我们知道在 Java 里面，栈是用来存储函数运行时的临时变量的，而堆是用来存储生命周期更长的变量，比如成员变量。<br><strong>栈上的数据会随着方法的执行完毕而被实时清空，而堆上的数据会在整个类实例的生命周期里面始终有效。</strong><br>Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回收。而一个部署到以太坊上的智能合约可以被认为是永远活着的合约实例(当然一个合约也可以被杀死)。</p>
-<p>所以用来存放智能合约状态的 World State 就可以被看做是以太坊的 <code>heap</code>。<br>在这里我之所以用 <code>heap</code> 来代指 <code>World State</code>，第一是希望跟 <code>stack</code> 做一个呼应，第二是希望从另一个方面描述以太坊的本质：<strong>以太坊是一个计算机网络，它将整个网络里面的所有计算机连接起来形成一个单一计算机。在这个计算机中，它使用数据结构来模拟内存的工作机制从而实现图灵完备的编程语言。</strong></p>
-<p>在以太坊中，<code>World State</code> 是一个 <code>key-value pair</code>。<br>每一个 key 对应一个 32 字节长的数据块。所以在上图所示的情况里面，<code>0x0</code> 这个 key 所对应的数据块里面存储了 <code>0x1</code> 这个数（32 字节，高位补 0）。</p>
-<h3 id="复制代码"><a href="#复制代码" class="headerlink" title="复制代码:"></a>复制代码:</h3><p>智能合约部署代码的第三部分是将剩余的代码，既智能合约本身的代码和 <code>Auxdata</code> 从 <code>Transaction</code> 中复制到内存里面并返回之。</p>
+<p>我们知道在 Java 里面，栈是用来存储函数运行时的临时变量的，而堆是用来存储生命周期更长的变量，比如成员变量。<br>
+<strong>栈上的数据会随着方法的执行完毕而被实时清空，而堆上的数据会在整个类实例的生命周期里面始终有效。</strong><br>
+Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回收。而一个部署到以太坊上的智能合约可以被认为是永远活着的合约实例(当然一个合约也可以被杀死)。</p>
+<p>所以用来存放智能合约状态的 World State 就可以被看做是以太坊的 <code>heap</code>。在这里我之所以用 <code>heap</code> 来代指 <code>World State</code>，第一是希望跟 <code>stack</code> 做一个呼应，第二是希望从另一个方面描述以太坊的本质：<strong>以太坊是一个计算机网络，它将整个网络里面的所有计算机连接起来形成一个单一计算机。在这个计算机中，它使用数据结构来模拟内存的工作机制从而实现图灵完备的编程语言。</strong></p>
+<p>在以太坊中，<code>World State</code> 是一个 <code>key-value pair</code>。每一个 key 对应一个 32 字节长的数据块。所以在上图所示的情况里面，<code>0x0</code> 这个 key 所对应的数据块里面存储了 <code>0x1</code> 这个数（32 字节，高位补 0）。</p>
+<h3 id="复制代码">复制代码:</h3>
+<p>智能合约部署代码的第三部分是将剩余的代码，既智能合约本身的代码和 <code>Auxdata</code> 从 <code>Transaction</code> 中复制到内存里面并返回之。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172513.png" alt="20220706172513"></p>
 <p>从上图可知，我们将0x23到0x58的字节码（总共 0x35 个字节码）复制到了内存中0x0到0x35的地址上。</p>
-<h2 id="智能合约本身的代码"><a href="#智能合约本身的代码" class="headerlink" title="智能合约本身的代码"></a>智能合约本身的代码</h2><p>整个字节码的第二部分是智能合约本身的代码，它们会在智能合约的函数被调用的时候执行。<br>因为在我们当前的例子中，智能合约只有一个构造函数，而没有其他方法，所以下图所示的代码并没有做什么有实际意义的操作。</p>
+<h2 id="智能合约本身的代码">智能合约本身的代码</h2>
+<p>整个字节码的第二部分是智能合约本身的代码，它们会在智能合约的函数被调用的时候执行。因为在我们当前的例子中，智能合约只有一个构造函数，而没有其他方法，所以下图所示的代码并没有做什么有实际意义的操作。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172839.png" alt="20220706172839"></p>
-<h2 id="Auxdata："><a href="#Auxdata：" class="headerlink" title="Auxdata："></a>Auxdata：</h2><p>第三部分 Auxdata 是有一个固定模板的：</p>
+<h2 id="Auxdata：">Auxdata：</h2>
+<p>第三部分 Auxdata 是有一个固定模板的：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0xa1 0x65 &#x27;b&#x27; &#x27;z&#x27; &#x27;z&#x27; &#x27;r&#x27; &#x27;0&#x27; 0x58 0x20 &lt;32 bytes swarm hash&gt; 0x00 0x29</span><br></pre></td></tr></table></figure>
-
 <p>我们将上述的字节码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a165627a7a72305820d315875f56b532ab371cf9aa86a62850e13eb6ab194847011dcd641b9a9d2f8d0029</span><br></pre></td></tr></table></figure>
-
 <p>带入该模板中，可以得到 <code>swarm hash</code> 为</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d315875f56b532ab371cf9aa86a62850e13eb6ab194847011dcd641b9a9d2f8d</span><br></pre></td></tr></table></figure>
-
 <p>这个 <code>Swarm Hash</code> 可以用来校验智能合约的代码，也可以用来获取智能合约的元数据。</p>
-<h1 id="创建合约的合约"><a href="#创建合约的合约" class="headerlink" title="创建合约的合约"></a>创建合约的合约</h1><p>我们已经通过上面的讲解，了解了部署智能合约的整个流程。<br>在这个流程中，字节码以 <code>Transaction</code> 的方式发送给以太坊从而完成对其的部署，不过智能合约不仅能被手动创建，也可以被其他已有的智能合约创建。</p>
+<h1>创建合约的合约</h1>
+<p>我们已经通过上面的讲解，了解了部署智能合约的整个流程。在这个流程中，字节码以 <code>Transaction</code> 的方式发送给以太坊从而完成对其的部署，不过智能合约不仅能被手动创建，也可以被其他已有的智能合约创建。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.11</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Foo</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">FooFactory</span> &#123;</span><br><span class="line">  address fooInstance;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">makeNewFoo</span>(<span class="params"></span>) &#123;</span><br><span class="line">    fooInstance = <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>solc编译</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin --asm deployContractbyContract.sol</span><br><span class="line"></span><br><span class="line">======= deployContractbyContract.sol:Foo =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;deployContractbyContract.sol&quot;:26:42  contract Foo &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  invalid</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:26:42  contract Foo &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">    tag_1:</span><br><span class="line">      invalid</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">60606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a723058200b92d5c31520b4d21e734dab0cb60055bb92299f7b249b877ba77ba2cebe22610029</span><br><span class="line"></span><br><span class="line">======= deployContractbyContract.sol:FooFactory =======</span><br><span class="line">EVM assembly:</span><br><span class="line">    /* &quot;deployContractbyContract.sol&quot;:44:149  contract FooFactory &#123;... */</span><br><span class="line">  mstore(0x40, 0x60)</span><br><span class="line">  jumpi(tag_1, iszero(callvalue))</span><br><span class="line">  invalid</span><br><span class="line">tag_1:</span><br><span class="line">tag_2:</span><br><span class="line">  dataSize(sub_0)</span><br><span class="line">  dup1</span><br><span class="line">  dataOffset(sub_0)</span><br><span class="line">  0x0</span><br><span class="line">  codecopy</span><br><span class="line">  0x0</span><br><span class="line">  return</span><br><span class="line">stop</span><br><span class="line"></span><br><span class="line">sub_0: assembly &#123;</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:44:149  contract FooFactory &#123;... */</span><br><span class="line">      mstore(0x40, 0x60)</span><br><span class="line">      calldataload(0x0)</span><br><span class="line">      0x100000000000000000000000000000000000000000000000000000000</span><br><span class="line">      swap1</span><br><span class="line">      div</span><br><span class="line">      0xffffffff</span><br><span class="line">      and</span><br><span class="line">      dup1</span><br><span class="line">      0x4e3991af</span><br><span class="line">      eq</span><br><span class="line">      tag_2</span><br><span class="line">      jumpi</span><br><span class="line">    tag_1:</span><br><span class="line">      invalid</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:91:147  function makeNewFoo() &#123;... */</span><br><span class="line">    tag_2:</span><br><span class="line">      jumpi(tag_3, iszero(callvalue))</span><br><span class="line">      invalid</span><br><span class="line">    tag_3:</span><br><span class="line">      tag_4</span><br><span class="line">      jump(tag_5)</span><br><span class="line">    tag_4:</span><br><span class="line">      stop</span><br><span class="line">    tag_5:</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:133:142  new Foo() */</span><br><span class="line">      tag_7</span><br><span class="line">      jump	// in(tag_8)</span><br><span class="line">    tag_7:</span><br><span class="line">      dup1</span><br><span class="line">      swap1</span><br><span class="line">      pop</span><br><span class="line">      mload(0x40)</span><br><span class="line">      dup1</span><br><span class="line">      swap2</span><br><span class="line">      sub</span><br><span class="line">      swap1</span><br><span class="line">      0x0</span><br><span class="line">      create</span><br><span class="line">      dup1</span><br><span class="line">      iszero</span><br><span class="line">      iszero</span><br><span class="line">      tag_9</span><br><span class="line">      jumpi</span><br><span class="line">      invalid</span><br><span class="line">    tag_9:</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:119:130  fooInstance */</span><br><span class="line">      0x0</span><br><span class="line">      0x0</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:119:142  fooInstance = new Foo() */</span><br><span class="line">      0x100</span><br><span class="line">      exp</span><br><span class="line">      dup2</span><br><span class="line">      sload</span><br><span class="line">      dup2</span><br><span class="line">      0xffffffffffffffffffffffffffffffffffffffff</span><br><span class="line">      mul</span><br><span class="line">      not</span><br><span class="line">      and</span><br><span class="line">      swap1</span><br><span class="line">      dup4</span><br><span class="line">      0xffffffffffffffffffffffffffffffffffffffff</span><br><span class="line">      and</span><br><span class="line">      mul</span><br><span class="line">      or</span><br><span class="line">      swap1</span><br><span class="line">      sstore</span><br><span class="line">      pop</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:91:147  function makeNewFoo() &#123;... */</span><br><span class="line">    tag_6:</span><br><span class="line">      jump	// out</span><br><span class="line">        /* &quot;deployContractbyContract.sol&quot;:44:149  contract FooFactory &#123;... */</span><br><span class="line">    tag_8:</span><br><span class="line">      mload(0x40)</span><br><span class="line">      dataSize(sub_0)</span><br><span class="line">      dup1</span><br><span class="line">      dataOffset(sub_0)</span><br><span class="line">      dup4</span><br><span class="line">      codecopy</span><br><span class="line">      add</span><br><span class="line">      swap1</span><br><span class="line">      jump	// out</span><br><span class="line">    stop</span><br><span class="line"></span><br><span class="line">    sub_0: assembly &#123;</span><br><span class="line">            /* &quot;deployContractbyContract.sol&quot;:26:42  contract Foo &#123;... */</span><br><span class="line">          mstore(0x40, 0x60)</span><br><span class="line">          jumpi(tag_1, iszero(callvalue))</span><br><span class="line">          invalid</span><br><span class="line">        tag_1:</span><br><span class="line">        tag_2:</span><br><span class="line">          dataSize(sub_0)</span><br><span class="line">          dup1</span><br><span class="line">          dataOffset(sub_0)</span><br><span class="line">          0x0</span><br><span class="line">          codecopy</span><br><span class="line">          0x0</span><br><span class="line">          return</span><br><span class="line">        stop</span><br><span class="line"></span><br><span class="line">        sub_0: assembly &#123;</span><br><span class="line">                /* &quot;deployContractbyContract.sol&quot;:26:42  contract Foo &#123;... */</span><br><span class="line">              mstore(0x40, 0x60)</span><br><span class="line">            tag_1:</span><br><span class="line">              invalid</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Binary:</span><br><span class="line">6060604052341561000c57fe5b5b6101358061001c6000396000f30060606040526000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680634e3991af1461003b575bfe5b341561004357fe5b61004b61004d565b005b6100556100ae565b809050604051809103906000f080151561006b57fe5b600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505b565b604051604c806100be83390190560060606040523415600b57fe5b5b60338060196000396000f30060606040525bfe00a165627a7a723058200b92d5c31520b4d21e734dab0cb60055bb92299f7b249b877ba77ba2cebe22610029a165627a7a723058204b341e0e274980968e26e50d5f362e68f368b18aff1545db99672b0be89301670029</span><br></pre></td></tr></table></figure>
-
 <p>在上面的代码里面我们可以看到两个合约，一个是 Foo，一个是用来创建 Foo 的 FooFactory。如果我们把上面的代码编译之后会得到如下的字节码:</p>
 <blockquote>
 <p>不知道怎么得出下面的…</p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FooFactoryDeployCode</span><br><span class="line">FooFactoryContractCode</span><br><span class="line">  FooDeployCode</span><br><span class="line">  FooContractCode</span><br><span class="line">  FooAUXData</span><br><span class="line">FooFactoryAUXData</span><br></pre></td></tr></table></figure>
-
-<p>不难看出，整个字节码分两层，每一层又和之前描述的一样，分为三个部分。<br>最外层的字节码用来部署 <code>FooFactory</code>，它的 <code>Contract Code</code> 部分是用来创建合约 <code>Foo</code> 的，所以在这一部分里面又嵌套了一套完整的用来部署合约的代码</p>
-<h1 id="增加一个成员变量"><a href="#增加一个成员变量" class="headerlink" title="增加一个成员变量:"></a>增加一个成员变量:</h1><p>在第一个例子中，我们在整个合约里面只创建了一个成员变量。现在让我们来把合约变的复杂一点，再增加一个成员变量，看看相应的字节码有什么变化。</p>
+<p>不难看出，整个字节码分两层，每一层又和之前描述的一样，分为三个部分。最外层的字节码用来部署 <code>FooFactory</code>，它的 <code>Contract Code</code> 部分是用来创建合约 <code>Foo</code> 的，所以在这一部分里面又嵌套了一套完整的用来部署合约的代码</p>
+<h1>增加一个成员变量:</h1>
+<p>在第一个例子中，我们在整个合约里面只创建了一个成员变量。现在让我们来把合约变的复杂一点，再增加一个成员变量，看看相应的字节码有什么变化。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.11</span>;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    uint256 b;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">C</span>(<span class="params"></span>) &#123;</span><br><span class="line">      a = <span class="number">1</span>;</span><br><span class="line">      b = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>在省略掉其余部分之后，运行构造函数的部分如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">5b      JUMPDEST</span><br><span class="line">60 01   PUSH1 0x1</span><br><span class="line">60 00   PUSH1 0x0</span><br><span class="line">81      DUP2</span><br><span class="line">90      SWAP1</span><br><span class="line">55      SSTORE             // heap &#123;0x0 =&gt; 0x1&#125;</span><br><span class="line">50      POP</span><br><span class="line">60 02   PUSH1 0x2</span><br><span class="line">60 01   PUSH1 0x1</span><br><span class="line">81      DUP2</span><br><span class="line">90      SWAP1</span><br><span class="line">55      SSTORE             // heap &#123;0x0 =&gt; 0x1&#125; &#123;0x1 =&gt; 0x2&#125;</span><br><span class="line">50      POP</span><br></pre></td></tr></table></figure>
-
-<p>很容易看出，虚拟机依次为变量<code>a</code>和<code>b</code>在 World State 中分配了两个地址<code>0x0</code>和<code>0x1</code>，并且赋上了相应的值 1 和 2。<br>事实上如果有更多的成员变量，虚拟机会依次的为它们分配存储地址。在这里我们分配的存储地址对应于该RPC里面的第二个参数。</p>
-<h1 id="从256位到128位："><a href="#从256位到128位：" class="headerlink" title="从256位到128位："></a>从256位到128位：</h1><p>在上面的例子中我们声明了两个 256 位（32 字节）的无符号整型数。<br>在实际运用中我们可能根本不需要那么多的空间，比如在其他语言中常用的整型数只有 4 个字节。<br>所以现在让我们来做一点优化，把这两个 32 字节的数变成两个 16 字节的整型数，看看会发生什么变化。</p>
+<p>很容易看出，虚拟机依次为变量<code>a</code>和<code>b</code>在 World State 中分配了两个地址<code>0x0</code>和<code>0x1</code>，并且赋上了相应的值 1 和 2。事实上如果有更多的成员变量，虚拟机会依次的为它们分配存储地址。在这里我们分配的存储地址对应于该RPC里面的第二个参数。</p>
+<h1>从256位到128位：</h1>
+<p>在上面的例子中我们声明了两个 256 位（32 字节）的无符号整型数。在实际运用中我们可能根本不需要那么多的空间，比如在其他语言中常用的整型数只有 4 个字节。所以现在让我们来做一点优化，把这两个 32 字节的数变成两个 16 字节的整型数，看看会发生什么变化。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint128 a;</span><br><span class="line">    uint128 b;</span><br><span class="line">    function C() &#123;</span><br><span class="line">      a = 1;</span><br><span class="line">      b = 2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>同样的，将其余部分省略，运行构造函数的部分如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/**********************     a = 1    ********************************/</span><br><span class="line">60 01                                 PUSH1 0x1           stack: [0x1]</span><br><span class="line">60 00                                 PUSH1 0x0           stack: [0x0 0x1]</span><br><span class="line">80                                    DUP1                stack: [0x0 0x0 0x1]</span><br><span class="line">61 0100                               PUSH2 0x100         stack: [0x100 0x0 0x0 0x1]</span><br><span class="line">0a                                    EXP(base, exponent) stack: [0x01 0x0 0x1]</span><br><span class="line">81                                    DUP2                stack: [0x0 0x1 0x0 0x1]</span><br><span class="line">54                                    SLOAD(location)     stack: [0x0 0x1 0x0 0x1]</span><br><span class="line">81                                    DUP2                stack: [0x1 0x0 0x1 0x0 0x1]</span><br><span class="line">6f ffffffffffffffffffffffffffffffff   PUSH16              stack: [0xffffffffffffffffffffffffffffffff 0x1 0x0 0x1 0x0 0x1]</span><br><span class="line">02                                    MUL(x, y)           stack: [0xffffffffffffffffffffffffffffffff 0x0 0x1 0x0 0x1]</span><br><span class="line">19                                    NOT                 stack: [0xffffffffffffffffffffffffffffffff00000000000000000000000000000000 0x0 0x1 0x0 0x1]</span><br><span class="line">16                                    AND(x, y)           stack: [0x0 0x1 0x0 0x1]</span><br><span class="line">90                                    SWAP1               stack: [0x1 0x0 0x0 0x1]</span><br><span class="line">83                                    DUP4                stack: [0x1 0x1 0x0 0x0 0x1]</span><br><span class="line">6f ffffffffffffffffffffffffffffffff   PUSH16              stack: [0xffffffffffffffffffffffffffffffff 0x1 0x1 0x0 0x0 0x1]</span><br><span class="line">16                                    AND                 stack: [0x1 0x1 0x0 0x0 0x1]</span><br><span class="line">02                                    MUL                 stack: [0x1 0x0 0x0 0x1]</span><br><span class="line">17                                    OR                  stack: [0x1 0x0 0x1]</span><br><span class="line">90                                    SWAP1               stack: [0x0 0x1 0x1]</span><br><span class="line">55                                    SSTORE(pos, val)    stack: [0x1]</span><br><span class="line">                                                          heap:  &#123;0x0 =&gt; 0x1&#125;</span><br><span class="line">50                                    POP                 stack: []</span><br><span class="line"></span><br><span class="line">/**********************     b = 2    ********************************/</span><br><span class="line">60 02                                 PUSH1 0x2           stack: [0x2]</span><br><span class="line">60 00                                 PUSH1 0x0           stack: [0x0 0x2]</span><br><span class="line">60 10                                 PUSH1 0x10          stack: [0x10 0x0 0x2]</span><br><span class="line">61 0100                               PUSH2 0x100         stack: [0x100 0x10 0x0 0x2]</span><br><span class="line">0a                                    EXP                 stack: [0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">81                                    DUP2                stack: [0x0 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">54                                    SLOAD(location)     stack: [0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">81                                    DUP2                stack: [0x100000000000000000000000000000000 0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">6f ffffffffffffffffffffffffffffffff   PUSH16              stack: [0xffffffffffffffffffffffffffffffff 0x100000000000000000000000000000000 0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">02                                    MUL                 stack: [0xffffffffffffffffffffffffffffffff00000000000000000000000000000000 0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">19                                    NOT                 stack: [0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff 0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">16                                    AND                 stack: [0x1 0x100000000000000000000000000000000 0x0 0x2]</span><br><span class="line">90                                    SWAP1               stack: [0x100000000000000000000000000000000 0x1 0x0 0x2]</span><br><span class="line">83                                    DUP4                stack: [0x2 0x100000000000000000000000000000000 0x1 0x0 0x2]</span><br><span class="line">6f ffffffffffffffffffffffffffffffff   PUSH16              stack: [0xffffffffffffffffffffffffffffffff 0x2 0x100000000000000000000000000000000 0x1 0x0 0x2]</span><br><span class="line">16                                    AND                 stack: [0x2 0x100000000000000000000000000000000 0x1 0x0 0x2]</span><br><span class="line">02                                    MUL                 stack: [0x200000000000000000000000000000000 0x1 0x0 0x2]</span><br><span class="line">17                                    OR                  stack: [0x200000000000000000000000000000001 0x0 0x2]</span><br><span class="line">90                                    SWAP1               stack: [0x0 0x200000000000000000000000000000001 0x2]</span><br><span class="line">55                                    SSTORE              stack: [0x2]</span><br><span class="line">                                                          heap:  &#123;0x0 =&gt; 0x200000000000000000000000000000001&#125;</span><br><span class="line">50                                    POP                 stack: []</span><br></pre></td></tr></table></figure>
-
-<p>总得来讲上面的代码分为两个部分<br>第一部分对应<code>a = 1</code>，这部分代码在地址<code>0x0</code>的低 16 字节里存入0x1；<br>第二部分对应<code>b = 2</code>，它表示在 <code>0x0</code> 的高 16 字节里面存入 0x2. </p>
+<p>总得来讲上面的代码分为两个部分第一部分对应<code>a = 1</code>，这部分代码在地址<code>0x0</code>的低 16 字节里存入0x1；第二部分对应<code>b = 2</code>，它表示在 <code>0x0</code> 的高 16 字节里面存入 0x2.</p>
 <p>所以在运行完上面的代码之后，我们只使用了 World State 里面的一个 key，即<code>0x0</code>，完成了对两个变量的保存。 用更形象的方式可以表示成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[         b         ][         a         ]</span><br><span class="line">[16 bytes / 128 bits][16 bytes / 128 bits]</span><br></pre></td></tr></table></figure>
-
-<h1 id="打包存储"><a href="#打包存储" class="headerlink" title="打包存储:"></a>打包存储:</h1><p>那么问题来了，为什么虚拟机要做这个变动？<br>这两个例子的 Solidity 代码几乎一样，我们只是改变了变量的类型而已，然而虚拟机为第二个例子编译出的字节码比之前例子的字节码长了不止一倍。<br>要知道，这些增加的字节码可是会直接影响 <code>Transaction</code> 的大小的。所以虚拟机到底是出于何种目的来产生了如此多的字节码的呢？</p>
-<p>其实对于上面的问题有一个简单的答案，那就是 <code>gas。</code><br>我们知道执行、部署合约是需要消耗 <code>gas</code> 的，而具体到 EVM 的层面，那就是每个操作码都有其对应的需要消耗的 <code>gas</code>。</p>
+<h1>打包存储:</h1>
+<p>那么问题来了，为什么虚拟机要做这个变动？这两个例子的 Solidity 代码几乎一样，我们只是改变了变量的类型而已，然而虚拟机为第二个例子编译出的字节码比之前例子的字节码长了不止一倍。要知道，这些增加的字节码可是会直接影响 <code>Transaction</code> 的大小的。所以虚拟机到底是出于何种目的来产生了如此多的字节码的呢？</p>
+<p>其实对于上面的问题有一个简单的答案，那就是 <code>gas。</code><br>
+我们知道执行、部署合约是需要消耗 <code>gas</code> 的，而具体到 EVM 的层面，那就是每个操作码都有其对应的需要消耗的 <code>gas</code>。</p>
 <p>下面是对一些操作码消耗 gas 的说明：</p>
-<ul>
-<li><code>sstore</code>当使用这个操作码往一个新的地址中存入数据时消耗 20000 gas</li>
-<li><code>sstore</code>当使用这个操作码往一个已有的地址中存入数据时消耗 5000 gas</li>
-<li><code>sload</code>当使用这个操作码从 World State 中读取数据，消耗 500 gas</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>sstore</code>当使用这个操作码往一个新的地址中存入数据时消耗 20000 gas</p>
+</li>
+<li class="lvl-2">
+<p><code>sstore</code>当使用这个操作码往一个已有的地址中存入数据时消耗 5000 gas</p>
+</li>
+<li class="lvl-2">
+<p><code>sload</code>当使用这个操作码从 World State 中读取数据，消耗 500 gas</p>
+</li>
 </ul>
 <p>其余的操作码消耗 3 到 10 gas</p>
 <p>所以在两个例子中我们消耗的 gas 分别为：</p>
-<ul>
-<li>20000 + 20000 &#x3D; 40000</li>
-<li>500 + 20000 + 5000 + 500 &#x3D; 26000</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>20000 + 20000 = 40000</p>
+</li>
+<li class="lvl-2">
+<p>500 + 20000 + 5000 + 500 = 26000</p>
+</li>
 </ul>
-<p>在打包存储的情况下，因为我们第二次使用<code>sstore</code>时，只是往已有的地址中再次写入数据，所以我们省掉了 15000 的 gas。<br>正是由于这个原因，虚拟机才宁愿编译出如此复杂的字节码，也不愿意直接使用来个存储地址。</p>
-<h1 id="编译优化"><a href="#编译优化" class="headerlink" title="编译优化:"></a>编译优化:</h1><p>其实上述字节码还是略显冗长，因为很容易想到，我们其实可以在内存里面先准备好<code>a</code>和<code>b</code>对应的数据，然后在一次性的存到<code> World State</code> 里面，这样一来我们还可以再节省掉第二个<code>sstore</code>所消耗的 5000gas。<br>我们可以通过指示编译器优化字节码的方式来达到这个目的。</p>
+<p>在打包存储的情况下，因为我们第二次使用<code>sstore</code>时，只是往已有的地址中再次写入数据，所以我们省掉了 15000 的 gas。正是由于这个原因，虚拟机才宁愿编译出如此复杂的字节码，也不愿意直接使用来个存储地址。</p>
+<h1>编译优化:</h1>
+<p>其实上述字节码还是略显冗长，因为很容易想到，我们其实可以在内存里面先准备好<code>a</code>和<code>b</code>对应的数据，然后在一次性的存到<code> World State</code> 里面，这样一来我们还可以再节省掉第二个<code>sstore</code>所消耗的 5000gas。我们可以通过指示编译器优化字节码的方式来达到这个目的。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solc --bin --asm --optimize file_name.sol</span><br></pre></td></tr></table></figure>
-
 <p>我们现在再进行一次编译，看看结果会如何</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">60 00                                 PUSH 0x0</span><br><span class="line">80                                    DUP1</span><br><span class="line">54                                    SLOAD</span><br><span class="line">70 0200000000000000000000000000000000 PUSH17</span><br><span class="line"></span><br><span class="line">/* not(sub(exp(0x2, 0x80), 0x1)) 高16字节bitmask */</span><br><span class="line">60 01                                 PUSH 0x1</span><br><span class="line">60 80                                 PUSH 0x80</span><br><span class="line">60 02                                 PUSH 0x2</span><br><span class="line">0a                                    EXP</span><br><span class="line">03                                    SUB</span><br><span class="line">19                                    NOT</span><br><span class="line"></span><br><span class="line">90                                    SWAP1</span><br><span class="line">91                                    SWAP2</span><br><span class="line">16                                    AND</span><br><span class="line">60 01                                 PUSH 0x1</span><br><span class="line">17                                    OR</span><br><span class="line"></span><br><span class="line">/* sub(exp(0x2, 0x80), 0x1) 低16字节bitmask */</span><br><span class="line">60 01                                 PUSH 0x1</span><br><span class="line">60 80                                 PUSH 0x80</span><br><span class="line">60 02                                 PUSH 0x02</span><br><span class="line">0a                                    EXP</span><br><span class="line">03                                    SUB</span><br><span class="line"></span><br><span class="line">16                                    AND</span><br><span class="line">17                                    OR</span><br><span class="line">90                                    SWAP1</span><br><span class="line">55                                    SSTORE</span><br></pre></td></tr></table></figure>
-
-<p>从上面我们可以看出，虚拟机通过使用 <code>bitmask</code> 分别将高 16 字节和低 16 字节赋值，而且只使用了一个<code>sstore</code>指令就像数据存入了 <code>World State</code> 里面。<br>优化目的达成！</p>
+<p>从上面我们可以看出，虚拟机通过使用 <code>bitmask</code> 分别将高 16 字节和低 16 字节赋值，而且只使用了一个<code>sstore</code>指令就像数据存入了 <code>World State</code> 里面。优化目的达成！</p>
 <p>但是，等等，为什么要在字节码中直接嵌入<code>0200000000000000000000000000000000</code>这 17 个字节？</p>
-<p>要知道我们只需要做一个简单运算便能获得这个值：<code>exp(0x2, 0x81)</code>。 换句话说，我们其实只需要用 3 个字节就能代表这 17 个字节，但是虚拟机为什么没有这么做呢？<br>答案很简单，仍然是 <code>gas</code>。让我们来看看每个字节消耗 <code>gas</code> 的规则：</p>
-<ul>
-<li>每一个 0 字节消耗 4 个 gas</li>
-<li>每一个非 0 字节消耗 68gas</li>
+<p>要知道我们只需要做一个简单运算便能获得这个值：<code>exp(0x2, 0x81)</code>。 换句话说，我们其实只需要用 3 个字节就能代表这 17 个字节，但是虚拟机为什么没有这么做呢？答案很简单，仍然是 <code>gas</code>。让我们来看看每个字节消耗 <code>gas</code> 的规则：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>每一个 0 字节消耗 4 个 gas</p>
+</li>
+<li class="lvl-2">
+<p>每一个非 0 字节消耗 68gas</p>
+</li>
 </ul>
 <p>根据这个规则，我们很容易计算出两种情况下消耗的 gas 的值：</p>
-<ul>
-<li>68 + 16 x 4 &#x3D; 132</li>
-<li>68 x 3 &#x3D; 20</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>68 + 16 x 4 = 132</p>
+</li>
+<li class="lvl-2">
+<p>68 x 3 = 20</p>
+</li>
 </ul>
 <p>所以直接嵌入<code>0200000000000000000000000000000000</code>虽然显得笨拙，但是贵在便宜。虚拟机宁愿增加字节码的大小也想为用户节约每一个 gas。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>智能合约的生命周期被严格的划分为两个阶段：部署时和运行时。</li>
-<li>智能合约的构造函数在且仅在部署时运行，一旦被部署就不可能再次运行构造函数了。</li>
-<li><code>World State</code> 是一个键值对，每一个键对应一个 32 字节长的数据块。</li>
-<li>因为上面一点，以太坊虚拟机是一个 256 位机，其天生就是用来对 32 字节长的数据做运算的。</li>
-<li>往 <code>World State</code> 里面存数据是非常昂贵的。</li>
-<li>以太坊虚拟机一切向钱看，所有的优化都是围绕减少所需 <code>gas</code> 而进行的。</li>
+<h1>总结:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>智能合约的生命周期被严格的划分为两个阶段：部署时和运行时。</p>
+</li>
+<li class="lvl-2">
+<p>智能合约的构造函数在且仅在部署时运行，一旦被部署就不可能再次运行构造函数了。</p>
+</li>
+<li class="lvl-2">
+<p><code>World State</code> 是一个键值对，每一个键对应一个 32 字节长的数据块。</p>
+</li>
+<li class="lvl-2">
+<p>因为上面一点，以太坊虚拟机是一个 256 位机，其天生就是用来对 32 字节长的数据做运算的。</p>
+</li>
+<li class="lvl-2">
+<p>往 <code>World State</code> 里面存数据是非常昂贵的。</p>
+</li>
+<li class="lvl-2">
+<p>以太坊虚拟机一切向钱看，所有的优化都是围绕减少所需 <code>gas</code> 而进行的。</p>
+</li>
 </ul>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md">https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md</a>    (有介绍到pyethereum客户端的列表，maybe有空可以看看)</li>
-<li><a target="_blank" rel="noopener" href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</li>
-<li><a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a>   黄皮书里的附录</li>
-<li><a target="_blank" rel="noopener" href="https://www.arcblock.io/blog/zh/post/2018/12/08/evm-part-1/">深入探索EVM : 编译和部署智能合约</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md">https://github.com/CoinCulture/evm-tools/blob/master/analysis/guide.md</a>    (有介绍到pyethereum客户端的列表，maybe有空可以看看)</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.ethervm.io/#MSTORE">https://www.ethervm.io/#MSTORE</a> (这里可以看每个opcode对stack的操作)</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://ethereum.github.io/yellowpaper/paper.pdf">https://ethereum.github.io/yellowpaper/paper.pdf</a>   黄皮书里的附录</p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.arcblock.io/blog/zh/post/2018/12/08/evm-part-1/">深入探索EVM : 编译和部署智能合约</a></p>
+</li>
 </ul>
 
     </div>
@@ -464,13 +524,13 @@
       <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/60923.html" rel="bookmark">StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/16132.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part1</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/15939.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part2</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/60923.html" rel="bookmark">StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录</a></div>
     </li>
   </ul>
 
@@ -560,7 +620,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BC%E8%AF%BB"><span class="nav-number">2.</span> <span class="nav-text">导读:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%BC%80%E5%A7%8B%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">从一个例子开始：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">编译：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8Csolc%E7%BC%96%E8%AF%91"><span class="nav-number">4.1.</span> <span class="nav-text">进行solc编译:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8remix%E7%BC%96%E8%AF%91"><span class="nav-number">4.2.</span> <span class="nav-text">使用remix编译:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bytecode-amp-amp-OpCodes%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">bytecode &amp;&amp; OpCodes：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6%E7%9A%84%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">部署合约的流程：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">6.1.</span> <span class="nav-text">部署智能合约的代码:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Payable-%E6%A3%80%E6%9F%A5"><span class="nav-number">6.1.1.</span> <span class="nav-text">Payable 检查:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E6%BC%94%E7%AE%97%E4%B8%80%E9%81%8D"><span class="nav-number">6.1.1.1.</span> <span class="nav-text">自己演算一遍:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.2.</span> <span class="nav-text">执行构造函数:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E4%BB%A3%E7%A0%81"><span class="nav-number">6.1.3.</span> <span class="nav-text">复制代码:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E6%9C%AC%E8%BA%AB%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">6.2.</span> <span class="nav-text">智能合约本身的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Auxdata%EF%BC%9A"><span class="nav-number">6.3.</span> <span class="nav-text">Auxdata：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%90%88%E7%BA%A6%E7%9A%84%E5%90%88%E7%BA%A6"><span class="nav-number">7.</span> <span class="nav-text">创建合约的合约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F"><span class="nav-number">8.</span> <span class="nav-text">增加一个成员变量:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E256%E4%BD%8D%E5%88%B0128%E4%BD%8D%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">从256位到128位：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%AD%98%E5%82%A8"><span class="nav-number">10.</span> <span class="nav-text">打包存储:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%BC%98%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">编译优化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">12.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">13.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">导读:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">从一个例子开始：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">编译：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8Csolc%E7%BC%96%E8%AF%91"><span class="nav-number">4.1.</span> <span class="nav-text">进行solc编译:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8remix%E7%BC%96%E8%AF%91"><span class="nav-number">4.2.</span> <span class="nav-text">使用remix编译:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">bytecode &amp;&amp; OpCodes：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">部署合约的流程：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">6.1.</span> <span class="nav-text">部署智能合约的代码:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Payable-%E6%A3%80%E6%9F%A5"><span class="nav-number">6.1.1.</span> <span class="nav-text">Payable 检查:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E6%BC%94%E7%AE%97%E4%B8%80%E9%81%8D"><span class="nav-number">6.1.1.1.</span> <span class="nav-text">自己演算一遍:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.2.</span> <span class="nav-text">执行构造函数:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E4%BB%A3%E7%A0%81"><span class="nav-number">6.1.3.</span> <span class="nav-text">复制代码:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E6%9C%AC%E8%BA%AB%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">6.2.</span> <span class="nav-text">智能合约本身的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Auxdata%EF%BC%9A"><span class="nav-number">6.3.</span> <span class="nav-text">Auxdata：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">创建合约的合约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">增加一个成员变量:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">9.</span> <span class="nav-text">从256位到128位：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">10.</span> <span class="nav-text">打包存储:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">11.</span> <span class="nav-text">编译优化:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">12.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">13.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -576,7 +636,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -631,12 +691,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

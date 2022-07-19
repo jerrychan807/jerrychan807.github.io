@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:当一个事情变得枯燥时，就该考虑自动化了。 场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。 可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。 我就尝试在w13scan的架构下,编写了一个简单的越权半自动化插件  流程:第一步:手工测试找vuln_parameter先是手工测试出某">
+  <meta name="description" content="Pre: 当一个事情变得枯燥时，就该考虑自动化了。 场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。 可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。 我就尝试在w13scan的架构下,编写了一个简单的越权半自动化插件  流程: 第一步:手工测试找vuln_parameter 先是手工测">
 <meta property="og:type" content="article">
 <meta property="og:title" content="越权半自动化插件的尝试">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/14249.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:当一个事情变得枯燥时，就该考虑自动化了。 场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。 可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。 我就尝试在w13scan的架构下,编写了一个简单的越权半自动化插件  流程:第一步:手工测试找vuln_parameter先是手工测试出某">
+<meta property="og:description" content="Pre: 当一个事情变得枯燥时，就该考虑自动化了。 场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。 可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。 我就尝试在w13scan的架构下,编写了一个简单的越权半自动化插件  流程: 第一步:手工测试找vuln_parameter 先是手工测">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg">
 <meta property="og:image" content="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg">
@@ -258,75 +258,95 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>当一个事情变得枯燥时，就该考虑自动化了。</p>
+        <h1>Pre:</h1>
+<p>当一个事情变得枯燥时，就该考虑自动化了。</p>
 <p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
-<p>可是又要全测一边会觉得累，不测又会觉得漏。<br>那这个时候就可以考虑下自动化，半自动化了。</p>
+<p>可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。</p>
 <p>我就尝试在<a target="_blank" rel="noopener" href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
 <hr>
-<h1 id="流程"><a href="#流程" class="headerlink" title="流程:"></a>流程:</h1><h2 id="第一步-手工测试找vuln-parameter"><a href="#第一步-手工测试找vuln-parameter" class="headerlink" title="第一步:手工测试找vuln_parameter"></a>第一步:手工测试找vuln_parameter</h2><p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
+<h1>流程:</h1>
+<h2 id="第一步-手工测试找vuln-parameter">第一步:手工测试找vuln_parameter</h2>
+<p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
 <p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
-<h2 id="第二步-以vuln-parameter做路由"><a href="#第二步-以vuln-parameter做路由" class="headerlink" title="第二步:以vuln_parameter做路由"></a>第二步:以vuln_parameter做路由</h2><p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
-<h2 id="第三步-确定payload"><a href="#第三步-确定payload" class="headerlink" title="第三步:确定payload"></a>第三步:确定payload</h2><p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
+<h2 id="第二步-以vuln-parameter做路由">第二步:以vuln_parameter做路由</h2>
+<p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
+<h2 id="第三步-确定payload">第三步:确定payload</h2>
+<p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
 <p>确定payload: <code>&#123;&quot;phone&quot;:134xxxxxx&#125;</code></p>
-<h2 id="第四步-篡改request包"><a href="#第四步-篡改request包" class="headerlink" title="第四步:篡改request包"></a>第四步:篡改request包</h2><p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
-<h2 id="第五步-发包-权衡判断条件"><a href="#第五步-发包-权衡判断条件" class="headerlink" title="第五步:发包,权衡判断条件"></a>第五步:发包,权衡判断条件</h2><p>判断我感觉比较麻烦:</p>
+<h2 id="第四步-篡改request包">第四步:篡改request包</h2>
+<p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
+<h2 id="第五步-发包-权衡判断条件">第五步:发包,权衡判断条件</h2>
+<p>判断我感觉比较麻烦:</p>
 <p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
 <p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
-<ul>
-<li>正向特征:</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>正向特征:</p>
+</li>
 </ul>
 <p>先收集一些请求成功且有返回一定数据的Response包</p>
 <p>例如Response的body里:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;msg&#x27;:&#x27;OK&#x27;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>反向特征:</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>反向特征:</p>
+</li>
 </ul>
 <p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
 <p>例如Response的body里:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;你没有权限进行此操作&#x27;</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;不可以越权操作&#x27;</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;xxxxx&#x27;</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
-
 <p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
 <p>比如</p>
 <p>正向的就是 :</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;msg&#x27;</span>] == <span class="string">&#x27;OK&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-
 <p>反向的就是 :</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;data&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
-
 <blockquote>
-<p>判断的效果 跟判断条件有很大的关系<br>判断严了,容易漏 判断松了 容易误报<br>那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
+<p>判断的效果 跟判断条件有很大的关系判断严了,容易漏 判断松了 容易误报那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
 </blockquote>
-<h2 id="大致流程图"><a href="#大致流程图" class="headerlink" title="大致流程图:"></a>大致流程图:</h2><p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg"></p>
+<h2 id="大致流程图">大致流程图:</h2>
+<p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt=""></p>
 <hr>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg"></p>
+<h1>效果图:</h1>
+<p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt=""></p>
 <p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
 <p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
 <p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
 <hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><ul>
-<li>半自动化流程:</li>
+<h1>总结:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>半自动化流程:</p>
+</li>
 </ul>
 <ol>
-<li>手工测试找<code>vuln_parameter</code></li>
-<li>以<code>vuln_parameter</code>做路由</li>
-<li>确定payload</li>
-<li>篡改request包</li>
-<li>发包,权衡判断条件</li>
+<li class="lvl-3">
+<p>手工测试找<code>vuln_parameter</code></p>
+</li>
+<li class="lvl-3">
+<p>以<code>vuln_parameter</code>做路由</p>
+</li>
+<li class="lvl-3">
+<p>确定payload</p>
+</li>
+<li class="lvl-3">
+<p>篡改request包</p>
+</li>
+<li class="lvl-3">
+<p>发包,权衡判断条件</p>
+</li>
 </ol>
-<ul>
-<li><p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
 </li>
-<li><p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
+<li class="lvl-2">
+<p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
 </li>
-<li><p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
+<li class="lvl-2">
+<p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
 </li>
 </ul>
 
@@ -439,7 +459,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E6%89%8B%E5%B7%A5%E6%B5%8B%E8%AF%95%E6%89%BEvuln-parameter"><span class="nav-number">2.1.</span> <span class="nav-text">第一步:手工测试找vuln_parameter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E4%BB%A5vuln-parameter%E5%81%9A%E8%B7%AF%E7%94%B1"><span class="nav-number">2.2.</span> <span class="nav-text">第二步:以vuln_parameter做路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-%E7%A1%AE%E5%AE%9Apayload"><span class="nav-number">2.3.</span> <span class="nav-text">第三步:确定payload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5-%E7%AF%A1%E6%94%B9request%E5%8C%85"><span class="nav-number">2.4.</span> <span class="nav-text">第四步:篡改request包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5-%E5%8F%91%E5%8C%85-%E6%9D%83%E8%A1%A1%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.5.</span> <span class="nav-text">第五步:发包,权衡判断条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.6.</span> <span class="nav-text">大致流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">效果图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E6%89%8B%E5%B7%A5%E6%B5%8B%E8%AF%95%E6%89%BEvuln-parameter"><span class="nav-number">2.1.</span> <span class="nav-text">第一步:手工测试找vuln_parameter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E4%BB%A5vuln-parameter%E5%81%9A%E8%B7%AF%E7%94%B1"><span class="nav-number">2.2.</span> <span class="nav-text">第二步:以vuln_parameter做路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-%E7%A1%AE%E5%AE%9Apayload"><span class="nav-number">2.3.</span> <span class="nav-text">第三步:确定payload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5-%E7%AF%A1%E6%94%B9request%E5%8C%85"><span class="nav-number">2.4.</span> <span class="nav-text">第四步:篡改request包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5-%E5%8F%91%E5%8C%85-%E6%9D%83%E8%A1%A1%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.5.</span> <span class="nav-text">第五步:发包,权衡判断条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.6.</span> <span class="nav-text">大致流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">效果图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -455,7 +475,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -510,12 +530,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

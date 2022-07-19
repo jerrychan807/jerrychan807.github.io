@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:之前常遇到mysql gone away这类错误,由于用的是sqlalchemy里的Null Pool.即不使用连接池。  按道理来说,要选用连接池的,但由于还没找到sqlalchemy连接池与celery多进程的最佳实践,故暂时搁置这个方案…  这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接. 这样在高并发的情况下会频繁连接数据库，占用很多连接数. 所">
+  <meta name="description" content="Pre: 之前常遇到mysql gone away这类错误,由于用的是sqlalchemy里的Null Pool.即不使用连接池。  按道理来说,要选用连接池的,但由于还没找到sqlalchemy连接池与celery多进程的最佳实践,故暂时搁置这个方案…  这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接. 这样在高并发的情况下会频繁连接数据库，占用很多连接数.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录-修改Mysql最大连接数">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/63948.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:之前常遇到mysql gone away这类错误,由于用的是sqlalchemy里的Null Pool.即不使用连接池。  按道理来说,要选用连接池的,但由于还没找到sqlalchemy连接池与celery多进程的最佳实践,故暂时搁置这个方案…  这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接. 这样在高并发的情况下会频繁连接数据库，占用很多连接数. 所">
+<meta property="og:description" content="Pre: 之前常遇到mysql gone away这类错误,由于用的是sqlalchemy里的Null Pool.即不使用连接池。  按道理来说,要选用连接池的,但由于还没找到sqlalchemy连接池与celery多进程的最佳实践,故暂时搁置这个方案…  这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接. 这样在高并发的情况下会频繁连接数据库，占用很多连接数.">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-07-02T06:36:34.000Z">
 <meta property="article:modified_time" content="2022-06-14T02:59:44.552Z">
@@ -255,7 +255,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>之前常遇到<code>mysql gone away</code>这类错误,由于用的是<code>sqlalchemy</code>里的<code>Null Pool</code>.即不使用连接池。</p>
+        <h1>Pre:</h1>
+<p>之前常遇到<code>mysql gone away</code>这类错误,由于用的是<code>sqlalchemy</code>里的<code>Null Pool</code>.即不使用连接池。</p>
 <blockquote>
 <p>按道理来说,要选用连接池的,但由于还没找到<code>sqlalchemy</code>连接池与celery多进程的最佳实践,故暂时搁置这个方案…</p>
 </blockquote>
@@ -263,34 +264,35 @@
 <p>这样在高并发的情况下会频繁连接数据库，占用很多连接数.</p>
 <p>所以这个时候要适当增大mysql的最大连接数.</p>
 <hr>
-<h1 id="查询"><a href="#查询" class="headerlink" title="查询:"></a>查询:</h1><p>查询最大连接数</p>
-<p><code>show variables like &#39;%max_connections%&#39;;</code></p>
+<h1>查询:</h1>
+<p>查询最大连接数</p>
+<p><code>show variables like '%max_connections%';</code></p>
 <p>历史最大连接数量</p>
-<p><code>show global status like &#39;Max_used_connections&#39;;</code></p>
+<p><code>show global status like 'Max_used_connections';</code></p>
 <hr>
-<h1 id="修改最大连接数"><a href="#修改最大连接数" class="headerlink" title="修改最大连接数:"></a>修改最大连接数:</h1><h2 id="修改mysql配置文件"><a href="#修改mysql配置文件" class="headerlink" title="修改mysql配置文件:"></a>修改mysql配置文件:</h2><blockquote>
+<h1>修改最大连接数:</h1>
+<h2 id="修改mysql配置文件">修改mysql配置文件:</h2>
+<blockquote>
 <p>环境:Centos7</p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # and set to the amount of RAM for the most important data</span></span><br><span class="line"><span class="comment"># cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.</span></span><br><span class="line"><span class="comment"># innodb_buffer_pool_size = 128M</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to turn on a very important data integrity option: logging</span></span><br><span class="line"><span class="comment"># changes to the binary log between backups.</span></span><br><span class="line"><span class="comment"># log_bin</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Remove leading # to set options mainly useful for reporting servers.</span></span><br><span class="line"><span class="comment"># The server defaults are faster for transactions and fast SELECTs.</span></span><br><span class="line"><span class="comment"># Adjust sizes as needed, experiment to find the optimal values.</span></span><br><span class="line"><span class="comment"># join_buffer_size = 128M</span></span><br><span class="line"><span class="comment"># sort_buffer_size = 2M</span></span><br><span class="line"><span class="comment"># read_rnd_buffer_size = 2M</span></span><br><span class="line"><span class="attr">datadir</span>=/var/lib/mysql</span><br><span class="line"><span class="attr">socket</span>=/var/lib/mysql/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="attr">port</span>=<span class="number">33066</span></span><br><span class="line"></span><br><span class="line"><span class="attr">max_connections</span>=<span class="number">500</span></span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">512</span>M</span><br><span class="line"><span class="comment">#query_cache_limit = 4M</span></span><br><span class="line"><span class="attr">wait_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">interactive_timeout</span> = <span class="number">288000</span></span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"></span><br><span class="line"><span class="comment"># Disabling symbolic-links is recommended to prevent assorted security risks</span></span><br><span class="line"><span class="attr">symbolic-links</span>=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Recommended in standard MySQL setup</span></span><br><span class="line"><span class="attr">sql_mode</span>=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld_safe]</span></span><br><span class="line"><span class="attr">log-error</span>=/var/log/mysqld.log</span><br><span class="line"><span class="attr">pid-file</span>=/var/run/mysqld/mysqld.pid</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>第一次只修改了配置文件,也没有及时验证有无修改成功.才发现改了配置文件还不够,还需要继续往下修改.</p>
 </blockquote>
 <hr>
-<h2 id="配置limits-conf"><a href="#配置limits-conf" class="headerlink" title="配置limits.conf:"></a>配置limits.conf:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/security/limits.conf</span><br><span class="line"><span class="comment">#  添加mysql用户配置</span></span><br><span class="line">mysql hard nofile 65535</span><br><span class="line">mysql soft nofile 65535</span><br></pre></td></tr></table></figure>
-
+<h2 id="配置limits-conf">配置limits.conf:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/security/limits.conf</span><br><span class="line"><span class="comment">#  添加mysql用户配置</span></span><br><span class="line">mysql hard nofile 65535</span><br><span class="line">mysql soft nofile 65535</span><br></pre></td></tr></table></figure>
 <hr>
-<h2 id="配置mariadb-service"><a href="#配置mariadb-service" class="headerlink" title="配置mariadb.service:"></a>配置mariadb.service:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/lib/systemd/system/mysqld.service</span><br><span class="line"><span class="comment"># 添加参数</span></span><br><span class="line">LimitNOFILE=65535</span><br></pre></td></tr></table></figure>
-
+<h2 id="配置mariadb-service">配置mariadb.service:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/lib/systemd/system/mysqld.service</span><br><span class="line"><span class="comment"># 添加参数</span></span><br><span class="line">LimitNOFILE=65535</span><br></pre></td></tr></table></figure>
 <hr>
-<h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
-
+<h2 id="重启">重启</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重启mysql</span></span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
-
 <hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>之前在解决类似的数据库错误的时候,确实是比较难定位到具体的原因.</p>
+<h1>总结:</h1>
+<p>之前在解决类似的数据库错误的时候,确实是比较难定位到具体的原因.</p>
 <p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
 <blockquote>
 <p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
@@ -298,11 +300,20 @@
 </blockquote>
 <p>最好的方法是对涉及到组件(元素)一一去排查原因,不要一直想当然的陷入到代码里.那样会只见树不见林…</p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/phpper/p/9570792.html">Mysql 连接数,最大并发数设置</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014074757/article/details/80527445">MySQL配置max_connections无效</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/langdashu/p/5889352.html">MySQL配置文件my.cnf的理解</a></li>
-<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en">MySQL 8.0参考手册</a></li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/phpper/p/9570792.html">Mysql 连接数,最大并发数设置</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014074757/article/details/80527445">MySQL配置max_connections无效</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/langdashu/p/5889352.html">MySQL配置文件my.cnf的理解</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en">MySQL 8.0参考手册</a></p>
+</li>
 </ul>
 
     </div>
@@ -320,13 +331,13 @@
       <div class="popular-posts-title"><a href="/2019/42649.html" rel="bookmark">Celery-动态路由</a></div>
     </li>
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/12733.html" rel="bookmark">记录-Centos7下root运行Chrome</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/34580.html" rel="bookmark">记录-Centos7安装py环境</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2019/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
     </li>
   </ul>
 
@@ -414,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">查询:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">修改最大连接数:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9mysql%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">修改mysql配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AElimits-conf"><span class="nav-number">3.2.</span> <span class="nav-text">配置limits.conf:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEmariadb-service"><span class="nav-number">3.3.</span> <span class="nav-text">配置mariadb.service:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF"><span class="nav-number">3.4.</span> <span class="nav-text">重启</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">查询:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">修改最大连接数:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9mysql%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">修改mysql配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AElimits-conf"><span class="nav-number">3.2.</span> <span class="nav-text">配置limits.conf:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEmariadb-service"><span class="nav-number">3.3.</span> <span class="nav-text">配置mariadb.service:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF"><span class="nav-number">3.4.</span> <span class="nav-text">重启</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -430,7 +441,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -485,12 +496,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

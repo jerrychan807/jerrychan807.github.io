@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="熟悉功能： 方便管理员对模板html文件进行修改  用户可控变量： $_REQUEST $_REQUEST[&#39;act&#39;] $_GET $_GET[&#39;tpl_name&#39;] $_POST $_POST[&#39;tpl_name&#39;] $_POST[&#39;tpl_content&#39;]  $_REQUEST[&#39;act&#39;]无法影响判断 $_G">
+  <meta name="description" content="熟悉功能：  方便管理员对模板html文件进行修改  用户可控变量：   $_REQUEST   $_REQUEST[&#39;act&#39;]   $_GET   $_GET[&#39;tpl_name&#39;]   $_POST   $_POST[&#39;tpl_name&#39;]   $_POST[&#39;tpl_content&#39;]   $_REQUEST[&#39;act&#39;]无法影响判断 $_GET[‘tpl_name’] $_GET[‘tp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析">
 <meta property="og:url" content="https://jerrychan807.github.io/2018/59330.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="熟悉功能： 方便管理员对模板html文件进行修改  用户可控变量： $_REQUEST $_REQUEST[&#39;act&#39;] $_GET $_GET[&#39;tpl_name&#39;] $_POST $_POST[&#39;tpl_name&#39;] $_POST[&#39;tpl_content&#39;]  $_REQUEST[&#39;act&#39;]无法影响判断 $_G">
+<meta property="og:description" content="熟悉功能：  方便管理员对模板html文件进行修改  用户可控变量：   $_REQUEST   $_REQUEST[&#39;act&#39;]   $_GET   $_GET[&#39;tpl_name&#39;]   $_POST   $_POST[&#39;tpl_name&#39;]   $_POST[&#39;tpl_content&#39;]   $_REQUEST[&#39;act&#39;]无法影响判断 $_GET[‘tpl_name’] $_GET[‘tp">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg">
@@ -262,46 +262,75 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="熟悉功能："><a href="#熟悉功能：" class="headerlink" title="熟悉功能："></a>熟悉功能：</h1><p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg"></p>
+        <h1>熟悉功能：</h1>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg" alt=""></p>
 <p>方便管理员对模板html文件进行修改</p>
 <hr>
-<h1 id="用户可控变量："><a href="#用户可控变量：" class="headerlink" title="用户可控变量："></a>用户可控变量：</h1><ul>
-<li><code>$_REQUEST</code></li>
-<li><code>$_REQUEST[&#39;act&#39;]</code></li>
-<li><code>$_GET</code></li>
-<li><code>$_GET[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST</code></li>
-<li><code>$_POST[&#39;tpl_name&#39;]</code></li>
-<li><code>$_POST[&#39;tpl_content&#39;]</code></li>
+<h1>用户可控变量：</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>$_REQUEST</code></p>
+</li>
+<li class="lvl-3">
+<p><code>$_REQUEST['act']</code></p>
+</li>
+<li class="lvl-2">
+<p><code>$_GET</code></p>
+</li>
+<li class="lvl-3">
+<p><code>$_GET['tpl_name']</code></p>
+</li>
+<li class="lvl-2">
+<p><code>$_POST</code></p>
+</li>
+<li class="lvl-3">
+<p><code>$_POST['tpl_name']</code></p>
+</li>
+<li class="lvl-3">
+<p><code>$_POST['tpl_content']</code></p>
+</li>
 </ul>
-<p><code>$_REQUEST[&#39;act&#39;]</code>无法影响判断</p>
-<h2 id="GET-‘tpl-name’"><a href="#GET-‘tpl-name’" class="headerlink" title="$_GET[‘tpl_name’]"></a>$_GET[‘tpl_name’]</h2><p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
+<p><code>$_REQUEST['act']</code>无法影响判断</p>
+<h2 id="GET-‘tpl-name’">$_GET[‘tpl_name’]</h2>
+<p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>没有对<code>$_GET[&#39;tpl_name&#39;]</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>payload &#x3D; <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg"></p>
+<p>没有对<code>$_GET['tpl_name']</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>
+payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg" alt=""></p>
 <p>有什么比较有价值的网站文件吗?</p>
 <p>可以php文件即读到网站源码</p>
-<h2 id="POST变量"><a href="#POST变量" class="headerlink" title="$_POST变量"></a>$_POST变量</h2><p><code>$_POST[&#39;tpl_name&#39;]</code>变量:你想要更改的网站模板文件<br><code>$_POST[&#39;tpl_content&#39;]</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br><img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg"></p>
+<h2 id="POST变量">$_POST变量</h2>
+<p><code>$_POST['tpl_name']</code>变量:你想要更改的网站模板文件<code>$_POST['tpl_content']</code>变量:你要更改的内容</p>
+<p>两个变量均没有经过过滤，可以直接修改网站的源码<br>
+<img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg" alt=""></p>
 <hr>
-<h1 id="编写pocsuite插件："><a href="#编写pocsuite插件：" class="headerlink" title="编写pocsuite插件："></a>编写pocsuite插件：</h1><p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
+<h1>编写pocsuite插件：</h1>
+<p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
 <p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg"></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg" alt=""></p>
 <p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
 <p>怎么攻击呢？</p>
 <p>可以修改网站下的任何源代码，可以</p>
-<ul>
-<li>写入一句话木马</li>
-<li>盗号js</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>写入一句话木马</p>
+</li>
+<li class="lvl-2">
+<p>盗号js</p>
+</li>
 </ul>
 <p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg"><br><img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg"></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg" alt=""><br>
+<img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg" alt=""></p>
 <hr>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
-<li>有时候多个漏洞组合起来，可以达到一个很好的效果。</li>
-<li>要写验证和攻击的代码才能更了解漏洞的原理</li>
+<h1>总结：</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>有时候多个漏洞组合起来，可以达到一个很好的效果。</p>
+</li>
+<li class="lvl-2">
+<p>要写验证和攻击的代码才能更了解漏洞的原理</p>
+</li>
 </ul>
 
     </div>
@@ -407,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%86%9F%E6%82%89%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">熟悉功能：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%8F%AF%E6%8E%A7%E5%8F%98%E9%87%8F%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">用户可控变量：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GET-%E2%80%98tpl-name%E2%80%99"><span class="nav-number">2.1.</span> <span class="nav-text">$_GET[‘tpl_name’]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">$_POST变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99pocsuite%E6%8F%92%E4%BB%B6%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">编写pocsuite插件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">熟悉功能：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">用户可控变量：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GET-%E2%80%98tpl-name%E2%80%99"><span class="nav-number">2.1.</span> <span class="nav-text">$_GET[‘tpl_name’]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">$_POST变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">编写pocsuite插件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -423,7 +452,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -478,12 +507,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

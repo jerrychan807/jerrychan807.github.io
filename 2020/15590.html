@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="webpack:什么是webpack:webpack用于编译JavaScript模块。 关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export&#x2F;require&#x2F;import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6&#x2F;JSX语法，开发">
+  <meta name="description" content="webpack: 什么是webpack: webpack用于编译JavaScript模块。 关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export&#x2F;require&#x2F;import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6&#x2F;JSX语法，开发和线上不能保持一致，这就为">
 <meta property="og:type" content="article">
 <meta property="og:title" content="webpack带来的安全风险">
 <meta property="og:url" content="https://jerrychan807.github.io/2020/15590.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="webpack:什么是webpack:webpack用于编译JavaScript模块。 关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export&#x2F;require&#x2F;import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6&#x2F;JSX语法，开发">
+<meta property="og:description" content="webpack: 什么是webpack: webpack用于编译JavaScript模块。 关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export&#x2F;require&#x2F;import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6&#x2F;JSX语法，开发和线上不能保持一致，这就为">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414114758.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414115217.png">
@@ -259,75 +259,106 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="webpack"><a href="#webpack" class="headerlink" title="webpack:"></a>webpack:</h1><h2 id="什么是webpack"><a href="#什么是webpack" class="headerlink" title="什么是webpack:"></a>什么是webpack:</h2><p><strong>webpack用于编译JavaScript模块。</strong></p>
-<p>关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export&#x2F;require&#x2F;import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6&#x2F;JSX语法，开发和线上不能保持一致，这就为WebPack类的自动化代码转换工具的出现提供了需求。</p>
+        <h1>webpack:</h1>
+<h2 id="什么是webpack">什么是webpack:</h2>
+<p><strong>webpack用于编译JavaScript模块。</strong></p>
+<p>关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export/require/import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6/JSX语法，开发和线上不能保持一致，这就为WebPack类的自动化代码转换工具的出现提供了需求。</p>
 <p><strong>WebPack可以看做是模块打包机：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。</strong></p>
-<p>按照官网的说法，webpack可以打包一切资源&#x2F;图片&#x2F;样式&#x2F;依赖等等，webpack默认只支持js模块打包，对于其他文件就需要用loader解析器，比如在vue中，直观的效果就是使用webpack可以将使用的vue，css，图片等打包成一个js。</p>
+<p>按照官网的说法，webpack可以打包一切资源/图片/样式/依赖等等，webpack默认只支持js模块打包，对于其他文件就需要用loader解析器，比如在vue中，直观的效果就是使用webpack可以将使用的vue，css，图片等打包成一个js。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414114758.png" alt="20200414114758"></p>
 <hr>
-<h1 id="Source-Map"><a href="#Source-Map" class="headerlink" title="Source Map:"></a>Source Map:</h1><p>部署前端之前，开发者通常会对代码进行打包压缩，这样可以减少代码大小，从而有效提高访问速度。然而，压缩代码的报错信息是很难Debug的，因为它的行号和列号已经失真。这时就需要Source Map来还原真实的出错位置了。</p>
-<h2 id="为啥变换代码"><a href="#为啥变换代码" class="headerlink" title="为啥变换代码?"></a>为啥变换代码?</h2><p>前端代码越来越复杂的情况下，开发者通常会使用webpack、UglifyJS2等工具对代码进行打包变换，这样可以减少代码大小，有效提高访问速度。关于变换代码的原因，这里不妨引用一下大神阮一峰的JavaScript Source Map 详解:</p>
+<h1>Source Map:</h1>
+<p>部署前端之前，开发者通常会对代码进行打包压缩，这样可以减少代码大小，从而有效提高访问速度。然而，压缩代码的报错信息是很难Debug的，因为它的行号和列号已经失真。这时就需要Source Map来还原真实的出错位置了。</p>
+<h2 id="为啥变换代码">为啥变换代码?</h2>
+<p>前端代码越来越复杂的情况下，开发者通常会使用webpack、UglifyJS2等工具对代码进行打包变换，这样可以减少代码大小，有效提高访问速度。关于变换代码的原因，这里不妨引用一下大神阮一峰的JavaScript Source Map 详解:</p>
 <blockquote>
-<ul>
-<li>压缩，减小体积。比如jQuery 1.9的源码，压缩前是252KB，压缩后是32KB。</li>
-<li>多个文件合并，减少HTTP请求数。</li>
-<li>其他语言编译成JavaScript。最常见的例子就是CoffeeScript。</li>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>压缩，减小体积。比如jQuery 1.9的源码，压缩前是252KB，压缩后是32KB。</p>
+</li>
+<li class="lvl-2">
+<p>多个文件合并，减少HTTP请求数。</p>
+</li>
+<li class="lvl-2">
+<p>其他语言编译成JavaScript。最常见的例子就是CoffeeScript。</p>
+</li>
 </ul>
 </blockquote>
-<h2 id="如何变换代码"><a href="#如何变换代码" class="headerlink" title="如何变换代码?"></a>如何变换代码?</h2><p>下面是一个简单的“hello World”程序hello.js</p>
+<h2 id="如何变换代码">如何变换代码?</h2>
+<p>下面是一个简单的“hello World”程序hello.js</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"></span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">&quot;Fundebug&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> greeting = <span class="string">&quot;Hello, &quot;</span> + <span class="title class_">Name</span>;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(greeting);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">sayHello</span>();</span><br></pre></td></tr></table></figure>
-
 <p>使用UglifyJS2对源代码进行压缩变换:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uglifyjs hello.js \</span><br><span class="line">         -m toplevel=<span class="literal">true</span> \</span><br><span class="line">         -c unused=<span class="literal">true</span>,collapse_vars=<span class="literal">true</span> \</span><br><span class="line">         -o hello.min.js</span><br></pre></td></tr></table></figure>
-
 <p>压缩后的代码<strong>hello.min.js</strong></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">o</span>(<span class="params"></span>)&#123;<span class="keyword">var</span> o=<span class="string">&quot;Hello, &quot;</span>+<span class="title class_">Name</span>;<span class="variable language_">console</span>.<span class="title function_">log</span>(o)&#125;<span class="title function_">o</span>();</span><br></pre></td></tr></table></figure>
-
-<h2 id="为啥需要Source-Map"><a href="#为啥需要Source-Map" class="headerlink" title="为啥需要Source Map?"></a>为啥需要Source Map?</h2><p>使用Firefox执行<strong>hello.js</strong>的报错信息是这样:</p>
+<h2 id="为啥需要Source-Map">为啥需要Source Map?</h2>
+<p>使用Firefox执行<strong>hello.js</strong>的报错信息是这样:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ReferenceError: Name is not defined</span><br><span class="line">	sayHello file:///Users/fundebug/sourcemap-tutorial/hello.js:4:9</span><br><span class="line">	&lt;匿名&gt; file:///Users/fundebug/sourcemap-tutorial/hello.js:8:1</span><br></pre></td></tr></table></figure>
-
 <p>而<strong>hello.min.js</strong>的报错信息是这样:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ReferenceError: Name is not defined</span><br><span class="line">	o file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:18</span><br><span class="line">	&lt;匿名&gt; file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:59</span><br></pre></td></tr></table></figure>
-
 <p>对比压缩前后的出错信息，我们会发现，错误行号和列号已经失真，且函数名也经过了变换。而对于真实的前端项目，开发者会将数十个源文件压缩为一个文件，这时，错误的列号可能多达数千，且出错的真实文件名也是很难确定的，这样的话，压缩代码的报错信息是很难Debug的。</p>
 <p>而Source Map则可以用于还原真实的出错位置，帮助开发者更快的Debug。</p>
 <hr>
 <p>webpack 是一个现代 JavaScript 应用程序的静态模块打包器(module bundler)。</p>
 <p>source-map文件，这个文件是编译过程中变量与方法的映射表。</p>
 <hr>
-<h1 id="VUE-x2F-REACT开发场景"><a href="#VUE-x2F-REACT开发场景" class="headerlink" title="VUE&#x2F;REACT开发场景"></a>VUE&#x2F;REACT开发场景</h1><p>在VUE&#x2F;REACT开发场景下 ，前端开发会引入如模块化等诸多新特性，前端开发不再是几个简单的js文件，开发完成后会通过webpack等打包工具打包生成部署使用的js文件，但是如果我们直接分析该编译的js，很难看懂。</p>
+<h1>VUE/REACT开发场景</h1>
+<p>在VUE/REACT开发场景下 ，前端开发会引入如模块化等诸多新特性，前端开发不再是几个简单的js文件，开发完成后会通过webpack等打包工具打包生成部署使用的js文件，但是如果我们直接分析该编译的js，很难看懂。</p>
 <p>比如某页面下的app.bundle.js,反正我是看不懂写的是啥，这个js文件就是webpack打包后的结果，但是由于我是开启了source-map调试模式，如果你是用chrome浏览器打开的，打开devtools-sources，应该可以看到一个<code>webpack://</code>，这个就是chrome对source-map调试的支持，点开src目录下就可以看到js代码源文件。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414115217.png" alt="20200414115217"></p>
-<h2 id="为什么会有这类问题"><a href="#为什么会有这类问题" class="headerlink" title="为什么会有这类问题?"></a>为什么会有这类问题?</h2><p>大多数开发人员没有意识到的是，这些源映射<code>source-map</code>实际上包含了其前端源代码的全部。</p>
+<h2 id="为什么会有这类问题">为什么会有这类问题?</h2>
+<p>大多数开发人员没有意识到的是，这些源映射<code>source-map</code>实际上包含了其前端源代码的全部。</p>
 <p>是的，他们知道可以进行映射，但是源映射后的文件几乎为乱码，更不用说理解了。由于这种误解，发现开发团队在其Webpack配置中将JavaScript源映射留在生产环境中是相对常见的。</p>
 <hr>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>修改<code>config/index.js</code>中的<code>build</code>对象<code>productionSourceMap: false</code>即可</p>
+<h2 id="解决方案-2">解决方案:</h2>
+<p>修改<code>config/index.js</code>中的<code>build</code>对象<code>productionSourceMap: false</code>即可</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418144413.png" alt="20200418144413"></p>
 <hr>
-<h1 id="渗透思路or危害"><a href="#渗透思路or危害" class="headerlink" title="渗透思路or危害:"></a>渗透思路or危害:</h1><ul>
-<li><p>通过<code>source-map</code>可以获取前端源码,也就是说从黑盒变成了灰盒。</p>
+<h1>渗透思路or危害:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>通过<code>source-map</code>可以获取前端源码,也就是说从黑盒变成了灰盒。</p>
 </li>
-<li><p>泄露的各种信息如网站路径、API、加密算法、管理员邮箱、内部功能等等。</p>
+<li class="lvl-2">
+<p>泄露的各种信息如网站路径、API、加密算法、管理员邮箱、内部功能等等。</p>
 </li>
-<li><p>很多vue应用都是先渲染页面再判断是否登陆，根据这个小缺陷，我们首先可以查看相关功能</p>
+<li class="lvl-2">
+<p>很多vue应用都是先渲染页面再判断是否登陆，根据这个小缺陷，我们首先可以查看相关功能</p>
 </li>
-<li><p>前端源码被人copy走</p>
+<li class="lvl-2">
+<p>前端源码被人copy走</p>
 </li>
 </ul>
 <hr>
-<h1 id="工具"><a href="#工具" class="headerlink" title="工具:"></a>工具:</h1><p><a target="_blank" rel="noopener" href="https://github.com/rarecoil/unwebpack-sourcemap">unwebpack-sourcemap</a></p>
+<h1>工具:</h1>
+<p><a target="_blank" rel="noopener" href="https://github.com/rarecoil/unwebpack-sourcemap">unwebpack-sourcemap</a></p>
 <p>通过查看浏览器中包含的JavaScript文件并提取捆绑的JavaScript文件底部存在的sourceMappingURL来获取源地图。</p>
 <p>原理:</p>
 <p>在页面正则匹配 <code>regex = &quot;\\/\\/#\s*sourceMappingURL=(.*)$&quot;</code></p>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.secpulse.com/archives/96416.html">webpack带来的安全风险</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fundebug/p/source_map_tutorial.html">Source Map入门教程</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/193230.html">前端打包编译时代来临对漏洞挖掘的影响</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/cuixiping/article/details/8592823">压缩版JS的调试利器JavaScript Source Map基本介绍</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26033573">谈谈我是如何获得知乎的前端源码的</a></li>
-<li><a target="_blank" rel="noopener" href="https://medium.com/@rarecoil/spa-source-code-recovery-by-un-webpacking-source-maps-ef830fc2351d">SPA source code recovery by un-Webpacking source maps</a></li>
-<li><a target="_blank" rel="noopener" href="https://wangdaodao.com/20190724/webpack-sources-vue.html">Webpack打包后禁止Sources查看VUE源码</a></li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.secpulse.com/archives/96416.html">webpack带来的安全风险</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fundebug/p/source_map_tutorial.html">Source Map入门教程</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/193230.html">前端打包编译时代来临对漏洞挖掘的影响</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/cuixiping/article/details/8592823">压缩版JS的调试利器JavaScript Source Map基本介绍</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26033573">谈谈我是如何获得知乎的前端源码的</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://medium.com/@rarecoil/spa-source-code-recovery-by-un-webpacking-source-maps-ef830fc2351d">SPA source code recovery by un-Webpacking source maps</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://wangdaodao.com/20190724/webpack-sources-vue.html">Webpack打包后禁止Sources查看VUE源码</a></p>
+</li>
 </ul>
 
     </div>
@@ -439,7 +470,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack"><span class="nav-number">1.</span> <span class="nav-text">webpack:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFwebpack"><span class="nav-number">1.1.</span> <span class="nav-text">什么是webpack:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Source-Map"><span class="nav-number">2.</span> <span class="nav-text">Source Map:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%95%A5%E5%8F%98%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">为啥变换代码?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%8F%98%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">如何变换代码?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%95%A5%E9%9C%80%E8%A6%81Source-Map"><span class="nav-number">2.3.</span> <span class="nav-text">为啥需要Source Map?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VUE-x2F-REACT%E5%BC%80%E5%8F%91%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">VUE&#x2F;REACT开发场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E8%BF%99%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">为什么会有这类问题?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">解决方案:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AFor%E5%8D%B1%E5%AE%B3"><span class="nav-number">4.</span> <span class="nav-text">渗透思路or危害:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-number">5.</span> <span class="nav-text">工具:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">webpack:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFwebpack"><span class="nav-number">1.1.</span> <span class="nav-text">什么是webpack:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Source Map:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%95%A5%E5%8F%98%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">为啥变换代码?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%8F%98%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">如何变换代码?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%95%A5%E9%9C%80%E8%A6%81Source-Map"><span class="nav-number">2.3.</span> <span class="nav-text">为啥需要Source Map?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">VUE&#x2F;REACT开发场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E8%BF%99%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">为什么会有这类问题?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-2"><span class="nav-number">3.2.</span> <span class="nav-text">解决方案:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">渗透思路or危害:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">工具:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -455,7 +486,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -510,12 +541,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre: 朋友有需求，想要监控Raca NFT市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。 要获取Raca NFT市场的实时交易记录，有两个数据来源：  官方网站爬虫、API 读取bsc每个块的数据  第一种延时严重，存在几分钟的延时，所以采取第二种 读取Bsc Block Data快速读取block数据bsc链上约3s左右出一个块,出块的频率很">
+  <meta name="description" content="Pre:  朋友有需求，想要监控Raca NFT市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。 要获取Raca NFT市场的实时交易记录，有两个数据来源：   官方网站爬虫、API   读取bsc每个块的数据   第一种延时严重，存在几分钟的延时，所以采取第二种 读取Bsc Block Data 快速读取block数据 bsc链上约3s左右出一个块">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Crypto-Raca Nft市场实时交易记录">
 <meta property="og:url" content="https://jerrychan807.github.io/2021/43268.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre: 朋友有需求，想要监控Raca NFT市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。 要获取Raca NFT市场的实时交易记录，有两个数据来源：  官方网站爬虫、API 读取bsc每个块的数据  第一种延时严重，存在几分钟的延时，所以采取第二种 读取Bsc Block Data快速读取block数据bsc链上约3s左右出一个块,出块的频率很">
+<meta property="og:description" content="Pre:  朋友有需求，想要监控Raca NFT市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。 要获取Raca NFT市场的实时交易记录，有两个数据来源：   官方网站爬虫、API   读取bsc每个块的数据   第一种延时严重，存在几分钟的延时，所以采取第二种 读取Bsc Block Data 快速读取block数据 bsc链上约3s左右出一个块">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174907.png">
@@ -258,56 +258,70 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png" alt="20220512174618"></p>
-<p>朋友有需求，想要监控<code>Raca NFT</code>市场在BSC链上的实时交易记录<br>特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。</p>
+        <h1>Pre:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png" alt="20220512174618"></p>
+<p>朋友有需求，想要监控<code>Raca NFT</code>市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。</p>
 <p>要获取Raca NFT市场的实时交易记录，有两个数据来源：</p>
 <ol>
-<li>官方网站爬虫、API</li>
-<li>读取bsc每个块的数据</li>
+<li class="lvl-3">
+<p>官方网站爬虫、API</p>
+</li>
+<li class="lvl-3">
+<p>读取bsc每个块的数据</p>
+</li>
 </ol>
 <p>第一种延时严重，存在几分钟的延时，所以采取第二种</p>
-<h1 id="读取Bsc-Block-Data"><a href="#读取Bsc-Block-Data" class="headerlink" title="读取Bsc Block Data"></a>读取Bsc Block Data</h1><h2 id="快速读取block数据"><a href="#快速读取block数据" class="headerlink" title="快速读取block数据"></a>快速读取block数据</h2><p>bsc链上约3s左右出一个块,出块的频率很高。</p>
+<h1>读取Bsc Block Data</h1>
+<h2 id="快速读取block数据">快速读取block数据</h2>
+<p>bsc链上约3s左右出一个块,出块的频率很高。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174907.png" alt="20220512174907"></p>
 <p>一开始是简单使用<code>time.sleep()</code>去停顿几秒，避免对节点发起过多的请求，但是这样会出现漏块的问题。</p>
 <p>后来想到是，配置多个节点地址，每次查询前随机选用一个节点，这样既可以减少漏块的几率，也不会因为查询频率过高被节点ban.</p>
 <p>经过多次测试，此类大量查询的情况下，官方给的节点相比商用的有限制次数的节点会更好用。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 官方给的节点列表</span></span><br><span class="line">RPC_List = [<span class="string">&#x27;https://bsc-dataseed.binance.org/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed1.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed1.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed2.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed3.defibit.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed4.defibit.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed2.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed3.ninicoin.io/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed4.ninicoin.io/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed1.binance.org/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed2.binance.org/&#x27;</span>, <span class="string">&#x27;https://bsc-dataseed3.binance.org/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;https://bsc-dataseed4.binance.org/&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
 <p>能稳定、快速的获取到block的数据后，接下来就要过滤出跟Raca NFT市场相关的交易记录</p>
-<h2 id="过滤相关记录："><a href="#过滤相关记录：" class="headerlink" title="过滤相关记录："></a>过滤相关记录：</h2><p>相关的交易记录：tx的to地址指向raca市场合约</p>
+<h2 id="过滤相关记录：">过滤相关记录：</h2>
+<p>相关的交易记录：tx的to地址指向raca市场合约</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">list_of_block_transactions = block.transactions</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> transaction <span class="keyword">in</span> list_of_block_transactions:</span><br><span class="line">    to_account = transaction[<span class="string">&#x27;to&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> to_account == self.contract_addr: <span class="comment"># 与raca市场合约交互的记录</span></span><br><span class="line">        self.parse_transaction(transaction, block_timestamp)</span><br></pre></td></tr></table></figure>
-
 <p>过滤出相关记录后，就要进行对记录进行解析了。</p>
-<h2 id="解析："><a href="#解析：" class="headerlink" title="解析："></a>解析：</h2><p><code>input data</code>的前八位为方法名，找出买卖两类函数的hash，就可以再次过滤出raca市场有关的买卖交易记录了。</p>
+<h2 id="解析：">解析：</h2>
+<p><code>input data</code>的前八位为方法名，找出买卖两类函数的hash，就可以再次过滤出raca市场有关的买卖交易记录了。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_transaction</span>(<span class="params">self, transaction, block_timestamp</span>):</span><br><span class="line">    <span class="comment"># logger.debug(&quot;parse transaction. hash:&#123;&#125;&quot;.format(hash_info[&quot;hash&quot;]))</span></span><br><span class="line">    transaction_info = &#123;&#125;</span><br><span class="line">    transaction_info[<span class="string">&quot;tx&quot;</span>] = transaction[<span class="string">&quot;hash&quot;</span>].<span class="built_in">hex</span>()</span><br><span class="line">    transaction_info[<span class="string">&quot;from&quot;</span>] = transaction[<span class="string">&quot;from&quot;</span>]</span><br><span class="line">    transaction_info[<span class="string">&quot;time&quot;</span>] = timestamp2date(<span class="built_in">int</span>(block_timestamp))</span><br><span class="line"></span><br><span class="line">    input_data = transaction[<span class="string">&quot;input&quot;</span>]</span><br><span class="line">    four_byte = input_data[<span class="number">0</span>:<span class="number">10</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> four_byte == <span class="string">&quot;0x467f963d&quot;</span>:  <span class="comment"># sell的函数选择器</span></span><br><span class="line">        transaction_info[<span class="string">&quot;type&quot;</span>] = <span class="string">&quot;SELL&quot;</span></span><br><span class="line">        nft_token, token_id, num, per_price = self.parse_sell_input_data(input_data)</span><br><span class="line">        transaction_info[<span class="string">&quot;token&quot;</span>] = Web3.toChecksumAddress(nft_token)</span><br><span class="line">        transaction_info[<span class="string">&quot;tokenId&quot;</span>] = token_id</span><br><span class="line">        transaction_info[<span class="string">&quot;count&quot;</span>] = num</span><br><span class="line">        transaction_info[<span class="string">&quot;amount&quot;</span>] = <span class="built_in">str</span>(per_price)</span><br><span class="line">        <span class="comment"># 。。。。</span></span><br></pre></td></tr></table></figure>
-
 <p>剩下的部分,就是对各个参数进行解析了。</p>
 <blockquote>
-<p>data组成规则:<br>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
+<p>data组成规则:<br>
+关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
 <p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
 <p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
 </blockquote>
-<h1 id="小结"><a href="#小结" class="headerlink" title="小结:"></a>小结:</h1><p>至此，通过以下几个步骤</p>
-<ul>
-<li>读取block数据</li>
-<li>过滤出raca市场合约相关交易</li>
-<li>过滤出买卖相关的交易</li>
+<h1>小结:</h1>
+<p>至此，通过以下几个步骤</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>读取block数据</p>
+</li>
+<li class="lvl-2">
+<p>过滤出raca市场合约相关交易</p>
+</li>
+<li class="lvl-2">
+<p>过滤出买卖相关的交易</p>
+</li>
 </ul>
 <p>就基本可以完成对<code>Raca NFT</code>市场实时交易记录的监控了。</p>
 <hr>
 <p>在开发的过程中，也发现了一些有趣的点。</p>
-<h1 id="有趣的点："><a href="#有趣的点：" class="headerlink" title="有趣的点："></a>有趣的点：</h1><h2 id="科学家抢购"><a href="#科学家抢购" class="headerlink" title="科学家抢购:"></a>科学家抢购:</h2><p>比如该<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x80aef859189aa9508ca6760cd669057ed592bf1ac646f6c5951c8dd6e89b4927">tx</a>在<code>13151047</code>区块挂了元兽蛋的卖单，每个以<code>86.5raca</code>售出</p>
-<p>在接下来的几个区块，都有人发单去抢<br>最快是之后的第二个区块:block_num: <code>13151049</code></p>
+<h1>有趣的点：</h1>
+<h2 id="科学家抢购">科学家抢购:</h2>
+<p>比如该<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x80aef859189aa9508ca6760cd669057ed592bf1ac646f6c5951c8dd6e89b4927">tx</a>在<code>13151047</code>区块挂了元兽蛋的卖单，每个以<code>86.5raca</code>售出</p>
+<p>在接下来的几个区块，都有人发单去抢最快是之后的第二个区块:block_num: <code>13151049</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 抢购的tx列表</span></span><br><span class="line"><span class="number">0x62ab3cb23f62459154b652dfb855d4f6f9df4b6fa27363ce69484909f695b94c</span></span><br><span class="line"><span class="number">0x6e8e06710565fd9cd5f4d8223ed172d817f2e50b5f0aa4f297bf9738bab5b541</span></span><br><span class="line"><span class="number">0xfd1bee48d470f8bf9b3f4134ea5de7fc323f20b3de2ccd6d8658f02378d97649</span></span><br><span class="line"><span class="number">0x65ec96412cd5632b8e29225cb8ce96bb76429cc4da68a28ad394643c75a2c8b7</span></span><br><span class="line"><span class="number">0x094b419c95790a8514193a79e2835db42e7ccc0313a5d6511a486853c06508d3</span></span><br></pre></td></tr></table></figure>
-
 <p>第三个区块:block_num: <code>13151050</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 抢购的tx列表</span></span><br><span class="line"><span class="number">0x23b210a6e49dc724ad7d36ca89c57ca187d6e179d568bfe1f0acba77ab09fbc3</span>        </span><br><span class="line"><span class="number">0xfa8327cbd2e3e5d92cc6e23e1b1e0d3d1f40e17976d76047d91da6385396de3f</span></span><br><span class="line"><span class="number">0x4a93d2d696df10b78a5b69b095a134a6f12642aa76f92239cf0efcc660ab114b</span></span><br></pre></td></tr></table></figure>
-
 <p>第六个区块:block_num: <code>13151053</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 抢购的tx列表</span></span><br><span class="line"><span class="number">0xc4373dd6aac99ecb046c581f8006c34bda520111b4e575d400241eb59d889e85</span></span><br></pre></td></tr></table></figure>
-
-<p>奇怪的是大家都抢购失败了，<code>Fail with error &#39;Auction: auction not OnAuction&#39;</code><br>但能在卖单的之后的第二个区块，能检测并发起买单的这些科学家的实力都是挺厉害的。</p>
-<h2 id="市场活跃度-amp-差价"><a href="#市场活跃度-amp-差价" class="headerlink" title="市场活跃度&amp;差价"></a>市场活跃度&amp;差价</h2><p>在比较火的那段时间里，raca nft市场的交易量是特别大的，流动性很足，基本上很多商品只要挂最低价上去，就会被立刻买走。<br>另外，raca nft市场可以批量10个或100个卖出，一般批量的价格会比单个的价格更低，存在一些差价，这当中有套利的机会。</p>
+<p>奇怪的是大家都抢购失败了，<code>Fail with error 'Auction: auction not OnAuction'</code>但能在卖单的之后的第二个区块，能检测并发起买单的这些科学家的实力都是挺厉害的。</p>
+<h2 id="市场活跃度-差价">市场活跃度&amp;差价</h2>
+<p>在比较火的那段时间里，raca nft市场的交易量是特别大的，流动性很足，基本上很多商品只要挂最低价上去，就会被立刻买走。另外，raca nft市场可以批量10个或100个卖出，一般批量的价格会比单个的价格更低，存在一些差价，这当中有套利的机会。</p>
 
     </div>
 
@@ -327,10 +341,10 @@
       <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/56133.html" rel="bookmark">Crypto-pancakeSwap收税地址的简单分析</a></div>
+      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2022/56133.html" rel="bookmark">Crypto-pancakeSwap收税地址的简单分析</a></div>
     </li>
   </ul>
 
@@ -418,7 +432,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96Bsc-Block-Data"><span class="nav-number">2.</span> <span class="nav-text">读取Bsc Block Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E8%AF%BB%E5%8F%96block%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.</span> <span class="nav-text">快速读取block数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E7%9B%B8%E5%85%B3%E8%AE%B0%E5%BD%95%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">过滤相关记录：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">解析：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E8%B6%A3%E7%9A%84%E7%82%B9%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">有趣的点：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%91%E5%AD%A6%E5%AE%B6%E6%8A%A2%E8%B4%AD"><span class="nav-number">4.1.</span> <span class="nav-text">科学家抢购:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%82%E5%9C%BA%E6%B4%BB%E8%B7%83%E5%BA%A6-amp-%E5%B7%AE%E4%BB%B7"><span class="nav-number">4.2.</span> <span class="nav-text">市场活跃度&amp;差价</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">读取Bsc Block Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E8%AF%BB%E5%8F%96block%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.</span> <span class="nav-text">快速读取block数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E7%9B%B8%E5%85%B3%E8%AE%B0%E5%BD%95%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">过滤相关记录：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">解析：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">有趣的点：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%91%E5%AD%A6%E5%AE%B6%E6%8A%A2%E8%B4%AD"><span class="nav-number">4.1.</span> <span class="nav-text">科学家抢购:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%82%E5%9C%BA%E6%B4%BB%E8%B7%83%E5%BA%A6-%E5%B7%AE%E4%BB%B7"><span class="nav-number">4.2.</span> <span class="nav-text">市场活跃度&amp;差价</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -434,7 +448,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -489,12 +503,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

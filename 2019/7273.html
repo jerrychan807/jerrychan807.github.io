@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="preface :Breacher是由python写的多线程管理员后台爆破工具 出于练手的目的,打算用golang重新造个轮子. github:Breacher-Go 并发:python里面自然用得多的是多线程.而go里面自然要用到goroutine go goroutine语法:在Go语言中，每一个并发的执行单元叫作一个goroutine 当一个程序启动时，其主函数即在一个单独的goroutin">
+  <meta name="description" content="preface : Breacher是由python写的多线程管理员后台爆破工具 出于练手的目的,打算用golang重新造个轮子. github:Breacher-Go 并发: python里面自然用得多的是多线程. 而go里面自然要用到goroutine go goroutine 语法: 在Go语言中，每一个并发的执行单元叫作一个goroutine 当一个程序启动时，其主函数即在一个单独的gor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Breacher-Go高并发管理员后台爆破工具">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/7273.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="preface :Breacher是由python写的多线程管理员后台爆破工具 出于练手的目的,打算用golang重新造个轮子. github:Breacher-Go 并发:python里面自然用得多的是多线程.而go里面自然要用到goroutine go goroutine语法:在Go语言中，每一个并发的执行单元叫作一个goroutine 当一个程序启动时，其主函数即在一个单独的goroutin">
+<meta property="og:description" content="preface : Breacher是由python写的多线程管理员后台爆破工具 出于练手的目的,打算用golang重新造个轮子. github:Breacher-Go 并发: python里面自然用得多的是多线程. 而go里面自然要用到goroutine go goroutine 语法: 在Go语言中，每一个并发的执行单元叫作一个goroutine 当一个程序启动时，其主函数即在一个单独的gor">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6df955e8.jpg">
 <meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d6e0776ac.jpg">
@@ -261,95 +261,151 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="preface"><a href="#preface" class="headerlink" title="preface :"></a>preface :</h1><p><a target="_blank" rel="noopener" href="https://github.com/s0md3v/Breacher">Breacher</a>是由python写的多线程管理员后台爆破工具</p>
+        <h1>preface :</h1>
+<p><a target="_blank" rel="noopener" href="https://github.com/s0md3v/Breacher">Breacher</a>是由python写的多线程管理员后台爆破工具</p>
 <p>出于练手的目的,打算用golang重新造个轮子.</p>
 <p>github:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/Breacher-Go">Breacher-Go</a></p>
-<h1 id="并发"><a href="#并发" class="headerlink" title="并发:"></a>并发:</h1><p>python里面自然用得多的是多线程.<br>而go里面自然要用到<code>goroutine</code></p>
-<h1 id="go-goroutine"><a href="#go-goroutine" class="headerlink" title="go goroutine"></a>go goroutine</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h2><p>在Go语言中，<strong>每一个并发的执行单元叫作一个<code>goroutine</code></strong></p>
+<h1>并发:</h1>
+<p>python里面自然用得多的是多线程.<br>
+而go里面自然要用到<code>goroutine</code></p>
+<h1>go goroutine</h1>
+<h2 id="语法">语法:</h2>
+<p>在Go语言中，<strong>每一个并发的执行单元叫作一个<code>goroutine</code></strong></p>
 <p>当一个程序启动时，其主函数即在一个单独的<code>goroutine</code>中运行，我们叫它<code>main goroutine</code>。</p>
 <p>新的<code>goroutine</code>会用<code>go</code>语句来创建。</p>
-<p>在语法上，go语句是一个普通的函数或方法调用前加上**关键字<code>go</code>**。</p>
+<p>在语法上，go语句是一个普通的函数或方法调用前加上<strong>关键字<code>go</code></strong>。</p>
 <p>go语句会使其语句中的函数在一个新创建的<code>goroutine</code>中运行。而go语句本身会迅速地完成。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f()    <span class="comment">// call f(); wait for it to return</span></span><br><span class="line"><span class="keyword">go</span> f() <span class="comment">// create a new goroutine that calls f(); don&#x27;t wait</span></span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>在Go语言中，语言本身就已经实现和支持了并发,所以写起并发来相当方便.</p>
 </blockquote>
-<h2 id="goroutine的优势"><a href="#goroutine的优势" class="headerlink" title="goroutine的优势:"></a>goroutine的优势:</h2><p>gouroutine其实就是一种协程，类似其他语言中的coroutine， 是在编译器或虚拟机层面上的多任务。</p>
+<h2 id="goroutine的优势">goroutine的优势:</h2>
+<p>gouroutine其实就是一种协程，类似其他语言中的coroutine， 是在编译器或虚拟机层面上的多任务。</p>
 <p>它可以运行在一个或多个线程上，但不同于线程，它是<strong>非抢占式</strong>的，所以协程很轻量。</p>
-<h1 id="简单的并发方案1"><a href="#简单的并发方案1" class="headerlink" title="简单的并发方案1"></a>简单的并发方案1</h1><p>简单的做法:</p>
-<ul>
-<li>将需要处理的Url分成n等份</li>
-<li>开启n个goroutine去消费掉url</li>
+<h1>简单的并发方案1</h1>
+<p>简单的做法:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>将需要处理的Url分成n等份</p>
+</li>
+<li class="lvl-2">
+<p>开启n个goroutine去消费掉url</p>
+</li>
 </ul>
 <ol>
-<li>将需要处理的Url分成n等份</li>
+<li class="lvl-3">
+<p>将需要处理的Url分成n等份</p>
+</li>
 </ol>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">divided</span><span class="params">(links []<span class="type">string</span>, goroutineNum <span class="type">int</span>)</span></span> [][]<span class="type">string</span> &#123;</span><br><span class="line">	chunkSize := (<span class="built_in">len</span>(links) + goroutineNum - <span class="number">1</span>) / goroutineNum</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> dividedPath [][]<span class="type">string</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(links); i += chunkSize &#123;</span><br><span class="line">		end := i + chunkSize</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> end &gt; <span class="built_in">len</span>(links) &#123;</span><br><span class="line">			end = <span class="built_in">len</span>(links)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		dividedPath = <span class="built_in">append</span>(dividedPath, links[i:end])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> dividedPath</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>2.开启n个goroutine去消费掉url</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">dividedLinks := divided(collected_path, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> _, link := <span class="keyword">range</span> dividedLinks &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%#v\n&quot;</span>, <span class="built_in">len</span>(link))</span><br><span class="line">	wg.Add(<span class="number">1</span>) <span class="comment">// Increment the WaitGroup counter.</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(link []<span class="type">string</span>)</span></span> &#123;</span><br><span class="line">		<span class="comment">// Launch a goroutine to fetch the link.</span></span><br><span class="line">		scan(start_url, link)</span><br><span class="line">		<span class="comment">// Fetch the link.</span></span><br><span class="line">		wg.Done()</span><br><span class="line">	&#125;(link)</span><br><span class="line">&#125;</span><br><span class="line">wg.Wait() <span class="comment">// Wait for all goroutines to finish.</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="速度比较"><a href="#速度比较" class="headerlink" title="速度比较:"></a>速度比较:</h1><h2 id="自身速度比较"><a href="#自身速度比较" class="headerlink" title="自身速度比较:"></a>自身速度比较:</h2><p>go 不用并发消耗的时间:</p>
+<h1>速度比较:</h1>
+<h2 id="自身速度比较">自身速度比较:</h2>
+<p>go 不用并发消耗的时间:</p>
 <p>不同网络环境下的消耗时间:</p>
 <ol>
-<li><p><code>elapsed time:  1.951978378s</code> (5个goroutine)</p>
+<li class="lvl-3">
+<p><code>elapsed time:  1.951978378s</code> (5个goroutine)</p>
 </li>
-<li><p><code>elapsed time:  11.353934431s</code></p>
+<li class="lvl-3">
+<p><code>elapsed time:  11.353934431s</code></p>
 </li>
-<li><p><code>elapsed time:  35.50535812s</code> (5个goroutine)</p>
+<li class="lvl-3">
+<p><code>elapsed time:  35.50535812s</code> (5个goroutine)</p>
 </li>
-<li><p><code>elapsed time:  2m32.608078161s</code></p>
+<li class="lvl-3">
+<p><code>elapsed time:  2m32.608078161s</code></p>
 </li>
 </ol>
-<h2 id="与python的速度比较"><a href="#与python的速度比较" class="headerlink" title="与python的速度比较:"></a>与python的速度比较:</h2><p>python:<br>2个线程:<code>74.5581650734s</code></p>
-<p>go:<br>2个goroutine<br><code>elapsed time:  1m10.233281137s</code></p>
+<h2 id="与python的速度比较">与python的速度比较:</h2>
+<p>python:<br>
+2个线程:<code>74.5581650734s</code></p>
+<p>go:<br>
+2个goroutine<br>
+<code>elapsed time:  1m10.233281137s</code></p>
 <p>速度几乎是一样的,并非是想象中那样,go会比python快很多.</p>
 <blockquote>
 <p>question: 什么场景下goroutine会比python的thread有优势?</p>
 </blockquote>
 <hr>
-<h1 id="减少误报"><a href="#减少误报" class="headerlink" title="减少误报:"></a>减少误报:</h1><h2 id="最快的方式"><a href="#最快的方式" class="headerlink" title="最快的方式:"></a>最快的方式:</h2><p>最快的方式就是用<code>head</code>请求,然后通过<code>response code</code>判断,如果是<code>200</code>则认为存在.</p>
+<h1>减少误报:</h1>
+<h2 id="最快的方式">最快的方式:</h2>
+<p>最快的方式就是用<code>head</code>请求,然后通过<code>response code</code>判断,如果是<code>200</code>则认为存在.</p>
 <p>但是这样在实际应用过程中,很有可能会产生大量的误报.</p>
 <blockquote>
 <p>使用御剑爆破网站路径的时候,同理也会产生大量的误报.</p>
 </blockquote>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子:"></a>例子:</h2><p>Response code是200</p>
-<p>大量误报:<br><img src="https://i.loli.net/2019/04/25/5cc1d6df955e8.jpg"></p>
-<p>误报结果:<br><img src="https://i.loli.net/2019/04/25/5cc1d6e0776ac.jpg"></p>
-<h2 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h2><p>暂时能想到的原因有:</p>
-<ul>
-<li>网站本身会自定义错误或者404页面</li>
-<li>网站有防护设备,会自动重定向到别的页面</li>
+<h2 id="例子">例子:</h2>
+<p>Response code是200</p>
+<p>大量误报:<br>
+<img src="https://i.loli.net/2019/04/25/5cc1d6df955e8.jpg" alt=""></p>
+<p>误报结果:<br>
+<img src="https://i.loli.net/2019/04/25/5cc1d6e0776ac.jpg" alt=""></p>
+<h2 id="原因">原因:</h2>
+<p>暂时能想到的原因有:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>网站本身会自定义错误或者404页面</p>
+</li>
+<li class="lvl-2">
+<p>网站有防护设备,会自动重定向到别的页面</p>
+</li>
 </ul>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>找到管理员的后台的目的,通常是为了暴力破解,尝试用弱密码进入到管理员的后台.</p>
+<h2 id="解决方案">解决方案:</h2>
+<p>找到管理员的后台的目的,通常是为了暴力破解,尝试用弱密码进入到管理员的后台.</p>
 <p>那么就是有个共同点就是有登录页面</p>
-<p>密码框常用到是<code>input</code>标签的 type属性设为<code>password</code><br><img src="https://i.loli.net/2019/04/25/5cc1d6e141448.jpg"></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6e1e2da6.jpg"></p>
+<p>密码框常用到是<code>input</code>标签的 type属性设为<code>password</code><br>
+<img src="https://i.loli.net/2019/04/25/5cc1d6e141448.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6e1e2da6.jpg" alt=""></p>
 <p>解决方案：</p>
-<ul>
-<li>用<code>get</code>方法获取登录页面源码</li>
-<li>Response code 为200的同时,页面源码含有<code>type=&quot;password&quot;</code></li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>用<code>get</code>方法获取登录页面源码</p>
+</li>
+<li class="lvl-2">
+<p>Response code 为200的同时,页面源码含有<code>type=&quot;password&quot;</code></p>
+</li>
 </ul>
 <p>结果确实是大大减少了误报</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g0j41hdln4j30ou0pewte.jpg"></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g0j41hdln4j30ou0pewte.jpg" alt=""></p>
 <blockquote>
 <ol>
-<li>大字典的情况下,<code>get</code>方法的速度肯定会比<code>head</code>方法慢很多,哎,速度与准确性常常难以并存啊~</li>
-<li>减少误报的同时,则会产生漏报问题…</li>
+<li class="lvl-3">
+<p>大字典的情况下,<code>get</code>方法的速度肯定会比<code>head</code>方法慢很多,哎,速度与准确性常常难以并存啊~</p>
+</li>
+<li class="lvl-3">
+<p>减少误报的同时,则会产生漏报问题…</p>
+</li>
 </ol>
 </blockquote>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://studygolang.com/articles/13875">图解 Go 并发编程</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.kancloud.cn/hartnett/gopl-zh/126058">第八章 Goroutines和Channels</a></li>
-<li><a target="_blank" rel="noopener" href="https://juejin.im/entry/5acac667518825619d4d0f44">Golang并发编程</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/john_f_lau/article/details/50923380">Go计算运行的时间</a></li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35179656/slice-chunking-in-go">Slice chunking in Go</a></li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://studygolang.com/articles/13875">图解 Go 并发编程</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.kancloud.cn/hartnett/gopl-zh/126058">第八章 Goroutines和Channels</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://juejin.im/entry/5acac667518825619d4d0f44">Golang并发编程</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/john_f_lau/article/details/50923380">Go计算运行的时间</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35179656/slice-chunking-in-go">Slice chunking in Go</a></p>
+</li>
 </ul>
-<h1 id="question"><a href="#question" class="headerlink" title="question:"></a>question:</h1><ol>
-<li>什么场景下goroutine会比python的thread有优势?</li>
-<li>减少误报的同时如何减少漏报?</li>
+<h1>question:</h1>
+<ol>
+<li class="lvl-3">
+<p>什么场景下goroutine会比python的thread有优势?</p>
+</li>
+<li class="lvl-3">
+<p>减少误报的同时如何减少漏报?</p>
+</li>
 </ol>
 
     </div>
@@ -461,7 +517,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#preface"><span class="nav-number">1.</span> <span class="nav-text">preface :</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">并发:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-goroutine"><span class="nav-number">3.</span> <span class="nav-text">go goroutine</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">语法:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#goroutine%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">3.2.</span> <span class="nav-text">goroutine的优势:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E5%B9%B6%E5%8F%91%E6%96%B9%E6%A1%881"><span class="nav-number">4.</span> <span class="nav-text">简单的并发方案1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">5.</span> <span class="nav-text">速度比较:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E8%BA%AB%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">5.1.</span> <span class="nav-text">自身速度比较:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Epython%E7%9A%84%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">5.2.</span> <span class="nav-text">与python的速度比较:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E8%AF%AF%E6%8A%A5"><span class="nav-number">6.</span> <span class="nav-text">减少误报:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%BF%AB%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">最快的方式:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">6.2.</span> <span class="nav-text">例子:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">6.3.</span> <span class="nav-text">原因:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">6.4.</span> <span class="nav-text">解决方案:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#question"><span class="nav-number">8.</span> <span class="nav-text">question:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">preface :</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">并发:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">go goroutine</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">语法:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#goroutine%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">3.2.</span> <span class="nav-text">goroutine的优势:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">简单的并发方案1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">速度比较:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E8%BA%AB%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">5.1.</span> <span class="nav-text">自身速度比较:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Epython%E7%9A%84%E9%80%9F%E5%BA%A6%E6%AF%94%E8%BE%83"><span class="nav-number">5.2.</span> <span class="nav-text">与python的速度比较:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">减少误报:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%BF%AB%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">最快的方式:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">6.2.</span> <span class="nav-text">例子:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">6.3.</span> <span class="nav-text">原因:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">6.4.</span> <span class="nav-text">解决方案:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">refs:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">question:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -477,7 +533,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -532,12 +588,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

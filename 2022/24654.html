@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:实现一个具有黑名单功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;blacklist 需求: 黑名单用户无法正常transfer 管理员可配置黑名单里的地址  业务场景：暂时能想到的    项目方 目的    好人 将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当">
+  <meta name="description" content="Pre: 实现一个具有黑名单功能的erc20代币 github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;blacklist 需求:   黑名单用户无法正常transfer   管理员可配置黑名单里的地址   业务场景： 暂时能想到的    项目方 目的     好人 将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Project-CoolErc20-blacklist-具备黑名单代币">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/24654.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:实现一个具有黑名单功能的erc20代币github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;blacklist 需求: 黑名单用户无法正常transfer 管理员可配置黑名单里的地址  业务场景：暂时能想到的    项目方 目的    好人 将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当">
+<meta property="og:description" content="Pre: 实现一个具有黑名单功能的erc20代币 github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;blacklist 需求:   黑名单用户无法正常transfer   管理员可配置黑名单里的地址   业务场景： 暂时能想到的    项目方 目的     好人 将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-06-21T14:36:34.000Z">
 <meta property="article:modified_time" content="2022-06-23T09:58:15.479Z">
@@ -257,12 +257,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>实现一个具有黑名单功能的erc20代币<br>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
-<h1 id="需求"><a href="#需求" class="headerlink" title="需求:"></a>需求:</h1><ul>
-<li>黑名单用户无法正常<code>transfer</code></li>
-<li>管理员可配置黑名单里的地址</li>
+        <h1>Pre:</h1>
+<p>实现一个具有黑名单功能的erc20代币<br>
+github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
+<h1>需求:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>黑名单用户无法正常<code>transfer</code></p>
+</li>
+<li class="lvl-2">
+<p>管理员可配置黑名单里的地址</p>
+</li>
 </ul>
-<h1 id="业务场景："><a href="#业务场景：" class="headerlink" title="业务场景："></a>业务场景：</h1><p>暂时能想到的</p>
+<h1>业务场景：</h1>
+<p>暂时能想到的</p>
 <table>
 <thead>
 <tr>
@@ -270,7 +278,8 @@
 <th>目的</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>好人</td>
 <td>将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当于冻结它的资产</td>
 </tr>
@@ -278,39 +287,66 @@
 <td>坏人</td>
 <td>rug、scam</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>还想到一个骚操作，如果把swap的地址加入黑名单列表。。🤣也可以使得该erc20代币 无法正常的与swap交互，无法买卖、添加移除流动性。</p>
-<h1 id="部署："><a href="#部署：" class="headerlink" title="部署："></a>部署：</h1><p>如果是在<code>hardhat</code>环境的话，不用先执行编译、部署了，可以直接<code>yarn hardhat test</code>，会默认执行前两步。</p>
-<h1 id="编写合约："><a href="#编写合约：" class="headerlink" title="编写合约："></a>编写合约：</h1><h2 id="黑名单判断："><a href="#黑名单判断：" class="headerlink" title="黑名单判断："></a>黑名单判断：</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal override &#123;</span><br><span class="line">    <span class="comment">// 错误写法：只要一个为非黑名单即可</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from] || !_blackList[to], &quot;ERC20: user in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="comment">// require( !_blackList[to], &quot;ERC20: &#x27;to&#x27; address in black list&quot;);</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from], &quot;ERC20: &#x27;from&#x27; address in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="built_in">require</span>( !_blackList[to] &amp;&amp;  !_blackList[<span class="keyword">from</span>], <span class="string">&quot;ERC20: &#x27;to&#x27; or &#x27;from&#x27; address in black list&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一开始觉得这个erc20合约很简单，结果一写到黑名单判断的时候，第一次就写错了。。😅<br>还发现正确写法有两种，其中第一种可以更清晰地把错误原因写清楚。</p>
+<h1>部署：</h1>
+<p>如果是在<code>hardhat</code>环境的话，不用先执行编译、部署了，可以直接<code>yarn hardhat test</code>，会默认执行前两步。</p>
+<h1>编写合约：</h1>
+<h2 id="黑名单判断：">黑名单判断：</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal override &#123;</span><br><span class="line">    <span class="comment">// 错误写法：只要一个为非黑名单即可</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from] || !_blackList[to], &quot;ERC20: user in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="comment">// require( !_blackList[to], &quot;ERC20: &#x27;to&#x27; address in black list&quot;);</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from], &quot;ERC20: &#x27;from&#x27; address in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="built_in">require</span>( !_blackList[to] &amp;&amp;  !_blackList[<span class="keyword">from</span>], <span class="string">&quot;ERC20: &#x27;to&#x27; or &#x27;from&#x27; address in black list&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一开始觉得这个erc20合约很简单，结果一写到黑名单判断的时候，第一次就写错了。。😅<br>
+还发现正确写法有两种，其中第一种可以更清晰地把错误原因写清楚。</p>
 <blockquote>
 <p>看来还是要多code，多实践才行</p>
 </blockquote>
-<h1 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h1><h2 id="Mocha测试框架"><a href="#Mocha测试框架" class="headerlink" title="Mocha测试框架"></a>Mocha测试框架</h2><p>在写测试脚本时，有一个目前没接触过的测试需求：<br>需要给用户设置黑名单后，给这个用户转账，然后希望这次转账报错。</p>
+<h1>测试：</h1>
+<h2 id="Mocha测试框架">Mocha测试框架</h2>
+<p>在写测试脚本时，有一个目前没接触过的测试需求：需要给用户设置黑名单后，给这个用户转账，然后希望这次转账报错。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 希望该函数报错的写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
-
 <p>在查文档的时候才知道。。<code>hardhat</code>用到的是一个叫<code>Mocha</code>的测试框架，后续如果还遇到新的测试需求可以查阅该文档。</p>
 <blockquote>
 <p>Mocha是一个能够运行在Node和浏览器中的多功能的JavaScript测试框架，它让异步测试简单且有趣。</p>
 <p>Mocha连续地运行测试，并给出灵活而精确的报告，同时能够将错误精确地映射到测试用例上。它托管在GitHub上。</p>
 </blockquote>
-<h2 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h2><p>符合预期：</p>
+<h2 id="测试结果：">测试结果：</h2>
+<p>符合预期：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Set blacklist: </span><br><span class="line">【Step 3】tokenOwner Set user0 in blacklist: </span><br><span class="line">【Step 3】user0IfBlackList: true</span><br><span class="line"> After setting blacklist, try : </span><br><span class="line">【Step 4】tokenOwner Set user0 in blacklist and try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line">      ✔ can&#x27;t transfer after setting blacklist (1351ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h1><ul>
-<li>看来还是要多code，多实践才行，再简单的需求，真正写起来的时候也很有可能出错。</li>
-<li>写<code>hardhat</code>测试脚本时，如果遇到没见过的测试需求，可以查阅<code>mocha</code>的文档</li>
-<li>比如平时有看到别的项目用hardhat构建的，可以参考里面的test脚本，学学别人的写法</li>
-<li>实践出真知🧐🧐🧐</li>
-<li>实践出真知🧐🧐🧐</li>
-<li>实践出真知🧐🧐🧐</li>
+<h1>Summary:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>看来还是要多code，多实践才行，再简单的需求，真正写起来的时候也很有可能出错。</p>
+</li>
+<li class="lvl-2">
+<p>写<code>hardhat</code>测试脚本时，如果遇到没见过的测试需求，可以查阅<code>mocha</code>的文档</p>
+</li>
+<li class="lvl-2">
+<p>比如平时有看到别的项目用hardhat构建的，可以参考里面的test脚本，学学别人的写法</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
 </ul>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/bsc/bscUniswapV2.test.ts">poly-flash 参考里面的test脚本</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9c78548caffa">Mocha.js官方文档翻译 —— 简单、灵活、有趣</a></li>
-<li><a target="_blank" rel="noopener" href="https://mochajs.bootcss.com/#inclusive-tests">Mocha中文文档1</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.wanxiangyundang.top/read/mocha-in-chinese/EXCLUSIVE.md">Mocha中文文档2</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/bsc/bscUniswapV2.test.ts">poly-flash 参考里面的test脚本</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9c78548caffa">Mocha.js官方文档翻译 —— 简单、灵活、有趣</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://mochajs.bootcss.com/#inclusive-tests">Mocha中文文档1</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.wanxiangyundang.top/read/mocha-in-chinese/EXCLUSIVE.md">Mocha中文文档2</a></p>
+</li>
 </ul>
 
     </div>
@@ -424,7 +460,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%90%88%E7%BA%A6%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E5%88%A4%E6%96%AD%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">黑名单判断：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mocha%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">6.1.</span> <span class="nav-text">Mocha测试框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E5%88%A4%E6%96%AD%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">黑名单判断：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mocha%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">6.1.</span> <span class="nav-text">Mocha测试框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -440,7 +476,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -495,12 +531,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

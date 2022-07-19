@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="范围一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。  百度dork:  exp测试步骤:1python3 sentrySSRF.py -i https:&#x2F;&#x2F;sentry.tpxventures.com&#x2F;auth&#x2F;login">
+  <meta name="description" content="范围 一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。  百度dork:   exp测试步骤: 1python3 sentrySSRF.py -i https:&#x2F;&#x2F;sentry.tpxventures.com&#x2F;auth&#x2F;lo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sentry SSRF">
 <meta property="og:url" content="https://jerrychan807.github.io/2020/12497.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="范围一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。  百度dork:  exp测试步骤:1python3 sentrySSRF.py -i https:&#x2F;&#x2F;sentry.tpxventures.com&#x2F;auth&#x2F;login">
+<meta property="og:description" content="范围 一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。  百度dork:   exp测试步骤: 1python3 sentrySSRF.py -i https:&#x2F;&#x2F;sentry.tpxventures.com&#x2F;auth&#x2F;lo">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102259.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102724.png">
@@ -241,7 +241,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>398</span>
+              <span>383</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -260,26 +260,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="范围"><a href="#范围" class="headerlink" title="范围"></a>范围</h1><p>一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。</p>
+        <h1>范围</h1>
+<p>一般在url上看到到有sentry都可以用Sentry（是一个实时事件日志记录和聚合平台）的exp试试，原理是由于sentry默认开启source code scrapping ，导致可以从外部进行blind ssrf请求。</p>
 <hr>
-<h1 id="百度dork"><a href="#百度dork" class="headerlink" title="百度dork:"></a>百度dork:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102259.png" alt="20201118102259"></p>
+<h1>百度dork:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102259.png" alt="20201118102259"></p>
 <hr>
-<h1 id="exp测试步骤"><a href="#exp测试步骤" class="headerlink" title="exp测试步骤:"></a>exp测试步骤:</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 sentrySSRF.py -i https://sentry.tpxventures.com/auth/login/technomedia/ -d</span><br></pre></td></tr></table></figure>
-
+<h1>exp测试步骤:</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 sentrySSRF.py -i https://sentry.tpxventures.com/auth/login/technomedia/ -d</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102724.png" alt="20201118102724"></p>
 <p>brup collaborator收到请求</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102843.png" alt="20201118102843"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201118102924.png" alt="20201118102924"></p>
 <hr>
-<h1 id="修复方式"><a href="#修复方式" class="headerlink" title="修复方式"></a>修复方式</h1><ol>
-<li>sentry关闭 source code scrapping；</li>
-<li>保证配置文件中的黑名单不为空：&#x2F;sentry&#x2F;conf&#x2F;server.py</li>
+<h1>修复方式</h1>
+<ol>
+<li class="lvl-3">
+<p>sentry关闭 source code scrapping；</p>
+</li>
+<li class="lvl-3">
+<p>保证配置文件中的黑名单不为空：/sentry/conf/server.py</p>
+</li>
 </ol>
 <hr>
-<h1 id="refs"><a href="#refs" class="headerlink" title="refs:"></a>refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mysticbinary/p/12979368.html">sentry SSRF</a></li>
-<li><a target="_blank" rel="noopener" href="https://hackerone.com/reports/374737">https://hackerone.com/reports/374737</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/xawdxawdx/sentrySSRF">https://github.com/xawdxawdx/sentrySSRF</a></li>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/mysticbinary/p/12979368.html">sentry SSRF</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/374737">https://hackerone.com/reports/374737</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/xawdxawdx/sentrySSRF">https://github.com/xawdxawdx/sentrySSRF</a></p>
+</li>
 </ul>
 
     </div>
@@ -391,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4"><span class="nav-number">1.</span> <span class="nav-text">范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BE%E5%BA%A6dork"><span class="nav-number">2.</span> <span class="nav-text">百度dork:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#exp%E6%B5%8B%E8%AF%95%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">exp测试步骤:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">修复方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refs"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">百度dork:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">exp测试步骤:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">修复方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -407,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -462,12 +476,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

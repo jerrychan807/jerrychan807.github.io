@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+  <meta name="description" content="Pre: rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity: 简介: Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Crypto-rarity自动冒险升级脚本">
 <meta property="og:url" content="https://jerrychan807.github.io/2021/3287.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity:简介:Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天">
+<meta property="og:description" content="Pre: rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。 顺便熟悉一下solidty和web3js  Rarity: 简介: Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png">
@@ -261,88 +261,153 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
+        <h1>Pre:</h1>
+<p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
 <p>顺便熟悉一下<code>solidty</code>和<code>web3js</code></p>
 <hr>
-<h1 id="Rarity"><a href="#Rarity" class="headerlink" title="Rarity:"></a>Rarity:</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
+<h1>Rarity:</h1>
+<h2 id="简介-2">简介:</h2>
+<p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
 <p>游戏共有 11 个角色，分别是野人、吟游诗人、牧师、德鲁伊、斗士、僧侣、圣骑士、游侠、巡逻兵、巫师、法师。</p>
 <hr>
-<h2 id="合约源码"><a href="#合约源码" class="headerlink" title="合约源码:"></a>合约源码:</h2><p><a target="_blank" rel="noopener" href="https://github.com/andrecronje/rarity/blob/main/core/rarity.sol">rarity solidity源码</a></p>
+<h2 id="合约源码">合约源码:</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/andrecronje/rarity/blob/main/core/rarity.sol">rarity solidity源码</a></p>
 <p>简单通读一下源码,发现solidity写的代码还是挺简单的，并没想象中的难，可能跟没有那么多操作要放在链上有关。</p>
-<h2 id="readContract"><a href="#readContract" class="headerlink" title="readContract:"></a>readContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract</a></p>
+<h2 id="readContract">readContract:</h2>
+<p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#readContract</a></p>
 <p>挑几个比较重要的函数说明下</p>
 <blockquote>
 <p>adventures_log</p>
 </blockquote>
-<ul>
-<li>查询下一次冒险的时间</li>
-<li>input:角色id</li>
-<li>output:下一次冒险的时间戳</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>查询下一次冒险的时间</p>
+</li>
+<li class="lvl-2">
+<p>input:角色id</p>
+</li>
+<li class="lvl-2">
+<p>output:下一次冒险的时间戳</p>
+</li>
 </ul>
 <blockquote>
 <p>summoner</p>
 </blockquote>
-<ul>
-<li>查询角色信息</li>
-<li>input:角色id</li>
-<li>output:角色的经验、下一次冒险的时间戳、职业类别、等级</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>查询角色信息</p>
+</li>
+<li class="lvl-2">
+<p>input:角色id</p>
+</li>
+<li class="lvl-2">
+<p>output:角色的经验、下一次冒险的时间戳、职业类别、等级</p>
+</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png" alt="25641732-8ED4-4D10-81F4-B5E90094D83D"></p>
 <blockquote>
 <p>xp_required</p>
 </blockquote>
-<ul>
-<li>查询下一级所需经验</li>
-<li>input:等级</li>
-<li>output:下一级所需经验</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>查询下一级所需经验</p>
+</li>
+<li class="lvl-2">
+<p>input:等级</p>
+</li>
+<li class="lvl-2">
+<p>output:下一级所需经验</p>
+</li>
 </ul>
-<h2 id="writeContract"><a href="#writeContract" class="headerlink" title="writeContract:"></a>writeContract:</h2><p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract</a></p>
+<h2 id="writeContract">writeContract:</h2>
+<p><a target="_blank" rel="noopener" href="https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract">https://ftmscan.com/address/0xce761d788df608bd21bdd59d6f4b54b2e27f25bb#writeContract</a></p>
 <blockquote>
 <p>adventure</p>
 </blockquote>
-<ul>
-<li>让角色去冒险,每天只能冒险一次，每次获得250xp</li>
-<li>input:角色id</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>让角色去冒险,每天只能冒险一次，每次获得250xp</p>
+</li>
+<li class="lvl-2">
+<p>input:角色id</p>
+</li>
 </ul>
 <blockquote>
 <p>level_up</p>
 </blockquote>
-<ul>
-<li>角色升级</li>
-<li>input:角色id</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>角色升级</p>
+</li>
+<li class="lvl-2">
+<p>input:角色id</p>
+</li>
 </ul>
 <hr>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本:"></a>脚本:</h1><h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图:"></a>流程图:</h2><p>自动冒险:</p>
+<h1>脚本:</h1>
+<h2 id="流程图-2">流程图:</h2>
+<p>自动冒险:</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png" alt="DF22C901-3AC7-48EE-8D73-592181380B59"></p>
-<ul>
-<li>查出自己地址有哪些角色id</li>
-<li>调用合约的查询函数<code>summoner</code>，知道下一次冒险时间</li>
-<li>判断一下有没到冒险时间</li>
-<li>满足条件的话，调用合约的<code>adventure</code>，让角色去冒险</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>查出自己地址有哪些角色id</p>
+</li>
+<li class="lvl-2">
+<p>调用合约的查询函数<code>summoner</code>，知道下一次冒险时间</p>
+</li>
+<li class="lvl-2">
+<p>判断一下有没到冒险时间</p>
+</li>
+<li class="lvl-2">
+<p>满足条件的话，调用合约的<code>adventure</code>，让角色去冒险</p>
+</li>
 </ul>
 <p>自动升级:</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png" alt="84454A4B-F8F1-444D-AB4A-79B47F941381"></p>
-<ul>
-<li>调用合约函数<code>summoner</code>，知道当前经验值</li>
-<li>调用合约函数<code>xp_required</code>,知道下次升级所需经验</li>
-<li>满足条件的话，调用合约的<code>level_up</code>，让角色去升级</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>调用合约函数<code>summoner</code>，知道当前经验值</p>
+</li>
+<li class="lvl-2">
+<p>调用合约函数<code>xp_required</code>,知道下次升级所需经验</p>
+</li>
+<li class="lvl-2">
+<p>满足条件的话，调用合约的<code>level_up</code>，让角色去升级</p>
+</li>
 </ul>
 <hr>
-<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题:"></a>一些问题:</h1><h1 id="gas："><a href="#gas：" class="headerlink" title="gas："></a>gas：</h1><p>自己的脚本和<code>https://rarityextended.com/</code>执行的gas费有些差异,后续有空要看一下怎么样省一下gas fee，虽然也很少钱。</p>
+<h1>一些问题:</h1>
+<h1>gas：</h1>
+<p>自己的脚本和<code>https://rarityextended.com/</code>执行的gas费有些差异,后续有空要看一下怎么样省一下gas fee，虽然也很少钱。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png" alt="2749692E-F7D8-49E0-A22D-BD8AE0CC1040"></p>
-<h1 id="交易失败"><a href="#交易失败" class="headerlink" title="交易失败:"></a>交易失败:</h1><p>脚本定时跑起来后，常有几笔失败的交易，可能跟nonce设置有关系。</p>
+<h1>交易失败:</h1>
+<p>脚本定时跑起来后，常有几笔失败的交易，可能跟nonce设置有关系。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png" alt="20210927120445"></p>
 <hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h1><p>脚本定时跑起来后，就不用去web页面上一个个点去冒险和升级，方便了不少，<br>写之前觉得挺麻烦的，有点无从下手，写完才发现很简单。hhh</p>
+<h1>总结:</h1>
+<p>脚本定时跑起来后，就不用去web页面上一个个点去冒险和升级，方便了不少，写之前觉得挺麻烦的，有点无从下手，写完才发现很简单。hhh</p>
 <p>后续加点、玩副本这些，有空再研究补充下吧~</p>
 <hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.chainnews.com/news/322609390326.htm">Yearn Finance 创始人受 Loot 启发推出冒险游戏 Rarity</a></li>
-<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1182970312">全网最详细——AC游戏“Rarity”人物简介和加点攻略</a></li>
-<li><a target="_blank" rel="noopener" href="https://bihu.com/article/1438014279">【百大链游】FTM上的大冒险Rarity</a></li>
-<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/NwlpshhnEXgcqwqFF5JGbw">【DFarm】Rarity游戏基础规则超详细剖析</a></li>
-<li><a target="_blank" rel="noopener" href="https://rarityextended.com/">rarity Web1</a></li>
-<li><a target="_blank" rel="noopener" href="https://raritymmo.com/">rarity Web2</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.chainnews.com/news/322609390326.htm">Yearn Finance 创始人受 Loot 启发推出冒险游戏 Rarity</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://bihu.com/article/1182970312">全网最详细——AC游戏“Rarity”人物简介和加点攻略</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://bihu.com/article/1438014279">【百大链游】FTM上的大冒险Rarity</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/NwlpshhnEXgcqwqFF5JGbw">【DFarm】Rarity游戏基础规则超详细剖析</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://rarityextended.com/">rarity Web1</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://raritymmo.com/">rarity Web2</a></p>
+</li>
 </ul>
 
     </div>
@@ -366,7 +431,7 @@
       <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/56133.html" rel="bookmark">Crypto-pancakeSwap收税地址的简单分析</a></div>
+      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
     </li>
   </ul>
 
@@ -454,7 +519,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Rarity"><span class="nav-number">2.</span> <span class="nav-text">Rarity:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">合约源码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readContract"><span class="nav-number">2.3.</span> <span class="nav-text">readContract:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#writeContract"><span class="nav-number">2.4.</span> <span class="nav-text">writeContract:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">脚本:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">一些问题:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gas%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">gas：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E5%A4%B1%E8%B4%A5"><span class="nav-number">6.</span> <span class="nav-text">交易失败:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Rarity:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-2"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">合约源码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readContract"><span class="nav-number">2.3.</span> <span class="nav-text">readContract:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#writeContract"><span class="nav-number">2.4.</span> <span class="nav-text">writeContract:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">脚本:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE-2"><span class="nav-number">3.1.</span> <span class="nav-text">流程图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">一些问题:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">gas：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">交易失败:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">总结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -470,7 +535,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -525,12 +590,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

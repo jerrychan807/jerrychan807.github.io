@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:在做完僵尸教程后，觉得很不错，所以想从头写一遍，写一个dapp练练手。前端用vue合约用solidity，部署到ropsten测试网 效果图:  测试流程: 在remix编写solidity 在remix直接部署合约到JavaScript VM，把要用到函数走一遍流程 truffle部署到ropsten测试网 vue编写代码调试，与合约交互  部署:执行 1truffle migrate">
+  <meta name="description" content="Pre: 在做完僵尸教程后，觉得很不错，所以想从头写一遍，写一个dapp练练手。前端用vue 合约用solidity，部署到ropsten测试网 效果图:   测试流程:   在remix编写solidity   在remix直接部署合约到JavaScript VM，把要用到函数走一遍流程   truffle部署到ropsten测试网   vue编写代码调试，与合约交互   部署: 执行 1tru">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Project-CryptoZombie僵尸世界NFT游戏">
 <meta property="og:url" content="https://jerrychan807.github.io/2021/60348.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:在做完僵尸教程后，觉得很不错，所以想从头写一遍，写一个dapp练练手。前端用vue合约用solidity，部署到ropsten测试网 效果图:  测试流程: 在remix编写solidity 在remix直接部署合约到JavaScript VM，把要用到函数走一遍流程 truffle部署到ropsten测试网 vue编写代码调试，与合约交互  部署:执行 1truffle migrate">
+<meta property="og:description" content="Pre: 在做完僵尸教程后，觉得很不错，所以想从头写一遍，写一个dapp练练手。前端用vue 合约用solidity，部署到ropsten测试网 效果图:   测试流程:   在remix编写solidity   在remix直接部署合约到JavaScript VM，把要用到函数走一遍流程   truffle部署到ropsten测试网   vue编写代码调试，与合约交互   部署: 执行 1tru">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png">
@@ -261,58 +261,88 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>在做完<a target="_blank" rel="noopener" href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。<br>前端用vue<br>合约用solidity，部署到ropsten测试网</p>
-<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图:"></a>效果图:</h1><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
+        <h1>Pre:</h1>
+<p>在做完<a target="_blank" rel="noopener" href="https://cryptozombies.io/zh/course">僵尸教程</a>后，觉得很不错，所以想从头写一遍，写一个dapp练练手。前端用vue<br>
+合约用solidity，部署到ropsten测试网</p>
+<h1>效果图:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150336.png" alt="20211129150336"></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129150410.png" alt="20211129150410"></p>
-<h1 id="测试流程"><a href="#测试流程" class="headerlink" title="测试流程:"></a>测试流程:</h1><ol>
-<li>在remix编写solidity</li>
-<li>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</li>
-<li>truffle部署到ropsten测试网</li>
-<li>vue编写代码调试，与合约交互</li>
+<h1>测试流程:</h1>
+<ol>
+<li class="lvl-3">
+<p>在remix编写solidity</p>
+</li>
+<li class="lvl-3">
+<p>在remix直接部署合约到<code>JavaScript VM</code>，把要用到函数走一遍流程</p>
+</li>
+<li class="lvl-3">
+<p>truffle部署到ropsten测试网</p>
+</li>
+<li class="lvl-3">
+<p>vue编写代码调试，与合约交互</p>
+</li>
 </ol>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署:"></a>部署:</h1><p>执行</p>
+<h1>部署:</h1>
+<p>执行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle migrate --network ropsten</span><br></pre></td></tr></table></figure>
-
 <p>即可部署至Ropsten</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211129152415.png" alt="20211129152415"></p>
 <p>部署完毕后，把json文件copy到前端里面，在代码实例化后就可以直接使用了。</p>
-<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug:"></a>Bug:</h1><p>把遇到的bug列一下</p>
-<h2 id="truffle初始化错误"><a href="#truffle初始化错误" class="headerlink" title="truffle初始化错误:"></a>truffle初始化错误:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
-
-<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，<br>可以去github下载<br><code>git clone https://github.com/truffle-box/bare-box</code></p>
-<h2 id="truffle部署合约"><a href="#truffle部署合约" class="headerlink" title="truffle部署合约:"></a>truffle部署合约:</h2><p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
+<h1>Bug:</h1>
+<p>把遇到的bug列一下</p>
+<h2 id="truffle初始化错误">truffle初始化错误:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
+<p>直接用上面的命令去初始化truffle项目时，可能遇到网络问题等原因，无法直接初始化，可以去github下载<br>
+<code>git clone https://github.com/truffle-box/bare-box</code></p>
+<h2 id="truffle部署合约">truffle部署合约:</h2>
+<p>部署到测试网时，<code>truffle migrate --network ropsten</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error: Cannot find module &#x27;@truffle/hdwallet-provider&#x27;</span><br></pre></td></tr></table></figure>
-
 <p>解决办法： <code>npm install @truffle/hdwallet-provider</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 报错</span><br><span class="line">Error encountered, bailing. Network state unknown. Review successful transactions manually.</span><br><span class="line">insufficient funds for gas * price + value</span><br></pre></td></tr></table></figure>
-
 <p>解决办法：要确保助记词和钱包对应得上,且钱包里有足够的Ether</p>
-<h1 id="语法"><a href="#语法" class="headerlink" title="语法:"></a>语法:</h1><p>把遇到的一些语法问题列一下</p>
-<h2 id="pure-vs-view"><a href="#pure-vs-view" class="headerlink" title="pure vs view:"></a>pure vs view:</h2><p>pure比view更加严格</p>
+<h1>语法:</h1>
+<p>把遇到的一些语法问题列一下</p>
+<h2 id="pure-vs-view">pure vs view:</h2>
+<p>pure比view更加严格</p>
 <p><code>view</code>读取存储，但不会修改</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract viewExample &#123;</span><br><span class="line"></span><br><span class="line">    string state;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function viewState() public view returns(string) &#123;</span><br><span class="line">        //read the contract storage </span><br><span class="line">        return state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p><code>pure</code>可以被认为是返回值仅由它的参数（输入值）确定的子集。不会对存储进行读写操作，只会使用局部变量</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract pureExample &#123;</span><br><span class="line"></span><br><span class="line">    // other contract functions</span><br><span class="line"></span><br><span class="line">    function pureComputation(uint para1 , uint para2) public pure returns(uint result) &#123;</span><br><span class="line">        // do whatever with para1 and para2 and assign to result as below</span><br><span class="line">        result = para1 + para2;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/28898/when-to-use-view-and-pure-in-place-of-constant">When to use “View” and “Pure” in place of “Constant”</a></p>
-<h2 id="external-vs-public"><a href="#external-vs-public" class="headerlink" title="external vs public:"></a>external vs public:</h2><p>public - all can access</p>
+<h2 id="external-vs-public">external vs public:</h2>
+<p>public - all can access</p>
 <p>external - Cannot be accessed internally, only externally</p>
 <p>internal - only this contract and contracts deriving from it can access</p>
 <p>private - can be accessed only from this contract</p>
 <p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/19380/external-vs-public-best-practices"><code>external</code> vs <code>public</code> best practices</a></p>
-<h2 id="array删除"><a href="#array删除" class="headerlink" title="array删除:"></a>array删除:</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h2 id="array删除">array删除:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">uint[] assets;</span><br><span class="line"><span class="title function_">mapping</span>(<span class="function"><span class="params">uint</span>=&gt;</span>uint) indexOfAsset;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">removeAssetFromArray</span>(<span class="params">uint _assetToDelete</span>) &#123;</span><br><span class="line">  uint index = indexOfAsset[_assetToDelete];</span><br><span class="line">  <span class="keyword">if</span> (!index) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (assets.<span class="property">length</span> &gt; <span class="number">1</span>) &#123; <span class="comment">// 把最后一项移到你需要删除的位置，进行覆盖</span></span><br><span class="line">    assets[index] = assets[assets.<span class="property">length</span>-<span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  assets.<span class="property">length</span>--; <span class="comment">// Implicitly recovers gas from last element storage</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/35790/efficient-approach-to-delete-element-from-array-in-solidity/41025">Efficient approach to delete element from array in Solidity</a></p>
-<h2 id="invalid-opcode-“0xfe”"><a href="#invalid-opcode-“0xfe”" class="headerlink" title="invalid opcode “0xfe”:"></a>invalid opcode “0xfe”:</h2><p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></li>
-<li><a target="_blank" rel="noopener" href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></li>
-<li><a target="_blank" rel="noopener" href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol</a></li>
-<li><a target="_blank" rel="noopener" href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></li>
-<li><a target="_blank" rel="noopener" href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></li>
+<h2 id="invalid-opcode-“0xfe”">invalid opcode “0xfe”:</h2>
+<p>合约数组可能有越界访问的问题，这个时候多去remix把操作流程仔细走一遍，看看调用哪个函数会出错。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/2019/12/20/vue-dapp">【教程】如何使用Vue.js 开发以太坊DApp</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://naruto-1996.github.io/2021/03/19/eth-zhi-neng-he-yue-kai-fa/">ETH智能合约开发(vue + 智能合约)</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://npm.io/package/zombie-char-component">zombie-char-component v1.0.7</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/onee-io/crypto-zombies">https://github.com/onee-io/crypto-zombies</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/Fankouzu/smart-contract/blob/master/Solidity%20Lesson%2004/contracts/zombieCore.sol">https://github.com/Fankouzu/smart-contract/blob/master/Solidity Lesson 04/contracts/zombieCore.sol</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://fankouzu.github.io/my-crypto-zombie/?MyZombie">https://fankouzu.github.io/my-crypto-zombie/?MyZombie</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://code.z01.com/bootstrap-vue/docs/components/card.html">https://code.z01.com/bootstrap-vue/docs/components/card.html</a></p>
+</li>
 </ul>
 
     </div>
@@ -330,10 +360,10 @@
       <div class="popular-posts-title"><a href="/2022/23566.html" rel="bookmark">OpenZeppelin-代码库QuickView</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+      <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
@@ -426,7 +456,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">效果图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">测试流程:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">4.</span> <span class="nav-text">部署:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bug"><span class="nav-number">5.</span> <span class="nav-text">Bug:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#truffle%E5%88%9D%E5%A7%8B%E5%8C%96%E9%94%99%E8%AF%AF"><span class="nav-number">5.1.</span> <span class="nav-text">truffle初始化错误:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#truffle%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6"><span class="nav-number">5.2.</span> <span class="nav-text">truffle部署合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">语法:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pure-vs-view"><span class="nav-number">6.1.</span> <span class="nav-text">pure vs view:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#external-vs-public"><span class="nav-number">6.2.</span> <span class="nav-text">external vs public:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#array%E5%88%A0%E9%99%A4"><span class="nav-number">6.3.</span> <span class="nav-text">array删除:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#invalid-opcode-%E2%80%9C0xfe%E2%80%9D"><span class="nav-number">6.4.</span> <span class="nav-text">invalid opcode “0xfe”:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">效果图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">测试流程:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Bug:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#truffle%E5%88%9D%E5%A7%8B%E5%8C%96%E9%94%99%E8%AF%AF"><span class="nav-number">5.1.</span> <span class="nav-text">truffle初始化错误:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#truffle%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6"><span class="nav-number">5.2.</span> <span class="nav-text">truffle部署合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">语法:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pure-vs-view"><span class="nav-number">6.1.</span> <span class="nav-text">pure vs view:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#external-vs-public"><span class="nav-number">6.2.</span> <span class="nav-text">external vs public:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#array%E5%88%A0%E9%99%A4"><span class="nav-number">6.3.</span> <span class="nav-text">array删除:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#invalid-opcode-%E2%80%9C0xfe%E2%80%9D"><span class="nav-number">6.4.</span> <span class="nav-text">invalid opcode “0xfe”:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -442,7 +472,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -497,12 +527,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

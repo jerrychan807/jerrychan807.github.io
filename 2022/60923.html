@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre: 对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja:破解版安装:下载链接 app,找到Binary Ninja,显示包内容，替换文件 123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ninja.">
+  <meta name="description" content="Pre:  对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja: 破解版安装: 下载链接 app,找到Binary Ninja,显示包内容，替换文件  123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ni">
 <meta property="og:type" content="article">
 <meta property="og:title" content="StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录">
 <meta property="og:url" content="https://jerrychan807.github.io/2022/60923.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre: 对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja:破解版安装:下载链接 app,找到Binary Ninja,显示包内容，替换文件 123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ninja.">
+<meta property="og:description" content="Pre:  对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja: 破解版安装: 下载链接 app,找到Binary Ninja,显示包内容，替换文件  123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ni">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105254.png">
@@ -258,47 +258,68 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><blockquote>
+        <h1>Pre:</h1>
+<blockquote>
 <p>对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》</p>
 </blockquote>
-<h1 id="逆向工具BinaryNinja"><a href="#逆向工具BinaryNinja" class="headerlink" title="逆向工具BinaryNinja:"></a>逆向工具BinaryNinja:</h1><h2 id="破解版安装"><a href="#破解版安装" class="headerlink" title="破解版安装:"></a>破解版安装:</h2><p><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">下载链接</a></p>
-<p>app,找到<code>Binary Ninja</code>,显示包内容，替换文件<br><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png" alt="20220717095312"></p>
+<h1>逆向工具BinaryNinja:</h1>
+<h2 id="破解版安装">破解版安装:</h2>
+<p><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">下载链接</a></p>
+<p>app,找到<code>Binary Ninja</code>,显示包内容，替换文件<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png" alt="20220717095312"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入到Crack目录</span></span><br><span class="line"><span class="comment"># 签名方法</span></span><br><span class="line">codesign --sign - --force --deep /Applications/Binary\ Ninja.app</span><br></pre></td></tr></table></figure>
-
 <p>然后就能正常打开了</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105254.png" alt="20220717105254"></p>
-<h1 id="ethersplay插件"><a href="#ethersplay插件" class="headerlink" title="ethersplay插件:"></a>ethersplay插件:</h1><p><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">github链接</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装:"></a>安装:</h2><ul>
-<li>git clone下载</li>
-<li>创建venv环境</li>
-<li>安装依赖包 <code>$ pip install -r requirements.txt</code></li>
+<h1>ethersplay插件:</h1>
+<p><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">github链接</a></p>
+<h2 id="安装">安装:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>git clone下载</p>
+</li>
+<li class="lvl-2">
+<p>创建venv环境</p>
+</li>
+<li class="lvl-2">
+<p>安装依赖包 <code>$ pip install -r requirements.txt</code></p>
+</li>
 </ul>
-<h2 id="链接到BinaryNinja插件文件夹"><a href="#链接到BinaryNinja插件文件夹" class="headerlink" title="链接到BinaryNinja插件文件夹:"></a>链接到BinaryNinja插件文件夹:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105648.png" alt="20220717105648"></p>
+<h2 id="链接到BinaryNinja插件文件夹">链接到BinaryNinja插件文件夹:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105648.png" alt="20220717105648"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入到插件文件夹</span></span><br><span class="line"><span class="comment"># 创建链接</span></span><br><span class="line"><span class="built_in">ln</span> -s &lt;your_download_location&gt;/ethersplay/ethersplay .</span><br></pre></td></tr></table></figure>
-
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105809.png" alt="20220717105809"></p>
-<h2 id="配置BinaryNinja的python环境"><a href="#配置BinaryNinja的python环境" class="headerlink" title="配置BinaryNinja的python环境:"></a>配置BinaryNinja的python环境:</h2><p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110136.png" alt="20220717110136"></p>
-<h1 id="Demo使用"><a href="#Demo使用" class="headerlink" title="Demo使用:"></a>Demo使用:</h1><p><code>Ethersplay</code>将原始二进制格式的 evm 字节码作为输入。</p>
+<h2 id="配置BinaryNinja的python环境">配置BinaryNinja的python环境:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110136.png" alt="20220717110136"></p>
+<h1>Demo使用:</h1>
+<p><code>Ethersplay</code>将原始二进制格式的 evm 字节码作为输入。</p>
 <p>要获得solidity 文件的字节码，请使用<code>solc</code>：</p>
-<ul>
-<li>solc –bin-runtime file.sol：打印合约运行时部分的字节码（大多数情况下）。</li>
-<li>solc –bin file.sol：打印合约（构造函数）的初始化字节码，</li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>solc --bin-runtime file.sol：打印合约运行时部分的字节码（大多数情况下）。</p>
+</li>
+<li class="lvl-2">
+<p>solc --bin file.sol：打印合约（构造函数）的初始化字节码，</p>
+</li>
 </ul>
 <p>test.sol使用以下内容的示例：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">contract <span class="title class_">Test</span> &#123;</span><br><span class="line">    uint256 value;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">Test</span>(<span class="params"></span>) &#123;</span><br><span class="line">        value = <span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set_value</span>(<span class="params">uint256 v</span>) &#123;</span><br><span class="line">        value = v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span>(<span class="params"></span>) payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行solidity编译： </p>
+<p>运行solidity编译：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solc --bin-runtime test.sol</span><br></pre></td></tr></table></figure>
 <p><code>solc</code> 将字节码打印到标准输出：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">======= test.sol:Test =======</span><br><span class="line">Binary of the runtime part:</span><br><span class="line">60606040523615603d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063b0f2b72a146041575b5b5b005b3415604b57600080fd5b605f60048080359060200190919050506061565b005b806000819055505b505600a165627a7a72305820c177a64bf54a26574918ddc2201f7ab2dd8619d6c3ee87ce9aaa1eb0e0b1d4650029</span><br></pre></td></tr></table></figure>
-
-<p>复制 ascii 十六进制字符串，然后在 <code>Binary Ninja</code> 中创建一个新文件。<br>右键单击并选择<code>Paste From -&gt; Raw Hex</code>。<br>将此文件另存为<code>test.evm</code>并关闭它。</p>
+<p>复制 ascii 十六进制字符串，然后在 <code>Binary Ninja</code> 中创建一个新文件。右键单击并选择<code>Paste From -&gt; Raw Hex</code>。将此文件另存为<code>test.evm</code>并关闭它。</p>
 <p>或者，将 ascii 十六进制字符串粘贴到一个新的文本文件中，然后<code>utils/convert_bytecode.py</code>在该文件上运行。</p>
 <p><code>test.evm</code>现在可以加载到BinaryNinja中。</p>
 <p>注意：文件必须<code>.evm</code>以EVM字节码二进制文件结尾。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110953.png" alt="20220717110953"></p>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">https://www.52pojie.cn/thread-1583596-1-1.html</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">https://github.com/crytic/ethersplay</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">https://www.52pojie.cn/thread-1583596-1-1.html</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">https://github.com/crytic/ethersplay</a></p>
+</li>
 </ul>
 
     </div>
@@ -412,7 +433,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7BinaryNinja"><span class="nav-number">2.</span> <span class="nav-text">逆向工具BinaryNinja:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%B4%E8%A7%A3%E7%89%88%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">破解版安装:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ethersplay%E6%8F%92%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">ethersplay插件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E5%88%B0BinaryNinja%E6%8F%92%E4%BB%B6%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">3.2.</span> <span class="nav-text">链接到BinaryNinja插件文件夹:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEBinaryNinja%E7%9A%84python%E7%8E%AF%E5%A2%83"><span class="nav-number">3.3.</span> <span class="nav-text">配置BinaryNinja的python环境:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Demo%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">Demo使用:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">逆向工具BinaryNinja:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%B4%E8%A7%A3%E7%89%88%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">破解版安装:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">ethersplay插件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E5%88%B0BinaryNinja%E6%8F%92%E4%BB%B6%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">3.2.</span> <span class="nav-text">链接到BinaryNinja插件文件夹:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEBinaryNinja%E7%9A%84python%E7%8E%AF%E5%A2%83"><span class="nav-number">3.3.</span> <span class="nav-text">配置BinaryNinja的python环境:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Demo使用:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -428,7 +449,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -483,12 +504,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

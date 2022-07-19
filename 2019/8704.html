@@ -19,15 +19,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:Centos7又报io error了.  然后想着把数据库的数据迁移出来.  用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用. 然后上头说尝试恢复下硬盘.  修复硬盘:按这个链接Centos 7 LVM xfs文件系统修复尝试了一下,未果. 因为上次是进不去系统才进行了xfs_repair,这次一断电才开机就又正常了.">
+  <meta name="description" content="Pre: Centos7又报io error了.  然后想着把数据库的数据迁移出来. 用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用. 然后上头说尝试恢复下硬盘.  修复硬盘: 按这个链接Centos 7 LVM xfs文件系统修复尝试了一下,未果. 因为上次是进不去系统才进行了xfs_repair,这次一断电才开机就又正常了.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录-Mysql无法启动及数据恢复">
 <meta property="og:url" content="https://jerrychan807.github.io/2019/8704.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:Centos7又报io error了.  然后想着把数据库的数据迁移出来.  用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用. 然后上头说尝试恢复下硬盘.  修复硬盘:按这个链接Centos 7 LVM xfs文件系统修复尝试了一下,未果. 因为上次是进不去系统才进行了xfs_repair,这次一断电才开机就又正常了.">
+<meta property="og:description" content="Pre: Centos7又报io error了.  然后想着把数据库的数据迁移出来. 用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用. 然后上头说尝试恢复下硬盘.  修复硬盘: 按这个链接Centos 7 LVM xfs文件系统修复尝试了一下,未果. 因为上次是进不去系统才进行了xfs_repair,这次一断电才开机就又正常了.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png">
 <meta property="article:published_time" content="2019-07-30T06:36:34.000Z">
@@ -257,13 +257,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pre"><a href="#Pre" class="headerlink" title="Pre:"></a>Pre:</h1><p>Centos7又报io error了.</p>
-<p><img src="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png"></p>
-<p>然后想着把数据库的数据迁移出来. </p>
+        <h1>Pre:</h1>
+<p>Centos7又报io error了.</p>
+<p><img src="https://i.loli.net/2019/07/30/5d3fb1f08413459059.png" alt=""></p>
+<p>然后想着把数据库的数据迁移出来.</p>
 <p>用Navicat直接操作的时候,发现一直报连接不了数据库的错误.无法正常使用.</p>
 <p>然后上头说尝试恢复下硬盘.</p>
 <hr>
-<h1 id="修复硬盘"><a href="#修复硬盘" class="headerlink" title="修复硬盘:"></a>修复硬盘:</h1><p>按这个链接<a target="_blank" rel="noopener" href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a>尝试了一下,未果.</p>
+<h1>修复硬盘:</h1>
+<p>按这个链接<a target="_blank" rel="noopener" href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a>尝试了一下,未果.</p>
 <p>因为上次是进不去系统才进行了<code>xfs_repair</code>,这次一断电才开机就又正常了.</p>
 <p>然后以为机器正常了,可是这个时候mysql的服务起不来了.</p>
 <blockquote>
@@ -271,13 +273,14 @@
 </blockquote>
 <p>那只好尝试一下通过文件来迁移数据库<code>Mysql</code>.</p>
 <hr>
-<h1 id="通过文件迁移数据库"><a href="#通过文件迁移数据库" class="headerlink" title="通过文件迁移数据库:"></a>通过文件迁移数据库:</h1><p>按照<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a> 来传mysql的文件.</p>
+<h1>通过文件迁移数据库:</h1>
+<p>按照<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a> 来传mysql的文件.</p>
 <p>里面提到通过用<code>rsync</code>来传文件.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#后面的路径是目标路径</span></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">rsync -avz /var/lib/mysql 192.168.189.131:/var/lib/</span><br></pre></td></tr></table></figure>
-
 <p>具体用的哪条命令,忘了…</p>
 <hr>
-<h1 id="查看Log"><a href="#查看Log" class="headerlink" title="查看Log"></a>查看Log</h1><p>迁移完数据库文件后,重启数据库服务,依旧起不来.</p>
+<h1>查看Log</h1>
+<p>迁移完数据库文件后,重启数据库服务,依旧起不来.</p>
 <p>发现状态一直在<code>activating</code>…</p>
 <p>根据<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a>,去看mysql的log.</p>
 <p>才找到了问题所在.</p>
@@ -287,45 +290,65 @@
 <p><strong>看Log的重要性!!!</strong></p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">InnoDB: Error: trying to access page number 0 in space 168,</span><br><span class="line">InnoDB: space name okcloud/ok_1_ipscan_task_result,</span><br><span class="line">InnoDB: which is outside the tablespace bounds.</span><br><span class="line">InnoDB: Byte offset 0, len 16384, i/o type 10.</span><br><span class="line">InnoDB: If you get this error at mysqld startup, please check that</span><br><span class="line">InnoDB: your my.cnf matches the ibdata files that you have in the</span><br><span class="line">InnoDB: MySQL server.</span><br><span class="line">2019-07-29 19:23:43 7f2a7946d700  InnoDB: Assertion failure in thread 139820400039680 in file fil0fil.cc line 5666</span><br><span class="line">InnoDB: We intentionally generate a memory trap.</span><br><span class="line">InnoDB: Submit a detailed bug report to http://bugs.mysql.com.</span><br><span class="line">InnoDB: If you get repeated assertion failures or crashes, even</span><br><span class="line">InnoDB: immediately after the mysqld startup, there may be</span><br><span class="line">InnoDB: corruption in the InnoDB tablespace. Please refer to</span><br><span class="line">InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html</span><br><span class="line">InnoDB: about forcing recovery.</span><br></pre></td></tr></table></figure>
-
 <p>访问这个表<code>ok_1_ipscan_task_result</code>出错,可参考<code>forcing recovery</code></p>
 <hr>
-<h1 id="恢复数据"><a href="#恢复数据" class="headerlink" title="恢复数据:"></a>恢复数据:</h1><h2 id="Mysql-Forcing-InnoDB-Recovery特性"><a href="#Mysql-Forcing-InnoDB-Recovery特性" class="headerlink" title="Mysql Forcing InnoDB Recovery特性:"></a>Mysql Forcing InnoDB Recovery特性:</h2><blockquote>
+<h1>恢复数据:</h1>
+<h2 id="Mysql-Forcing-InnoDB-Recovery特性">Mysql Forcing InnoDB Recovery特性:</h2>
+<blockquote>
 <p>需要做特殊操作，让 MySQL 跳过恢复，启动 MySQL，然后把数据导出来，再重建数据库导入。</p>
-<p>MySQL 有个一个特性：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/forcing-innodb-recovery.html">Forcing InnoDB Recovery</a>，启用这个特性需要设置  </p>
+<p>MySQL 有个一个特性：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/forcing-innodb-recovery.html">Forcing InnoDB Recovery</a>，启用这个特性需要设置</p>
 <p>innodb_force_recovery 大于 0。</p>
 <p>innodb_force_recovery 可以设置为 1-6，大的值包含前面所有小于它的值的影响。</p>
 <ol>
-<li><p><code>(SRV_FORCE_IGNORE_CORRUPT)</code>: <strong>忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</strong></p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_IGNORE_CORRUPT)</code>: <strong>忽略检查到的 corrupt 页。尽管检测到了损坏的 page 仍强制服务运行。一般设置为该值即可，然后 dump 出库表进行重建。</strong></p>
 </li>
-<li><p><code>(SRV_FORCE_NO_BACKGROUND)</code>: 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_NO_BACKGROUND)</code>: 阻止主线程的运行，如主线程需要执行 full purge 操作，会导致 crash。 阻止 master thread 和任何 purge thread 运行。若 crash 发生在 purge 环节则使用该值。</p>
 </li>
-<li><p><code>(SRV_FORCE_NO_TRX_UNDO)</code>: 不执行事务回滚操作。</p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_NO_TRX_UNDO)</code>: 不执行事务回滚操作。</p>
 </li>
-<li><p><code>(SRV_FORCE_NO_IBUF_MERGE)</code>: 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_NO_IBUF_MERGE)</code>: 不执行插入缓冲的合并操作。如果可能导致崩溃则不要做这些操作。不要进行统计操作。该值可能永久损坏数据文件。若使用了该值，则将来要删除和重建辅助索引。</p>
 </li>
-<li><p><code>(SRV_FORCE_NO_UNDO_LOG_SCAN)</code>: 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_NO_UNDO_LOG_SCAN)</code>: 不查看重做日志，InnoDB 存储引擎会将未提交的事务视为已提交。此时 InnoDB 甚至把未完成的事务按照提交处理。该值可能永久性的损坏数据文件。</p>
 </li>
-<li><p><code>(SRV_FORCE_NO_LOG_REDO)</code>: 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</p>
+<li class="lvl-3">
+<p><code>(SRV_FORCE_NO_LOG_REDO)</code>: 不执行前滚的操作。恢复时不做 redo log roll-forward。使数据库页处于废止状态，继而可能引起 B 树或者其他数据库结构更多的损坏。</p>
 </li>
 </ol>
 </blockquote>
 <p>一般设为1即可,当时没认真看,直接设为了6…</p>
 <p>6可能损坏原有数据库表…</p>
 <hr>
-<h2 id="做法"><a href="#做法" class="headerlink" title="做法:"></a>做法:</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my.cnf 中添加：</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery = 1</span><br></pre></td></tr></table></figure>
-
+<h2 id="做法">做法:</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my.cnf 中添加：</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">innodb_force_recovery = 1</span><br></pre></td></tr></table></figure>
 <p>然后重启数据库,用<code>Navicat</code>将数据库转储成sql语句.</p>
 <p>只有在mysql log里报错误的那个表导不出来.不过已经足够了.</p>
 <p>恢复了很多的数据.</p>
 <hr>
-<h1 id="Refs"><a href="#Refs" class="headerlink" title="Refs:"></a>Refs:</h1><ul>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/glon/p/6728380.html">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></li>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/itqingtian/p/10469104.html">Centos 7 LVM xfs文件系统修复</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f36c4f4447e9">【MySQL】MySQL数据库迁移并同步（简单粗暴版）</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chunzhensuan/p/9178269.html">Centos7 上安装mysql遇上的问题：mysql无法正常启动</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/glon/p/6728380.html">利用 Forcing InnoDB Recovery 特性解决 MySQL 重启失败的问题</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/shushugood/article/details/80226767">ERROR 1874 (HY000): InnoDB is in read only mode.</a></p>
+</li>
 </ul>
 
     </div>
@@ -343,13 +366,13 @@
       <div class="popular-posts-title"><a href="/2019/42649.html" rel="bookmark">Celery-动态路由</a></div>
     </li>
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/12733.html" rel="bookmark">记录-Centos7下root运行Chrome</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2019/34580.html" rel="bookmark">记录-Centos7安装py环境</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2019/54517.html" rel="bookmark">记录-Centos7 Docker部署漏洞环境</a></div>
     </li>
   </ul>
 
@@ -437,7 +460,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pre"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E7%A1%AC%E7%9B%98"><span class="nav-number">2.</span> <span class="nav-text">修复硬盘:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E6%96%87%E4%BB%B6%E8%BF%81%E7%A7%BB%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">通过文件迁移数据库:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BLog"><span class="nav-number">4.</span> <span class="nav-text">查看Log</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E6%95%B0%E6%8D%AE"><span class="nav-number">5.</span> <span class="nav-text">恢复数据:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql-Forcing-InnoDB-Recovery%E7%89%B9%E6%80%A7"><span class="nav-number">5.1.</span> <span class="nav-text">Mysql Forcing InnoDB Recovery特性:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%9A%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">做法:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Refs"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">修复硬盘:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">通过文件迁移数据库:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">查看Log</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">恢复数据:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql-Forcing-InnoDB-Recovery%E7%89%B9%E6%80%A7"><span class="nav-number">5.1.</span> <span class="nav-text">Mysql Forcing InnoDB Recovery特性:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%9A%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">做法:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -453,7 +476,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">110</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -508,12 +531,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">541k</span>
+    <span title="Symbols count total">544k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:12</span>
+    <span title="Reading time total">8:15</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
