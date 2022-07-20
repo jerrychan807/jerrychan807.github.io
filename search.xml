@@ -1050,95 +1050,6 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
       </tags>
   </entry>
   <entry>
-    <title>Crypto-RacaNft市场挂单script</title>
-    <url>/2021/1333.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
-<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。</p>
-<hr>
-<h1>InputData例子解析:</h1>
-<p>先了解一下InputData是怎么构成的。以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
-<p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
-<p>这个数据就是ABI的编码数据：<br>
-<code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
-<p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
-<p>函数选择器(4字节)</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>0x60fe47b1</code></p>
-</li>
-</ul>
-<p>第一个参数(32字节)</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>00000000000000000000000000000000000000000000000000000000000000001</code></p>
-</li>
-</ul>
-<p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
-<p>参数部分则是使用对应的16进制数。现在就好理解 附加数据怎么转化为对应的函数调用。</p>
-<h1>实验:</h1>
-<p>刚好自己有在练手solidity，有部署到ropsten测试网上。可以尝试能不能构造出已知交易的<code>input_data</code></p>
-<p>调用的合约函数:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mint_zoombie</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># function createZoombie(string name) public&#123;&#125;</span></span><br><span class="line">    func_abi = &#123;</span><br><span class="line">        <span class="string">&quot;inputs&quot;</span>: [</span><br><span class="line">            &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,  <span class="comment"># 参数类型</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;createZoombie&quot;</span>,  <span class="comment"># 函数名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn_selector = <span class="string">&#x27;0x&#x27;</span> + encode_hex(function_abi_to_4byte_selector(func_abi)) </span><br><span class="line"></span><br><span class="line">    args_data = encode_hex(encode_single(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>))  <span class="comment"># encode_abi([&#x27;string&#x27;], [&#x27;haha&#x27;])</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(fn_selector)</span><br><span class="line">    <span class="built_in">print</span>(args_data)</span><br><span class="line">    total_data = fn_selector + args_data</span><br><span class="line">    <span class="built_in">print</span>(total_data)</span><br></pre></td></tr></table></figure>
-<p>实际的<code>input_data</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
-<p>构造出的<code>input_data</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
-<p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
-<h1>data的组成规则：</h1>
-<blockquote>
-<p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
-<p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
-<p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
-</blockquote>
-<h1>raca nft挂单卖出:</h1>
-<h2 id="授权：">授权：</h2>
-<p>授权这个data比较简单，找到多几个tx比较一下。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
-<p>可知他的data是固定的，直接用就行了。</p>
-<h2 id="挂单卖出：">挂单卖出：</h2>
-<p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x467f963d                                                         <span class="comment"># function selector</span></span><br><span class="line">00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e2   <span class="comment"># usm potion药水地址</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000001   <span class="comment"># 数量</span></span><br><span class="line">00000000000000000000000012bb890508c125661e03b09ec06e404bc9289040   <span class="comment"># Raca token 地址</span></span><br><span class="line">0000000000000000000000000000000000000000000002f6d546136addf80000   <span class="comment"># 价格</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
-<p>可知，主要是要修改数量和价格的数据，其他数据不变。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
-<p>将tx用私钥签名，广播交易就可以了。然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
-<h1>Summary:</h1>
-<ol>
-<li class="lvl-3">
-<p>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
-</li>
-<li class="lvl-3">
-<p>多找相关的tx比较，找规律</p>
-</li>
-</ol>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Crypto</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Crypto-SuperTrend指标_合约交易脚本</title>
     <url>/2021/14610.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -1251,6 +1162,95 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 </li>
 <li class="lvl-2">
 <p><a href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">ccxt#orders</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Crypto-RacaNft市场挂单script</title>
+    <url>/2021/1333.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
+<p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。</p>
+<hr>
+<h1>InputData例子解析:</h1>
+<p>先了解一下InputData是怎么构成的。以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
+<p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
+<p>这个数据就是ABI的编码数据：<br>
+<code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
+<p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
+<p>函数选择器(4字节)</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>0x60fe47b1</code></p>
+</li>
+</ul>
+<p>第一个参数(32字节)</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>00000000000000000000000000000000000000000000000000000000000000001</code></p>
+</li>
+</ul>
+<p>函数选择器值 实际是对函数签名字符串进行<code>sha3（keccak256</code>哈希运算之后，取前4个字节，用代码表示就是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bytes4(sha3(“set(uint256)”)) == 0x60fe47b1</span><br></pre></td></tr></table></figure>
+<p>参数部分则是使用对应的16进制数。现在就好理解 附加数据怎么转化为对应的函数调用。</p>
+<h1>实验:</h1>
+<p>刚好自己有在练手solidity，有部署到ropsten测试网上。可以尝试能不能构造出已知交易的<code>input_data</code></p>
+<p>调用的合约函数:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createZoombie</span>(<span class="params">string name</span>) public &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mint_zoombie</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># function createZoombie(string name) public&#123;&#125;</span></span><br><span class="line">    func_abi = &#123;</span><br><span class="line">        <span class="string">&quot;inputs&quot;</span>: [</span><br><span class="line">            &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,  <span class="comment"># 参数类型</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;createZoombie&quot;</span>,  <span class="comment"># 函数名</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn_selector = <span class="string">&#x27;0x&#x27;</span> + encode_hex(function_abi_to_4byte_selector(func_abi)) </span><br><span class="line"></span><br><span class="line">    args_data = encode_hex(encode_single(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>))  <span class="comment"># encode_abi([&#x27;string&#x27;], [&#x27;haha&#x27;])</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(fn_selector)</span><br><span class="line">    <span class="built_in">print</span>(args_data)</span><br><span class="line">    total_data = fn_selector + args_data</span><br><span class="line">    <span class="built_in">print</span>(total_data)</span><br></pre></td></tr></table></figure>
+<p>实际的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+<p>构造出的<code>input_data</code>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x3dca7430 <span class="comment"># 方法名</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000020</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000004</span><br><span class="line">6861686100000000000000000000000000000000000000000000000000000000 <span class="comment"># 参数:haha</span></span><br></pre></td></tr></table></figure>
+<p>没有构造成功，经过多个tx,观察发现中间多出来的数据是固定。但一时不知道是如何generate出来的，只能暂时先放弃了。</p>
+<h1>data的组成规则：</h1>
+<blockquote>
+<p>关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
+<p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
+<p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
+</blockquote>
+<h1>raca nft挂单卖出:</h1>
+<h2 id="授权：">授权：</h2>
+<p>授权这个data比较简单，找到多几个tx比较一下。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
+<p>可知他的data是固定的，直接用就行了。</p>
+<h2 id="挂单卖出：">挂单卖出：</h2>
+<p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0x467f963d                                                         <span class="comment"># function selector</span></span><br><span class="line">00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e2   <span class="comment"># usm potion药水地址</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000001   <span class="comment"># 数量</span></span><br><span class="line">00000000000000000000000012bb890508c125661e03b09ec06e404bc9289040   <span class="comment"># Raca token 地址</span></span><br><span class="line">0000000000000000000000000000000000000000000002f6d546136addf80000   <span class="comment"># 价格</span></span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>可知，主要是要修改数量和价格的数据，其他数据不变。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构造卖单的data</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_potion_sell_order_input_data</span>(<span class="params">self, price</span>):</span><br><span class="line">    logger.debug(<span class="string">&quot;[*] set price: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(price))</span><br><span class="line">    price = self.bsc_ins.w3.toWei(price, <span class="string">&#x27;ether&#x27;</span>) <span class="comment"># 转换成Wei</span></span><br><span class="line"></span><br><span class="line">    price_hex_str = self.bsc_ins.w3.toHex(price) <span class="comment"># 转换成16进制</span></span><br><span class="line">    price_hex_str = price_hex_str.replace(<span class="string">&quot;0x&quot;</span>, <span class="string">&quot;&quot;</span>) <span class="comment"># 去掉开头的0x字符串</span></span><br><span class="line">    full_price_hex_str = add_pre_zero(price_hex_str) <span class="comment"># 不足64位，前面补0</span></span><br><span class="line">    <span class="comment"># print(full_price_hex_str)</span></span><br><span class="line">    last_input_data = <span class="string">&quot;0x467f963d00000000000000000000000051353799f8550c9010a8b0cbfe6c02ca96e026e20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000012bb890508c125661e03b09ec06e404bc9289040&#123;&#125;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            full_price_hex_str)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> last_input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造tx的参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_tx_params</span>(<span class="params">self, to_address, input_data, gas</span>):</span><br><span class="line">    now_nonce = self.bsc_ins.w3.eth.get_transaction_count(self.wallet_addr)</span><br><span class="line">    to_address = Web3.toChecksumAddress(to_address)</span><br><span class="line">    tx_params = &#123;</span><br><span class="line">        <span class="string">&#x27;nonce&#x27;</span>: now_nonce,</span><br><span class="line">        <span class="string">&#x27;to&#x27;</span>: to_address,</span><br><span class="line">        <span class="string">&#x27;value&#x27;</span>: self.bsc_ins.w3.toWei(<span class="number">0</span>, <span class="string">&#x27;ether&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;gas&#x27;</span>: gas,</span><br><span class="line">        <span class="string">&#x27;gasPrice&#x27;</span>: self.bsc_ins.w3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;data&#x27;</span>: input_data, <span class="comment"># here</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tx_params</span><br></pre></td></tr></table></figure>
+<p>将tx用私钥签名，广播交易就可以了。然后检测对应账户里的raca数量就可以知道有没卖出成功。</p>
+<h1>Summary:</h1>
+<ol>
+<li class="lvl-3">
+<p>data的组成规则：前八位为方法名以及参数类型的hash，hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
+</li>
+<li class="lvl-3">
+<p>多找相关的tx比较，找规律</p>
+</li>
+</ol>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://xz.aliyun.com/t/6900">如何与无源码的智能合约交互</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://learnblockchain.cn/2018/08/09/understand-abi">如何理解以太坊ABI - 应用程序二进制接口</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://cloud.tencent.com/developer/article/1328286">深入以太坊智能合约 ABI</a></p>
 </li>
 </ul>
 ]]></content>
@@ -3765,68 +3765,6 @@ Otherwise the library must be deployed and then linked before the contract is de
       </tags>
   </entry>
   <entry>
-    <title>Notes-论安全漏洞响应机制扩展—JSRC-3</title>
-    <url>/2020/20063.html</url>
-    <content><![CDATA[<h2 id="如何看待待企业的安全工作建设">如何看待待企业的安全工作建设</h2>
-<p>安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。</p>
-<p>被动方面:</p>
-<p>比如说进行针对性的培训，加强规范。 <strong>需要明确的是，安全团队是在帮助业务部门防范风险；</strong></p>
-<p>主动方面:</p>
-<p>应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。</p>
-<p>漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审，安全评审等来筛选项目是否够上线的条件。</p>
-<p>上线前充分筛查，上线后出现问题，基本都可控。</p>
-<blockquote>
-<p>现状是,还会发现一些在野资产。都不知道什么时候就上线了。</p>
-</blockquote>
-<p>另外，上线流程过程中可以开发一些黑盒、白盒扫描工具，提供给开发人员，让开发人员去自查，如果有问题再找安全部门，这样开发人员也会对安全越来越了解。只要解决开发部门的自我驱动，所有问题都迎刃而解。</p>
-<blockquote>
-<p>让开发人员自查,这个难度有点大</p>
-</blockquote>
-<hr>
-<h2 id="安全响应机制整个流程的结束点？">安全响应机制整个流程的结束点？</h2>
-<p>白帽子提交漏洞，<strong>企业应该按照白帽子提供的方法结合自己的业务去查是否还有类似的问题，白帽子的漏洞提交只是事件处理的开始。处理完相同类型的漏洞，才能算是结束。</strong></p>
-<blockquote>
-<p>举一反三, 一个地方有问题，那么其他地方出现同样问题的概率很大。</p>
-</blockquote>
-<hr>
-<h2 id="跨部门协作配合修复漏洞的问题">跨部门协作配合修复漏洞的问题:</h2>
-<p>有些漏洞不一定能及时修复,但这不会影响我们对漏洞的评级。</p>
-<p>在企业中，越大的企业越会出现漏洞修复推进困难的情况。</p>
-<blockquote>
-<p>漏洞的修复情况,看这几个因素:</p>
-<ol>
-<li class="lvl-3">具体的漏洞</li>
-<li class="lvl-3">这个漏洞会影响的业务</li>
-<li class="lvl-3">业务方的配合程度</li>
-<li class="lvl-3">有没有合适贴切的解决方案</li>
-</ol>
-</blockquote>
-<p>“提升安全能力”不在应急止损的关注范围内，可以包括在后续安全建设中。 跨部门修复方面主要分 <strong>“产品线重视自觉寻求帮助”</strong> 和 <strong>“上级推动”</strong> 两类。</p>
-<p>定制漏洞修复事件dead line，如果不修，逐级上报。</p>
-<p>还可制定不同级别漏洞对应不同修复时间的要求， 严格执行考核。 超期系统自动邮件抄处理人的上一级领导， 时间越长，抄送级别越高，直到超送到技术副总裁。</p>
-<hr>
-<h2 id="一个业务部门如果多次出现同类型问题，-有相应的响应机制么？">一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</h2>
-<p>需要看是什么类型问题，是工作态度问题还是技术能力不够，如果是前者要找他们leader去沟通，如果是后者，安全部门需要组织交流培训，提升业务部门的安全意识和技术能力。</p>
-<hr>
-<h2 id="安全应急响应机制">安全应急响应机制:</h2>
-<p>建立安全接口人，协助产品线培养免疫力。</p>
-<p>阶梯性的做安全培训，后续让产品线他们自己重视培训，提升安全意识与能力。</p>
-<hr>
-<h1>refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/03-%E8%AE%BA%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%89%A9%E5%B1%95.pdf">论安全漏洞响应机制扩展</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Security</category>
-      </categories>
-      <tags>
-        <tag>Security</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Notes-安全应急响应中心之威胁情报探索—JSRC-2</title>
     <url>/2020/46109.html</url>
     <content><![CDATA[<h2 id="威胁情报和漏洞的区别">威胁情报和漏洞的区别:</h2>
@@ -3911,6 +3849,68 @@ Otherwise the library must be deployed and then linked before the contract is de
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/02-%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E4%B8%AD%E5%BF%83%E4%B9%8B%E5%A8%81%E8%83%81%E6%83%85%E6%8A%A5%E6%8E%A2%E7%B4%A2.pdf">安全应急响应中心之威胁情报探索</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Security</category>
+      </categories>
+      <tags>
+        <tag>Security</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Notes-论安全漏洞响应机制扩展—JSRC-3</title>
+    <url>/2020/20063.html</url>
+    <content><![CDATA[<h2 id="如何看待待企业的安全工作建设">如何看待待企业的安全工作建设</h2>
+<p>安全响应中心不仅仅是接报漏洞，还需要帮助内部提升安全质量，分为两方面：被动、主动。</p>
+<p>被动方面:</p>
+<p>比如说进行针对性的培训，加强规范。 <strong>需要明确的是，安全团队是在帮助业务部门防范风险；</strong></p>
+<p>主动方面:</p>
+<p>应该是我们增加的那些检测机制，例如在上线流程，或waf中增加策略，可以直接进行自动化检测。</p>
+<p>漏洞的处理是一个方面，对于内部的项目上线筛查可能比后续更重要，通过需求评审， 架构评审，安全评审等来筛选项目是否够上线的条件。</p>
+<p>上线前充分筛查，上线后出现问题，基本都可控。</p>
+<blockquote>
+<p>现状是,还会发现一些在野资产。都不知道什么时候就上线了。</p>
+</blockquote>
+<p>另外，上线流程过程中可以开发一些黑盒、白盒扫描工具，提供给开发人员，让开发人员去自查，如果有问题再找安全部门，这样开发人员也会对安全越来越了解。只要解决开发部门的自我驱动，所有问题都迎刃而解。</p>
+<blockquote>
+<p>让开发人员自查,这个难度有点大</p>
+</blockquote>
+<hr>
+<h2 id="安全响应机制整个流程的结束点？">安全响应机制整个流程的结束点？</h2>
+<p>白帽子提交漏洞，<strong>企业应该按照白帽子提供的方法结合自己的业务去查是否还有类似的问题，白帽子的漏洞提交只是事件处理的开始。处理完相同类型的漏洞，才能算是结束。</strong></p>
+<blockquote>
+<p>举一反三, 一个地方有问题，那么其他地方出现同样问题的概率很大。</p>
+</blockquote>
+<hr>
+<h2 id="跨部门协作配合修复漏洞的问题">跨部门协作配合修复漏洞的问题:</h2>
+<p>有些漏洞不一定能及时修复,但这不会影响我们对漏洞的评级。</p>
+<p>在企业中，越大的企业越会出现漏洞修复推进困难的情况。</p>
+<blockquote>
+<p>漏洞的修复情况,看这几个因素:</p>
+<ol>
+<li class="lvl-3">具体的漏洞</li>
+<li class="lvl-3">这个漏洞会影响的业务</li>
+<li class="lvl-3">业务方的配合程度</li>
+<li class="lvl-3">有没有合适贴切的解决方案</li>
+</ol>
+</blockquote>
+<p>“提升安全能力”不在应急止损的关注范围内，可以包括在后续安全建设中。 跨部门修复方面主要分 <strong>“产品线重视自觉寻求帮助”</strong> 和 <strong>“上级推动”</strong> 两类。</p>
+<p>定制漏洞修复事件dead line，如果不修，逐级上报。</p>
+<p>还可制定不同级别漏洞对应不同修复时间的要求， 严格执行考核。 超期系统自动邮件抄处理人的上一级领导， 时间越长，抄送级别越高，直到超送到技术副总裁。</p>
+<hr>
+<h2 id="一个业务部门如果多次出现同类型问题，-有相应的响应机制么？">一个业务部门如果多次出现同类型问题， 有相应的响应机制么？</h2>
+<p>需要看是什么类型问题，是工作态度问题还是技术能力不够，如果是前者要找他们leader去沟通，如果是后者，安全部门需要组织交流培训，提升业务部门的安全意识和技术能力。</p>
+<hr>
+<h2 id="安全应急响应机制">安全应急响应机制:</h2>
+<p>建立安全接口人，协助产品线培养免疫力。</p>
+<p>阶梯性的做安全培训，后续让产品线他们自己重视培训，提升安全意识与能力。</p>
+<hr>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://github.com/xiangpasama/JDSRC-Small-Classroom/blob/master/03-%E8%AE%BA%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%89%A9%E5%B1%95.pdf">论安全漏洞响应机制扩展</a></p>
 </li>
 </ul>
 ]]></content>
@@ -4426,110 +4426,6 @@ Otherwise the library must be deployed and then linked before the contract is de
       </tags>
   </entry>
   <entry>
-    <title>Project-CoolErc20-blacklist-具备黑名单代币</title>
-    <url>/2022/24654.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>实现一个具有黑名单功能的erc20代币<br>
-github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
-<h1>需求:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>黑名单用户无法正常<code>transfer</code></p>
-</li>
-<li class="lvl-2">
-<p>管理员可配置黑名单里的地址</p>
-</li>
-</ul>
-<h1>业务场景：</h1>
-<p>暂时能想到的</p>
-<table>
-<thead>
-<tr>
-<th>项目方</th>
-<th>目的</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>好人</td>
-<td>将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当于冻结它的资产</td>
-</tr>
-<tr>
-<td>坏人</td>
-<td>rug、scam</td>
-</tr>
-</tbody>
-</table>
-<p>还想到一个骚操作，如果把swap的地址加入黑名单列表。。🤣也可以使得该erc20代币 无法正常的与swap交互，无法买卖、添加移除流动性。</p>
-<h1>部署：</h1>
-<p>如果是在<code>hardhat</code>环境的话，不用先执行编译、部署了，可以直接<code>yarn hardhat test</code>，会默认执行前两步。</p>
-<h1>编写合约：</h1>
-<h2 id="黑名单判断：">黑名单判断：</h2>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal override &#123;</span><br><span class="line">    <span class="comment">// 错误写法：只要一个为非黑名单即可</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from] || !_blackList[to], &quot;ERC20: user in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="comment">// require( !_blackList[to], &quot;ERC20: &#x27;to&#x27; address in black list&quot;);</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from], &quot;ERC20: &#x27;from&#x27; address in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="built_in">require</span>( !_blackList[to] &amp;&amp;  !_blackList[<span class="keyword">from</span>], <span class="string">&quot;ERC20: &#x27;to&#x27; or &#x27;from&#x27; address in black list&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一开始觉得这个erc20合约很简单，结果一写到黑名单判断的时候，第一次就写错了。。😅<br>
-还发现正确写法有两种，其中第一种可以更清晰地把错误原因写清楚。</p>
-<blockquote>
-<p>看来还是要多code，多实践才行</p>
-</blockquote>
-<h1>测试：</h1>
-<h2 id="Mocha测试框架">Mocha测试框架</h2>
-<p>在写测试脚本时，有一个目前没接触过的测试需求：需要给用户设置黑名单后，给这个用户转账，然后希望这次转账报错。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 希望该函数报错的写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
-<p>在查文档的时候才知道。。<code>hardhat</code>用到的是一个叫<code>Mocha</code>的测试框架，后续如果还遇到新的测试需求可以查阅该文档。</p>
-<blockquote>
-<p>Mocha是一个能够运行在Node和浏览器中的多功能的JavaScript测试框架，它让异步测试简单且有趣。</p>
-<p>Mocha连续地运行测试，并给出灵活而精确的报告，同时能够将错误精确地映射到测试用例上。它托管在GitHub上。</p>
-</blockquote>
-<h2 id="测试结果：">测试结果：</h2>
-<p>符合预期：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Set blacklist: </span><br><span class="line">【Step 3】tokenOwner Set user0 in blacklist: </span><br><span class="line">【Step 3】user0IfBlackList: true</span><br><span class="line"> After setting blacklist, try : </span><br><span class="line">【Step 4】tokenOwner Set user0 in blacklist and try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line">      ✔ can&#x27;t transfer after setting blacklist (1351ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1>Summary:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>看来还是要多code，多实践才行，再简单的需求，真正写起来的时候也很有可能出错。</p>
-</li>
-<li class="lvl-2">
-<p>写<code>hardhat</code>测试脚本时，如果遇到没见过的测试需求，可以查阅<code>mocha</code>的文档</p>
-</li>
-<li class="lvl-2">
-<p>比如平时有看到别的项目用hardhat构建的，可以参考里面的test脚本，学学别人的写法</p>
-</li>
-<li class="lvl-2">
-<p>实践出真知🧐🧐🧐</p>
-</li>
-<li class="lvl-2">
-<p>实践出真知🧐🧐🧐</p>
-</li>
-<li class="lvl-2">
-<p>实践出真知🧐🧐🧐</p>
-</li>
-</ul>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/bsc/bscUniswapV2.test.ts">poly-flash 参考里面的test脚本</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://www.jianshu.com/p/9c78548caffa">Mocha.js官方文档翻译 —— 简单、灵活、有趣</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://mochajs.bootcss.com/#inclusive-tests">Mocha中文文档1</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://www.wanxiangyundang.top/read/mocha-in-chinese/EXCLUSIVE.md">Mocha中文文档2</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Project</category>
-      </categories>
-      <tags>
-        <tag>SmartContract</tag>
-        <tag>Project</tag>
-        <tag>CoolErc20</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Project-BscTradeHistory交易历史网站</title>
     <url>/2021/7095.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -4679,6 +4575,110 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
       </tags>
   </entry>
   <entry>
+    <title>Project-CoolErc20-blacklist-具备黑名单代币</title>
+    <url>/2022/24654.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>实现一个具有黑名单功能的erc20代币<br>
+github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/blacklist</code></p>
+<h1>需求:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>黑名单用户无法正常<code>transfer</code></p>
+</li>
+<li class="lvl-2">
+<p>管理员可配置黑名单里的地址</p>
+</li>
+</ul>
+<h1>业务场景：</h1>
+<p>暂时能想到的</p>
+<table>
+<thead>
+<tr>
+<th>项目方</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>好人</td>
+<td>将恶意用户、抢跑用户、机器人、非正常渠道获得大量代币的用户加入黑名单，相当于冻结它的资产</td>
+</tr>
+<tr>
+<td>坏人</td>
+<td>rug、scam</td>
+</tr>
+</tbody>
+</table>
+<p>还想到一个骚操作，如果把swap的地址加入黑名单列表。。🤣也可以使得该erc20代币 无法正常的与swap交互，无法买卖、添加移除流动性。</p>
+<h1>部署：</h1>
+<p>如果是在<code>hardhat</code>环境的话，不用先执行编译、部署了，可以直接<code>yarn hardhat test</code>，会默认执行前两步。</p>
+<h1>编写合约：</h1>
+<h2 id="黑名单判断：">黑名单判断：</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">_beforeTokenTransfer</span>(<span class="params"></span></span><br><span class="line"><span class="params">    address <span class="keyword">from</span>,</span></span><br><span class="line"><span class="params">    address to,</span></span><br><span class="line"><span class="params">    uint256 amount</span></span><br><span class="line"><span class="params"></span>) internal override &#123;</span><br><span class="line">    <span class="comment">// 错误写法：只要一个为非黑名单即可</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from] || !_blackList[to], &quot;ERC20: user in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="comment">// require( !_blackList[to], &quot;ERC20: &#x27;to&#x27; address in black list&quot;);</span></span><br><span class="line">    <span class="comment">// require( !_blackList[from], &quot;ERC20: &#x27;from&#x27; address in black list&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正确写法：同时都为非黑名单</span></span><br><span class="line">    <span class="built_in">require</span>( !_blackList[to] &amp;&amp;  !_blackList[<span class="keyword">from</span>], <span class="string">&quot;ERC20: &#x27;to&#x27; or &#x27;from&#x27; address in black list&quot;</span>);</span><br><span class="line">    <span class="variable language_">super</span>.<span class="title function_">_beforeTokenTransfer</span>(<span class="keyword">from</span>, to, amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一开始觉得这个erc20合约很简单，结果一写到黑名单判断的时候，第一次就写错了。。😅<br>
+还发现正确写法有两种，其中第一种可以更清晰地把错误原因写清楚。</p>
+<blockquote>
+<p>看来还是要多code，多实践才行</p>
+</blockquote>
+<h1>测试：</h1>
+<h2 id="Mocha测试框架">Mocha测试框架</h2>
+<p>在写测试脚本时，有一个目前没接触过的测试需求：需要给用户设置黑名单后，给这个用户转账，然后希望这次转账报错。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 希望该函数报错的写法</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">expect</span>(tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei)).<span class="property">to</span>.<span class="property">be</span>.<span class="property">reverted</span>;</span><br></pre></td></tr></table></figure>
+<p>在查文档的时候才知道。。<code>hardhat</code>用到的是一个叫<code>Mocha</code>的测试框架，后续如果还遇到新的测试需求可以查阅该文档。</p>
+<blockquote>
+<p>Mocha是一个能够运行在Node和浏览器中的多功能的JavaScript测试框架，它让异步测试简单且有趣。</p>
+<p>Mocha连续地运行测试，并给出灵活而精确的报告，同时能够将错误精确地映射到测试用例上。它托管在GitHub上。</p>
+</blockquote>
+<h2 id="测试结果：">测试结果：</h2>
+<p>符合预期：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Set blacklist: </span><br><span class="line">【Step 3】tokenOwner Set user0 in blacklist: </span><br><span class="line">【Step 3】user0IfBlackList: true</span><br><span class="line"> After setting blacklist, try : </span><br><span class="line">【Step 4】tokenOwner Set user0 in blacklist and try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line">      ✔ can&#x27;t transfer after setting blacklist (1351ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1>Summary:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>看来还是要多code，多实践才行，再简单的需求，真正写起来的时候也很有可能出错。</p>
+</li>
+<li class="lvl-2">
+<p>写<code>hardhat</code>测试脚本时，如果遇到没见过的测试需求，可以查阅<code>mocha</code>的文档</p>
+</li>
+<li class="lvl-2">
+<p>比如平时有看到别的项目用hardhat构建的，可以参考里面的test脚本，学学别人的写法</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
+<li class="lvl-2">
+<p>实践出真知🧐🧐🧐</p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/bsc/bscUniswapV2.test.ts">poly-flash 参考里面的test脚本</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.jianshu.com/p/9c78548caffa">Mocha.js官方文档翻译 —— 简单、灵活、有趣</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://mochajs.bootcss.com/#inclusive-tests">Mocha中文文档1</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.wanxiangyundang.top/read/mocha-in-chinese/EXCLUSIVE.md">Mocha中文文档2</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Project-CoolErc20-burnable-燃烧通缩代币</title>
     <url>/2022/21702.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -4779,6 +4779,54 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 </li>
 <li class="lvl-2">
 <p><a href="https://github.com/OpenZeppelin/openzeppelin-contracts">https://github.com/OpenZeppelin/openzeppelin-contracts</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+        <tag>CoolErc20</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-CoolErc20-pauseable-可暂停代币</title>
+    <url>/2022/35217.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>参考OpenZeppelin的<code>ERC20Pausable.sol</code>，实现一个可暂停的erc20代币<br>
+github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/pauseable</code></p>
+<h1>需求:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>管理员可配置暂停开关</p>
+</li>
+<li class="lvl-2">
+<p>暂停后无法正常<code>transfer</code></p>
+</li>
+<li class="lvl-2">
+<p>解除暂停后可正常<code>transfer</code></p>
+</li>
+</ul>
+<h1>业务场景：</h1>
+<p>出bug的时候，可以由管理员设置暂停开关，阻止代币的传输、铸造和燃烧等功能，相当于一个紧急停止机制。</p>
+<h1>部署：</h1>
+<p>无</p>
+<h1>编写合约：</h1>
+<h2 id="可不写super关键字">可不写super关键字</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 父类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_pause</span>(<span class="params"></span>) internal virtual whenNotPaused &#123;</span><br><span class="line">    _paused = <span class="literal">true</span>;</span><br><span class="line">    emit <span class="title class_">Paused</span>(<span class="title function_">_msgSender</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 子类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">setPause</span>(<span class="params"></span>) public <span class="title function_">onlyOwner</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// super._pause();</span></span><br><span class="line">    <span class="title function_">_pause</span>();  <span class="comment">// 这两种写法都可以</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用父类的函数时，不一定都要写<code>super</code>，当在<strong>继承关系图谱</strong>中存在唯一的父类函数，这种情况下可以不显示写<code>super</code>关键字</p>
+<h1>测试：</h1>
+<p>简单合约的话，依旧是在remix上简单编写，做语法check<br>
+然后放到hardhat框架里写测试script</p>
+<h2 id="测试结果：-3">测试结果：</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    can&#x27;t transfer after set pause,can transfer after set Unpause</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Pause: </span><br><span class="line">【Step 3】tokenOwner Set Pause: </span><br><span class="line">【Step 3】paused Switch: true</span><br><span class="line"> After setting pause, try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line"> UnPause: </span><br><span class="line">【Step 5】tokenOwner Set UnPause: </span><br><span class="line">【Step 5】paused Switch: false</span><br><span class="line"> After setting Unpause, try to transfer: </span><br><span class="line">【Step 6】 expect : tokenOwner -&gt; 100-&gt; user0 to be not reverted</span><br><span class="line">【Step 6】userBalance(Ether): 200.0</span><br><span class="line">      ✔  (1446ms)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br><span class="line">✨  Done in 5.12s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol</a></p>
 </li>
 </ul>
 ]]></content>
@@ -4966,54 +5014,6 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 </li>
 <li class="lvl-2">
 <p><a href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Project</category>
-      </categories>
-      <tags>
-        <tag>SmartContract</tag>
-        <tag>Project</tag>
-        <tag>CoolErc20</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Project-CoolErc20-pauseable-可暂停代币</title>
-    <url>/2022/35217.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>参考OpenZeppelin的<code>ERC20Pausable.sol</code>，实现一个可暂停的erc20代币<br>
-github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/pauseable</code></p>
-<h1>需求:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>管理员可配置暂停开关</p>
-</li>
-<li class="lvl-2">
-<p>暂停后无法正常<code>transfer</code></p>
-</li>
-<li class="lvl-2">
-<p>解除暂停后可正常<code>transfer</code></p>
-</li>
-</ul>
-<h1>业务场景：</h1>
-<p>出bug的时候，可以由管理员设置暂停开关，阻止代币的传输、铸造和燃烧等功能，相当于一个紧急停止机制。</p>
-<h1>部署：</h1>
-<p>无</p>
-<h1>编写合约：</h1>
-<h2 id="可不写super关键字">可不写super关键字</h2>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 父类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_pause</span>(<span class="params"></span>) internal virtual whenNotPaused &#123;</span><br><span class="line">    _paused = <span class="literal">true</span>;</span><br><span class="line">    emit <span class="title class_">Paused</span>(<span class="title function_">_msgSender</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 子类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">setPause</span>(<span class="params"></span>) public <span class="title function_">onlyOwner</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// super._pause();</span></span><br><span class="line">    <span class="title function_">_pause</span>();  <span class="comment">// 这两种写法都可以</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调用父类的函数时，不一定都要写<code>super</code>，当在<strong>继承关系图谱</strong>中存在唯一的父类函数，这种情况下可以不显示写<code>super</code>关键字</p>
-<h1>测试：</h1>
-<p>简单合约的话，依旧是在remix上简单编写，做语法check<br>
-然后放到hardhat框架里写测试script</p>
-<h2 id="测试结果：-3">测试结果：</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    can&#x27;t transfer after set pause,can transfer after set Unpause</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Pause: </span><br><span class="line">【Step 3】tokenOwner Set Pause: </span><br><span class="line">【Step 3】paused Switch: true</span><br><span class="line"> After setting pause, try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line"> UnPause: </span><br><span class="line">【Step 5】tokenOwner Set UnPause: </span><br><span class="line">【Step 5】paused Switch: false</span><br><span class="line"> After setting Unpause, try to transfer: </span><br><span class="line">【Step 6】 expect : tokenOwner -&gt; 100-&gt; user0 to be not reverted</span><br><span class="line">【Step 6】userBalance(Ether): 200.0</span><br><span class="line">      ✔  (1446ms)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br><span class="line">✨  Done in 5.12s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol">https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/Pausable.sol</a></p>
 </li>
 </ul>
 ]]></content>
@@ -7097,53 +7097,6 @@ Solidity optimizes for storage efficiency by packing two smaller data types into
       </tags>
   </entry>
   <entry>
-    <title>StudyRecord-OpenSea制作NFT初步使用</title>
-    <url>/2022/32598.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>OpenSea制作NFT初步使用</p>
-<h1>部署ERC721合约：</h1>
-<p><a href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
-<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上部署时，填入<code>_reserveAddress</code>网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
-<h1>上传图片及NFT元数据文件：</h1>
-<p>我这里暂用自己的github public仓库作为存储的地方</p>
-<p>原项目<code>KILLAz</code>的元数据文件：<code>https://gateway.pinata.cloud/ipfs/QmeLBX1hPFeZTk61rtJAxdrjFdTttR7D6Q9XFuXU5fSoEQ/1</code></p>
-<p>copy原项目的数据，新建txt文档，文档中存储构造符合OpenSea标准的NFT 元数据（元数据中保存了图片的url），如下：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.txt</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Background&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Beige&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Body&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Ancient One&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Weapon&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Katana&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Clothing&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Mask&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Primary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Spirit Necklace&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Secondary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;KILLAz #1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;image&quot;</span><span class="punctuation">:</span><span class="string">&quot;https://raw.githubusercontent.com/jerrychan807/imggg/master/721/1.jpg&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png" alt="20220622190753"></p>
-<h1>合约初始化设置：</h1>
-<h2 id="打开售卖开关：">打开售卖开关：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550"></p>
-<h2 id="设置baseUri">设置baseUri:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719"></p>
-<h2 id="铸造nft：">铸造nft：</h2>
-<p>铸造3个，单价0.029，总价0.087</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192005.png" alt="20220622192005"></p>
-<h1>导入opensea：</h1>
-<p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192229.png" alt="20220622192229"></p>
-<p>发布成功：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192313.png" alt="20220622192313"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192333.png" alt="20220622192333"></p>
-<h1>Bug:</h1>
-<p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622193055.png" alt="20220622193055"></p>
-<p>基于合约发的nft可以很轻松的做到批量的效果。</p>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>StudyRecord</category>
-      </categories>
-      <tags>
-        <tag>SmartContract</tag>
-        <tag>StudyRecord</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>StudyRecord-Hitchhikers_Guide_to_the_EVM</title>
     <url>/2022/46265.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -7291,6 +7244,53 @@ Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
         <tag>EVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-OpenSea制作NFT初步使用</title>
+    <url>/2022/32598.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>OpenSea制作NFT初步使用</p>
+<h1>部署ERC721合约：</h1>
+<p><a href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
+<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上部署时，填入<code>_reserveAddress</code>网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
+<h1>上传图片及NFT元数据文件：</h1>
+<p>我这里暂用自己的github public仓库作为存储的地方</p>
+<p>原项目<code>KILLAz</code>的元数据文件：<code>https://gateway.pinata.cloud/ipfs/QmeLBX1hPFeZTk61rtJAxdrjFdTttR7D6Q9XFuXU5fSoEQ/1</code></p>
+<p>copy原项目的数据，新建txt文档，文档中存储构造符合OpenSea标准的NFT 元数据（元数据中保存了图片的url），如下：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.txt</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Background&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Beige&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Body&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Ancient One&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Weapon&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Katana&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Clothing&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Mask&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Primary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Spirit Necklace&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Secondary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;KILLAz #1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;image&quot;</span><span class="punctuation">:</span><span class="string">&quot;https://raw.githubusercontent.com/jerrychan807/imggg/master/721/1.jpg&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png" alt="20220622190753"></p>
+<h1>合约初始化设置：</h1>
+<h2 id="打开售卖开关：">打开售卖开关：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550"></p>
+<h2 id="设置baseUri">设置baseUri:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719"></p>
+<h2 id="铸造nft：">铸造nft：</h2>
+<p>铸造3个，单价0.029，总价0.087</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192005.png" alt="20220622192005"></p>
+<h1>导入opensea：</h1>
+<p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192229.png" alt="20220622192229"></p>
+<p>发布成功：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192313.png" alt="20220622192313"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192333.png" alt="20220622192333"></p>
+<h1>Bug:</h1>
+<p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622193055.png" alt="20220622193055"></p>
+<p>基于合约发的nft可以很轻松的做到批量的效果。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
       </tags>
   </entry>
   <entry>
@@ -8319,142 +8319,103 @@ Failing assertion probably means that there is a bug.</p>
       </tags>
   </entry>
   <entry>
-    <title>StudyRecord-以太坊源码分析-EVM的入口与创建</title>
+    <title>StudyRecord-以太坊源码分析-将交易递交给EVM</title>
     <url>/2022/33963.html</url>
-    <content><![CDATA[<h1>EVM的入口：</h1>
+    <content><![CDATA[<h1>处理交易的入口：</h1>
 <p>整个evm调用的入口在<code>go-ethereum/core/state_transaction.go</code>中.<br>
-其中主要函数是 <code>ApplyTransaction()</code>,</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ApplyTransaction attempts to apply a transaction to the given state database</span></span><br><span class="line"><span class="comment">// and uses the input parameters for its environment. It returns the receipt</span></span><br><span class="line"><span class="comment">// for the transaction, gas used and an error if the transaction failed,</span></span><br><span class="line"><span class="comment">// indicating the block was invalid.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ApplyTransaction</span><span class="params">(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *<span class="type">uint64</span>, cfg vm.Config)</span></span> (*types.Receipt, <span class="type">error</span>) &#123;</span><br><span class="line">	msg, err := tx.AsMessage(types.MakeSigner(config, header.Number), header.BaseFee)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create a new context to be used in the EVM environment</span></span><br><span class="line">  <span class="comment">// 创建要在EVM环境中使用的新上下文</span></span><br><span class="line">	blockContext := NewEVMBlockContext(header, bc, author) </span><br><span class="line">	vmenv := vm.NewEVM(blockContext, vm.TxContext&#123;&#125;, statedb, config, cfg)</span><br><span class="line">	<span class="keyword">return</span> applyTransaction(msg, config, bc, author, gp, statedb, header.Number, header.Hash(), tx, usedGas, vmenv)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>ApplyTransaction()</code>函数主要操作:</p>
+<code>ApplyTransaction()</code>就是执行交易的入口，而交易的执行就离不开<code>EVM</code><br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220720154820.png" alt="20220720154820"></p>
+<h1>处理交易流程：</h1>
+<h2 id="ApplyTransaction函数">ApplyTransaction函数:</h2>
+<p><code>ApplyTransaction()</code>和<code>applyTransaction()</code>函数的主要功能是：将交易转化成Message，创建EVM对象，调用<code>ApplyMessage()</code>执行交易，生成日志对象；</p>
 <ol>
 <li class="lvl-3">
-<p>将 <code>Transaction</code> 对象转换成 <code>Message</code> 对象</p>
+<p>将交易转换成Message</p>
 </li>
 <li class="lvl-3">
-<p>创建 <code>Context</code> 对象(主要包含了一些访问当前区块链数据的方法)</p>
+<p>初始化一个EVM的执行环境</p>
 </li>
 <li class="lvl-3">
-<p>利用这些参数，新建 evm 对象</p>
+<p>新建 EVM 对象</p>
 </li>
 <li class="lvl-3">
-<p>调用 <code>applyTransaction()</code> 函数，继续参数传递</p>
+<p>执行交易，改变stateDB世界状态，然后生成收据</p>
 </li>
 </ol>
-<p>接着看<code>applyTransaction()</code>函数,</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">applyTransaction</span><span class="params">(msg types.Message, config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb *state.StateDB, blockNumber *big.Int, blockHash common.Hash, tx *types.Transaction, usedGas *<span class="type">uint64</span>, evm *vm.EVM)</span></span> (*types.Receipt, <span class="type">error</span>) &#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Apply the transaction to the current state (included in the env).</span></span><br><span class="line">	result, err := ApplyMessage(evm, msg, gp)</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>接着看 <code>ApplyMessage()</code> 函数,</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ApplyMessage returns the bytes returned by any EVM execution (if it took place)...</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ApplyMessage</span><span class="params">(evm *vm.EVM, msg Message, gp *GasPool)</span></span> (*ExecutionResult, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> NewStateTransition(evm, msg, gp).TransitionDb()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>接着看 <code>TransitionDb()</code> 函数:</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(st *StateTransition)</span></span> TransitionDb() (*ExecutionResult, <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="comment">// 执行一些检查</span></span><br><span class="line">	<span class="keyword">if</span> err := st.preCheck(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> (</span><br><span class="line">		...</span><br><span class="line">    <span class="comment">// 判断是否是创建新合约</span></span><br><span class="line">		contractCreation = msg.To() == <span class="literal">nil</span></span><br><span class="line">	)</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  	<span class="keyword">if</span> contractCreation &#123;</span><br><span class="line">		<span class="comment">// 调用 EVM.Create 创建合约</span></span><br><span class="line">		ret, _, st.gas, vmerr = st.evm.Create(sender, st.data, st.gas, st.value)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// Increment the nonce for the next transaction</span></span><br><span class="line">		<span class="comment">// 不是创建合约，则调用 EVM.Call 调用合约</span></span><br><span class="line">		st.state.SetNonce(msg.From(), st.state.GetNonce(sender.Address())+<span class="number">1</span>)</span><br><span class="line">		ret, st.gas, vmerr = st.evm.Call(sender, st.to(), st.data, st.gas, st.value)</span><br><span class="line">	&#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// 归还剩余的 gas，并将已消耗的 gas 计入矿工账户中</span></span><br><span class="line">	<span class="keyword">if</span> !rules.IsLondon &#123;</span><br><span class="line">		<span class="comment">// Before EIP-3529: refunds were capped to gasUsed / 2</span></span><br><span class="line">		st.refundGas(params.RefundQuotient)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// After EIP-3529: refunds are capped to gasUsed / 5</span></span><br><span class="line">		st.refundGas(params.RefundQuotientEIP3529)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-<p><code>TransitionDb()</code>将<code>message</code>传入evm执行，获得evm执行后的返回结果，有以下参数：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>已消耗的总gas、退款的gas</p>
-</li>
-<li class="lvl-2">
-<p>evm的返回结果</p>
-</li>
-<li class="lvl-2">
-<p>执行中断的错误原因</p>
-</li>
-</ul>
-<p><code>TransitionDb()</code> 主要操作:</p>
+<figure class="highlight go"><figcaption><span>core/state_processor.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ApplyTransaction</span><span class="params">(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *<span class="type">uint64</span>, cfg vm.Config)</span></span> (*types.Receipt, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// 转换一个Message对象</span></span><br><span class="line">	msg, err := tx.AsMessage(types.MakeSigner(config, header.Number), header.BaseFee)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create a new context to be used in the EVM environment</span></span><br><span class="line">	<span class="comment">// 创建要在EVM环境中使用的 区块上下文</span></span><br><span class="line">	blockContext := NewEVMBlockContext(header, bc, author)</span><br><span class="line">	<span class="comment">// 使用区块上下文创建EVM对象</span></span><br><span class="line">	vmenv := vm.NewEVM(blockContext, vm.TxContext&#123;&#125;, statedb, config, cfg)</span><br><span class="line">	<span class="comment">// 调用applyTransaction函数</span></span><br><span class="line">	<span class="keyword">return</span> applyTransaction(msg, config, bc, author, gp, statedb, header.Number, header.Hash(), tx, usedGas, vmenv)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着看<code>applyTransaction()</code>函数</p>
+<h3 id="applyTransaction函数">applyTransaction函数:</h3>
+<figure class="highlight go"><figcaption><span>core/state_processor.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">applyTransaction</span><span class="params">(msg types.Message, config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb *state.StateDB, blockNumber *big.Int, blockHash common.Hash, tx *types.Transaction, usedGas *<span class="type">uint64</span>, evm *vm.EVM)</span></span> (*types.Receipt, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// Create a new context to be used in the EVM environment.</span></span><br><span class="line">	<span class="comment">// 创建交易上下文</span></span><br><span class="line">	txContext := NewEVMTxContext(msg)</span><br><span class="line">	evm.Reset(txContext, statedb)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Apply the transaction to the current state (included in the env).</span></span><br><span class="line">	<span class="comment">// 执行交易，获取返回结果</span></span><br><span class="line">	result, err := ApplyMessage(evm, msg, gp)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Update the state with pending changes.</span></span><br><span class="line">	<span class="comment">// 更改stateDB世界状态</span></span><br><span class="line">	<span class="keyword">var</span> root []<span class="type">byte</span></span><br><span class="line">	<span class="comment">// 如果是拜占庭硬分叉，清理世界状态</span></span><br><span class="line">	<span class="keyword">if</span> config.IsByzantium(blockNumber) &#123;</span><br><span class="line">		statedb.Finalise(<span class="literal">true</span>)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// 否则计算状态树根，用于产生收据</span></span><br><span class="line">		root = statedb.IntermediateRoot(config.IsEIP158(blockNumber)).Bytes()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 增加header中的usedGas</span></span><br><span class="line">	*usedGas += result.UsedGas</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create a new receipt for the transaction, storing the intermediate root and gas used</span></span><br><span class="line">	<span class="comment">// by the tx.</span></span><br><span class="line">	<span class="comment">// 创建用于交易的新收据，在tx中存储root和使用的气体</span></span><br><span class="line">	receipt := &amp;types.Receipt&#123;Type: tx.Type(), PostState: root, CumulativeGasUsed: *usedGas&#125;</span><br><span class="line">	<span class="keyword">if</span> result.Failed() &#123;</span><br><span class="line">		receipt.Status = types.ReceiptStatusFailed</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		receipt.Status = types.ReceiptStatusSuccessful</span><br><span class="line">	&#125;</span><br><span class="line">	receipt.TxHash = tx.Hash()</span><br><span class="line">	receipt.GasUsed = result.UsedGas</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If the transaction created a contract, store the creation address in the receipt.</span></span><br><span class="line">	<span class="comment">// 如果交易创建了一个合约，要把合约地址放在收据里</span></span><br><span class="line">	<span class="keyword">if</span> msg.To() == <span class="literal">nil</span> &#123;</span><br><span class="line">		receipt.ContractAddress = crypto.CreateAddress(evm.TxContext.Origin, tx.Nonce())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Set the receipt logs and create the bloom filter.</span></span><br><span class="line">	<span class="comment">// 记录收据的信息</span></span><br><span class="line">	receipt.Logs = statedb.GetLogs(tx.Hash(), blockHash)</span><br><span class="line">	receipt.Bloom = types.CreateBloom(types.Receipts&#123;receipt&#125;)</span><br><span class="line">	receipt.BlockHash = blockHash</span><br><span class="line">	receipt.BlockNumber = blockNumber</span><br><span class="line">	receipt.TransactionIndex = <span class="type">uint</span>(statedb.TxIndex())</span><br><span class="line">	<span class="keyword">return</span> receipt, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着看<code>ApplyMessage()</code>函数</p>
+<h3 id="ApplyMessage函数">ApplyMessage函数:</h3>
+<p>在<code>ApplyMessage()</code>中，首先新建一个交易工作环境，然后紧接着调用<code>TransitionDb()</code>方法：</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// ApplyMessage returns the bytes returned by any EVM execution (if it took place)...</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ApplyMessage</span><span class="params">(evm *vm.EVM, msg Message, gp *GasPool)</span></span> (*ExecutionResult, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> NewStateTransition(evm, msg, gp).TransitionDb()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="StateTransition-TransitionDb函数">StateTransition.TransitionDb函数:</h2>
+<h3 id="StateTransition结构体：">StateTransition结构体：</h3>
+<p><code>交易工作环境(StateTransition)</code>的数据结构如下：</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> StateTransition <span class="keyword">struct</span> &#123;</span><br><span class="line">	gp         *GasPool   <span class="comment">// 区块工作环境中的gas剩余额度，就是header中的gasLimit</span></span><br><span class="line">	msg        Message    <span class="comment">// 交易转化的message</span></span><br><span class="line">	gas        <span class="type">uint64</span>     <span class="comment">// 交易的gas余额，最开始等于initialGas，随着交易执行会递减</span></span><br><span class="line">	gasPrice   *big.Int</span><br><span class="line">	gasFeeCap  *big.Int</span><br><span class="line">	gasTipCap  *big.Int   </span><br><span class="line">	initialGas <span class="type">uint64</span>     <span class="comment">// 初始gas，等于交易的gasLimit</span></span><br><span class="line">	value      *big.Int   <span class="comment">// 交易转账额度</span></span><br><span class="line">	data       []<span class="type">byte</span>     <span class="comment">// 交易的input，如果是合约创建，data就是合约代码</span></span><br><span class="line">	state      vm.StateDB <span class="comment">// 状态树</span></span><br><span class="line">	evm        *vm.EVM    <span class="comment">// evm对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里<code>gp</code>是整个区块所有交易可用的<code>gas</code>，其实就是来自于<code>header</code>的<code>gaslimit</code>，而<code>header</code>的<code>gasLimit</code>是通过父区块的<code>gasUsed</code>推算出来的。<code>initialGas</code>是交易的<code>gasLimit</code>，gas是余额（等于<code>initialGas</code>减去交易<code>usedGas</code>）。</p>
+<h3 id="TransitionDb函数">TransitionDb函数:</h3>
+<p><code>TransitionDb()</code>的主要功能是 初始化交易工作环境，执行交易，然后处理交易执行前后的gas增减。</p>
 <ol>
 <li class="lvl-3">
-<p>共识规则的检查</p>
-<ul class="lvl-2">
-<li class="lvl-5">caller的nonce是否正确</li>
-<li class="lvl-5">caller是否有足够的余额来支付交易费(gaslimit + gasprice)</li>
-<li class="lvl-5">block里剩余可用gas数量</li>
-<li class="lvl-5">购买的gas是否足够支付基础使用的gas量</li>
-<li class="lvl-5">计算基础使用的gas量时有没溢出</li>
-<li class="lvl-5">caller是否有足够的余额来支付资产的转移</li>
-</ul>
+<p>前置检查：预先检查<code>nonce</code>和<code>gas</code>值,初始化交易工作环境的gas初始值；</p>
 </li>
 <li class="lvl-3">
-<p>判断是否是创建新合约</p>
-<ul class="lvl-2">
-<li class="lvl-5">调用 EVM.Create 创建合约</li>
-<li class="lvl-5">或者 调用 EVM.Call 调用合约</li>
-</ul>
+<p>计算并扣除固定gas消耗；</p>
 </li>
 <li class="lvl-3">
-<p>归还剩余的 gas，并将已消耗的 gas 计入矿工账户中</p>
+<p>通过比较0地址，判断是否是创建新合约，调用evm创建或执行交易；</p>
+</li>
+<li class="lvl-3">
+<p>奖励旷工：归还剩余的 gas，并将已消耗的 gas 计入矿工账户中</p>
 </li>
 </ol>
-<h2 id="小结：">小结：</h2>
-<p>上面主要做的是：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>初始化环境、配置信息、交易执行前的检查</p>
-</li>
-<li class="lvl-2">
-<p>创建EVM对象、传入参数、创建合约or 调用合约 去执行</p>
-</li>
-<li class="lvl-2">
-<p>获取执行结果、中断执行的错误原因</p>
-</li>
-</ul>
-<p>也就是说 每处理一笔交易，就要创建一个 EVM对象 来执行交易中的数据。</p>
-<p>介绍完evm的入口之后，看看创建evm的具体细节</p>
-<h1>以太坊虚拟机EVM:</h1>
-<p>EVM 对象是 evm 模块对外导出的最重要的对象，它代表了一个以太坊虚拟机。利用这个对象，以太坊就可以创建和调用合约了。下面我们从evm的数据结构、evm的创建 来详细介绍一下。</p>
-<h2 id="EVM数据结构：">EVM数据结构：</h2>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> EVM <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Context provides auxiliary blockchain related information</span></span><br><span class="line">	<span class="comment">// 辅助信息对象(包括GasLimit，BlockNumber等信息)</span></span><br><span class="line">	Context BlockContext</span><br><span class="line">	<span class="comment">// 交易相关的信息(包括ORIGIN，GASPRICE)</span></span><br><span class="line">	TxContext</span><br><span class="line">	<span class="comment">// StateDB gives access to the underlying state</span></span><br><span class="line">	<span class="comment">// 为EVM提供StateDB相关操作</span></span><br><span class="line">	StateDB StateDB</span><br><span class="line">	<span class="comment">// Depth is the current call stack</span></span><br><span class="line">	<span class="comment">// 记录当前调用的栈的深度</span></span><br><span class="line">	depth <span class="type">int</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// chainConfig contains information about the current chain</span></span><br><span class="line">	<span class="comment">// 链配置信息 包含了当前的区块链的信息</span></span><br><span class="line">	chainConfig *params.ChainConfig</span><br><span class="line">	<span class="comment">// chain rules contains the chain rules for the current epoch</span></span><br><span class="line">	<span class="comment">// 链规则</span></span><br><span class="line">	chainRules params.Rules</span><br><span class="line">	<span class="comment">// virtual machine configuration options used to initialise the</span></span><br><span class="line">	<span class="comment">// evm.</span></span><br><span class="line">	<span class="comment">// 虚拟机配置</span></span><br><span class="line">	Config Config</span><br><span class="line">	<span class="comment">// global (to this context) ethereum virtual machine</span></span><br><span class="line">	<span class="comment">// used throughout the execution of the tx.</span></span><br><span class="line">	<span class="comment">// 解释器</span></span><br><span class="line">	interpreter *EVMInterpreter</span><br><span class="line">	<span class="comment">// abort is used to abort the EVM calling operations</span></span><br><span class="line">	<span class="comment">// <span class="doctag">NOTE:</span> must be set atomically</span></span><br><span class="line">	<span class="comment">// 用于中止EVM调用操作</span></span><br><span class="line">	abort <span class="type">int32</span></span><br><span class="line">	<span class="comment">// callGasTemp holds the gas available for the current call. This is needed because the</span></span><br><span class="line">	<span class="comment">// available gas is calculated in gasCall* according to the 63/64 rule and later</span></span><br><span class="line">	<span class="comment">// applied in opCall*.</span></span><br><span class="line">	<span class="comment">// 当前call可用的gas</span></span><br><span class="line">	callGasTemp <span class="type">uint64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="创建EVM对象">创建EVM对象:</h2>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEVM</span><span class="params">(blockCtx BlockContext, txCtx TxContext, statedb StateDB, chainConfig *params.ChainConfig, config Config)</span></span> *EVM &#123;</span><br><span class="line">	evm := &amp;EVM&#123;</span><br><span class="line">		Context:     blockCtx,</span><br><span class="line">		TxContext:   txCtx,</span><br><span class="line">		StateDB:     statedb,</span><br><span class="line">		Config:      config,</span><br><span class="line">		chainConfig: chainConfig,</span><br><span class="line">		chainRules:  chainConfig.Rules(blockCtx.BlockNumber, blockCtx.Random != <span class="literal">nil</span>),</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 创建EVM解释器</span></span><br><span class="line">	evm.interpreter = NewEVMInterpreter(evm, config)</span><br><span class="line">	<span class="keyword">return</span> evm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>NewEVM()</code> 函数用来创建一个新的虚拟机对象，它有5个参数，含义分别如下：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>blockCtx: 区块的信息和挖矿环境的函数和数据</p>
-</li>
-<li class="lvl-2">
-<p>txCtx: 交易的信息</p>
-</li>
-<li class="lvl-2">
-<p>statedb: 以太坊状态数据库对象</p>
-</li>
-<li class="lvl-2">
-<p>chainConfig: 当前节点的区块链配置信息</p>
-</li>
-<li class="lvl-2">
-<p>config: 虚拟机配置信息</p>
-</li>
-</ul>
-<p>NewEVM 函数的实现，除了把参数记录下来以外，主要就是调用 <code>NewEVMInterpreter()</code> 创建一个解释器对象。</p>
-<h2 id="创建EVM解释器对象：">创建EVM解释器对象：</h2>
-<p>接着看<code>NewEVMInterpreter()</code>函数:</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEVMInterpreter</span><span class="params">(evm *EVM, cfg Config)</span></span> *EVMInterpreter &#123;</span><br><span class="line">	<span class="comment">// If jump table was not initialised we set the default one.</span></span><br><span class="line">	<span class="keyword">if</span> cfg.JumpTable == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">switch</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsMerge:</span><br><span class="line">			cfg.JumpTable = &amp;mergeInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsLondon:</span><br><span class="line">			cfg.JumpTable = &amp;londonInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsBerlin:</span><br><span class="line">			cfg.JumpTable = &amp;berlinInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsIstanbul:</span><br><span class="line">			cfg.JumpTable = &amp;istanbulInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsConstantinople:</span><br><span class="line">			cfg.JumpTable = &amp;constantinopleInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsByzantium:</span><br><span class="line">			cfg.JumpTable = &amp;byzantiumInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsEIP158:</span><br><span class="line">			cfg.JumpTable = &amp;spuriousDragonInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsEIP150:</span><br><span class="line">			cfg.JumpTable = &amp;tangerineWhistleInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsHomestead:</span><br><span class="line">			cfg.JumpTable = &amp;homesteadInstructionSet</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			cfg.JumpTable = &amp;frontierInstructionSet</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> i, eip := <span class="keyword">range</span> cfg.ExtraEips &#123;</span><br><span class="line">			<span class="built_in">copy</span> := *cfg.JumpTable</span><br><span class="line">			<span class="keyword">if</span> err := EnableEIP(eip, &amp;<span class="built_in">copy</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="comment">// Disable it, so caller can check if it&#x27;s activated or not</span></span><br><span class="line">				cfg.ExtraEips = <span class="built_in">append</span>(cfg.ExtraEips[:i], cfg.ExtraEips[i+<span class="number">1</span>:]...)</span><br><span class="line">				log.Error(<span class="string">&quot;EIP activation failed&quot;</span>, <span class="string">&quot;eip&quot;</span>, eip, <span class="string">&quot;error&quot;</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line">			cfg.JumpTable = &amp;<span class="built_in">copy</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> &amp;EVMInterpreter&#123;</span><br><span class="line">		evm: evm,</span><br><span class="line">		cfg: cfg,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>NewEVMInterpreter()</code>函数的主要操作:</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// TransitionDb will transition the state by applying the current message and</span></span><br><span class="line"><span class="comment">// returning the evm execution result with following fields.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// - used gas:</span></span><br><span class="line"><span class="comment">//      total gas used (including gas being refunded)</span></span><br><span class="line"><span class="comment">// - returndata:</span></span><br><span class="line"><span class="comment">//      the returned data from evm</span></span><br><span class="line"><span class="comment">// - concrete execution error:</span></span><br><span class="line"><span class="comment">//      various **EVM** error which aborts the execution,</span></span><br><span class="line"><span class="comment">//      e.g. ErrOutOfGas, ErrExecutionReverted</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// However if any consensus issue encountered, return the error directly with</span></span><br><span class="line"><span class="comment">// nil evm execution result.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(st *StateTransition)</span></span> TransitionDb() (*ExecutionResult, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// First check this message satisfies all consensus rules before</span></span><br><span class="line">	<span class="comment">// applying the message. The rules include these clauses</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// 1. the nonce of the message caller is correct  caller的nonce是否正确</span></span><br><span class="line">	<span class="comment">// 2. caller has enough balance to cover transaction fee(gaslimit * gasprice) caller是否有足够的余额来支付交易费(gaslimit + gasprice)</span></span><br><span class="line">	<span class="comment">// 3. the amount of gas required is available in the block 区块里剩余可用gas数量</span></span><br><span class="line">	<span class="comment">// 4. the purchased gas is enough to cover intrinsic usage 购买的gas是否足够支付固定gas消耗量</span></span><br><span class="line">	<span class="comment">// 5. there is no overflow when calculating intrinsic gas 计算固定gas消耗量时有没溢出</span></span><br><span class="line">	<span class="comment">// 6. caller has enough balance to cover asset transfer for **topmost** call caller是否有足够的余额来支付资产的转移</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check clauses 1-3, buy gas if everything is correct</span></span><br><span class="line">	<span class="comment">// 先检查1-3项，然后调用buyGas；</span></span><br><span class="line">	<span class="comment">// buyGas是要从区块的gasPool中取出一定的gas用于执行交易</span></span><br><span class="line">	<span class="keyword">if</span> err := st.preCheck(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> st.evm.Config.Debug &#123;</span><br><span class="line">		st.evm.Config.Tracer.CaptureTxStart(st.initialGas)</span><br><span class="line">		<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			st.evm.Config.Tracer.CaptureTxEnd(st.gas)</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> (</span><br><span class="line">		msg              = st.msg</span><br><span class="line">		sender           = vm.AccountRef(msg.From())</span><br><span class="line">		rules            = st.evm.ChainConfig().Rules(st.evm.Context.BlockNumber, st.evm.Context.Random != <span class="literal">nil</span>)</span><br><span class="line">		<span class="comment">// 目标地址为0地址，则为创建合约，否则是交易或合约调用</span></span><br><span class="line">		contractCreation = msg.To() == <span class="literal">nil</span></span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check clauses 4-5, subtract intrinsic gas if everything is correct</span></span><br><span class="line">	<span class="comment">// 计算并扣除固定的gas消耗</span></span><br><span class="line">	<span class="comment">// 固定的gas消耗（21000） + 非0值gas + 0值gas</span></span><br><span class="line">	gas, err := IntrinsicGas(st.data, st.msg.AccessList(), contractCreation, rules.IsHomestead, rules.IsIstanbul)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> st.gas &lt; gas &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">&quot;%w: have %d, want %d&quot;</span>, ErrIntrinsicGas, st.gas, gas)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 更新剩余的gas值</span></span><br><span class="line">	st.gas -= gas</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check clause 6</span></span><br><span class="line">	<span class="keyword">if</span> msg.Value().Sign() &gt; <span class="number">0</span> &amp;&amp; !st.evm.Context.CanTransfer(st.state, msg.From(), msg.Value()) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">&quot;%w: address %v&quot;</span>, ErrInsufficientFundsForTransfer, msg.From().Hex())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Set up the initial access list.</span></span><br><span class="line">	<span class="keyword">if</span> rules.IsBerlin &#123;</span><br><span class="line">		st.state.PrepareAccessList(msg.From(), msg.To(), vm.ActivePrecompiles(rules), msg.AccessList())</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> (</span><br><span class="line">		ret   []<span class="type">byte</span></span><br><span class="line">		vmerr <span class="type">error</span> <span class="comment">// vm errors do not effect consensus and are therefore not assigned to err</span></span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">if</span> contractCreation &#123;</span><br><span class="line">		<span class="comment">// 如果是创建合约，调用 evm.Create</span></span><br><span class="line">		ret, _, st.gas, vmerr = st.evm.Create(sender, st.data, st.gas, st.value)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// Increment the nonce for the next transaction</span></span><br><span class="line">		<span class="comment">// 如果是交易或合约调用，则先设置交易发送方的nonce值+1</span></span><br><span class="line">		st.state.SetNonce(msg.From(), st.state.GetNonce(sender.Address())+<span class="number">1</span>)</span><br><span class="line">		<span class="comment">// 调用 evm.Call 执行交易</span></span><br><span class="line">		ret, st.gas, vmerr = st.evm.Call(sender, st.to(), st.data, st.gas, st.value)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 归还剩余的 gas，并将已消耗的 gas 计入矿工账户中</span></span><br><span class="line">	<span class="keyword">if</span> !rules.IsLondon &#123;</span><br><span class="line">		<span class="comment">// Before EIP-3529: refunds were capped to gasUsed / 2</span></span><br><span class="line">		st.refundGas(params.RefundQuotient)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// After EIP-3529: refunds are capped to gasUsed / 5</span></span><br><span class="line">		st.refundGas(params.RefundQuotientEIP3529)</span><br><span class="line">	&#125;</span><br><span class="line">	effectiveTip := st.gasPrice</span><br><span class="line">	<span class="keyword">if</span> rules.IsLondon &#123;</span><br><span class="line">		effectiveTip = cmath.BigMin(st.gasTipCap, <span class="built_in">new</span>(big.Int).Sub(st.gasFeeCap, st.evm.Context.BaseFee))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> st.evm.Config.NoBaseFee &amp;&amp; st.gasFeeCap.Sign() == <span class="number">0</span> &amp;&amp; st.gasTipCap.Sign() == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// Skip fee payment when NoBaseFee is set and the fee fields</span></span><br><span class="line">		<span class="comment">// are 0. This avoids a negative effectiveTip being applied to</span></span><br><span class="line">		<span class="comment">// the coinbase when simulating calls.</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fee := <span class="built_in">new</span>(big.Int).SetUint64(st.gasUsed())</span><br><span class="line">		fee.Mul(fee, effectiveTip)</span><br><span class="line">		<span class="comment">// 奖励矿工</span></span><br><span class="line">		st.state.AddBalance(st.evm.Context.Coinbase, fee)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 返回执行结果</span></span><br><span class="line">	<span class="keyword">return</span> &amp;ExecutionResult&#123;</span><br><span class="line">		UsedGas:    st.gasUsed(),</span><br><span class="line">		Err:        vmerr,</span><br><span class="line">		ReturnData: ret,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="preCheck函数">preCheck函数:</h3>
+<p>继续分解<code>TransitionDb</code>里的具体实现在交易执行之前，要<code>buyGas()</code>之前，要做一些前置检查<code>preCheck()</code>，主要检查项是：</p>
 <ol>
 <li class="lvl-3">
-<p>根据不同的以太坊版本，使用不同对象填充<code>cfg.JumpTable</code>字段</p>
+<p>caller的nonce是否正确</p>
 </li>
 <li class="lvl-3">
-<p>填充<code>cfg.ExtraEips</code>字段</p>
+<p>caller是否有足够的余额来支付交易费(gaslimit + gasprice)</p>
 </li>
 <li class="lvl-3">
-<p>生成一个 <code>EVMInterpreter</code> 对象并返回</p>
+<p>区块里剩余可用gas数量</p>
 </li>
 </ol>
-<h1>总结：</h1>
-<p>以太坊在每处理一笔交易时，都会新建一个 EVM 对象来处理。</p>
-<p>处理一个交易的流程：</p>
+<h3 id="buyGas函数">buyGas函数:</h3>
+<p>前置检查完后，<strong>要从区块的gasPool中取出一定的gas用于执行交易</strong>，即调用<code>buyGas()</code>:</p>
 <ol>
 <li class="lvl-3">
-<p>初始化环境、配置信息、交易执行前的检查</p>
+<p>将initialGas和gas都设置为交易的gasLimit</p>
 </li>
 <li class="lvl-3">
-<p>传入交易数据，创建EVM对象、创建EVM解释器对象</p>
+<p>并从总的gaspool里减去预支的gas（即gasLimit）</p>
 </li>
 <li class="lvl-3">
-<p>根据交易目的，EVM对象 创建合约or调用合约 去执行</p>
-</li>
-<li class="lvl-3">
-<p>获取执行结果、中断执行的错误原因</p>
+<p>交易发起者的账户也要减去相应的价值。</p>
 </li>
 </ol>
-<p>接下来继续看创建合约or调用合约的细节。。。</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(st *StateTransition)</span></span> buyGas() <span class="type">error</span> &#123;</span><br><span class="line">	mgval := <span class="built_in">new</span>(big.Int).SetUint64(st.msg.Gas()) <span class="comment">// 返回pool里剩余的gas</span></span><br><span class="line">	mgval = mgval.Mul(mgval, st.gasPrice) <span class="comment">// Pool gas剩余量 * 交易设的gasPrice</span></span><br><span class="line">	balanceCheck := mgval</span><br><span class="line">	<span class="comment">// gas费上限</span></span><br><span class="line">	<span class="keyword">if</span> st.gasFeeCap != <span class="literal">nil</span> &#123;</span><br><span class="line">		balanceCheck = <span class="built_in">new</span>(big.Int).SetUint64(st.msg.Gas())</span><br><span class="line">		balanceCheck = balanceCheck.Mul(balanceCheck, st.gasFeeCap)</span><br><span class="line">		balanceCheck.Add(balanceCheck, st.value)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> have, want := st.state.GetBalance(st.msg.From()), balanceCheck; have.Cmp(want) &lt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;%w: address %v have %v want %v&quot;</span>, ErrInsufficientFunds, st.msg.From().Hex(), have, want)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 总的gaspool里减去预支的gas,先扣gasFee,用不完会退款</span></span><br><span class="line">	<span class="keyword">if</span> err := st.gp.SubGas(st.msg.Gas()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 设置交易工作环境的gas为 交易的gasLimit</span></span><br><span class="line">	st.gas += st.msg.Gas()</span><br><span class="line">	st.initialGas = st.msg.Gas()</span><br><span class="line">	<span class="comment">// 交易发起者的账户也要减去相应的价值</span></span><br><span class="line">	st.state.SubBalance(st.msg.From(), mgval)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>gas使用流程:</p>
+<ol>
+<li class="lvl-3">
+<p>从区块的gasPool中取出一定的gas用于执行交易<code>buyGas()</code></p>
+</li>
+<li class="lvl-3">
+<p>计算并扣除固定的gas消耗<code>IntrinsicGas()</code>（固定的gas消耗（21000） + 非0值gas + 0值gas）</p>
+</li>
+<li class="lvl-3">
+<p>执行交易，获取剩余的gas</p>
+</li>
+<li class="lvl-3">
+<p>归还剩余的 gas <code>refundGas()</code>，并将已消耗的 gas 计入矿工账户中</p>
+</li>
+</ol>
+<h3 id="refundGas函数">refundGas函数:</h3>
+<figure class="highlight go"><figcaption><span>/core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(st *StateTransition)</span></span> refundGas(refundQuotient <span class="type">uint64</span>) &#123;</span><br><span class="line">	<span class="comment">// Apply refund counter, capped to a refund quotient</span></span><br><span class="line">	<span class="comment">// refundQuotient退款系数</span></span><br><span class="line">	<span class="comment">// Before EIP-3529: 退款封顶为 gasUsed / 2</span></span><br><span class="line">	<span class="comment">// After EIP-3529: 退款封顶为 gasUsed / 5</span></span><br><span class="line">	refund := st.gasUsed() / refundQuotient</span><br><span class="line">	<span class="keyword">if</span> refund &gt; st.state.GetRefund() &#123;</span><br><span class="line">		refund = st.state.GetRefund()</span><br><span class="line">	&#125;</span><br><span class="line">	st.gas += refund</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Return ETH for remaining gas, exchanged at the original rate.</span></span><br><span class="line">	remaining := <span class="built_in">new</span>(big.Int).Mul(<span class="built_in">new</span>(big.Int).SetUint64(st.gas), st.gasPrice)</span><br><span class="line">	<span class="comment">// 原账户eth余额增加</span></span><br><span class="line">	st.state.AddBalance(st.msg.From(), remaining)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Also return remaining gas to the block gas counter so it is</span></span><br><span class="line">	<span class="comment">// available for the next transaction.</span></span><br><span class="line">	<span class="comment">// 把额度退回gas pool,让别的交易有额度可以使用</span></span><br><span class="line">	st.gp.AddGas(st.gas)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -8468,6 +8429,12 @@ Failing assertion probably means that there is a bug.</p>
 </li>
 <li class="lvl-2">
 <p><a href="http://yangzhe.me/2019/08/12/ethereum-evm/#%E5%88%9B%E5%BB%BA-evm">http://yangzhe.me/2019/08/12/ethereum-evm/#创建-evm</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.md">https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm源码分析.md</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/lj900911/article/details/84888688">以太坊源码解读（18）以太坊交易的执行基本流程——将交易递交给EVM</a></p>
 </li>
 </ul>
 ]]></content>
@@ -9267,136 +9234,6 @@ Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回
       </tags>
   </entry>
   <entry>
-    <title>Uniswap-恒定乘积公式原理</title>
-    <url>/2022/54061.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
-<h1>恒定乘积公式</h1>
-<h2 id="无手续费">无手续费:</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</p>
-</li>
-<li class="lvl-2">
-<p>两货币数量的乘积 x * y 恆等于 k</p>
-</li>
-<li class="lvl-2">
-<p>k 值是由第一笔注入的流动性所决定</p>
-</li>
-</ul>
-<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
-<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
-<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
-<p>公式推导:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
-<p>这样可以推导出前2行</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
-<p>接着推导<code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
-<p>推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
-<p>第一个图里的公式，都推导完了。</p>
-<h2 id="计入手续费">计入手续费:</h2>
-<p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
-<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
-<p>手续费 ρ = 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
-<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
-<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
-<p>接着推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
-<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
-<p>推导<code>x’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
-<p>推导<code>y’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
-<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
-<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
-<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 =&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
-<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 = 0.3% 对于 k 值的影响极小。</p>
-<h2 id="相关代码">相关代码:</h2>
-<p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面已知</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
-<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
-<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
-<p>getAmountOut函数，通过入参：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>amountIn —— ∆x —— ∆x数量的x币</p>
-</li>
-<li class="lvl-2">
-<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
-</li>
-<li class="lvl-2">
-<p>reserveOut —— y —— y币的储备量</p>
-</li>
-</ul>
-<p>计算出参:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>amountOut —— ∆y —— ∆y数量的y币</p>
-</li>
-</ul>
-<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
-<p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
-<p>getAmountIn函数，通过入参：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>amountOut —— ∆y —— ∆y数量的y币</p>
-</li>
-<li class="lvl-2">
-<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
-</li>
-<li class="lvl-2">
-<p>reserveOut —— y —— y币的储备量</p>
-</li>
-</ul>
-<p>计算出参:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>amountIn —— ∆x —— ∆x数量的x币</p>
-</li>
-</ul>
-<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>
-+1之后，交易者需要付出多一点点</p>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>SmartContract</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-        <tag>SmartContract</tag>
-        <tag>Solidity</tag>
-        <tag>Uniswap</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Uniswap-getReserves获取储备量</title>
     <url>/2022/15785.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -9531,6 +9368,136 @@ pair流出USDT，USDT储备量减少</p>
 </li>
 <li class="lvl-2">
 <p><a href="https://pancake.kiemtienonline360.com/#/swap">pancake swap测试网</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>SmartContract</tag>
+        <tag>Solidity</tag>
+        <tag>Uniswap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Uniswap-恒定乘积公式原理</title>
+    <url>/2022/54061.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>查了一些有关uniswap源码解析的文章，找到这篇<a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a>里面讲得非常清楚，涉及到一些数学公式的推导，自己推导一遍，之后再去看uniswap的代码会清晰很多。</p>
+<h1>恒定乘积公式</h1>
+<h2 id="无手续费">无手续费:</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x * y = k</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>令交易的两虚拟货币为 X 和 Y，各自数量为 x 和 y</p>
+</li>
+<li class="lvl-2">
+<p>两货币数量的乘积 x * y 恆等于 k</p>
+</li>
+<li class="lvl-2">
+<p>k 值是由第一笔注入的流动性所决定</p>
+</li>
+</ul>
+<p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
+<p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
+<p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
+<p>公式推导:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
+<p>这样可以推导出前2行</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
+<p>接着推导<code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
+<p>推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
+<p>第一个图里的公式，都推导完了。</p>
+<h2 id="计入手续费">计入手续费:</h2>
+<p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
+<p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
+<p>手续费 ρ = 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
+<p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
+<p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
+<p>接着推导<code>∆y</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
+<p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
+<p>推导<code>x’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
+<p>推导<code>y’</code> ：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
+<p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
+<p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
+<p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 =&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
+<p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 = 0.3% 对于 k 值的影响极小。</p>
+<h2 id="相关代码">相关代码:</h2>
+<p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面已知</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
+<p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
+<p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
+<p>getAmountOut函数，通过入参：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountIn —— ∆x —— ∆x数量的x币</p>
+</li>
+<li class="lvl-2">
+<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
+</li>
+<li class="lvl-2">
+<p>reserveOut —— y —— y币的储备量</p>
+</li>
+</ul>
+<p>计算出参:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountOut —— ∆y —— ∆y数量的y币</p>
+</li>
+</ul>
+<p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
+<p>将代码和公式结合起来：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
+<p>getAmountIn函数，通过入参：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountOut —— ∆y —— ∆y数量的y币</p>
+</li>
+<li class="lvl-2">
+<p>reserveIn —— x —— x币的储备量/池子原有的x币数量</p>
+</li>
+<li class="lvl-2">
+<p>reserveOut —— y —— y币的储备量</p>
+</li>
+</ul>
+<p>计算出参:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>amountIn —— ∆x —— ∆x数量的x币</p>
+</li>
+</ul>
+<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>
++1之后，交易者需要付出多一点点</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://medium.com/taipei-ethereum-meetup/uniswap-explanation-constant-product-market-maker-model-in-vyper-dff80b8467a1">Uniswap 解析：恆定乘積做市商模型 Constant Product Market Maker Model 的 Vyper 實作</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://juejin.cn/post/6881428134382534663#heading-4">OneSwap系列三之 Solidity当中的算术运算</a></p>
 </li>
 </ul>
 ]]></content>
@@ -12500,58 +12467,6 @@ frame标签的src</p>
       </tags>
   </entry>
   <entry>
-    <title>记录-RabbitMq-Install</title>
-    <url>/2019/58684.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p><code>celery</code>+<code>redis</code> 经常会出现重复任务.</p>
-<p>所以打算用<code>rabbitmq</code>替换<code>redis</code>.</p>
-<hr>
-<h1>下载与安装:</h1>
-<h2 id="erlang">erlang:</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装erlang</span></span><br><span class="line">yum install erlang -y</span><br></pre></td></tr></table></figure>
-<h2 id="rabbitmq">rabbitmq:</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
-<hr>
-<h1>初始化配置:</h1>
-<h2 id="创建配置文件">创建配置文件:</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
-<p>这里的意思是开放使用，rabbitmq默认创建的用户<code>guest</code>，密码也是<code>guest</code>，这个用户默认只能是本机访问，localhost或者127.0.0.1，从外部访问需要添加上面的配置。</p>
-<h2 id="用户设置">用户设置:</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user celery celery</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加虚拟主机</span></span><br><span class="line">rabbitmqctl add_vhost myvhost</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 赋予用户权限</span></span><br><span class="line">rabbitmqctl set_permissions -p myvhost celery <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span></span><br></pre></td></tr></table></figure>
-<hr>
-<h1>修改celery配置文件:</h1>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
-<hr>
-<h1>总结:</h1>
-<p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
-<p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
-<p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
-<p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
-<p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
-<hr>
-<h1>refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://www.cnblogs.com/uptothesky/p/6094357.html">在CentOS7上安装RabbitMQ</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://blog.csdn.net/lanyang123456/article/details/77115868">celery+Rabbit MQ的安装和使用</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Dev</category>
-      </categories>
-      <tags>
-        <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>记录-Sphinx自动生成Python项目文档</title>
     <url>/2020/17068.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -12763,6 +12678,58 @@ frame标签的src</p>
 </li>
 <li class="lvl-2">
 <p><a href="https://www.jb51.net/article/86757.htm">Python中的多行注释文档编写风格汇总</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Dev</category>
+      </categories>
+      <tags>
+        <tag>Dev</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>记录-RabbitMq-Install</title>
+    <url>/2019/58684.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p><code>celery</code>+<code>redis</code> 经常会出现重复任务.</p>
+<p>所以打算用<code>rabbitmq</code>替换<code>redis</code>.</p>
+<hr>
+<h1>下载与安装:</h1>
+<h2 id="erlang">erlang:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装erlang</span></span><br><span class="line">yum install erlang -y</span><br></pre></td></tr></table></figure>
+<h2 id="rabbitmq">rabbitmq:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
+<hr>
+<h1>初始化配置:</h1>
+<h2 id="创建配置文件">创建配置文件:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
+<p>这里的意思是开放使用，rabbitmq默认创建的用户<code>guest</code>，密码也是<code>guest</code>，这个用户默认只能是本机访问，localhost或者127.0.0.1，从外部访问需要添加上面的配置。</p>
+<h2 id="用户设置">用户设置:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user celery celery</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加虚拟主机</span></span><br><span class="line">rabbitmqctl add_vhost myvhost</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 赋予用户权限</span></span><br><span class="line">rabbitmqctl set_permissions -p myvhost celery <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h1>修改celery配置文件:</h1>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
+<hr>
+<h1>总结:</h1>
+<p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
+<p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
+<p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
+<p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
+<p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
+<hr>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.cnblogs.com/uptothesky/p/6094357.html">在CentOS7上安装RabbitMQ</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/lanyang123456/article/details/77115868">celery+Rabbit MQ的安装和使用</a></p>
 </li>
 </ul>
 ]]></content>
@@ -13197,6 +13164,108 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
       </tags>
   </entry>
   <entry>
+    <title>越权半自动化插件的尝试</title>
+    <url>/2019/14249.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>当一个事情变得枯燥时，就该考虑自动化了。</p>
+<p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
+<p>可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。</p>
+<p>我就尝试在<a href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
+<hr>
+<h1>流程:</h1>
+<h2 id="第一步-手工测试找vuln-parameter">第一步:手工测试找vuln_parameter</h2>
+<p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
+<p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
+<h2 id="第二步-以vuln-parameter做路由">第二步:以vuln_parameter做路由</h2>
+<p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
+<h2 id="第三步-确定payload">第三步:确定payload</h2>
+<p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
+<p>确定payload: <code>&#123;&quot;phone&quot;:134xxxxxx&#125;</code></p>
+<h2 id="第四步-篡改request包">第四步:篡改request包</h2>
+<p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
+<h2 id="第五步-发包-权衡判断条件">第五步:发包,权衡判断条件</h2>
+<p>判断我感觉比较麻烦:</p>
+<p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
+<p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>正向特征:</p>
+</li>
+</ul>
+<p>先收集一些请求成功且有返回一定数据的Response包</p>
+<p>例如Response的body里:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;msg&#x27;:&#x27;OK&#x27;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>反向特征:</p>
+</li>
+</ul>
+<p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
+<p>例如Response的body里:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;你没有权限进行此操作&#x27;</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;不可以越权操作&#x27;</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;xxxxx&#x27;</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
+<p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
+<p>比如</p>
+<p>正向的就是 :</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;msg&#x27;</span>] == <span class="string">&#x27;OK&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>反向的就是 :</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;data&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>判断的效果 跟判断条件有很大的关系判断严了,容易漏 判断松了 容易误报那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
+</blockquote>
+<h2 id="大致流程图">大致流程图:</h2>
+<p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt=""></p>
+<hr>
+<h1>效果图:</h1>
+<p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt=""></p>
+<p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
+<p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
+<p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
+<hr>
+<h1>总结:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>半自动化流程:</p>
+</li>
+</ul>
+<ol>
+<li class="lvl-3">
+<p>手工测试找<code>vuln_parameter</code></p>
+</li>
+<li class="lvl-3">
+<p>以<code>vuln_parameter</code>做路由</p>
+</li>
+<li class="lvl-3">
+<p>确定payload</p>
+</li>
+<li class="lvl-3">
+<p>篡改request包</p>
+</li>
+<li class="lvl-3">
+<p>发包,权衡判断条件</p>
+</li>
+</ol>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
+</li>
+<li class="lvl-2">
+<p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
+</li>
+<li class="lvl-2">
+<p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>SecurityTools</category>
+      </categories>
+      <tags>
+        <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>记录-简单的代码离线更新方案</title>
     <url>/2019/35326.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -13327,108 +13396,6 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
       </categories>
       <tags>
         <tag>Dev</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>越权半自动化插件的尝试</title>
-    <url>/2019/14249.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>当一个事情变得枯燥时，就该考虑自动化了。</p>
-<p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
-<p>可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。</p>
-<p>我就尝试在<a href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
-<hr>
-<h1>流程:</h1>
-<h2 id="第一步-手工测试找vuln-parameter">第一步:手工测试找vuln_parameter</h2>
-<p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
-<p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
-<h2 id="第二步-以vuln-parameter做路由">第二步:以vuln_parameter做路由</h2>
-<p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
-<h2 id="第三步-确定payload">第三步:确定payload</h2>
-<p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
-<p>确定payload: <code>&#123;&quot;phone&quot;:134xxxxxx&#125;</code></p>
-<h2 id="第四步-篡改request包">第四步:篡改request包</h2>
-<p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
-<h2 id="第五步-发包-权衡判断条件">第五步:发包,权衡判断条件</h2>
-<p>判断我感觉比较麻烦:</p>
-<p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
-<p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>正向特征:</p>
-</li>
-</ul>
-<p>先收集一些请求成功且有返回一定数据的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;msg&#x27;:&#x27;OK&#x27;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>反向特征:</p>
-</li>
-</ul>
-<p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;你没有权限进行此操作&#x27;</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;不可以越权操作&#x27;</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;xxxxx&#x27;</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
-<p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
-<p>比如</p>
-<p>正向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;msg&#x27;</span>] == <span class="string">&#x27;OK&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>反向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;data&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>判断的效果 跟判断条件有很大的关系判断严了,容易漏 判断松了 容易误报那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
-</blockquote>
-<h2 id="大致流程图">大致流程图:</h2>
-<p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt=""></p>
-<hr>
-<h1>效果图:</h1>
-<p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt=""></p>
-<p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
-<p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
-<p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
-<hr>
-<h1>总结:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>半自动化流程:</p>
-</li>
-</ul>
-<ol>
-<li class="lvl-3">
-<p>手工测试找<code>vuln_parameter</code></p>
-</li>
-<li class="lvl-3">
-<p>以<code>vuln_parameter</code>做路由</p>
-</li>
-<li class="lvl-3">
-<p>确定payload</p>
-</li>
-<li class="lvl-3">
-<p>篡改request包</p>
-</li>
-<li class="lvl-3">
-<p>发包,权衡判断条件</p>
-</li>
-</ol>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
-</li>
-<li class="lvl-2">
-<p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
-</li>
-<li class="lvl-2">
-<p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>SecurityTools</category>
-      </categories>
-      <tags>
-        <tag>SecurityTools</tag>
       </tags>
   </entry>
 </search>
