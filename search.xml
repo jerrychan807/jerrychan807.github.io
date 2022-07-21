@@ -13398,4 +13398,190 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
         <tag>Dev</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Project-开源头像拼图网站-CryptoYoungNFT开发记录</title>
+    <url>/2022/52013.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>看到<a href="https://0xmonkey.fullstack.run/89cf4c91-510b5ed-e14fcc8e-b1f1a176-0-0-0-b1425ffb">0xmonkey开源头像拼图</a>，觉得还不错，模仿一个。</p>
+<h1>效果图：</h1>
+<h2 id="开源头像拼图网站">开源头像拼图网站:</h2>
+<p><a href="http://199.255.96.224:3000/">Avatar Generator Website</a>:<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220703202943.png" alt="20220703202943"></p>
+<h2 id="Opensea">Opensea:</h2>
+<p><a href="https://opensea.io/collection/cryptoyoung-v2">Opensea</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220704005920.png" alt="20220704005920"><br>
+<a href="https://polygonscan.com/address/0xc1e8efe8d62b855c34009013a8d354d093f3e7f1#writeContract">Free mint on Polygon Now</a></p>
+<h1>素材:</h1>
+<h2 id="下载token图标：">下载token图标：</h2>
+<p><a href="https://coinmarketcap.com/">图片来源</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093455.png" alt="20220721093455"></p>
+<p>下载top10的token的图标,用来做眼睛的素材</p>
+<h2 id="procreate编辑">procreate编辑:</h2>
+<p>将图标插入ipad里的<code>procreate</code>中进行编辑</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093653.png" alt="20220721093653"></p>
+<p>编辑完，导出图层png到mac</p>
+<h2 id="png-svg">png-&gt;svg:</h2>
+<p>通过在线网站将<code>png</code>格式的图片转换成<code>svg</code>格式</p>
+<blockquote>
+<p>SVG 是一种基于 XML 语法的图像格式，全称是可缩放矢量图（Scalable Vector Graphics）。其他图像格式都是基于像素处理的，SVG 则是属于对图像的形状描述，所以它本质上是文本文件，体积较小，且不管放大多少倍都不会失真。</p>
+</blockquote>
+<p>最后再编辑一下<code>svg</code>文件里眼睛素材的坐标，使得眼睛素材位置对得上</p>
+<h1>前端:</h1>
+<p>基于<a href="https://github.com/Codennnn/vue-color-avatar">vue-color-avatar</a>前端框架。</p>
+<p>修改素材:</p>
+<p><code>src/components/Configurator.vue</code>控制选择素材的控件</p>
+<p>前端右边选择栏：可选插件里加入<code>/src/assets/widgets/eyes/new.svg</code></p>
+<p><code>src/enums/index.ts</code>做相应配置、<code>src/utils/dynamic-data.ts</code>做相应配置</p>
+<h1>工具脚本：</h1>
+<p>用脚本批量生成图片：</p>
+<ol>
+<li class="lvl-3">
+<p>前端代码生成</p>
+</li>
+<li class="lvl-3">
+<p>selenium生成 √</p>
+</li>
+</ol>
+<p>自动生成描述文件：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094941.png" alt="20220721094941"><br>
+处理成 符合格式的描述文件<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094958.png" alt="20220721094958"></p>
+<p>再自动下载图片，按递增的序号命名一下，使得描述文件和图片一一匹配。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721095131.png" alt="20220721095131"></p>
+<h1>合约：</h1>
+<h2 id="deploy">deploy:</h2>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    string memory _initURI,</span></span><br><span class="line"><span class="params">    uint256 _maxBatchSize,</span></span><br><span class="line"><span class="params">    uint256 _collectionSize,</span></span><br><span class="line"><span class="params">    uint256 _maxreserveAmount</span></span><br><span class="line"><span class="params"></span>)</span><br><span class="line"><span class="title class_">ERC721A</span>(<span class="string">&quot;CryptoYoung&quot;</span>, <span class="string">&quot;CryptoYoung&quot;</span>, _maxBatchSize, _collectionSize)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable constant_">MAX_MINT</span> = _maxBatchSize;</span><br><span class="line">    <span class="variable constant_">MAX_SUPPLY</span> = _collectionSize;</span><br><span class="line">    maxreserveAmount = _maxreserveAmount;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">setBaseURI</span>(_initURI);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署合约时，设置好构造函数的参数:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>string memory _initURI</code>(资源所在文件夹路径) :  “<a href="https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/">https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/</a>”</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _maxBatchSize</code> (一次可mint多少个): 2</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _collectionSize</code>(总供应量) : 1000</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _maxreserveAmount</code>(应该是预留量) : 100</p>
+</li>
+</ul>
+<h2 id="验证源码">验证源码:</h2>
+<p>直接用hardhat插件验证</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat verify --contract contracts/CryptoYoung.sol:CryptoYoung --constructor-args arguments.ts --network polygon <span class="variable">$YourContractAddress</span></span><br></pre></td></tr></table></figure>
+<h2 id="开始mint">开始mint:</h2>
+<p>合约所有者通过调用合约，<code>Set Status(1)</code>，打开mint开关</p>
+<p>然后用户就可以free mint了</p>
+<h2 id="合约导入opensea">合约导入opensea:</h2>
+<p>合约导入opensea:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>测试网: <code>https://testnets.opensea.io/get-listed/step-two</code></p>
+</li>
+<li class="lvl-2">
+<p>主网: <code>https://opensea.io/get-listed/step-two</code></p>
+</li>
+</ul>
+<p>然后就可以在<code>opensea</code>,看到mint后的对应图片了。如果图片没正常展示，可点击刷新图片的按钮。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721100358.png" alt="20220721100358"></p>
+<h1>Todo List:</h1>
+<p>素材：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox0" checked="true"><label for="checkbox0">生成10张图和对应的json描述文件</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox1" checked="true"><label for="checkbox1">token img svg化</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox2" checked="true"><label for="checkbox2">删掉原有的眼睛元素、不开心的嘴巴/眉毛素材</label></p>
+</li>
+</ul>
+<p>前端:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox3" checked="true"><label for="checkbox3">前端能外网访问</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox4" checked="true"><label for="checkbox4">修改前端的一些展示信息</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox5" checked="true"><label for="checkbox5">图片管理应该在本项目的github里</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox6"><label for="checkbox6">素材preview展示太小了</label></p>
+</li>
+</ul>
+<p>合约:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox7" checked="true"><label for="checkbox7">合约测试网，试一试</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox8" checked="true"><label for="checkbox8">合约的一些关键参数</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox9" checked="true"><label for="checkbox9">发布：先上传图片和资源  不要有空白眼睛</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox10" checked="true"><label for="checkbox10">polygon搞一个开发者账户</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox11" checked="true"><label for="checkbox11">发布合约到polygon</label></p>
+</li>
+</ul>
+<p>opensea:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox12" checked="true"><label for="checkbox12">导入合约到opensea</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox13" checked="true"><label for="checkbox13">编辑项目描述信息</label></p>
+</li>
+</ul>
+<p>github:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox14" checked="true"><label for="checkbox14">readme</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox15" checked="true"><label for="checkbox15">开源代码</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox16" checked="true"><label for="checkbox16">Blog 开发记录</label></p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.ruanyifeng.com/blog/2018/08/svg.html">SVG 图像入门教程</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.tailorbrands.com/newlogo">logo生成</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://tokenizedhq.com/content-not-available-yet-opensea/">Solved: How to Fix Content Not Available Yet OpenSea Error</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/Codennnn/vue-color-avatar">vue-color-avatar</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://0xmonkey.fullstack.run/89cf4c91-510b5ed-e14fcc8e-b1f1a176-0-0-0-b1425ffb">0xmonkey开源头像拼图</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.aconvert.com/cn/image/png-to-svg/">PNG转SVG - 在线转换图像文件</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://photokit.com/editor/?lang=zh#goog_rewarded">图片圆角编辑</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>Project</tag>
+      </tags>
+  </entry>
 </search>

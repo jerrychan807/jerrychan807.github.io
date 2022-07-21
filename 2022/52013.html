@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 看到0xmonkey开源头像拼图，觉得还不错，模仿一个。 效果图： 开源头像拼图网站: Avatar Generator Website:  Opensea: Opensea  Free mint on Polygon Now 素材: 下载token图标：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Project-开源头像拼图网站-CryptoYoungNFT开发记录">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/52013.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 看到0xmonkey开源头像拼图，觉得还不错，模仿一个。 效果图： 开源头像拼图网站: Avatar Generator Website:  Opensea: Opensea  Free mint on Polygon Now 素材: 下载token图标：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220703202943.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220704005920.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093455.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093653.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094941.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094958.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721095131.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721100358.png">
+<meta property="article:published_time" content="2022-07-04T14:36:34.000Z">
+<meta property="article:modified_time" content="2022-07-21T02:20:49.160Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220703202943.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/52013.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Project-开源头像拼图网站-CryptoYoungNFT开发记录 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/52013.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Project-开源头像拼图网站-CryptoYoungNFT开发记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-04 22:36:34" itemprop="dateCreated datePublished" datetime="2022-07-04T22:36:34+08:00">2022-07-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-21 10:20:49" itemprop="dateModified" datetime="2022-07-21T10:20:49+08:00">2022-07-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>看到<a target="_blank" rel="noopener" href="https://0xmonkey.fullstack.run/89cf4c91-510b5ed-e14fcc8e-b1f1a176-0-0-0-b1425ffb">0xmonkey开源头像拼图</a>，觉得还不错，模仿一个。</p>
+<h1>效果图：</h1>
+<h2 id="开源头像拼图网站">开源头像拼图网站:</h2>
+<p><a target="_blank" rel="noopener" href="http://199.255.96.224:3000/">Avatar Generator Website</a>:<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220703202943.png" alt="20220703202943"></p>
+<h2 id="Opensea">Opensea:</h2>
+<p><a target="_blank" rel="noopener" href="https://opensea.io/collection/cryptoyoung-v2">Opensea</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220704005920.png" alt="20220704005920"><br>
+<a target="_blank" rel="noopener" href="https://polygonscan.com/address/0xc1e8efe8d62b855c34009013a8d354d093f3e7f1#writeContract">Free mint on Polygon Now</a></p>
+<h1>素材:</h1>
+<h2 id="下载token图标：">下载token图标：</h2>
+<p><a target="_blank" rel="noopener" href="https://coinmarketcap.com/">图片来源</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093455.png" alt="20220721093455"></p>
+<p>下载top10的token的图标,用来做眼睛的素材</p>
+<h2 id="procreate编辑">procreate编辑:</h2>
+<p>将图标插入ipad里的<code>procreate</code>中进行编辑</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721093653.png" alt="20220721093653"></p>
+<p>编辑完，导出图层png到mac</p>
+<h2 id="png-svg">png-&gt;svg:</h2>
+<p>通过在线网站将<code>png</code>格式的图片转换成<code>svg</code>格式</p>
+<blockquote>
+<p>SVG 是一种基于 XML 语法的图像格式，全称是可缩放矢量图（Scalable Vector Graphics）。其他图像格式都是基于像素处理的，SVG 则是属于对图像的形状描述，所以它本质上是文本文件，体积较小，且不管放大多少倍都不会失真。</p>
+</blockquote>
+<p>最后再编辑一下<code>svg</code>文件里眼睛素材的坐标，使得眼睛素材位置对得上</p>
+<h1>前端:</h1>
+<p>基于<a target="_blank" rel="noopener" href="https://github.com/Codennnn/vue-color-avatar">vue-color-avatar</a>前端框架。</p>
+<p>修改素材:</p>
+<p><code>src/components/Configurator.vue</code>控制选择素材的控件</p>
+<p>前端右边选择栏：可选插件里加入<code>/src/assets/widgets/eyes/new.svg</code></p>
+<p><code>src/enums/index.ts</code>做相应配置、<code>src/utils/dynamic-data.ts</code>做相应配置</p>
+<h1>工具脚本：</h1>
+<p>用脚本批量生成图片：</p>
+<ol>
+<li class="lvl-3">
+<p>前端代码生成</p>
+</li>
+<li class="lvl-3">
+<p>selenium生成 √</p>
+</li>
+</ol>
+<p>自动生成描述文件：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094941.png" alt="20220721094941"><br>
+处理成 符合格式的描述文件<br>
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721094958.png" alt="20220721094958"></p>
+<p>再自动下载图片，按递增的序号命名一下，使得描述文件和图片一一匹配。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721095131.png" alt="20220721095131"></p>
+<h1>合约：</h1>
+<h2 id="deploy">deploy:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    string memory _initURI,</span></span><br><span class="line"><span class="params">    uint256 _maxBatchSize,</span></span><br><span class="line"><span class="params">    uint256 _collectionSize,</span></span><br><span class="line"><span class="params">    uint256 _maxreserveAmount</span></span><br><span class="line"><span class="params"></span>)</span><br><span class="line"><span class="title class_">ERC721A</span>(<span class="string">&quot;CryptoYoung&quot;</span>, <span class="string">&quot;CryptoYoung&quot;</span>, _maxBatchSize, _collectionSize)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable constant_">MAX_MINT</span> = _maxBatchSize;</span><br><span class="line">    <span class="variable constant_">MAX_SUPPLY</span> = _collectionSize;</span><br><span class="line">    maxreserveAmount = _maxreserveAmount;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">setBaseURI</span>(_initURI);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>部署合约时，设置好构造函数的参数:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>string memory _initURI</code>(资源所在文件夹路径) :  “<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/">https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/</a>”</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _maxBatchSize</code> (一次可mint多少个): 2</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _collectionSize</code>(总供应量) : 1000</p>
+</li>
+<li class="lvl-2">
+<p><code>uint256 _maxreserveAmount</code>(应该是预留量) : 100</p>
+</li>
+</ul>
+<h2 id="验证源码">验证源码:</h2>
+<p>直接用hardhat插件验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat verify --contract contracts/CryptoYoung.sol:CryptoYoung --constructor-args arguments.ts --network polygon <span class="variable">$YourContractAddress</span></span><br></pre></td></tr></table></figure>
+<h2 id="开始mint">开始mint:</h2>
+<p>合约所有者通过调用合约，<code>Set Status(1)</code>，打开mint开关</p>
+<p>然后用户就可以free mint了</p>
+<h2 id="合约导入opensea">合约导入opensea:</h2>
+<p>合约导入opensea:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>测试网: <code>https://testnets.opensea.io/get-listed/step-two</code></p>
+</li>
+<li class="lvl-2">
+<p>主网: <code>https://opensea.io/get-listed/step-two</code></p>
+</li>
+</ul>
+<p>然后就可以在<code>opensea</code>,看到mint后的对应图片了。如果图片没正常展示，可点击刷新图片的按钮。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220721100358.png" alt="20220721100358"></p>
+<h1>Todo List:</h1>
+<p>素材：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox0" checked="true"><label for="checkbox0">生成10张图和对应的json描述文件</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox1" checked="true"><label for="checkbox1">token img svg化</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox2" checked="true"><label for="checkbox2">删掉原有的眼睛元素、不开心的嘴巴/眉毛素材</label></p>
+</li>
+</ul>
+<p>前端:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox3" checked="true"><label for="checkbox3">前端能外网访问</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox4" checked="true"><label for="checkbox4">修改前端的一些展示信息</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox5" checked="true"><label for="checkbox5">图片管理应该在本项目的github里</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox6"><label for="checkbox6">素材preview展示太小了</label></p>
+</li>
+</ul>
+<p>合约:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox7" checked="true"><label for="checkbox7">合约测试网，试一试</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox8" checked="true"><label for="checkbox8">合约的一些关键参数</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox9" checked="true"><label for="checkbox9">发布：先上传图片和资源  不要有空白眼睛</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox10" checked="true"><label for="checkbox10">polygon搞一个开发者账户</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox11" checked="true"><label for="checkbox11">发布合约到polygon</label></p>
+</li>
+</ul>
+<p>opensea:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox12" checked="true"><label for="checkbox12">导入合约到opensea</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox13" checked="true"><label for="checkbox13">编辑项目描述信息</label></p>
+</li>
+</ul>
+<p>github:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox14" checked="true"><label for="checkbox14">readme</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox15" checked="true"><label for="checkbox15">开源代码</label></p>
+</li>
+<li class="lvl-2">
+<p><input type="checkbox" id="checkbox16" checked="true"><label for="checkbox16">Blog 开发记录</label></p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2018/08/svg.html">SVG 图像入门教程</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.tailorbrands.com/newlogo">logo生成</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://tokenizedhq.com/content-not-available-yet-opensea/">Solved: How to Fix Content Not Available Yet OpenSea Error</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/Codennnn/vue-color-avatar">vue-color-avatar</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://0xmonkey.fullstack.run/89cf4c91-510b5ed-e14fcc8e-b1f1a176-0-0-0-b1425ffb">0xmonkey开源头像拼图</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.aconvert.com/cn/image/png-to-svg/">PNG转SVG - 在线转换图像文件</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://photokit.com/editor/?lang=zh#goog_rewarded">图片圆角编辑</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/16620.html" rel="prev" title="StudyRecord-USDCV2_Upgrading_a_multi-billion_dollar_ERC-20token">
+      <i class="fa fa-chevron-left"></i> StudyRecord-USDCV2_Upgrading_a_multi-billion_dollar_ERC-20token
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/46486.html" rel="next" title="StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code">
+      StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">效果图：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E5%A4%B4%E5%83%8F%E6%8B%BC%E5%9B%BE%E7%BD%91%E7%AB%99"><span class="nav-number">2.1.</span> <span class="nav-text">开源头像拼图网站:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opensea"><span class="nav-number">2.2.</span> <span class="nav-text">Opensea:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">素材:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDtoken%E5%9B%BE%E6%A0%87%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">下载token图标：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#procreate%E7%BC%96%E8%BE%91"><span class="nav-number">3.2.</span> <span class="nav-text">procreate编辑:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#png-svg"><span class="nav-number">3.3.</span> <span class="nav-text">png-&gt;svg:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">前端:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">工具脚本：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#deploy"><span class="nav-number">6.1.</span> <span class="nav-text">deploy:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%BA%90%E7%A0%81"><span class="nav-number">6.2.</span> <span class="nav-text">验证源码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8Bmint"><span class="nav-number">6.3.</span> <span class="nav-text">开始mint:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E5%AF%BC%E5%85%A5opensea"><span class="nav-number">6.4.</span> <span class="nav-text">合约导入opensea:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Todo List:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">549k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">8:20</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
