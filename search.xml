@@ -13452,12 +13452,14 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
 <h2 id="deploy">deploy:</h2>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    string memory _initURI,</span></span><br><span class="line"><span class="params">    uint256 _maxBatchSize,</span></span><br><span class="line"><span class="params">    uint256 _collectionSize,</span></span><br><span class="line"><span class="params">    uint256 _maxreserveAmount</span></span><br><span class="line"><span class="params"></span>)</span><br><span class="line"><span class="title class_">ERC721A</span>(<span class="string">&quot;CryptoYoung&quot;</span>, <span class="string">&quot;CryptoYoung&quot;</span>, _maxBatchSize, _collectionSize)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable constant_">MAX_MINT</span> = _maxBatchSize;</span><br><span class="line">    <span class="variable constant_">MAX_SUPPLY</span> = _collectionSize;</span><br><span class="line">    maxreserveAmount = _maxreserveAmount;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">setBaseURI</span>(_initURI);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>部署合约时，设置好构造函数的参数:</p>
+<p>设置<code>name_</code>和<code>symbol_</code>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">ERC721A</span>(<span class="string">&quot;CryptoYoung&quot;</span>, <span class="string">&quot;CryptoYoung&quot;</span>...)</span><br></pre></td></tr></table></figure>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>string memory _initURI</code>(资源所在文件夹路径) :  “<a href="https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/">https://raw.githubusercontent.com/jerrychan807/crypto-young-nft/main/resource/</a>”</p>
 </li>
 <li class="lvl-2">
-<p><code>uint256 _maxBatchSize</code> (一次可mint多少个): 2</p>
+<p><code>uint256 _maxBatchSize</code> (一次最多可mint多少个): 2</p>
 </li>
 <li class="lvl-2">
 <p><code>uint256 _collectionSize</code>(总供应量) : 1000</p>
@@ -13466,6 +13468,7 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
 <p><code>uint256 _maxreserveAmount</code>(应该是预留量) : 100</p>
 </li>
 </ul>
+<p>polygon主网合约地址:<a href="https://polygonscan.com/address/0xc1e8efe8d62b855c34009013a8d354d093f3e7f1">https://polygonscan.com/address/0xc1e8efe8d62b855c34009013a8d354d093f3e7f1</a></p>
 <h2 id="验证源码">验证源码:</h2>
 <p>直接用hardhat插件验证</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn hardhat verify --contract contracts/CryptoYoung.sol:CryptoYoung --constructor-args arguments.ts --network polygon <span class="variable">$YourContractAddress</span></span><br></pre></td></tr></table></figure>
@@ -13551,6 +13554,15 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
 <p><input type="checkbox" id="checkbox16" checked="true"><label for="checkbox16">Blog 开发记录</label></p>
 </li>
 </ul>
+<h1>Summary:</h1>
+<p><a href="https://mp.weixin.qq.com/s/ZlpnoFFfs5Vmvjwz_mjo-g">买 NFT，实际是在买什么？从底层代码视角的分析</a></p>
+<blockquote>
+<p>我们所说的 NFT ，说到底是一个以太坊的地址上的一个支持 NFT 协议（也就是 ERC721）的智能合约，它支持 tokenURI 等十几个标准函数。</p>
+<p>给定一个 Tokend 的 ID，它可以告诉你一个区块链以外的地址，这个地址里面给出了图像，名称等等信息。</p>
+<p><strong>我们购买一个 NFT，说到底是购买了某个合约地址里面的某个 TokenID</strong></p>
+<p>或者说，就是在那张大大的表上，这个合约地址上的那个 tokenID 这一行的 owner 属性，记录自己的钱包地址。<br>
+<strong>除此以外的信息，包括上面这张猴子的头像，其实仅仅如包装纸上的图案一样，仅仅是一个赠品</strong>。</p>
+</blockquote>
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
