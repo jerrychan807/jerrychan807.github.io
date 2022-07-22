@@ -265,8 +265,8 @@
 <p>关注javascript技术的同学一定知道，在CommonJS和ES6中，为了支持模块化，而引入了export/require/import这类东西，模块化可以降低开发的复杂度，用于支撑前端的复杂功能，但是模块化后，也带来了许多问题，比如老版本的浏览器不支持ES6/JSX语法，开发和线上不能保持一致，这就为WebPack类的自动化代码转换工具的出现提供了需求。</p>
 <p><strong>WebPack可以看做是模块打包机：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。</strong></p>
 <p>按照官网的说法，webpack可以打包一切资源/图片/样式/依赖等等，webpack默认只支持js模块打包，对于其他文件就需要用loader解析器，比如在vue中，直观的效果就是使用webpack可以将使用的vue，css，图片等打包成一个js。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414114758.png" alt="20200414114758"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414114758.png" alt="20200414114758" /></p>
+<hr />
 <h1>Source Map:</h1>
 <p>部署前端之前，开发者通常会对代码进行打包压缩，这样可以减少代码大小，从而有效提高访问速度。然而，压缩代码的报错信息是很难Debug的，因为它的行号和列号已经失真。这时就需要Source Map来还原真实的出错位置了。</p>
 <h2 id="为啥变换代码">为啥变换代码?</h2>
@@ -298,22 +298,22 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ReferenceError: Name is not defined</span><br><span class="line">	o file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:18</span><br><span class="line">	&lt;匿名&gt; file:///Users/fundebug/sourcemap-tutorial/hello.min.js:1:59</span><br></pre></td></tr></table></figure>
 <p>对比压缩前后的出错信息，我们会发现，错误行号和列号已经失真，且函数名也经过了变换。而对于真实的前端项目，开发者会将数十个源文件压缩为一个文件，这时，错误的列号可能多达数千，且出错的真实文件名也是很难确定的，这样的话，压缩代码的报错信息是很难Debug的。</p>
 <p>而Source Map则可以用于还原真实的出错位置，帮助开发者更快的Debug。</p>
-<hr>
+<hr />
 <p>webpack 是一个现代 JavaScript 应用程序的静态模块打包器(module bundler)。</p>
 <p>source-map文件，这个文件是编译过程中变量与方法的映射表。</p>
-<hr>
+<hr />
 <h1>VUE/REACT开发场景</h1>
 <p>在VUE/REACT开发场景下 ，前端开发会引入如模块化等诸多新特性，前端开发不再是几个简单的js文件，开发完成后会通过webpack等打包工具打包生成部署使用的js文件，但是如果我们直接分析该编译的js，很难看懂。</p>
 <p>比如某页面下的app.bundle.js,反正我是看不懂写的是啥，这个js文件就是webpack打包后的结果，但是由于我是开启了source-map调试模式，如果你是用chrome浏览器打开的，打开devtools-sources，应该可以看到一个<code>webpack://</code>，这个就是chrome对source-map调试的支持，点开src目录下就可以看到js代码源文件。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414115217.png" alt="20200414115217"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200414115217.png" alt="20200414115217" /></p>
 <h2 id="为什么会有这类问题">为什么会有这类问题?</h2>
 <p>大多数开发人员没有意识到的是，这些源映射<code>source-map</code>实际上包含了其前端源代码的全部。</p>
 <p>是的，他们知道可以进行映射，但是源映射后的文件几乎为乱码，更不用说理解了。由于这种误解，发现开发团队在其Webpack配置中将JavaScript源映射留在生产环境中是相对常见的。</p>
-<hr>
+<hr />
 <h2 id="解决方案-2">解决方案:</h2>
 <p>修改<code>config/index.js</code>中的<code>build</code>对象<code>productionSourceMap: false</code>即可</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418144413.png" alt="20200418144413"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418144413.png" alt="20200418144413" /></p>
+<hr />
 <h1>渗透思路or危害:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -329,13 +329,13 @@
 <p>前端源码被人copy走</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>工具:</h1>
 <p><a target="_blank" rel="noopener" href="https://github.com/rarecoil/unwebpack-sourcemap">unwebpack-sourcemap</a></p>
 <p>通过查看浏览器中包含的JavaScript文件并提取捆绑的JavaScript文件底部存在的sourceMappingURL来获取源地图。</p>
 <p>原理:</p>
 <p>在页面正则匹配 <code>regex = &quot;\\/\\/#\s*sourceMappingURL=(.*)$&quot;</code></p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -486,7 +486,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -541,12 +541,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -261,7 +261,7 @@
       
         <h1>来源</h1>
 <p>用户认证的方式通常有两种，传统的session认证 和 基于token方式。</p>
-<hr>
+<hr />
 <h2 id="传统的session认证">传统的session认证</h2>
 <h3 id="sessionID的生成方式">sessionID的生成方式:</h3>
 <p>浏览器第一次访问服务器时，服务器创建一个<code>session</code>，同时生成一个唯一的会话key，即<code>sessionID</code>。</p>
@@ -278,7 +278,7 @@
 <h3 id="缺陷">缺陷</h3>
 <p>传统的session认证,随着不同客户端用户的增加，独立的服务器已无法承载更多的用户，而这时候基于session认证应用的问题就会暴露出来.</p>
 <p>例如而随着认证用户的增多，服务端的开销会明显增大，这样在分布式的应用上，相应的限制了负载均衡器的能力，因为是基于cookie来进行用户识别的, cookie如果被截获，用户就会很容易受到跨站请求伪造的攻击。</p>
-<hr>
+<hr />
 <h2 id="基于token的鉴权机制">基于token的鉴权机制</h2>
 <p>基于token的鉴权机制类似于http协议也是无状态的，它不需要在服务端去保留用户的认证信息或者会话信息。这就意味着<strong>基于token认证机制的应用不需要去考虑用户在哪一台服务器登录</strong>了，这就为应用的扩展提供了便利。</p>
 <h3 id="token的生成方式">token的生成方式</h3>
@@ -304,14 +304,14 @@
 <blockquote>
 <p>其实token与session的问题是一种时间与空间的博弈问题，session是空间换时间，而token是时间换空间。两者的选择要看具体情况而定。</p>
 </blockquote>
-<hr>
+<hr />
 <h1>JWT(JSON Web Token)</h1>
 <h2 id="定义">定义:</h2>
 <p>JWT(JSON Web Token) 是一个非常轻巧的规范，通过这个规范，可以传递可靠的安全信息，JWT常被用于前后端分离，可以和Restful API配合使用，常用于构建身份认证机制。</p>
 <p>Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（(RFC 7519).</p>
 <p>该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。</p>
 <p>JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。</p>
-<hr>
+<hr />
 <h2 id="组成">组成:</h2>
 <p>一个通常你看到的jwt，由以下三部分组成，它们分别是：</p>
 <ol>
@@ -326,20 +326,20 @@
 </li>
 </ol>
 <p><code>signture</code>:将上面的<code>header</code>和<code>payload</code>编码后的字符串都用句号.连接在一起 提供一个密钥（secret）用头部所规定的算法加密就可以形成一个新的字符串</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110456.png" alt="20200417110456"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110456.png" alt="20200417110456" /></p>
 <p>三个部分用·分割。形如<code>xxxxx.yyyyy.zzzzz</code>的样式。</p>
 <p>示例:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417105901.png" alt="20200417105901"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417105901.png" alt="20200417105901" /></p>
 <h2 id="签名的目的">签名的目的:</h2>
 <p>最后一步签名的过程，实际上是对头部以及载荷内容进行签名。</p>
 <p>所以，如果有人对头部以及载荷的内容解码之后进行修改，再进行编码的话，那么新的头部和载荷的签名和之前的签名就将是不一样的。而且，如果不知道服务器加密的时候用的密钥的话，得出来的签名也一定会是不一样的。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110731.png" alt="20200417110731"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417110731.png" alt="20200417110731" /></p>
 <p>服务器应用在接受到JWT后，会首先对头部和载荷的内容用同一算法再次签名。那么服务器应用是怎么知道我们用的是哪一种算法呢？别忘了，我们在JWT的头部中已经用alg字段指明了我们的加密算法了。</p>
 <p>如果服务器应用对头部和载荷再次以同样方法签名之后发现，自己计算出来的签名和接受到的签名不一样，那么就说明这个Token的内容被别人动过的，我们应该拒绝这个Token，返回一个HTTP 401 Unauthorized响应。</p>
-<hr>
+<hr />
 <h1>工具:</h1>
 <p><a target="_blank" rel="noopener" href="https://jwt.io/">解jwt的</a></p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -478,7 +478,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -533,12 +533,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -263,8 +263,8 @@
 <h2 id="敏感信息泄露">敏感信息泄露:</h2>
 <p>当服务端的秘钥泄密的时候，JWT的伪造就变得非常简单容易。对此，服务端应该妥善保管好私钥，以免被他人窃取。</p>
 <p>header和payload部分实际上只是进行了base64编码</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143359.png" alt="20200417143359"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143359.png" alt="20200417143359" /></p>
+<hr />
 <h2 id="alg-None签名绕过">alg=None签名绕过:</h2>
 <p>签名算法确保恶意用户在传输过程中不会修改JWT。</p>
 <p>但是标题中的alg字段可以更改为none。</p>
@@ -273,13 +273,13 @@
 <p><code>http://demo.sjoerdlangkemper.nl/jwtdemo/hs256.php</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">b64urlencode</span>(<span class="params">data</span>):</span><br><span class="line">    <span class="keyword">return</span> base64.b64encode(data).replace(<span class="string">&#x27;+&#x27;</span>, <span class="string">&#x27;-&#x27;</span>).replace(<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;_&#x27;</span>).replace(<span class="string">&#x27;=&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">result = b64urlencode(<span class="string">&quot;&#123;\&quot;typ\&quot;:\&quot;JWT\&quot;,\&quot;alg\&quot;:\&quot;none\&quot;&#125;&quot;</span>) + \</span><br><span class="line">         <span class="string">&#x27;.&#x27;</span> + b64urlencode(<span class="string">&quot;&#123;\&quot;data\&quot;:\&quot;test\&quot;&#125;&quot;</span>) + <span class="string">&#x27;.&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出</span></span><br><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143748.png" alt="20200417143748"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200417143748.png" alt="20200417143748" /></p>
 <p>server源码:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># https://github.com/Sjord/jwtdemo/blob/master/MishalHS256.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">&#x27;/vendor/autoload.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Jwt</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Algorithm</span>\<span class="title">NoneAlgorithm</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Jwt</span>\<span class="title">Algorithm</span>\<span class="title">HS256Algorithm</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MishalHS256</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;algorithms = [</span><br><span class="line">            <span class="string">&#x27;none&#x27;</span> =&gt; <span class="keyword">new</span> <span class="title class_">NoneAlgorithm</span>(),</span><br><span class="line">            <span class="string">&#x27;HS256&#x27;</span> =&gt; <span class="keyword">new</span> <span class="title class_">HS256Algorithm</span>(<span class="string">&#x27;secret&#x27;</span>),</span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">encodeJwt</span>(<span class="params"><span class="variable">$tokenObj</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Jwt</span>::<span class="title function_ invoke__">encode</span>(<span class="variable">$tokenObj</span>, <span class="variable">$this</span>-&gt;algorithms[<span class="string">&#x27;HS256&#x27;</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">decodeJwt</span>(<span class="params"><span class="variable">$token</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JWT::<span class="title function_ invoke__">decode</span>(<span class="variable">$token</span>, [<span class="string">&#x27;algorithm&#x27;</span> =&gt; <span class="title function_ invoke__">array_values</span>(<span class="variable">$this</span>-&gt;algorithms)]); <span class="comment"># header部分中指定加密方法为none方法,服务端也用none方法来解密。</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>加密方法是读取JWT的header部分吗?</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="将签名算法从非对称类型改为对称类型">将签名算法从非对称类型改为对称类型:</h2>
 <p>使用非对称加密算法（主要基于RSA、ECDSA，如S256）分发JWT的过程是使用私钥（private）加密生成JWT，使用公钥（public）解密验证。</p>
 <p>使用对称加密算法（主要基于HMAC，如HS256）分发JWT的过程是使用同一个密钥（secret）生成和验证JWT。</p>
@@ -288,7 +288,7 @@
 <p>由于我们很难知道私钥，所以我们想自己构造数据的话,没法用相同的私钥签名回去。</p>
 <p>但解密时支持<code>HS256</code>这种对称加密方式的话,它只有一个秘钥，如图是公钥。</p>
 <p>也就是说我们只要找到公钥,就能篡改数据后,再把数据签名回去，这样能通过延签的部分。</p>
-<hr>
+<hr />
 <h2 id="HS256（对称加密）密钥破解">HS256（对称加密）密钥破解:</h2>
 <p>如果HS256密钥强度较弱，则可以直接强制使用，通过爆破 HS256的秘钥可以完成该操作。</p>
 <p>不过对 JWT 的密钥爆破需要在一定的前提下进行：</p>
@@ -304,9 +304,9 @@
 </li>
 </ul>
 <p>所以其实JWT密钥爆破的局限性很大。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418113805.png" alt="20200418113805"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200418113805.png" alt="20200418113805" /></p>
 <p>可以看到简单的字母数字组合都是可以爆破的，但是密钥位数稍微长一点或者更复杂一点的话，爆破时间就会需要很久。</p>
-<hr>
+<hr />
 <h2 id="修改KID参数">修改KID参数:</h2>
 <p><code>kid</code>是<code>jwt header</code>中的一个可选参数，全称是<code>key ID</code>，它用于指定加密算法的密钥</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;alg&quot; : &quot;HS256&quot;,</span><br><span class="line">    &quot;typ&quot; : &quot;jwt&quot;,</span><br><span class="line">    &quot;kid&quot; : &quot;/home/jwt/.ssh/pem&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -317,16 +317,16 @@
 <h3 id="SQL注入">SQL注入:</h3>
 <p><code>kid</code>也可以从数据库中提取数据，这时候就有可能造成SQL注入攻击，通过构造SQL语句来获取数据或者是绕过<code>signature</code>的验证</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;alg&quot; : &quot;HS256&quot;,</span><br><span class="line">    &quot;typ&quot; : &quot;jwt&quot;,</span><br><span class="line">    &quot;kid&quot; : &quot;key11111111&#x27; || union select &#x27;secretkey&#x27; -- &quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="命令注入">命令注入</h3>
 <p>对<code>kid</code>参数过滤不严也可能会出现命令注入问题，但是利用条件比较苛刻。如果服务器后端使用的是Ruby，在读取密钥文件时使用了<code>open</code>函数，通过构造参数就可能造成命令注入。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;/path/to/key_file|whoami&quot;</span><br></pre></td></tr></table></figure>
 <p>对于其他的语言，例如php，如果代码中使用的是<code>exec</code>或者是<code>system</code>来读取密钥文件，那么同样也可以造成命令注入，当然这个可能性就比较小了。</p>
-<hr>
+<hr />
 <h2 id="总结">总结:</h2>
 <p>与许多其他方面一样，JWT基本上是安全的，但某些实现则不是。</p>
 <p>该应用程序可能在JWT中存储敏感信息，允许更改签名算法，或者签名中使用的密钥强度不足、kid参数可控。</p>
-<hr>
+<hr />
 <h2 id="其他">其他:</h2>
 <p>RSA的公钥和私钥区别</p>
 <p>公钥和私钥是成对的，它们互相解密。</p>
@@ -343,7 +343,7 @@
 </ul>
 </blockquote>
 <p>这样的话：加密是保护数据，签名是核对身份，解决的是不同需求。那么我的理解：不应该是需要解决什么问题就用什么吗？不希望第三方收到内容就加密，不希望第三方冒充发布就签名，或者同时使用。</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -491,7 +491,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -546,12 +546,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

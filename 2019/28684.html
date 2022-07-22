@@ -267,28 +267,28 @@
         <h1>Pre:</h1>
 <p>同事在用<a target="_blank" rel="noopener" href="https://github.com/menkrep1337/XSSCon">XSSCon</a>来测试xss漏洞,然后发现run不起来,然后我帮它debug了一下,顺手提了pr.</p>
 <p>我稍微瞄了一下这个工具的xss scanner的代码,发现精简得很,所以看一看它源码.</p>
-<hr>
+<hr />
 <h1>检测效果:</h1>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">__  ______ ____   ____</span><br><span class="line">\ \/ / ___/ ___| / ___|___  _ __</span><br><span class="line"> \  /\___ \___ \| |   / _ \| &#x27;_ \ &#123;v0.5 Final&#125;</span><br><span class="line"> /  \ ___) |__) | |__| (_) | | | | https://github.com/menkrep1337/XSSCon</span><br><span class="line">/_/\_\____/____/ \____\___/|_| |_|</span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span><br><span class="line"></span><br><span class="line">[16:20:31] [INFO] Starting XSSCon...</span><br><span class="line">***************</span><br><span class="line">[16:20:31] [INFO] Checking connection to: http://testphp.vulnweb.com</span><br><span class="line">[16:20:32] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:32] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:32] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:32] [INFO] Form key name: searchFor value: &lt;script&gt;console.log(5000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:32] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:32] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:33] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:33] [CRITICAL] Post data: &#123;&#x27;searchFor&#x27;: &#x27;&lt;script&gt;console.log(5000/3000)&lt;/script&gt;&#x27;, &#x27;goButton&#x27;: &#x27;goButton&#x27;&#125;</span><br><span class="line">***************</span><br><span class="line">[16:20:34] [INFO] Checking connection to: http://testphp.vulnweb.com/index.php</span><br><span class="line">[16:20:36] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:36] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:36] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:36] [INFO] Form key name: searchFor value: &lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:36] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:36] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:37] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:37] [CRITICAL] Post data: &#123;&#x27;searchFor&#x27;: &#x27;&lt;script&gt;alert(6000/3000)&lt;/script&gt;&#x27;, &#x27;goButton&#x27;: &#x27;goButton&#x27;&#125;</span><br><span class="line">***************</span><br><span class="line">[16:20:39] [INFO] Checking connection to: http://testphp.vulnweb.com/categories.php</span><br><span class="line">[16:20:40] [INFO] Connection estabilished 200</span><br><span class="line">[16:20:40] [WARNING] Target have form with POST method: http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:40] [INFO] Collecting form input key.....</span><br><span class="line">[16:20:40] [INFO] Form key name: searchFor value: &lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:40] [INFO] Form key name: goButton value: &lt;Submit Confirm&gt;</span><br><span class="line">[16:20:40] [INFO] Sending payload (POST) method...</span><br><span class="line">[16:20:41] [CRITICAL] Detected XSS (POST) at http://testphp.vulnweb.com/search.php?test=query</span><br><span class="line">[16:20:41] [CRITICAL] Post data: &#123;&#x27;searchFor&#x27;: &#x27;&lt;script&gt;alert(6000/3000)&lt;/script&gt;&#x27;, &#x27;goButton&#x27;: &#x27;goButton&#x27;&#125;</span><br><span class="line">[16:20:41] [WARNING] Found link with query: cat=1 Maybe a vuln XSS point</span><br><span class="line">[16:20:41] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:41] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:42] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:42] [WARNING] Found link with query: cat=2 Maybe a vuln XSS point</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:42] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:42] [WARNING] Found link with query: cat=3 Maybe a vuln XSS point</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:42] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:43] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">[16:20:43] [WARNING] Found link with query: cat=4 Maybe a vuln XSS point</span><br><span class="line">[16:20:43] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=&lt;script&gt;alert(6000/3000)&lt;/script&gt;</span><br><span class="line">[16:20:43] [INFO] Query (GET) : http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert%286000%2F3000%29%3C%2Fscript%3E</span><br><span class="line">[16:20:43] [CRITICAL] Detected XSS (GET) at http://testphp.vulnweb.com/listproducts.php?cat=%3Cscript%3Ealert(6000/3000)%3C/script%3E</span><br><span class="line">***************</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>省略了很多,通过输出可以大致了解一下他的流程。。</p>
-<hr>
+<hr />
 <h1>搭建靶机环境:</h1>
 <p>phpstudy + xss练习平台代码. 方便调试…</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.0.107/xss/level2.php</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/07/08/5d2329cfae51367657.png" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/07/08/5d2329cfae51367657.png" alt="" /></p>
+<hr />
 <h1>主要流程:</h1>
 <h2 id="命令行参数解析">命令行参数解析:</h2>
-<p><img src="https://i.loli.net/2019/07/09/5d24ab505d76037106.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24ab505d76037106.png" alt="" /></p>
 <p>都是常规的一些参数,所以就略过.</p>
 <p>可以看到里面含cralwer参数,可见是个带有爬虫功能的主动发包的scanner.</p>
-<hr>
+<hr />
 <h2 id="检查可用性">检查可用性:</h2>
-<p><img src="https://i.loli.net/2019/07/09/5d24ac9d8fc6950212.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24ac9d8fc6950212.png" alt="" /></p>
 <p>在开始探测之前,会检查一下该url的&quot;连通性&quot;.</p>
 <p>作者本意是通过返回包的状态码<code>status_code</code>,认为大于400就是&quot;连接失败&quot;.</p>
 <p>这里用<code>connection</code>应该是不准确的.</p>
-<p><strong>有任一状态码都认为是服务器有回复,即是连通的.<br>
+<p><strong>有任一状态码都认为是服务器有回复,即是连通的.<br />
 连通性有问题的话,应该是请求超时,服务器无响应.</strong></p>
 <p>所以,这里我觉得是检查该探测行为(xss检测)情况下,这个url的可用性.</p>
 <p>xss检测的话,只要能正常访问页面,状态码是2xx或者3xx都是ok的.</p>
@@ -296,17 +296,17 @@
 <p>检测服务器报错的时候常常是构造异常的url(数据包),服务器无法正常处理,然后报错,可能会把报错信息输出在页面上.</p>
 <p>这种情况下,状态码一般都是<code>5xx</code>(大于400),那么是这个时候服务器是有响应的,有处理你的请求的,不能认为是连通性有问题.</p>
 <p><strong>不同检测方式,判定url的可用性应该是不一样的</strong>。</p>
-<hr>
+<hr />
 <h2 id="三类请求的检测">三类请求的检测:</h2>
 <h3 id="get-method">get_method:</h3>
 <p>形式:get方法提交的键值对参数</p>
 <p>例如:<code>xxx.com/index.php?id=1</code></p>
-<p><img src="https://i.loli.net/2019/07/09/5d24b236456b846479.png" alt=""></p>
-<p><img src="https://i.loli.net/2019/07/09/5d24b1cd0761e69063.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b236456b846479.png" alt="" /></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b1cd0761e69063.png" alt="" /></p>
 <p>判断方式是看xss payload有没在返回包的源码中,简单粗暴但容易误报.</p>
 <p>这里面还有个细节就是发了两次请求包.</p>
 <p>为什么要发两次请求包呢?要多发个<code>urlencode</code>后的包呢?</p>
-<p>因为有些特殊的字符要<code>urlencode</code>之后,服务器才能正常正确的处理.例如<code>&amp;</code>等.<br>
+<p>因为有些特殊的字符要<code>urlencode</code>之后,服务器才能正常正确的处理.例如<code>&amp;</code>等.<br />
 之前在写api的时候,试过<code>token</code>值里面带了<code>&amp;</code>这个符号后,api程序不能正常解析,认为这是个不合法的<code>token</code>.</p>
 <blockquote>
 <p>**HTTP协议中参数组件的传输是<code>key=value</code>键值对的形式，如果要传输多个参数就需要用<code>&amp;</code>符号对键值对进行分隔。**例如?name1=value1&amp;name2=$value2,这样在服务器收到这种字符串的时候，会用“&amp;”分隔出每一个参数，然后再用“=”来分隔出参数值。</p>
@@ -317,11 +317,11 @@
 <blockquote>
 <p>**URL编码只是简单的在特殊字符的各个字节（16进制）前加上<code>%</code>即可。**例如，我们对上述会产生歧义的字符进行编码后的结果：<code>name1=va%26lu%3D</code>，这样服务器会把紧跟在<code>%</code>后的字节当成普通的字节，不会把它当成各个参数或键值对的分隔符。</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="get-method-form">get_method_form:</h3>
 <p>form表单通过get方法提交.</p>
-<p><img src="https://i.loli.net/2019/07/09/5d24b45770e6258699.png" alt=""><br>
-<img src="https://i.loli.net/2019/07/09/5d24b4881707412169.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b45770e6258699.png" alt="" /><br />
+<img src="https://i.loli.net/2019/07/09/5d24b4881707412169.png" alt="" /></p>
 <p>其中可以学到的点就是</p>
 <p>构造请求包的思路:</p>
 <ul class="lvl-0">
@@ -332,12 +332,12 @@
 <p>找出<code>input</code>,<code>textarea</code>属性,解析参数值对</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h3 id="post-method：">post_method：</h3>
 <p>form表单通过post方法提交.</p>
-<p><img src="https://i.loli.net/2019/07/09/5d24b528adc3c84990.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/09/5d24b528adc3c84990.png" alt="" /></p>
 <p>这个大体跟<code>get_method_form</code>相似.略过</p>
-<hr>
+<hr />
 <h1>总结:</h1>
 <p>这个xss scanner代码量很少,只能算个简单的黑盒静态检测Xss的scanner,容易误报.</p>
 <ul class="lvl-0">
@@ -357,7 +357,7 @@
 <blockquote>
 <p>含注释的代码在<code>https://github.com/jerrychan807/XSSCon/tree/comment</code></p>
 </blockquote>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -493,7 +493,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -548,12 +548,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -283,24 +283,24 @@
       
         <h1>Pre:</h1>
 <p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=zgukojxyHKc">Alex Roan: Hitchhiker’s Guide to the EVM</a> 学习记录</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095117.png" alt="20220707095117"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095117.png" alt="20220707095117" /></p>
 <p>有很多主题想讨论，但有一个最重要的概念：</p>
 <h1>Gas Golfing</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095719.png" alt="20220707095719"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707095719.png" alt="20220707095719" /></p>
 <p>gas golfing is the process of optimizing the existing functionality of your contract to to do the same things to be able to perform the same functions but just cheaper and more efficiently</p>
-<p>高尔夫最终目的就是想打进球洞，过程中需要不断优化去减少杆数<br>
+<p>高尔夫最终目的就是想打进球洞，过程中需要不断优化去减少杆数<br />
 gas优化也是一样，一个函数同样的功能怎么才能更便宜这里特指，优化对<code>storage</code>的使用</p>
 <h1>What is Storage in Solidity?</h1>
 <h2 id="定义-3">定义:</h2>
 <p>storage is data that is persistent between transactions it’s stored in a contract for extended periods of time and it can be accessed and changed in future transactions</p>
 <h2 id="例子-2">例子:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100134.png" alt="20220707100134"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100134.png" alt="20220707100134" /></p>
 <p>图中有个storage 变量，在其他编程语言中可能被称为<code>instance variables</code>或<code>class variables</code></p>
 <p>but in solidity there is a catch so it is one of the most <code>gas-intensive</code> things that a contract can play around with accessing it changing it is disproportionately expensive in comparison with what we associate with normal disk storage</p>
 <p>不同之处在于，在别的编程语言中，持久化存储变量可能只是占用硬盘空间，但在solidity中持久化存储变量，在读写这类变量的数据都跟钱有很大关系。</p>
 <h1>Why is Storage Expensive？</h1>
 <h2 id="中心化世界：">中心化世界：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100745.png" alt="20220707100745"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707100745.png" alt="20220707100745" /></p>
 <p>在中心化的世界中，持久化存储的特点:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -314,8 +314,8 @@ gas优化也是一样，一个函数同样的功能怎么才能更便宜这里�
 </li>
 </ul>
 <h2 id="去中心化世界：">去中心化世界：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101232.png" alt="20220707101232"></p>
-<p>换到去中心化的世界中，存储不再是存在一个服务器的一个硬盘里，而是存在整个网络里的每一块硬盘上。<br>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101232.png" alt="20220707101232" /></p>
+<p>换到去中心化的世界中，存储不再是存在一个服务器的一个硬盘里，而是存在整个网络里的每一块硬盘上。<br />
 Evm里有两个很贵的<code>op code</code>：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -326,16 +326,16 @@ Evm里有两个很贵的<code>op code</code>：</p>
 </li>
 </ul>
 <h1>省gas的五个方法：</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101850.png" alt="20220707101850"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707101850.png" alt="20220707101850" /></p>
 <h2 id="非必要的话，不存Storage">非必要的话，不存Storage:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102201.png" alt="20220707102201"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102425.png" alt="20220707102425"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102201.png" alt="20220707102201" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102425.png" alt="20220707102425" /></p>
 <p>一般情况下，合约都不会再次使用这部分数据（转账记录），所以用<code>event</code>代替<code>Storage</code>。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102454.png" alt="20220707102454"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102454.png" alt="20220707102454" /></p>
 <p>对于gas的影响:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102925.png" alt="20220707102925"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707102925.png" alt="20220707102925" /></p>
 <h2 id="尽量用constant或immutable">尽量用constant或immutable:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707104558.png" alt="20220707104558"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707104558.png" alt="20220707104558" /></p>
 <p>有不变量就尽量用<code>constant</code>或<code>immutable</code>用关键字<code>constant</code>或<code>immutable</code>会影响opcode <code>slot</code></p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -347,7 +347,7 @@ Evm里有两个很贵的<code>op code</code>：</p>
 </ul>
 <p>区别在于初始化赋值的位置不一样。</p>
 <h3 id="gas影响">gas影响:</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707105356.png" alt="20220707105356"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220707105356.png" alt="20220707105356" /></p>
 <p>用了不变量关键词后，读取一次数据对gas的影响。如果经常会读取到该变量，那么累计下来会节省很多gas</p>
 <h3 id="自己测试">自己测试:</h3>
 <h4 id="部署：">部署：</h4>
@@ -367,26 +367,26 @@ Evm里有两个很贵的<code>op code</code>：</p>
 </li>
 </ul>
 <h2 id="明确表示Storage-Variable">明确表示Storage Variable:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093400.png" alt="20220710093400"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093440.png" alt="20220710093440"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093400.png" alt="20220710093400" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093440.png" alt="20220710093440" /></p>
 <p>后面写函数的时候，提醒自己在操作的是Storage的变量，会比较耗费gas</p>
 <h2 id="不要频繁读写：">不要频繁读写：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093801.png" alt="20220710093801"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710093801.png" alt="20220710093801" /></p>
 <p>状态变量在循环、多条件判断的时候，注意观察接触<code>touch</code>状态变量的次数，读写超过两次(<code>Slod</code>+<code>SStore</code>)</p>
 <p>做法：先把状态变量加载到内存里的临时变量，再去频繁读写</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710094037.png" alt="20220710094037"></p>
-<p>提及了EIP-2929里的<code>Cold and Warm</code>的概念：读过的slot后，状态:<code>cold</code>-&gt;<code>warm</code>,下次读写会更便宜。<br>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710094037.png" alt="20220710094037" /></p>
+<p>提及了EIP-2929里的<code>Cold and Warm</code>的概念：读过的slot后，状态:<code>cold</code>-&gt;<code>warm</code>,下次读写会更便宜。<br />
 <a target="_blank" rel="noopener" href="https://medium.com/taipei-ethereum-meetup/eip2929-eip2930-%E7%B0%A1%E4%BB%8B-14a8b580a141">EIP2929, EIP2930 簡介</a></p>
 <blockquote>
 <p>在实作层，EVM会维系一个本笔交易读取过所有交易的Set。每次有尚未读取过的slot时，就会先收取一笔CLOD_SLOAD_COST (2100)，然后把这个slot加入这个set中，下次读写就会比较便宜。</p>
-<p>对于已经读取过的Slot，再次写入的OpcodeSSTORE之gas cost为会降低为<br>
+<p>对于已经读取过的Slot，再次写入的OpcodeSSTORE之gas cost为会降低为<br />
 <code>5000 — COLD_SLOAD_COST (2100) = 2900</code></p>
 <p>简单的说，单纯只操作一次<code>SSTORE</code>的总gas 会维持一样在5000 。但如果这个slot是之前有读过的，则写入的gas cost就会降低。近一步来说，一个x += 100，其实会变得更便宜:</p>
-<p>Pre-EIP-2929: <code>800 SLOAD + 5000 SSTORE = 5800</code><br>
+<p>Pre-EIP-2929: <code>800 SLOAD + 5000 SSTORE = 5800</code><br />
 Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
 </blockquote>
 <h3 id="gas影响；">gas影响；</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095126.png" alt="20220710095126"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095126.png" alt="20220710095126" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>warm slot</code>还是不如在内存里读取便宜</p>
@@ -396,15 +396,15 @@ Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
 </li>
 </ul>
 <h2 id="Pack-Your-Struct-打包结构体：">Pack Your Struct 打包结构体：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095620.png" alt="20220710095620"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095620.png" alt="20220710095620" /></p>
 <p>在EVM中，32是一个重要的数字，要记住！</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095827.png" alt="20220710095827"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710100155.png" alt="20220710100155"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710095827.png" alt="20220710095827" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710100155.png" alt="20220710100155" /></p>
 <p>评估一下第二个变量，如果存的内容较小，就可以定义长度小一点的。然后evm就会把两个变量压缩在slot1里面。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710102044.png" alt="20220710102044"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710102044.png" alt="20220710102044" /></p>
 <p>squeezes  挤挤总会有的</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710103109.png" alt="20220710103109"><br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710141301.png" alt="20220710141301"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710103109.png" alt="20220710103109" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220710141301.png" alt="20220710141301" /></p>
 <p>对变量适当的排序、选择适当的size，可以减少slot的使用</p>
 <blockquote>
 <p>不知道有没类似的工具可以提示优化的</p>
@@ -546,7 +546,7 @@ Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -601,12 +601,12 @@ Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

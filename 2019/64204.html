@@ -263,10 +263,10 @@
         <h1>系统安装:</h1>
 <h2 id="镜像选择">镜像选择:</h2>
 <p>生产服务器如果是大内存（4G以上内存），建议安装64位版本</p>
-<hr>
+<hr />
 <h2 id="语言选择">语言选择</h2>
 <p>正式生产服务器建议安装英文版本</p>
-<hr>
+<hr />
 <h3 id="实际的配置">实际的配置:</h3>
 <p>虚拟机的配置</p>
 <ul class="lvl-0">
@@ -280,10 +280,10 @@
 <p>硬盘为200G(精简置备模式)</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="自定义硬盘分区">自定义硬盘分区</h2>
 <p>这个比较重要</p>
-<hr>
+<hr />
 <h3 id="必要的分区">必要的分区:</h3>
 <p><strong>boot分区</strong>:</p>
 <ul class="lvl-0">
@@ -315,28 +315,28 @@
 <blockquote>
 <p>朋友的建议:一般的场景就是 内存不到8G 给内存x1.5 或者 2 倍,到8G或以上 给 8-16g就行.</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="硬盘分区">硬盘分区:</h3>
 <p>自定义的硬盘分区:</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e356bd90d.jpg" alt="" /></p>
 <p><s>其中<code>/根目录</code>和<code>swap目录</code>的硬盘类型选择了:<code>Thin provisioning</code>精简配置模式</s></p>
 <blockquote>
 <p><s>也就是实际上用了多少就分配多少空间,避免浪费空间,免得刚装完,一导出整个虚拟机就很大.</s></p>
 </blockquote>
 <p><s>在新建虚拟机的时候,已经选择了精简配置模式了,里面的磁盘类型选择默认的即可.</s></p>
 <p>不然可能会出现io error这类错误,导致系统崩溃…</p>
-<p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/06/27/5d143d1d983fd38594.png" alt="" /></p>
 <p>之前在使用centos6的时候,很少出现io error这类错误</p>
 <p>查看旧系统cento6的磁盘类型,</p>
-<p><img src="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/01/5d19787ac1a6691705.png" alt="" /></p>
 <p>依据这个进行配置.都是选用<code>ext4</code>,而不是默认的<code>xfs</code></p>
 <p>配置完成后</p>
-<p><img src="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/01/5d197bedc3d7756404.png" alt="" /></p>
 <p>在之后要尽量少直接断电,要正常关机…</p>
 <blockquote>
 <p>经常断电硬盘早晚完蛋。</p>
 </blockquote>
-<hr>
+<hr />
 <h1>虚拟机拷贝:</h1>
 <ol>
 <li class="lvl-3">
@@ -352,7 +352,7 @@
 <p>在新的<code>.vmx</code>文件右键:添加资源.</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>初始化安装:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -365,7 +365,7 @@
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chenghuikai/article/details/45173909">Centos7下rc.local文件开机不执行…</a></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -513,7 +513,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -568,12 +568,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

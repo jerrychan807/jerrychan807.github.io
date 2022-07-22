@@ -271,7 +271,7 @@
         <h1>Pre:</h1>
 <p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
 <h1>debank交易历史界面:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825" /></p>
 <p>有以下功能点:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -298,10 +298,10 @@
 </ul>
 <h1>项目效果图:</h1>
 <p>项目地址:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542" /></p>
 <h1>功能点:</h1>
 <h2 id="合约交互记录-重点">合约交互记录-重点:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445" /></p>
 <p>有以下几个点:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -316,7 +316,7 @@
 </ul>
 <h2 id="合约交互记录-项目logo和名字">合约交互记录-项目logo和名字:</h2>
 <p>交易记录里，会记录你地址与哪个合约发生了交互</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723" /></p>
 <p>可以知道合约地址，一个项目可以有好几个合约地址，比如<code>PancakeSwap</code>可以有几个合约地址</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -335,7 +335,7 @@
 <p><code>contract creator</code> 部署项目合约的地址</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png" alt="20211031162907"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png" alt="20211031162907" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>在项目源码找常量，记录了那些项目合约地址</p>
@@ -344,38 +344,38 @@
 <p>这一块感觉后续要不断去维护这些映射关系</p>
 <h2 id="合约交互记录-调用合约的具体函数">合约交互记录-调用合约的具体函数:</h2>
 <p>调用bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口,可以获得以下数据</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527" /></p>
 <p>调用合约的具体函数可以通过解析<code>input_data</code>得知</p>
 <p>如果项目合约是开源验证过的话，可以通过<code>decode_function_input</code>接得</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">contract_ins = self.get_token_contract_with_abi(contract_address, contract_abi_json)</span><br><span class="line">func, params = contract_ins.decode_function_input(input_data)</span><br></pre></td></tr></table></figure>
 <p>如果项目合约未开源,<code>input_data</code>的前4个字节是函数原型的<code>Keccak256</code>哈希，可以调用<a target="_blank" rel="noopener" href="https://www.4byte.directory/docs/">4byte.directory</a>进行哈希查询，反查出函数名。</p>
-<hr>
+<hr />
 <h2 id="transaction里的token传输记录">transaction里的token传输记录:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png" alt="20211104131002"></p>
-<p>要怎么解析出交易里代币的传输记录？<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png" alt="20211029094938"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png" alt="20211104131002" /></p>
+<p>要怎么解析出交易里代币的传输记录？<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png" alt="20211029094938" /></p>
 <p>token基本都是符合<code>erc20</code>标准,都含有标准的<code>Transfer</code>函数要知道该次交易里token的传输记录，要解析log里的<code>Transfer event</code></p>
-<p>但并不是所有log里，都能看到<code>Transfer</code>的字眼<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png" alt="20211029100319"></p>
-<p>有的就没有<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png" alt="20211029100713"></p>
+<p>但并不是所有log里，都能看到<code>Transfer</code>的字眼<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png" alt="20211029100319" /></p>
+<p>有的就没有<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png" alt="20211029100713" /></p>
 <p>由于符合erc20标准的代币的<code>Transfer(address from, address to, uint256 value)</code>函数是固定的，经过<code>keccak</code>哈希后,可得到哈希字符串<code>0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef</code></p>
-<p>如果该次交易里含有erc20代币的传输，那么就存在含有该哈希的<code>event</code>.<br>
+<p>如果该次交易里含有erc20代币的传输，那么就存在含有该哈希的<code>event</code>.<br />
 接下来去解析这些<code>event</code>就可以知道token的传输记录了</p>
 <p>参考:<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/52222758/erc20-tokens-transferred-information-from-transaction-hash">ERC20 Tokens Transferred Information from Transaction Hash</a></p>
-<hr>
+<hr />
 <h1>Bug&amp;Todo:</h1>
 <h2 id="个人地址转账">个人地址转账:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png" alt="20211103115056"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png" alt="20211103115056" /></p>
 <p>如何判断一个地址是合约地址还是个人地址？</p>
 <p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/28521/how-to-detect-if-an-address-is-a-contract">How to detect if an address is a contract?</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png" alt="20211103115835"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png" alt="20211103115835" /></p>
 <p>个人地址的转账记录这块还没做对应的解析</p>
 <h2 id="SSL-error">SSL error:</h2>
 <p>[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2570)</p>
 <h2 id="normal">normal</h2>
 <p>只用了bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口，还有一些交易类型没收录进去，仍有欠缺</p>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -422,10 +422,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -532,7 +532,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -587,12 +587,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

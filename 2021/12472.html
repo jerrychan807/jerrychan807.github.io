@@ -265,7 +265,7 @@
 <p>由1个主钱包把某代币平均分发到40个新钱包中去</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>脚本:</h1>
 <h2 id="创建钱包">创建钱包:</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3, HTTPProvider</span><br><span class="line"><span class="keyword">from</span> web3.middleware <span class="keyword">import</span> geth_poa_middleware</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_wallet</span>():</span><br><span class="line">    bscUrl = <span class="string">&quot;&quot;</span></span><br><span class="line">    web3 = Web3(HTTPProvider(bscUrl))</span><br><span class="line">    web3.middleware_stack.inject(geth_poa_middleware, layer=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    password = <span class="string">&quot;&quot;</span></span><br><span class="line">    bscAccount = web3.eth.account.create(password)</span><br><span class="line"></span><br><span class="line">    bscAddress = bscAccount.address</span><br><span class="line">    privateKey = bscAccount.privateKey.<span class="built_in">hex</span>()</span><br></pre></td></tr></table></figure>
@@ -297,11 +297,11 @@
 <p>transferFrom():转账</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>ERC20:</h1>
 <h2 id="什么是Token（代币）？">什么是Token（代币）？</h2>
 <p>在Ethereum中，代币几乎可以代表任何东西，从在线平台的信誉点、游戏中角色的技能、彩票到金融资产债券，再到真正的商品，如公司的股份、货币、金盎司等！如此强大的功能，值得也必须处理好。如此强大的功能，理应也必须由一个强大的标准来处理，对吗？这正是<code>ERC-20</code>的作用所在，<code>ERC-20</code>就是针对这些发布的Token（代币）制定的一个固定的基础的标准原则。</p>
-<hr>
+<hr />
 <h2 id="什么是-ERC20">什么是 ERC20:</h2>
 <p><code>ERC-20</code>引入了可替代Token的标准。换句话说，它们具有使每个Token与另一个Token完全相同（在类型和价值上）的属性。例如，<code>ERC-20</code>，Token的行为与ETH相同，这意味着任意1个遵循ERC-20规则的Token与所有其他所有Token是平等和相同的。</p>
 <blockquote>
@@ -311,7 +311,7 @@
 <p>标准化非常有利，也就意味着这些资产可以用于不同的平台和项目，否则只能用在特定的场合。</p>
 <p>代币（Token）是区块链中定义价值的方式，用于标定金融或数字资产。</p>
 <p>在以太坊上，<strong>代币使用相同的标准，这样代币之间的兑换和DAPP支持就会变得容易</strong>。</p>
-<hr>
+<hr />
 <h2 id="标准规定了哪些内容">标准规定了哪些内容:</h2>
 <p>ERC20 是各个代币的标准接口。</p>
 <p>ERC20 代币仅仅是以太坊代币的子集。为了充分兼容 ERC20，开发者需要将一组特定的函数（接口）集成到他们的智能合约中，以便在高层面能够执行以下操作：</p>
@@ -330,7 +330,7 @@
 </li>
 </ul>
 <p>ERC20 让以太坊区块链上的其他智能合约和去中心化应用之间无缝交互。</p>
-<hr>
+<hr />
 <h2 id="ERC20-标准">ERC20 标准:</h2>
 <p>ERC20 标准定义了一个兼容协议, 需要实现的函数. 具体如下.</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment">// ERC Token Standard #20 Interface</span></span><br><span class="line">  <span class="comment">// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md</span></span><br><span class="line">  <span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line">  contract <span class="title class_">ERC20Interface</span> &#123;</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">totalSupply</span>(<span class="params"></span>) public constant returns (uint);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">balanceOf</span>(<span class="params">address tokenOwner</span>) public constant returns (uint balance);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">allowance</span>(<span class="params">address tokenOwner, address spender</span>) public constant returns (uint remaining);</span><br><span class="line">      <span class="keyword">function</span> <span class="title function_">transfer</span>(<span class="params">address to, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">approve</span>(<span class="params">address spender, uint tokens</span>) public returns (bool success);</span><br><span class="line">     <span class="keyword">function</span> <span class="title function_">transferFrom</span>(<span class="params">address <span class="keyword">from</span>, address to, uint tokens</span>) public returns (bool success); </span><br><span class="line">     event <span class="title class_">Transfer</span>(address indexed <span class="keyword">from</span>, address indexed to, uint tokens);</span><br><span class="line">     event <span class="title class_">Approval</span>(address indexed tokenOwner, address indexed spender, uint tokens);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
@@ -347,10 +347,10 @@
 </li>
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string public constant name = <span class="string">&quot;Token Name&quot;</span>;</span><br><span class="line">string public constant symbol = <span class="string">&quot;SYM&quot;</span>;</span><br><span class="line">uint8 public constant decimals = <span class="number">18</span>;  <span class="comment">// 18 is the most common number of decimal places</span></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>Summary:</h1>
 <p>cool,脚本是挺简单的，顺便了解了一下<code>erc20</code>的代币标准</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -379,10 +379,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -489,7 +489,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -544,12 +544,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

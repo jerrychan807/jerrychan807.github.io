@@ -262,8 +262,8 @@
       
         <h1>Pre:</h1>
 <p>当你在pancakeswap上交易时，它会帮你找到最佳的交易对路径，中间交易代币可能是一个或多个。那它这个最佳交易对路径是如何计算出来的呢?</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104114.png" alt="20211020104114"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104124.png" alt="20211020104124"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104114.png" alt="20211020104114" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211020104124.png" alt="20211020104124" /></p>
 <h1>如何查找最佳交易对路径:</h1>
 <p><a target="_blank" rel="noopener" href="https://docs.uniswap.org/sdk/2.0.0/reference/trade#besttradeexactin">uniswap sdk</a></p>
 <p>从sdk中可以看到有<code>bestTradeExactIn</code>方法:</p>
@@ -271,7 +271,7 @@
 <p>给定一组对、固定数量的输入和输出的代币数量，此方法返回将maxNumResults输入代币数量交换为输出代币的最佳交易，最多maxHops跳数。返回的交易按输出金额降序排列，并且都共享给定的输入金额。</p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Trade.bestTradeExactIn(</span><br><span class="line">    pairs: Pair[],</span><br><span class="line">    amountIn: TokenAmount,</span><br><span class="line">    tokenOut: Token,</span><br><span class="line">    &#123; maxNumResults = 3, maxHops = 3 &#125;: BestTradeOptions = &#123;&#125;): Trade[]</span><br></pre></td></tr></table></figure>
-<p>意思就是哪个交易对路径最后返回的币最多，哪个就是最佳路径。如果要自己简单的实现的话,可以找到对应链的主流币种，例如<code>USDT</code>,<code>BNB</code>,<code>BUSD</code>等。<br>
+<p>意思就是哪个交易对路径最后返回的币最多，哪个就是最佳路径。如果要自己简单的实现的话,可以找到对应链的主流币种，例如<code>USDT</code>,<code>BNB</code>,<code>BUSD</code>等。<br />
 <strong>所有代币都是与这些代币中的一种或多种配对组成流动性池子的</strong>。因此，只要用这些代币作为路径组合的中间币种即可，而无需考虑全部代币。</p>
 <p>tokenA 兑换 tokenB 可遍历的路径包括：</p>
 <ul class="lvl-0">
@@ -286,11 +286,11 @@
 </li>
 </ul>
 <p>然后自己去简单遍历构造交易对路径。调用<code>pancakeswap router</code>的<code>getAmountsOut</code>方法</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165458.png" alt="20211105165458"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165458.png" alt="20211105165458" /></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python web3部分代码</span></span><br><span class="line">predicted_out = router_contract.functions.getAmountsOut(amount_bnb, [from_token_address, contract_addr,</span><br><span class="line">                                                                                 token_address]).call()[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 <p>最终哪个交易路径最后返回的币最多，哪个就是最佳路径。</p>
 <h1>简单试验:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165844.png" alt="20211105165844"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211105165844.png" alt="20211105165844" /></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ADA-BUSD-BUNNY--32.601445898030065398</span><br><span class="line">ADA-WBNB-BUNNY--57.411093623881308004</span><br><span class="line">ADA-USDT-BUNNY--13.477518281960642732</span><br><span class="line">ADA-USDC-BUNNY--0.000005664178344977</span><br><span class="line">ADA-CAKE-BUNNY--48.583485276034042082</span><br></pre></td></tr></table></figure>
 <p>查询出来是含bnb的交易路径是最佳的，和前端页面显示的也对得上。</p>
 <p>至于为什么不同的交易路径会有不同的返回，暂时猜测和池子的深度有关。后续还有看看<code>uniswap</code>的源码后，才能更加深入的理解</p>
@@ -325,10 +325,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -435,7 +435,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -490,12 +490,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

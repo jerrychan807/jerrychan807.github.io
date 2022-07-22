@@ -264,9 +264,9 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require_once(dirname(__FILE__) . &#x27;/include/common.inc.php&#x27;);</span><br></pre></td></tr></table></figure>
 <p>该文件中,<strong>全局数据转义</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if(!get_magic_quotes_gpc())//如果没有开启</span><br><span class="line">&#123;</span><br><span class="line">	$_POST = deep_addslashes($_POST);</span><br><span class="line">	$_GET = deep_addslashes($_GET);</span><br><span class="line">	$_COOKIES = deep_addslashes($_COOKIES);</span><br><span class="line">	$_REQUEST = deep_addslashes($_REQUEST);</span><br><span class="line">&#125; //加上斜杠转义</span><br></pre></td></tr></table></figure>
-<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br>
-<img src="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg" alt=""></p>
-<hr>
+<p>输入了双引号，会被转义掉，那么此处就没办法简单地引入引号去控制Sql语句了。<br />
+<img src="https://i.loli.net/2019/04/25/5cc1d6cc74921.jpg" alt="" /></p>
+<hr />
 <h1>转换思路：</h1>
 <blockquote>
 <p>这个时候发现自己没有思路了，只会单引号双引号。。。渣-c-</p>
@@ -281,13 +281,13 @@
 <p>整套cms默认gb2312编码，容易造成<strong>宽字节注入</strong></p>
 </li>
 <li class="lvl-3">
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6cd6f056.jpg" alt="" /></p>
 </li>
 <li class="lvl-2">
 <p><strong>http头</strong>并不在转义的范围内，所以类似存入ip，reffer的位置也能发生注入</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>尝试宽字节注入：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -306,7 +306,7 @@
 <p>再加上后面的<code>or 1=1 #</code>就构造成了永真语句，可以成功免密登录管理员后台了</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>理解宽字节：</h1>
 <p>参考:<a target="_blank" rel="noopener" href="http://www.freebuf.com/articles/web/31537.html">浅析白盒审计中的字符编码及SQL注入</a></p>
 <ul class="lvl-0">
@@ -359,24 +359,24 @@
 <p>将character_set_client设置为binary（二进制）。</p>
 </li>
 <li class="lvl-2">
-<p>只需在所有sql语句前指定一下连接的形式是二进制：<br>
+<p>只需在所有sql语句前指定一下连接的形式是二进制：<br />
 <code>mysql_query(&quot;SET character_set_connection=gbk, character_set_results=gbk,character_set_client=binary&quot;, $conn); </code></p>
 </li>
 <li class="lvl-2">
 <p>所有数据以二进制的形式传递，就能有效避免宽字符注入。</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>编写pocsuite插件：</h1>
 <h2 id="requests不进行urldecode：">requests不进行urldecode：</h2>
-<p>参考：<a target="_blank" rel="noopener" href="https://zhidao.baidu.com/question/1510942862655764300.html">如何在requests post时不做urlencode</a><br>
-There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br>
+<p>参考：<a target="_blank" rel="noopener" href="https://zhidao.baidu.com/question/1510942862655764300.html">如何在requests post时不做urlencode</a><br />
+There are many times that you want to send data that is not form-encoded. If you pass in a  string  instead of a  dict , that data will be posted directly.<br />
 所以，只要直接传一个string作为payload数据，requests就不会做任何转换，直接发出去。</p>
 <p>并且加上<code>headers = &#123;&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;&#125; </code></p>
 <h2 id="验证：">验证：</h2>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6ceccdcc.jpg" alt="" /></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/jerrychan807/Pocsuite/blob/dev/modules/bluecms_v1_6_sp1_admin_sqli.py">poc链接</a></p>
-<hr>
+<hr />
 <h1>总结：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -389,7 +389,7 @@ There are many times that you want to send data that is not form-encoded. If you
 <p>宽字节注入的原理是 gbk是<strong>多字节编码</strong>，他认为两个字节代表一个汉字，所以可以用<code>%df</code>和后面的<code>\</code>也就是<code>%5c</code>变成了一个汉字“運”，而单引号逃逸了出来</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>参考：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -519,7 +519,7 @@ There are many times that you want to send data that is not form-encoded. If you
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -574,12 +574,12 @@ There are many times that you want to send data that is not form-encoded. If you
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

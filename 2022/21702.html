@@ -262,7 +262,7 @@
 
       
         <h1>Pre:</h1>
-<p>实现一个燃烧通缩的erc20代币<br>
+<p>实现一个燃烧通缩的erc20代币<br />
 github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/burnable</code></p>
 <h1>需求:</h1>
 <p>代币发生转移时：</p>
@@ -279,8 +279,8 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 </ul>
 <h1>部署：</h1>
 <p><code>hardhat.config.ts</code>里的编译器版本可以参考<code>remix</code>给出的版本</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100322.png" alt="20220615100322"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100602.png" alt="20220615100602"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100322.png" alt="20220615100322" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615100602.png" alt="20220615100602" /></p>
 <h1>编写合约：</h1>
 <h2 id="使用openzeppelin库：">使用openzeppelin库：</h2>
 <blockquote>
@@ -289,7 +289,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 <p>使用感受：里面有很多轮子，用起来很方便，合约类直接继承很多工具类库，不用自己自定义多余的函数，在减少代码量的同时还保证了安全性。后面计划多熟悉一下这个库里的内容。</p>
 <p>在solidity里的具体导入路径，可以参考他们github仓库里的文件夹结构</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># solidity里<span class="keyword">import</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;</span>;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615095423.png" alt="20220615095423"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220615095423.png" alt="20220615095423" /></p>
 <h2 id="合约接受代币：">合约接受代币：</h2>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">receive</span>() external payable &#123;&#125;</span><br></pre></td></tr></table></figure>
 <p>加上这个函数之后，合约才能正常接受代币</p>
@@ -327,21 +327,21 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 <li class="lvl-2">
 <p>Deployment</p>
 <ul class="lvl-2">
-<li class="lvl-6"><input type="checkbox" id="checkbox0" checked="true"><label for="checkbox0">set the right owner</label></li>
-<li class="lvl-6"><input type="checkbox" id="checkbox1" checked="true"><label for="checkbox1">Deployment,total supply = token owner balance</label></li>
+<li class="lvl-6"><input type="checkbox" id="checkbox0" checked="true" /><label for="checkbox0">set the right owner</label></li>
+<li class="lvl-6"><input type="checkbox" id="checkbox1" checked="true" /><label for="checkbox1">Deployment,total supply = token owner balance</label></li>
 </ul>
 </li>
 <li class="lvl-2">
 <p>Transactions</p>
 <ul class="lvl-2">
-<li class="lvl-6"><input type="checkbox" id="checkbox2" checked="true"><label for="checkbox2">tokenOwner —transfer–&gt; user</label></li>
-<li class="lvl-6"><input type="checkbox" id="checkbox3" checked="true"><label for="checkbox3">userA —transfer–&gt; userB（Fee）,totalsupply</label><code>↓</code>,balance of contract <code>↑</code></li>
+<li class="lvl-6"><input type="checkbox" id="checkbox2" checked="true" /><label for="checkbox2">tokenOwner —transfer–&gt; user</label></li>
+<li class="lvl-6"><input type="checkbox" id="checkbox3" checked="true" /><label for="checkbox3">userA —transfer–&gt; userB（Fee）,totalsupply</label><code>↓</code>,balance of contract <code>↑</code></li>
 </ul>
 </li>
 <li class="lvl-2">
 <p>tokenOwner withdraw</p>
 <ul class="lvl-2">
-<li class="lvl-6"><input type="checkbox" id="checkbox4" checked="true"><label for="checkbox4">tokenOwner withdraw from contract After userA to userB</label></li>
+<li class="lvl-6"><input type="checkbox" id="checkbox4" checked="true" /><label for="checkbox4">tokenOwner withdraw from contract After userA to userB</label></li>
 </ul>
 </li>
 </ul>
@@ -374,10 +374,10 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
       <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
+      <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
+      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
@@ -489,7 +489,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -544,12 +544,12 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

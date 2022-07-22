@@ -269,7 +269,7 @@
 </blockquote>
 <p>通过策略写机器人来做交易,算是有严格的纪律性了，由数据驱动，不受情绪的影响。另外一个好处就是，不用去盯盘。</p>
 <p>这次拿来做合约交易</p>
-<hr>
+<hr />
 <h1>策略:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -292,8 +292,8 @@
 </li>
 </ul>
 <h1>效果:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C83CAF70-1EA0-4882-AF5E-2697664AB1B7.png" alt="C83CAF70-1EA0-4882-AF5E-2697664AB1B7"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C83CAF70-1EA0-4882-AF5E-2697664AB1B7.png" alt="C83CAF70-1EA0-4882-AF5E-2697664AB1B7" /></p>
+<hr />
 <h1>遇到的问题:</h1>
 <h2 id="创建订单">创建订单:</h2>
 <p>之前用的交易所是<code>binance</code>,这次用的是<code>ftx</code>通过ccxt在创建ftx limit sell order的时候花费比较多时间,参考<a target="_blank" rel="noopener" href="https://github.com/ccxt/ccxt/issues/6740">Unable To create Limit orders on FTX</a>,才知道需要哪些参数.</p>
@@ -303,9 +303,9 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"># binance</span><br><span class="line">order = &#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKEUSDT&#x27;,</span><br><span class="line">		&#x27;orderId&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">		&#x27;orderListId&#x27;: &#x27;-1&#x27;,</span><br><span class="line">		&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">		&#x27;transactTime&#x27;: &#x27;1630229168854&#x27;,</span><br><span class="line">		&#x27;price&#x27;: &#x27;0.00000000&#x27;,</span><br><span class="line">		&#x27;origQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;executedQty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">		&#x27;cummulativeQuoteQty&#x27;: &#x27;12.77000000&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;FILLED&#x27;,</span><br><span class="line">		&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;MARKET&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;BUY&#x27;,</span><br><span class="line">		&#x27;fills&#x27;: [&#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;253501445&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: &#x27;x-R4BD3S8213738c964e85cb662119c9&#x27;,</span><br><span class="line">	&#x27;timestamp&#x27;: 1630229168854,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-08-29T09:26:08.854Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: &#x27;GTC&#x27;,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: 25.54,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.5,</span><br><span class="line">	&#x27;cost&#x27;: 12.77,</span><br><span class="line">	&#x27;average&#x27;: 25.54,</span><br><span class="line">	&#x27;filled&#x27;: 0.5,</span><br><span class="line">	&#x27;remaining&#x27;: 0.0,</span><br><span class="line">	&#x27;status&#x27;: &#x27;closed&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: &#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;trades&#x27;: [&#123;</span><br><span class="line">		&#x27;info&#x27;: &#123;</span><br><span class="line">			&#x27;price&#x27;: &#x27;25.54000000&#x27;,</span><br><span class="line">			&#x27;qty&#x27;: &#x27;0.50000000&#x27;,</span><br><span class="line">			&#x27;commission&#x27;: &#x27;0.00050000&#x27;,</span><br><span class="line">			&#x27;commissionAsset&#x27;: &#x27;CAKE&#x27;,</span><br><span class="line">			&#x27;tradeId&#x27;: &#x27;37608361&#x27;</span><br><span class="line">		&#125;,</span><br><span class="line">		&#x27;timestamp&#x27;: None,</span><br><span class="line">		&#x27;datetime&#x27;: None,</span><br><span class="line">		&#x27;symbol&#x27;: &#x27;CAKE/USDT&#x27;,</span><br><span class="line">		&#x27;id&#x27;: None,</span><br><span class="line">		&#x27;order&#x27;: None,</span><br><span class="line">		&#x27;type&#x27;: None,</span><br><span class="line">		&#x27;side&#x27;: None,</span><br><span class="line">		&#x27;takerOrMaker&#x27;: None,</span><br><span class="line">		&#x27;price&#x27;: 25.54,</span><br><span class="line">		&#x27;amount&#x27;: 0.5,</span><br><span class="line">		&#x27;cost&#x27;: 12.77,</span><br><span class="line">		&#x27;fee&#x27;: &#123;</span><br><span class="line">			&#x27;cost&#x27;: 0.0005,</span><br><span class="line">			&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;],</span><br><span class="line">	&#x27;fees&#x27;: [&#123;</span><br><span class="line">		&#x27;cost&#x27;: 0.0005,</span><br><span class="line">		&#x27;currency&#x27;: &#x27;CAKE&#x27;</span><br><span class="line">	&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># ftx</span><br><span class="line">&#123;</span><br><span class="line">	&#x27;info&#x27;: &#123;</span><br><span class="line">		&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">		&#x27;clientId&#x27;: None,</span><br><span class="line">		&#x27;market&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">		&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">		&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">		&#x27;price&#x27;: None,</span><br><span class="line">		&#x27;size&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;status&#x27;: &#x27;new&#x27;,</span><br><span class="line">		&#x27;filledSize&#x27;: &#x27;0.0&#x27;,</span><br><span class="line">		&#x27;remainingSize&#x27;: &#x27;0.1&#x27;,</span><br><span class="line">		&#x27;reduceOnly&#x27;: False,</span><br><span class="line">		&#x27;liquidation&#x27;: None,</span><br><span class="line">		&#x27;avgFillPrice&#x27;: None,</span><br><span class="line">		&#x27;postOnly&#x27;: False,</span><br><span class="line">		&#x27;ioc&#x27;: True,</span><br><span class="line">		&#x27;createdAt&#x27;: &#x27;2021-10-14T04:03:51.958018+00:00&#x27;,</span><br><span class="line">		&#x27;future&#x27;: &#x27;BNB-PERP&#x27;</span><br><span class="line">	&#125;,</span><br><span class="line">	&#x27;id&#x27;: &#x27;87609981695&#x27;,</span><br><span class="line">	&#x27;clientOrderId&#x27;: None,</span><br><span class="line">	&#x27;timestamp&#x27;: 1634184231958,</span><br><span class="line">	&#x27;datetime&#x27;: &#x27;2021-10-14T04:03:51.958Z&#x27;,</span><br><span class="line">	&#x27;lastTradeTimestamp&#x27;: None,</span><br><span class="line">	&#x27;symbol&#x27;: &#x27;BNB-PERP&#x27;,</span><br><span class="line">	&#x27;type&#x27;: &#x27;market&#x27;,</span><br><span class="line">	&#x27;timeInForce&#x27;: None,</span><br><span class="line">	&#x27;postOnly&#x27;: False,</span><br><span class="line">	&#x27;side&#x27;: &#x27;buy&#x27;,</span><br><span class="line">	&#x27;price&#x27;: None,</span><br><span class="line">	&#x27;stopPrice&#x27;: None,</span><br><span class="line">	&#x27;amount&#x27;: 0.1,</span><br><span class="line">	&#x27;cost&#x27;: None,</span><br><span class="line">	&#x27;average&#x27;: None,</span><br><span class="line">	&#x27;filled&#x27;: 0.0,</span><br><span class="line">	&#x27;remaining&#x27;: 0.1,</span><br><span class="line">	&#x27;status&#x27;: &#x27;open&#x27;,</span><br><span class="line">	&#x27;fee&#x27;: None,</span><br><span class="line">	&#x27;trades&#x27;: None</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><a target="_blank" rel="noopener" href="https://ccxt.readthedocs.io/en/latest/manual.html#orders">https://ccxt.readthedocs.io/en/latest/manual.html#orders</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014134717.png" alt="20211014134717"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014134717.png" alt="20211014134717" /></p>
 <p>看文档可知，尽量不要用info key里面的内容，这里面是交易所返回的原始内容，<code>ccxt</code>会解析然后放在其他一级的key，会更具通用性.</p>
-<hr>
+<hr />
 <h1>Nginx配置:</h1>
 <h2 id="查看配置文件路径">查看配置文件路径:</h2>
 <p>使用<code>nginx</code>的<code>-t</code>参数进行配置检查，即可知道实际调用的配置文件路径及是否调用有效。</p>
@@ -316,9 +316,9 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location /tradingview/ &#123;</span><br><span class="line">            proxy_pass       http://127.0.0.1:10086/tradingview;</span><br><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header Host $host;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h2 id="nginx操作">nginx操作:</h2>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看状态</span></span><br><span class="line">systemctl status nginx</span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">systemctl restart nginx </span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>Bug:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014135626.png" alt="20211014135626"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014135626.png" alt="20211014135626" /></p>
 <p>tradingview会在有bug信号的时候，多次触发我的api</p>
 <p>可能的解决方案:</p>
 <ul class="lvl-0">
@@ -333,9 +333,9 @@
 </li>
 </ul>
 <p>暂时不处理，先记录一下</p>
-<hr>
+<hr />
 <h1>Summary:</h1>
-<p>做合约交易的话，我自己还不是很有经验，可能后面经验增加or回测多次后能再优化策略吧。<br>
+<p>做合约交易的话，我自己还不是很有经验，可能后面经验增加or回测多次后能再优化策略吧。<br />
 3倍5倍低倍杠杠我理解成 借钱抄底 哈哈</p>
 <p>有一些点后期可能需要优化:</p>
 <ul class="lvl-0">
@@ -355,7 +355,7 @@
 <p>消息面</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -497,7 +497,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -552,12 +552,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

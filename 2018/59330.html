@@ -263,9 +263,9 @@
 
       
         <h1>熟悉功能：</h1>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d684584.jpg" alt="" /></p>
 <p>方便管理员对模板html文件进行修改</p>
-<hr>
+<hr />
 <h1>用户可控变量：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -294,20 +294,20 @@
 <h2 id="GET-‘tpl-name’">$_GET[‘tpl_name’]</h2>
 <p>$_GET[‘tpl_name’]为你想要编辑的模板文件名字</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">elseif($act == &#x27;edit&#x27;)&#123;</span><br><span class="line">$file = $_GET[&#x27;tpl_name&#x27;];</span><br><span class="line">if(!$handle = @fopen(BLUE_ROOT.&#x27;templates/default/&#x27;.$file, &#x27;rb&#x27;))&#123; # $file直接拼接</span><br><span class="line">	showmsg(&#x27;打开目标模板文件失败&#x27;); # 判断文件是否存在</span><br><span class="line">&#125;</span><br><span class="line">$tpl[&#x27;content&#x27;] = fread($handle, filesize(BLUE_ROOT.&#x27;templates/default/&#x27;.$file)); # 读取文件</span><br><span class="line">$tpl[&#x27;content&#x27;] = htmlentities($tpl[&#x27;content&#x27;], ENT_QUOTES, GB2312);</span><br><span class="line">fclose($handle);</span><br><span class="line">$tpl[&#x27;name&#x27;] = $file;</span><br><span class="line">template_assign(array(&#x27;current_act&#x27;, &#x27;tpl&#x27;), array(&#x27;编辑模板&#x27;, $tpl));</span><br><span class="line">$smarty-&gt;display(&#x27;tpl_info.htm&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>没有对<code>$_GET['tpl_name']</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br>
+<p>没有对<code>$_GET['tpl_name']</code>进行过滤，加上<code>../</code>可以读取web目录以外的内容。<br />
 payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_name=../../../upgrade/upgrade.php</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6d79cd11.jpg" alt="" /></p>
 <p>有什么比较有价值的网站文件吗?</p>
 <p>可以php文件即读到网站源码</p>
 <h2 id="POST变量">$_POST变量</h2>
 <p><code>$_POST['tpl_name']</code>变量:你想要更改的网站模板文件<code>$_POST['tpl_content']</code>变量:你要更改的内容</p>
-<p>两个变量均没有经过过滤，可以直接修改网站的源码<br>
-<img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg" alt=""></p>
-<hr>
+<p>两个变量均没有经过过滤，可以直接修改网站的源码<br />
+<img src="https://i.loli.net/2019/04/25/5cc1d6d8cdcd1.jpg" alt="" /></p>
+<hr />
 <h1>编写pocsuite插件：</h1>
 <p>发现需要root登录状态才行,可以通过之前的登录绕过获取到cookie</p>
 <p>手工添加cookie尝试，该漏洞确实是要登录状态才能利用</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6da16fc6.jpg" alt="" /></p>
 <p>要配合<code>BlueCMS v1.6 sp1 /admin/login.php SQL注入漏洞</code>一起使用</p>
 <p>怎么攻击呢？</p>
 <p>可以修改网站下的任何源代码，可以</p>
@@ -320,9 +320,9 @@ payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_nam
 </li>
 </ul>
 <p>写入一句话木马</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg" alt=""><br>
-<img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d6db66142.jpg" alt="" /><br />
+<img src="https://i.loli.net/2019/04/25/5cc1d6dd2c21f.jpg" alt="" /></p>
+<hr />
 <h1>总结：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -452,7 +452,7 @@ payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_nam
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -507,12 +507,12 @@ payload = <code>http://bluecmsv16:9990/admin/tpl_manage.php?act=edit&amp;tpl_nam
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

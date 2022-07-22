@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 每处理一笔交易，就要新建一个 EVM对象 来执行交易中的数据。 这是在执行交易的入口 ApplyTransaction 函数中体现的： core&#x2F;state_processor.go123456789func ApplyTransaction(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-以太坊源码分析-EVM对象">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/17822.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 每处理一笔交易，就要新建一个 EVM对象 来执行交易中的数据。 这是在执行交易的入口 ApplyTransaction 函数中体现的： core&#x2F;state_processor.go123456789func ApplyTransaction(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-19T04:36:34.000Z">
+<meta property="article:modified_time" content="2022-07-22T04:01:33.655Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/17822.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-以太坊源码分析-EVM对象 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/17822.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-以太坊源码分析-EVM对象
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-19 12:36:34" itemprop="dateCreated datePublished" datetime="2022-07-19T12:36:34+08:00">2022-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-22 12:01:33" itemprop="dateModified" datetime="2022-07-22T12:01:33+08:00">2022-07-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>8.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>每处理一笔交易，就要新建一个 <code>EVM对象</code> 来执行交易中的数据。<br />
+这是在执行交易的入口 <code>ApplyTransaction</code> 函数中体现的：</p>
+<figure class="highlight go"><figcaption><span>core/state_processor.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ApplyTransaction</span><span class="params">(config *params.ChainConfig, bc ChainContext, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *<span class="type">uint64</span>, cfg vm.Config)</span></span> (*types.Receipt, <span class="type">error</span>) &#123;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 使用区块/交易相关信息，新建一个EVM对象,来处理交易</span></span><br><span class="line">	vmenv := vm.NewEVM(blockContext, vm.TxContext&#123;&#125;, statedb, config, cfg)</span><br><span class="line">	</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>以太坊虚拟机EVM:</h1>
+<p>evm 模块的核心对象是 EVM，它代表了一个以太坊虚拟机，用于创建或调用某个合约。<br />
+EVM 对象内部主要依赖三个对象：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>解释器 <code>Interpreter</code></p>
+</li>
+<li class="lvl-2">
+<p>虚拟机相关配置对象 <code>vm.Config</code></p>
+</li>
+<li class="lvl-2">
+<p>以太坊状态数据库 <code>StateDB</code></p>
+</li>
+</ul>
+<p>这3个对象后面会一一介绍，先看看EVM对象本身的源码。</p>
+<h1>EVM数据结构：</h1>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> EVM <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Context provides auxiliary blockchain related information</span></span><br><span class="line">	<span class="comment">// 辅助信息对象(包括GasLimit，BlockNumber等信息)</span></span><br><span class="line">	Context BlockContext</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 交易相关的信息(包括ORIGIN，GASPRICE)</span></span><br><span class="line">	TxContext</span><br><span class="line"></span><br><span class="line">	<span class="comment">// StateDB gives access to the underlying state</span></span><br><span class="line">	<span class="comment">// 为EVM提供StateDB相关操作</span></span><br><span class="line">	StateDB StateDB</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Depth is the current call stack</span></span><br><span class="line">	<span class="comment">// 记录当前调用的栈的深度</span></span><br><span class="line">	depth <span class="type">int</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// chainConfig contains information about the current chain</span></span><br><span class="line">	<span class="comment">// 链配置信息 包含了当前的区块链的信息</span></span><br><span class="line">	chainConfig *params.ChainConfig</span><br><span class="line"></span><br><span class="line">	<span class="comment">// chain rules contains the chain rules for the current epoch</span></span><br><span class="line">	<span class="comment">// 链规则</span></span><br><span class="line">	chainRules params.Rules</span><br><span class="line"></span><br><span class="line">	<span class="comment">// virtual machine configuration options used to initialise the</span></span><br><span class="line">	<span class="comment">// evm.</span></span><br><span class="line">	<span class="comment">// 虚拟机配置</span></span><br><span class="line">	Config Config</span><br><span class="line"></span><br><span class="line">	<span class="comment">// global (to this context) ethereum virtual machine</span></span><br><span class="line">	<span class="comment">// used throughout the execution of the tx.</span></span><br><span class="line">	<span class="comment">// 解释器</span></span><br><span class="line">	interpreter *EVMInterpreter</span><br><span class="line"></span><br><span class="line">	<span class="comment">// abort is used to abort the EVM calling operations</span></span><br><span class="line">	<span class="comment">// <span class="doctag">NOTE:</span> must be set atomically</span></span><br><span class="line">	<span class="comment">// 用于中止EVM调用操作</span></span><br><span class="line">	abort <span class="type">int32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// callGasTemp holds the gas available for the current call. This is needed because the</span></span><br><span class="line">	<span class="comment">// available gas is calculated in gasCall* according to the 63/64 rule and later applied in opCall*.</span></span><br><span class="line">	<span class="comment">// 当前call可用的gas</span></span><br><span class="line">	callGasTemp <span class="type">uint64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建<code>EVM</code>对象需要依赖以下信息：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>BlockContext</code>: 区块相关信息</p>
+</li>
+<li class="lvl-2">
+<p><code>TxContext</code>: 交易相关信息</p>
+</li>
+<li class="lvl-2">
+<p><code>chainConfig</code>:链配置信息</p>
+</li>
+<li class="lvl-2">
+<p><code>chainRules</code>:链规则</p>
+</li>
+<li class="lvl-2">
+<p><code>Config</code>:虚拟机解释器配置信息</p>
+</li>
+<li class="lvl-2">
+<p><code>interpreter</code>:EVM 解释器</p>
+</li>
+</ul>
+<p>需要记录以下信息：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>depth</code>: 记录当前调用的栈的深度</p>
+</li>
+<li class="lvl-2">
+<p><code>abort</code>: 用于中止EVM调用操作</p>
+</li>
+<li class="lvl-2">
+<p><code>callGasTemp</code>: 当前call可用的gas</p>
+</li>
+</ul>
+<h1>创建EVM所需信息：</h1>
+<h2 id="BlockContext-区块信息">BlockContext 区块信息:</h2>
+<p>其中<code>BlockContext</code>里包含了区块的相关信息,例如当前区块的矿工地址、当前区块号等</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlockContext provides the EVM with auxiliary information. Once provided</span></span><br><span class="line"><span class="comment">// it shouldn&#x27;t be modified.</span></span><br><span class="line"><span class="comment">// 上下文为EVM提供辅助信息。 一旦提供，不应该修改。</span></span><br><span class="line"><span class="keyword">type</span> BlockContext <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// CanTransfer returns whether the account contains</span></span><br><span class="line">	<span class="comment">// sufficient ether to transfer the value</span></span><br><span class="line">	<span class="comment">// 返回账户余额是否足够执行交易</span></span><br><span class="line">	CanTransfer CanTransferFunc</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Transfer transfers ether from one account to the other</span></span><br><span class="line">	<span class="comment">// 将以太从一个帐户转移到另一个帐户</span></span><br><span class="line">	<span class="comment">// 转账函数</span></span><br><span class="line">	Transfer TransferFunc</span><br><span class="line"></span><br><span class="line">	<span class="comment">// GetHash returns the hash corresponding to n</span></span><br><span class="line">	<span class="comment">// GetHash用来返回入参n对应的hash值</span></span><br><span class="line">	<span class="comment">// 返回hash</span></span><br><span class="line">	GetHash GetHashFunc</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Block information</span></span><br><span class="line">	<span class="comment">// 区块相关信息</span></span><br><span class="line">	Coinbase    common.Address <span class="comment">// Provides information for COINBASE // 挖出当前区块的矿工地址</span></span><br><span class="line">	GasLimit    <span class="type">uint64</span>         <span class="comment">// Provides information for GASLIMIT // 当前区块 gas 限额</span></span><br><span class="line">	BlockNumber *big.Int       <span class="comment">// Provides information for NUMBER // 当前区块号</span></span><br><span class="line">	Time        *big.Int       <span class="comment">// Provides information for TIME //</span></span><br><span class="line">	Difficulty  *big.Int       <span class="comment">// Provides information for DIFFICULTY // 当前区块难度</span></span><br><span class="line">	BaseFee     *big.Int       <span class="comment">// Provides information for BASEFEE // 当前区块的基础费用</span></span><br><span class="line">	Random      *common.Hash   <span class="comment">// Provides information for RANDOM</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="TxContext-交易信息">TxContext 交易信息:</h2>
+<p>其中<code>TxContext</code>里包含了交易的相关信息：交易发起者、 交易的gas价格</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TxContext provides the EVM with information about a transaction.</span></span><br><span class="line"><span class="comment">// All fields can change between transactions.</span></span><br><span class="line"><span class="comment">// TXContext为EVM提供有关交易的信息。</span></span><br><span class="line"><span class="comment">// 所有字段都可以在交易之间发生变化。</span></span><br><span class="line"><span class="keyword">type</span> TxContext <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Message information</span></span><br><span class="line">	Origin   common.Address <span class="comment">// Provides information for ORIGIN // 交易发起者</span></span><br><span class="line">	GasPrice *big.Int       <span class="comment">// Provides information for GASPRICE // 交易的 gas 价格</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>区块信息和交易信息在<a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/solidity/units-and-global-variables.html#special-variables-functions">solidity文档的区块和交易属性</a>有列举出来:</p>
+<p>区块信息：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>blockhash(uint blockNumber) returns (bytes32)</code>：指定区块的区块哈希 —— 仅可用于最新的 256 个区块且不包括当前区块，否则返回 0 。</p>
+</li>
+<li class="lvl-2">
+<p><code>block.basefee (uint)</code>: 当前区块的基础费用，参考： (EIP-3198 和 EIP-1559)</p>
+</li>
+<li class="lvl-2">
+<p><code>block.chainid (uint)</code>: 当前链 id</p>
+</li>
+<li class="lvl-2">
+<p><code>block.coinbase ( address )</code>: 挖出当前区块的矿工地址</p>
+</li>
+<li class="lvl-2">
+<p><code>block.difficulty ( uint )</code>: 当前区块难度</p>
+</li>
+<li class="lvl-2">
+<p><code>block.gaslimit ( uint )</code>: 当前区块 gas 限额</p>
+</li>
+<li class="lvl-2">
+<p><code>block.number ( uint )</code>: 当前区块号</p>
+</li>
+<li class="lvl-2">
+<p><code>block.timestamp ( uint)</code>: 自 unix epoch 起始当前区块以秒计的时间戳</p>
+</li>
+</ul>
+<p>交易信息：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>tx.gasprice (uint)</code>: 交易的 gas 价格</p>
+</li>
+<li class="lvl-2">
+<p><code>tx.origin ( address )</code>: 交易发起者（完全的调用链）</p>
+</li>
+<li class="lvl-2">
+<p><code>msg.data ( bytes )</code>: 完整的 calldata</p>
+</li>
+<li class="lvl-2">
+<p><code>msg.sender ( address )</code>: 消息发送者（当前调用）</p>
+</li>
+<li class="lvl-2">
+<p><code>msg.sig ( bytes4 )</code>: calldata 的前 4 字节（也就是函数标识符）</p>
+</li>
+<li class="lvl-2">
+<p><code>msg.value ( uint )</code>: 随消息发送的 wei 的数量</p>
+</li>
+</ul>
+<h2 id="chainConfig-链配置信息">chainConfig 链配置信息</h2>
+<figure class="highlight go"><figcaption><span>params/config.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ChainConfig <span class="keyword">struct</span> &#123;</span><br><span class="line">	ChainID *big.Int <span class="string">`json:&quot;chainId&quot;`</span> <span class="comment">// chainId identifies the current chain and is used for replay protection</span></span><br><span class="line"></span><br><span class="line">	HomesteadBlock *big.Int <span class="string">`json:&quot;homesteadBlock,omitempty&quot;`</span> <span class="comment">// Homestead switch block (nil = no fork, 0 = already homestead)</span></span><br><span class="line"></span><br><span class="line">	DAOForkBlock   *big.Int <span class="string">`json:&quot;daoForkBlock,omitempty&quot;`</span>   <span class="comment">// TheDAO hard-fork switch block (nil = no fork)</span></span><br><span class="line">	DAOForkSupport <span class="type">bool</span>     <span class="string">`json:&quot;daoForkSupport,omitempty&quot;`</span> <span class="comment">// Whether the nodes supports or opposes the DAO hard-fork</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// EIP150 implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)</span></span><br><span class="line">	EIP150Block *big.Int    <span class="string">`json:&quot;eip150Block,omitempty&quot;`</span> <span class="comment">// EIP150 HF block (nil = no fork)</span></span><br><span class="line">	EIP150Hash  common.Hash <span class="string">`json:&quot;eip150Hash,omitempty&quot;`</span>  <span class="comment">// EIP150 HF hash (needed for header only clients as only gas pricing changed)</span></span><br><span class="line"></span><br><span class="line">	EIP155Block *big.Int <span class="string">`json:&quot;eip155Block,omitempty&quot;`</span> <span class="comment">// EIP155 HF block</span></span><br><span class="line">	EIP158Block *big.Int <span class="string">`json:&quot;eip158Block,omitempty&quot;`</span> <span class="comment">// EIP158 HF block</span></span><br><span class="line"></span><br><span class="line">	ByzantiumBlock      *big.Int <span class="string">`json:&quot;byzantiumBlock,omitempty&quot;`</span>      <span class="comment">// Byzantium switch block (nil = no fork, 0 = already on byzantium)</span></span><br><span class="line">	ConstantinopleBlock *big.Int <span class="string">`json:&quot;constantinopleBlock,omitempty&quot;`</span> <span class="comment">// Constantinople switch block (nil = no fork, 0 = already activated)</span></span><br><span class="line">	PetersburgBlock     *big.Int <span class="string">`json:&quot;petersburgBlock,omitempty&quot;`</span>     <span class="comment">// Petersburg switch block (nil = same as Constantinople)</span></span><br><span class="line">	IstanbulBlock       *big.Int <span class="string">`json:&quot;istanbulBlock,omitempty&quot;`</span>       <span class="comment">// Istanbul switch block (nil = no fork, 0 = already on istanbul)</span></span><br><span class="line">	MuirGlacierBlock    *big.Int <span class="string">`json:&quot;muirGlacierBlock,omitempty&quot;`</span>    <span class="comment">// Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)</span></span><br><span class="line">	BerlinBlock         *big.Int <span class="string">`json:&quot;berlinBlock,omitempty&quot;`</span>         <span class="comment">// Berlin switch block (nil = no fork, 0 = already on berlin)</span></span><br><span class="line">	LondonBlock         *big.Int <span class="string">`json:&quot;londonBlock,omitempty&quot;`</span>         <span class="comment">// London switch block (nil = no fork, 0 = already on london)</span></span><br><span class="line">	ArrowGlacierBlock   *big.Int <span class="string">`json:&quot;arrowGlacierBlock,omitempty&quot;`</span>   <span class="comment">// Eip-4345 (bomb delay) switch block (nil = no fork, 0 = already activated)</span></span><br><span class="line">	GrayGlacierBlock    *big.Int <span class="string">`json:&quot;grayGlacierBlock,omitempty&quot;`</span>    <span class="comment">// Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)</span></span><br><span class="line">	MergeNetsplitBlock  *big.Int <span class="string">`json:&quot;mergeNetsplitBlock,omitempty&quot;`</span>  <span class="comment">// Virtual fork after The Merge to use as a network splitter</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// TerminalTotalDifficulty is the amount of total difficulty reached by</span></span><br><span class="line">	<span class="comment">// the network that triggers the consensus upgrade.</span></span><br><span class="line">	TerminalTotalDifficulty *big.Int <span class="string">`json:&quot;terminalTotalDifficulty,omitempty&quot;`</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Various consensus engines</span></span><br><span class="line">	Ethash *EthashConfig <span class="string">`json:&quot;ethash,omitempty&quot;`</span></span><br><span class="line">	Clique *CliqueConfig <span class="string">`json:&quot;clique,omitempty&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chainRules-链规则">chainRules 链规则:</h2>
+<figure class="highlight go"><figcaption><span>params/config.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Rules ensures c&#x27;s ChainID is not nil.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *ChainConfig)</span></span> Rules(num *big.Int, isMerge <span class="type">bool</span>) Rules &#123;</span><br><span class="line">	chainID := c.ChainID</span><br><span class="line">	<span class="keyword">if</span> chainID == <span class="literal">nil</span> &#123;</span><br><span class="line">		chainID = <span class="built_in">new</span>(big.Int)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> Rules&#123;</span><br><span class="line">		ChainID:          <span class="built_in">new</span>(big.Int).Set(chainID),</span><br><span class="line">		IsHomestead:      c.IsHomestead(num),</span><br><span class="line">		IsEIP150:         c.IsEIP150(num),</span><br><span class="line">		IsEIP155:         c.IsEIP155(num),</span><br><span class="line">		IsEIP158:         c.IsEIP158(num),</span><br><span class="line">		IsByzantium:      c.IsByzantium(num),</span><br><span class="line">		IsConstantinople: c.IsConstantinople(num),</span><br><span class="line">		IsPetersburg:     c.IsPetersburg(num),</span><br><span class="line">		IsIstanbul:       c.IsIstanbul(num),</span><br><span class="line">		IsBerlin:         c.IsBerlin(num),</span><br><span class="line">		IsLondon:         c.IsLondon(num),</span><br><span class="line">		IsMerge:          isMerge,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回<code>chainConfig</code>里属性的布尔值</p>
+<h2 id="Config-解释器配置信息">Config 解释器配置信息:</h2>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Config are the configuration options for the Interpreter</span></span><br><span class="line"><span class="comment">// 解释器配置类</span></span><br><span class="line"><span class="keyword">type</span> Config <span class="keyword">struct</span> &#123;</span><br><span class="line"></span><br><span class="line">	Debug                   <span class="type">bool</span>      <span class="comment">// Enables debugging	// 启用调试</span></span><br><span class="line">	Tracer                  EVMLogger <span class="comment">// Opcode logger  // 操作码记录器</span></span><br><span class="line">	NoBaseFee               <span class="type">bool</span>      <span class="comment">// Forces the EIP-1559 baseFee to 0 (needed for 0 price calls)</span></span><br><span class="line">	EnablePreimageRecording <span class="type">bool</span>      <span class="comment">// Enables recording of SHA3/keccak preimages // 启用SHA3/keccak</span></span><br><span class="line"></span><br><span class="line">	JumpTable *JumpTable <span class="comment">// EVM instruction table, automatically populated if unset // 操作码opcode对应的操作表</span></span><br><span class="line"></span><br><span class="line">	ExtraEips []<span class="type">int</span> <span class="comment">// Additional EIPS that are to be enabled</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比较重要的属性是<code>JumpTable</code>操作码opcode对应的操作表</p>
+<h1>创建EVM函数:</h1>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEVM</span><span class="params">(blockCtx BlockContext, txCtx TxContext, statedb StateDB, chainConfig *params.ChainConfig, config Config)</span></span> *EVM &#123;</span><br><span class="line">	evm := &amp;EVM&#123;</span><br><span class="line">		Context:     blockCtx,</span><br><span class="line">		TxContext:   txCtx,</span><br><span class="line">		StateDB:     statedb,</span><br><span class="line">		Config:      config,</span><br><span class="line">		chainConfig: chainConfig,</span><br><span class="line">		chainRules:  chainConfig.Rules(blockCtx.BlockNumber, blockCtx.Random != <span class="literal">nil</span>),</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 创建EVM解释器</span></span><br><span class="line">	evm.interpreter = NewEVMInterpreter(evm, config)</span><br><span class="line">	<span class="keyword">return</span> evm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>NewEVM()</code> 函数用来创建一个新的虚拟机对象，它有5个参数，含义分别如下：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>blockCtx</code>: 区块的信息和挖矿环境的函数和数据</p>
+</li>
+<li class="lvl-2">
+<p><code>txCtx</code>: 交易的信息</p>
+</li>
+<li class="lvl-2">
+<p><code>statedb</code>: 以太坊状态数据库对象</p>
+</li>
+<li class="lvl-2">
+<p><code>chainConfig</code>: 当前节点的区块链配置信息</p>
+</li>
+<li class="lvl-2">
+<p><code>config</code>: 虚拟机配置信息</p>
+</li>
+</ul>
+<p><code>NewEVM()</code> 函数的实现，除了把参数记录下来以外，主要就是调用 <code>NewEVMInterpreter()</code> 创建一个解释器对象。</p>
+<p>后面另外介绍 EVM的解释器对象</p>
+<h1>小结：</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><strong>以太坊在每处理一笔交易时，都会新建一个 EVM 对象来处理。</strong></p>
+</li>
+<li class="lvl-2">
+<p>创建一个EVM对象需要依赖以下信息：</p>
+<ul class="lvl-2">
+<li class="lvl-4"><code>BlockContext</code>: 区块相关信息</li>
+<li class="lvl-4"><code>TxContext</code>: 交易相关信息</li>
+<li class="lvl-4"><code>chainConfig</code>:链配置信息</li>
+<li class="lvl-4"><code>chainRules</code>:链规则</li>
+<li class="lvl-4"><code>Config</code>:虚拟机解释器配置信息</li>
+<li class="lvl-4"><code>interpreter</code>:EVM 解释器</li>
+</ul>
+</li>
+<li class="lvl-2">
+<p>需要记录以下信息：</p>
+<ul class="lvl-2">
+<li class="lvl-4"><code>depth</code>: 记录当前调用的栈的深度</li>
+<li class="lvl-4"><code>abort</code>: 用于中止EVM调用操作</li>
+<li class="lvl-4"><code>callGasTemp</code>: 当前call可用的gas</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/33963.html" rel="prev" title="StudyRecord-以太坊源码分析-将交易递交给EVM">
+      <i class="fa fa-chevron-left"></i> StudyRecord-以太坊源码分析-将交易递交给EVM
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/3950.html" rel="next" title="StudyRecord-以太坊源码分析-EVM解释器对象">
+      StudyRecord-以太坊源码分析-EVM解释器对象 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">以太坊虚拟机EVM:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">EVM数据结构：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">创建EVM所需信息：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BlockContext-%E5%8C%BA%E5%9D%97%E4%BF%A1%E6%81%AF"><span class="nav-number">4.1.</span> <span class="nav-text">BlockContext 区块信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TxContext-%E4%BA%A4%E6%98%93%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.</span> <span class="nav-text">TxContext 交易信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chainConfig-%E9%93%BE%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">4.3.</span> <span class="nav-text">chainConfig 链配置信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chainRules-%E9%93%BE%E8%A7%84%E5%88%99"><span class="nav-number">4.4.</span> <span class="nav-text">chainRules 链规则:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Config-%E8%A7%A3%E9%87%8A%E5%99%A8%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">4.5.</span> <span class="nav-text">Config 解释器配置信息:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">创建EVM函数:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">小结：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">113</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">567k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">8:36</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

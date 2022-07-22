@@ -283,9 +283,9 @@
 <p>编译字节码的时候，虚拟机如何对其进行优化？</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706162442.png" alt="20220706162442"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706162442.png" alt="20220706162442" /></p>
 <p><a target="_blank" rel="noopener" href="https://cypherpunks-core.github.io/ethereumbook/13evm.html">图来源</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706211400.png" alt="20220706211400"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706211400.png" alt="20220706211400" /></p>
 <p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HfTTbxQWWvg">图来源</a></p>
 <h1>从一个例子开始：</h1>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.11;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    function C() &#123; // 旧的构造函数写法</span><br><span class="line">      a = 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -364,28 +364,28 @@
 </li>
 </ul>
 <p>演算stack里的变化</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153345.png" alt="20220706153345"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153345.png" alt="20220706153345" /></p>
 <p>原文的演算图：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153716.png" alt="20220706153716"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706153716.png" alt="20220706153716" /></p>
 <p>在上图中，前三句是将内存中从<code>0x40</code>开始往后 <code>32 个字节</code>的地址赋上<code>0x60</code>这个值，这是虚拟机保留的内存地址。后面的几句就是在通过查看发送的以太币是否为 0 来做 payable 检查。如果是 0 的话，那么虚拟机程序计数器（<code>PC</code>）跳转到<code>0xe</code>的位置继续执行，如果不是的话，终止程序。</p>
 <p>在这里需要说明一下，stack 里面的每一个元素都是 32 字节长度，在这里为了方便，省略了高位的 0。</p>
 <h3 id="执行构造函数">执行构造函数:</h3>
 <p>智能合约部署代码的第二部分是用来执行合约的构造函数的。如下图所示，在执行完这段字节码之后，heap 里面0x0的地址就被赋上了值0x1。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706171429.png" alt="20220706171429"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706171429.png" alt="20220706171429" /></p>
 <p>在上图中，<code>JUMPDEST</code>对应上面的<code>0xe</code>，它代表了如果通过上面的 payable 检查，我们应该跳转到这里继续执行代码。<code>SSTORE</code>命令是用来将栈上的值存储到 <code>World State</code> 上的。</p>
 <p>在图中用了 <code>heap</code> 来代表 <code>World State</code> 是因为它们俩有很多相似之处。</p>
-<p>我们知道在 Java 里面，栈是用来存储函数运行时的临时变量的，而堆是用来存储生命周期更长的变量，比如成员变量。<br>
-<strong>栈上的数据会随着方法的执行完毕而被实时清空，而堆上的数据会在整个类实例的生命周期里面始终有效。</strong><br>
+<p>我们知道在 Java 里面，栈是用来存储函数运行时的临时变量的，而堆是用来存储生命周期更长的变量，比如成员变量。<br />
+<strong>栈上的数据会随着方法的执行完毕而被实时清空，而堆上的数据会在整个类实例的生命周期里面始终有效。</strong><br />
 Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回收。而一个部署到以太坊上的智能合约可以被认为是永远活着的合约实例(当然一个合约也可以被杀死)。</p>
 <p>所以用来存放智能合约状态的 World State 就可以被看做是以太坊的 <code>heap</code>。在这里我之所以用 <code>heap</code> 来代指 <code>World State</code>，第一是希望跟 <code>stack</code> 做一个呼应，第二是希望从另一个方面描述以太坊的本质：<strong>以太坊是一个计算机网络，它将整个网络里面的所有计算机连接起来形成一个单一计算机。在这个计算机中，它使用数据结构来模拟内存的工作机制从而实现图灵完备的编程语言。</strong></p>
 <p>在以太坊中，<code>World State</code> 是一个 <code>key-value pair</code>。每一个 key 对应一个 32 字节长的数据块。所以在上图所示的情况里面，<code>0x0</code> 这个 key 所对应的数据块里面存储了 <code>0x1</code> 这个数（32 字节，高位补 0）。</p>
 <h3 id="复制代码">复制代码:</h3>
 <p>智能合约部署代码的第三部分是将剩余的代码，既智能合约本身的代码和 <code>Auxdata</code> 从 <code>Transaction</code> 中复制到内存里面并返回之。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172513.png" alt="20220706172513"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172513.png" alt="20220706172513" /></p>
 <p>从上图可知，我们将0x23到0x58的字节码（总共 0x35 个字节码）复制到了内存中0x0到0x35的地址上。</p>
 <h2 id="智能合约本身的代码">智能合约本身的代码</h2>
 <p>整个字节码的第二部分是智能合约本身的代码，它们会在智能合约的函数被调用的时候执行。因为在我们当前的例子中，智能合约只有一个构造函数，而没有其他方法，所以下图所示的代码并没有做什么有实际意义的操作。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172839.png" alt="20220706172839"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220706172839.png" alt="20220706172839" /></p>
 <h2 id="Auxdata：">Auxdata：</h2>
 <p>第三部分 Auxdata 是有一个固定模板的：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0xa1 0x65 &#x27;b&#x27; &#x27;z&#x27; &#x27;z&#x27; &#x27;r&#x27; &#x27;0&#x27; 0x58 0x20 &lt;32 bytes swarm hash&gt; 0x00 0x29</span><br></pre></td></tr></table></figure>
@@ -421,7 +421,7 @@ Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[         b         ][         a         ]</span><br><span class="line">[16 bytes / 128 bits][16 bytes / 128 bits]</span><br></pre></td></tr></table></figure>
 <h1>打包存储:</h1>
 <p>那么问题来了，为什么虚拟机要做这个变动？这两个例子的 Solidity 代码几乎一样，我们只是改变了变量的类型而已，然而虚拟机为第二个例子编译出的字节码比之前例子的字节码长了不止一倍。要知道，这些增加的字节码可是会直接影响 <code>Transaction</code> 的大小的。所以虚拟机到底是出于何种目的来产生了如此多的字节码的呢？</p>
-<p>其实对于上面的问题有一个简单的答案，那就是 <code>gas。</code><br>
+<p>其实对于上面的问题有一个简单的答案，那就是 <code>gas。</code><br />
 我们知道执行、部署合约是需要消耗 <code>gas</code> 的，而具体到 EVM 的层面，那就是每个操作码都有其对应的需要消耗的 <code>gas</code>。</p>
 <p>下面是对一些操作码消耗 gas 的说明：</p>
 <ul class="lvl-0">
@@ -636,7 +636,7 @@ Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -691,12 +691,12 @@ Java 虚拟机不会将堆中的成员变量清空，除非该类的实例被回
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

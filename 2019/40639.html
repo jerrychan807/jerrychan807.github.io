@@ -263,14 +263,14 @@
         <h1>Pre:</h1>
 <p>用<code>nyawc</code>框架,试图爬取该url<code>http://atmos.sysu.edu.cn/</code>里的文档类型链接的时候,发现爬取不到.</p>
 <p>比如</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg" alt="" /></p>
 <p>通过<code>python</code>模拟发包请求该url<code>http://atmos.sysu.edu.cn/article/2005</code></p>
 <p>发现返回包里没有<code>doc</code>链接.</p>
-<hr>
+<hr />
 <h1>Debug思路1:</h1>
 <p>猜测: <code>nyawc</code>处理不了无后缀的url(eg.<code>http://atmos.sysu.edu.cn/article/2005</code>)</p>
 <p>该网站可能是隐藏了网页的后缀.也就是对url进行了重写即<code>url rewrite</code></p>
-<hr>
+<hr />
 <h2 id="URL重写">URL重写:</h2>
 <h2 id="什么是URL重写">什么是URL重写</h2>
 <p>如果您正在给银行写信，您可能会打开文字处理程序并创建一个名为的文件<code>lettertobank.doc</code>。该文件可能位于您的Documents目录中，其中包含完整路径<code>C:/Windows/users/julie/Documents/lettertobank.doc</code>。一个文件路径=一个文档(<strong><code>One file path = one document</code></strong>).</p>
@@ -279,7 +279,7 @@
 <p>通过URL重写，您可以将用户带到<code>…/page1.html</code>或去<code>…/about-us/</code>或去<code>…/about-this-website-and-me/</code>或去<code>…/youll-never-find-out-about-me-hahaha-Xy2834/</code>。或者所有这些。它有点像硬盘上的快捷方式或符号链接。一个URL =查找资源的一种方法(<strong><code>One URL = one way to find a resource.</code></strong>)。</p>
 <p><strong>通过URL重写，URL和它所引导的资源可以完全相互独立</strong>。</p>
 <p>实际上，它们通常不是完全独立的：URL通常包含一些代码或数字或名称，使CMS能够查找资源。但从理论上讲，这就是URL重写所提供的：<strong>完全分离</strong>。</p>
-<hr>
+<hr />
 <h3 id="为什么要重写URL">为什么要重写URL:</h3>
 <p>对于网站来说:</p>
 <ul class="lvl-0">
@@ -291,14 +291,14 @@
 </li>
 </ul>
 <p>例如:<code>http://www.prof…co.uk/products/brown-miniflo-gutter-148/</code>,URL本身包含搜索词中的单词.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d713de4f8.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d713de4f8.jpg" alt="" /></p>
 <p>对于用户来说:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>让url看起来更简洁、更容易输入和记住</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h3 id="如何重写URL">如何重写URL:</h3>
 <p>是否可以在网站上实现URL重写主要取决于Web服务器</p>
 <p>几乎所有服务器都支持,比如</p>
@@ -313,7 +313,7 @@
 <p><code>Apache</code> 有专门的 <code>module</code> 等等</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h4 id="例子-3">例子:</h4>
 <p>通过<code>Apache</code>配置的例子:</p>
 <ol>
@@ -334,26 +334,26 @@
 <p><code>http://localhost/room_123/</code> 对应的Url地址为: <code>http://localhost/room.php?id=123</code></p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>Debug思路2:</h1>
 <p>抓包分析,比较浏览器请求的包与用<code>python</code>模拟发的包.</p>
-<hr>
+<hr />
 <h2 id="浏览器抓包的实际请求">浏览器抓包的实际请求:</h2>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71524169.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71524169.jpg" alt="" /></p>
 <p>在获取我们需要的内容(第三个包)前,必须执行一个js请求.</p>
-<hr>
+<hr />
 <h2 id="模拟发的包">模拟发的包:</h2>
 <p>发现第一个包的请求的状态码是<code>202</code>,也就是上面图的第一个包.</p>
-<hr>
+<hr />
 <h2 id="结论">结论:</h2>
 <p>这种要执行js请求才能获取得到的返回包,一般要使用无头浏览器才能解决得了.</p>
-<hr>
+<hr />
 <h1>总结:</h1>
 <h2 id="原因-2">原因:</h2>
 <p>这个问题是 <strong>发送了正确的请求,但是没有获得正确的返回结果</strong>.</p>
 <p>获取不到预期的返回包(含doc链接),是因为在这之前还必须要有个js请求,这种请求用模拟发包一般是实现不了的,除非再花时间理解那个js文件,再模拟js的请求.</p>
 <p>如果这样处理就会有点麻烦,一般这种情况,上无头浏览器是比较通用的解决办法.</p>
-<hr>
+<hr />
 <h2 id="错误的debug思路">错误的debug思路:</h2>
 <p>一开始debug的思路是不正确的,没有经过细致的排查,猜测的依据也只是根据印象,有点想当然了.</p>
 <p>自己在调用<code>nyawc</code>框架的时候,是有做跟url后缀处理相关的请求.</p>
@@ -368,7 +368,7 @@
 <p>解析链接是请求后的问题</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="正确的debug思路">正确的debug思路:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -385,7 +385,7 @@
 <p>请求后: <strong>获得正确的返回结果后,是否能解析到?</strong></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="改进">改进:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -398,11 +398,11 @@
 <p>要多看源码,理解要更深入.</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>其他:</h1>
 <p>设置brupsuite截取js请求.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d716322e4.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d716322e4.jpg" alt="" /></p>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -541,7 +541,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -596,12 +596,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

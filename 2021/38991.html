@@ -269,11 +269,11 @@
 </blockquote>
 <p>源码里是直接调用<code>pancakeswap router</code>合约,后面打算尝试写个类似的<code>dex</code> dapp玩一下。</p>
 <p>现在先试一下如何调用<code>pancakeswap router</code>进行代币的交换。</p>
-<hr>
+<hr />
 <h1>pancakebunny zap 源码:</h1>
 <p>贴个函数,solidity的代码量感觉都比较少，多看看多实践应该不难掌握吧~</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将代币的一半换成另一种代币，然后提供流动性</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">zapInToken</span>(<span class="params">address _from, uint amount, address _to</span>) external override &#123;</span><br><span class="line">        <span class="title class_">IBEP20</span>(_from).<span class="title function_">safeTransferFrom</span>(msg.<span class="property">sender</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), amount);</span><br><span class="line">        <span class="title function_">_approveTokenIfNeeded</span>(_from);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_">isFlip</span>(_to)) &#123;</span><br><span class="line">            <span class="title class_">IPancakePair</span> pair = <span class="title class_">IPancakePair</span>(_to);</span><br><span class="line">            address token0 = pair.<span class="title function_">token0</span>();</span><br><span class="line">            address token1 = pair.<span class="title function_">token1</span>();</span><br><span class="line">            <span class="keyword">if</span> (_from == token0 || _from == token1) &#123;</span><br><span class="line">                <span class="comment">// swap half amount for other</span></span><br><span class="line">                address other = _from == token0 ? token1 : token0;</span><br><span class="line">                <span class="title function_">_approveTokenIfNeeded</span>(other); <span class="comment">// 授权</span></span><br><span class="line">                uint sellAmount = amount.<span class="title function_">div</span>(<span class="number">2</span>); <span class="comment">// 一半的数量</span></span><br><span class="line">                uint otherAmount = <span class="title function_">_swap</span>(_from, sellAmount, other, <span class="title function_">address</span>(<span class="variable language_">this</span>)); <span class="comment">// 兑换</span></span><br><span class="line">                pair.<span class="title function_">skim</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">                <span class="variable constant_">ROUTER</span>.<span class="title function_">addLiquidity</span>(_from, other, amount.<span class="title function_">sub</span>(sellAmount), otherAmount, <span class="number">0</span>, <span class="number">0</span>, msg.<span class="property">sender</span>, block.<span class="property">timestamp</span>); <span class="comment">// 添加流动性</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                uint bnbAmount = _from == <span class="variable constant_">WBNB</span> ? <span class="title function_">_safeSwapToBNB</span>(amount) : <span class="title function_">_swapTokenForBNB</span>(_from, amount, <span class="title function_">address</span>(<span class="variable language_">this</span>));</span><br><span class="line">                <span class="title function_">_swapBNBToFlip</span>(_to, bnbAmount, msg.<span class="property">sender</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">_swap</span>(_from, amount, _to, msg.<span class="property">sender</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>Pancakeswap Router交互</h1>
 <p><a target="_blank" rel="noopener" href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e#writeContract">pancakeswap router contract</a>里面共17个函数,如下</p>
 <p>流动性相关:</p>
@@ -333,10 +333,10 @@
 <p><code>swapTokensForExactTokens</code></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="Swap-BNB-anyToken">Swap: BNB -&gt; anyToken</h2>
 <h3 id="swapExactETHForTokens">swapExactETHForTokens:</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2C5A9C3B-04CF-42FA-9542-72640DFFBC3E.png" alt="2C5A9C3B-04CF-42FA-9542-72640DFFBC3E"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2C5A9C3B-04CF-42FA-9542-72640DFFBC3E.png" alt="2C5A9C3B-04CF-42FA-9542-72640DFFBC3E" /></p>
 <p>swapExactETHForTokens():</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -354,12 +354,12 @@
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pancakeswap2_txn = contract.functions.swapExactETHForTokens(</span><br><span class="line">    <span class="comment"># 10000000000,  # set to 0, or specify minimum amount of tokeny you want to receive - consider decimals!!!</span></span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    [spend, tokenToBuy],</span><br><span class="line">    sender_address,</span><br><span class="line">    (<span class="built_in">int</span>(time.time()) + <span class="number">10000</span>)</span><br><span class="line">).buildTransaction(&#123;</span><br><span class="line">    <span class="string">&#x27;from&#x27;</span>: sender_address,</span><br><span class="line">    <span class="string">&#x27;value&#x27;</span>: web3.toWei(<span class="number">0.0001</span>, <span class="string">&#x27;ether&#x27;</span>),  <span class="comment"># This is the Token(BNB) amount you want to Swap from</span></span><br><span class="line">    <span class="string">&#x27;gas&#x27;</span>: <span class="number">160000</span>,</span><br><span class="line">    <span class="string">&#x27;gasPrice&#x27;</span>: web3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">    <span class="string">&#x27;nonce&#x27;</span>: nonce,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>例子:<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x2cc0a920f509a893850a9cb625be4dfee35efc89734df6440d27053b16e03a63">记录tx</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014204336.png" alt="20211014204336"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014204336.png" alt="20211014204336" /></p>
+<hr />
 <h2 id="Swap-AToken-BToken">Swap: AToken -&gt; BToken</h2>
 <h3 id="approve授权">approve授权:</h3>
 <p>先要将你的代币授权给<code>pancakeswap router contract</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A7140CDA-DE03-4BE6-86B4-1490396BE088.png" alt="A7140CDA-DE03-4BE6-86B4-1490396BE088"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/A7140CDA-DE03-4BE6-86B4-1490396BE088.png" alt="A7140CDA-DE03-4BE6-86B4-1490396BE088" /></p>
 <p>approve():</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -370,10 +370,10 @@
 </li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">aprove_txn = erc20_contract.functions.approve(</span><br><span class="line">    <span class="comment"># 10000000000,  # set to 0, or specify minimum amount of tokeny you want to receive - consider decimals!!!</span></span><br><span class="line">    panRouterContractAddress, max_approval_int</span><br><span class="line">).buildTransaction(&#123;</span><br><span class="line">    <span class="string">&#x27;from&#x27;</span>: sender_address,</span><br><span class="line">    <span class="string">&#x27;value&#x27;</span>: <span class="number">0</span>,  <span class="comment"># This is the Token(BNB) amount you want to Swap from</span></span><br><span class="line">    <span class="string">&#x27;gas&#x27;</span>: <span class="number">160000</span>,</span><br><span class="line">    <span class="string">&#x27;gasPrice&#x27;</span>: web3.toWei(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">    <span class="string">&#x27;nonce&#x27;</span>: nonce,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>例子:<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x2cc0a920f509a893850a9cb625be4dfee35efc89734df6440d27053b16e03a63">记录tx</a><br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014202846.png" alt="20211014202846"></p>
+<p>例子:<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x2cc0a920f509a893850a9cb625be4dfee35efc89734df6440d27053b16e03a63">记录tx</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014202846.png" alt="20211014202846" /></p>
 <h3 id="swapExactTokensForTokens">swapExactTokensForTokens:</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C28E659E-C391-4DC5-9A22-C5E78E5C92E7.png" alt="C28E659E-C391-4DC5-9A22-C5E78E5C92E7"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C28E659E-C391-4DC5-9A22-C5E78E5C92E7.png" alt="C28E659E-C391-4DC5-9A22-C5E78E5C92E7" /></p>
 <p>swapExactTokensForTokens():</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -393,9 +393,9 @@
 </li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">pancakeswap2_txn = contract.functions.swapExactTokensForTokens(</span><br><span class="line">    <span class="comment"># 10000000000,  # set to 0, or specify minimum amount of tokeny you want to receive - consider decimals!!!</span></span><br><span class="line">    web3.toWei(<span class="number">50</span>, <span class="string">&#x27;ether&#x27;</span>), web3.toWei(<span class="number">0.04</span>, <span class="string">&#x27;ether&#x27;</span>), [tokenToBuy, cake_token, USDT_token], sender_address, (<span class="built_in">int</span>(time.time()) + <span class="number">10000</span>)</span><br><span class="line">).buildTransaction(&#123;</span><br><span class="line">    <span class="string">&#x27;from&#x27;</span>: sender_address,</span><br><span class="line">    <span class="string">&#x27;value&#x27;</span>: <span class="number">0</span>,  <span class="comment"># This is the Token(BNB) amount you want to Swap from</span></span><br><span class="line">    <span class="string">&#x27;gas&#x27;</span>: <span class="number">220000</span>,</span><br><span class="line">    <span class="string">&#x27;gasPrice&#x27;</span>: web3.toWei(<span class="string">&#x27;5.1&#x27;</span>, <span class="string">&#x27;gwei&#x27;</span>),</span><br><span class="line">    <span class="string">&#x27;nonce&#x27;</span>: nonce,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>例子:<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0xf512c118a6e5082aacf72b789125bda47a639eea52b36b635678c25e6e316cc1">记录tx</a><br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014204147.png" alt="20211014204147"></p>
-<hr>
+<p>例子:<a target="_blank" rel="noopener" href="https://bscscan.com/tx/0xf512c118a6e5082aacf72b789125bda47a639eea52b36b635678c25e6e316cc1">记录tx</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211014204147.png" alt="20211014204147" /></p>
+<hr />
 <h1>Bug:</h1>
 <p>暂时只遇到以下报错:</p>
 <h2 id="TRANSFER-FAILED">TRANSFER_FAILED:</h2>
@@ -409,10 +409,10 @@
 </li>
 </ul>
 <h2 id="INSUFFICIENT-OUTPUT-AMOUNT-or-INSUFFICIENT-INPUT-AMOUNT">INSUFFICIENT_OUTPUT_AMOUNT or INSUFFICIENT_INPUT_AMOUNT</h2>
-<p><code>Fail with error 'PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT</code><br>
+<p><code>Fail with error 'PancakeRouter: INSUFFICIENT_OUTPUT_AMOUNT</code><br />
 <code>Fail with error 'PancakeLibrary: INSUFFICIENT_INPUT_AMOUNT</code></p>
 <p>注意数量单位是<code>wei</code>,可以用<code>web3.toWei('5.1', 'gwei'),</code>转换成gwei</p>
-<hr>
+<hr />
 <h1>Question:</h1>
 <p>还有几个问题还有些疑惑:</p>
 <ol>
@@ -426,7 +426,7 @@
 <p>gas fee要给多少?才不会过高过低?</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>Todo:</h1>
 <ol>
 <li class="lvl-3">
@@ -443,7 +443,7 @@
 <blockquote>
 <p>还是要多实践多do呀，maybe会有一些new idea~</p>
 </blockquote>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -472,10 +472,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -582,7 +582,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -637,12 +637,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

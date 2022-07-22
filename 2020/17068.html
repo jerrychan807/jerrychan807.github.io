@@ -263,21 +263,21 @@
       
         <h1>Pre:</h1>
 <p>try一下<code>Sphinx</code>这个自动生成Python项目文档的工具</p>
-<hr>
+<hr />
 <h1>安装与简介:</h1>
 <h2 id="sphinx简介">sphinx简介:</h2>
 <p>sphinx是一种基于Python的文档工具，它可以令人轻松的撰写出清晰且优美的文档，由Georg Brandl在BSD许可证下开发。</p>
 <p>新版的Python3文档就是由sphinx生成的，并且它已成为Python项目首选的文档工具，同时它对C/C++项目也有很好的支持。</p>
 <h2 id="安装-2">安装:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装Sphinx</span></span><br><span class="line">pip3 install Sphinx -i https://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>建一个测试项目:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808114415.png" alt="20200808114415"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808114415.png" alt="20200808114415" /></p>
 <p>其中<code>1.py</code>代码:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*-coding:utf-8-*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test1</span>():</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    我是测试类，负责测试</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hello</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        负责打印Hello， 人人可以学Python</span></span><br><span class="line"><span class="string">        :return: </span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;人人可以学Python&quot;</span>)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">renren</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        测试Sphinx自动生成文档</span></span><br><span class="line"><span class="string">       </span></span><br><span class="line"><span class="string">        :return: </span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;自动生成文档&quot;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test2</span>():</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_2</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        我也不知道写什么好，反正我们这里是用来写文档的</span></span><br><span class="line"><span class="string">        :return: </span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;文档自动生成测试2&quot;</span>)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">renren_2</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        所以我们开发的时候就应该在这里写好文档，然后用Sphinx自动生成</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        :return: </span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;自动生成文档2&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p><code>2.py</code>代码:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*-coding:utf-8-*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">init_test</span>():</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    用于初始化项目测试，不需要任何参数</span></span><br><span class="line"><span class="string">    :return: </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;初始化项目&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">start</span>():</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    启动项目入口，</span></span><br><span class="line"><span class="string">    :return: </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    test(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>(<span class="params">v</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    项目运行主要函数，需要传入一个参数\n</span></span><br><span class="line"><span class="string">    v:&lt;int&gt;</span></span><br><span class="line"><span class="string">    :return: </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(v)</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>使用Python-Sphinx doc:</h1>
 <h2 id="选择配置">选择配置</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个doc目录</span></span><br><span class="line"><span class="built_in">mkdir</span> doc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化sphinx项目</span></span><br><span class="line">[root@localhost doc]<span class="comment"># sphinx-quickstart</span></span><br></pre></td></tr></table></figure>
@@ -292,42 +292,42 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.insert(<span class="number">0</span>, os.path.abspath(<span class="string">&#x27;./../../code&#x27;</span>))</span><br></pre></td></tr></table></figure>
 <p>这里要配好,不然待会生成文档的时候会报找不到模块的错</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WARNING: autodoc: failed to import module <span class="string">&#x27;1&#x27;</span>; the following exception was raised:</span><br><span class="line">No module named <span class="string">&#x27;1&#x27;</span></span><br><span class="line">WARNING: autodoc: failed to import module <span class="string">&#x27;2&#x27;</span>; the following exception was raised:</span><br><span class="line">No module named <span class="string">&#x27;2&#x27;</span></span><br><span class="line">WARNING: autodoc: failed to import module <span class="string">&#x27;doc&#x27;</span>; the following exception was raised:</span><br><span class="line">No module named <span class="string">&#x27;doc&#x27;</span></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="生成rst文件">生成rst文件</h2>
 <p>注意:-o 后面跟的是保存rst文件的路径， 你的index.rst在哪个目录，那你就指定哪个目录。然后在后面的是你的项目(代码)路径</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost doc]<span class="comment"># /usr/local/python3/bin/sphinx-apidoc -o ./source/ ../../auto_doc_try/</span></span><br><span class="line">Creating file ./source/1.rst.</span><br><span class="line">Creating file ./source/2.rst.</span><br><span class="line">Creating file ./source/doc.rst.</span><br><span class="line">Creating file ./source/modules.rst.</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="生成html文件">生成html文件</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost doc]<span class="comment"># make html</span></span><br></pre></td></tr></table></figure>
 <h3 id="报错1">报错1:</h3>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/jscan/tools_/auto_doc_try/doc/source/1.rst:4: WARNING: Unknown directive type &quot;automodule&quot;.</span><br><span class="line"></span><br><span class="line">.. automodule:: 1</span><br><span class="line">   :members:</span><br><span class="line">   :undoc-members:</span><br><span class="line">   :show-inheritance:</span><br><span class="line">/jscan/tools_/auto_doc_try/doc/source/2.rst:4: WARNING: Unknown directive type &quot;automodule&quot;.</span><br><span class="line"></span><br><span class="line">.. automodule:: 2</span><br><span class="line">   :members:</span><br><span class="line">   :undoc-members:</span><br><span class="line">   :show-inheritance:</span><br><span class="line">/jscan/tools_/auto_doc_try/doc/source/doc.rst:7: WARNING: Unknown directive type &quot;automodule&quot;.</span><br><span class="line"></span><br><span class="line">.. automodule:: doc</span><br><span class="line">   :members:</span><br><span class="line">   :undoc-members:</span><br><span class="line">   :show-inheritance:</span><br></pre></td></tr></table></figure>
 <p>在<code>conf.py</code>中加入</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808115837.png" alt="20200808115837"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808115837.png" alt="20200808115837" /></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">extensions = [</span><br><span class="line">        <span class="string">&#x27;sphinx.ext.autodoc&#x27;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <h3 id="执行成功">执行成功:</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost doc]<span class="comment"># make html</span></span><br><span class="line">Running Sphinx v3.1.2</span><br><span class="line">loading translations [zh_cn]... <span class="keyword">done</span></span><br><span class="line">loading pickled environment... <span class="keyword">done</span></span><br><span class="line">building [mo]: targets <span class="keyword">for</span> 0 po files that are out of <span class="built_in">date</span></span><br><span class="line">building [html]: targets <span class="keyword">for</span> 0 <span class="built_in">source</span> files that are out of <span class="built_in">date</span></span><br><span class="line">updating environment: 0 added, 0 changed, 0 removed</span><br><span class="line">looking <span class="keyword">for</span> now-outdated files... none found</span><br><span class="line">no targets are out of <span class="built_in">date</span>.</span><br><span class="line">build succeeded.</span><br><span class="line"></span><br><span class="line">The HTML pages are <span class="keyword">in</span> build/html.</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="用浏览器打开doc-build-html-index-html：">用浏览器打开doc/build/html/index.html：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808120143.png" alt="20200808120143"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808120143.png" alt="20200808120143" /></p>
+<hr />
 <h2 id="安装主题">安装主题:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 命令安装</span></span><br><span class="line">pip3 install sphinx_rtd_theme -i https://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
-<p>配置：编辑我们的source/conf.py<br>
+<p>配置：编辑我们的source/conf.py<br />
 导入模块：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sphinx_rtd_theme</span><br></pre></td></tr></table></figure>
 <p>将 html_theme = &quot;alabaster&quot;改成如下，在加上html_theme_path</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">html_theme = <span class="string">&quot;sphinx_rtd_theme&quot;</span></span><br><span class="line">html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]</span><br></pre></td></tr></table></figure>
 <p>最后我们再执行一次：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make clean</span><br><span class="line">make html</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808120625.png" alt="20200808120625"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808120625.png" alt="20200808120625" /></p>
+<hr />
 <h1>注释风格Google风格:</h1>
 <p>Google风格</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This is a groups style docs.</span><br><span class="line"></span><br><span class="line">Parameters:</span><br><span class="line">  param1 - this is the first param</span><br><span class="line">  param2 - this is a second param</span><br><span class="line"></span><br><span class="line">Returns:</span><br><span class="line">  This is a description of what is returned</span><br><span class="line"></span><br><span class="line">Raises:</span><br><span class="line">  KeyError - raises an exception</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
 <h2 id="配置">配置:</h2>
 <p><code>conf.py</code>中加入</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">extensions = [</span><br><span class="line">    <span class="string">&#x27;sphinx.ext.autodoc&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;sphinx.ext.napoleon&#x27;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="支持以下关键字">支持以下关键字:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -428,9 +428,9 @@
 </li>
 </ul>
 <h2 id="效果-3">效果:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808131325.png" alt="20200808131325"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200808131325.png" alt="20200808131325" /></p>
 <p>嘿嘿,还可以</p>
-<hr>
+<hr />
 <h2 id="Debug">Debug:</h2>
 <h3 id="sphinx会执行代码">sphinx会执行代码:</h3>
 <p>refs:</p>
@@ -447,7 +447,7 @@
 <h3 id="找不到路径-模块">找不到路径\模块:</h3>
 <p><code>conf.py</code>内多配置一下路径</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sys.path.insert(<span class="number">0</span>, os.path.abspath(<span class="string">&#x27;../../&#x27;</span>))</span><br><span class="line">sys.path.insert(<span class="number">0</span>, os.path.abspath(<span class="string">&#x27;../../../&#x27;</span>))</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -598,7 +598,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -653,12 +653,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

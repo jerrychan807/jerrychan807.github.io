@@ -284,7 +284,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Comments 注释</h1>
 <p>You can use comments to truncate a query and remove the portion of the original query that follows your input.</p>
 <table>
@@ -313,7 +313,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Database version 数据库版本</h1>
 <p>You can query the database to determine its type and version. This information is useful when formulating more complicated attacks.</p>
 <table>
@@ -342,7 +342,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Database contents 数据库内容</h1>
 <p>You can list the tables that exist in the database, and the columns that those tables contain.</p>
 <table>
@@ -371,7 +371,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Conditional errors 条件错误</h1>
 <p>You can test a single boolean condition and trigger a database error if the condition is true.</p>
 <table>
@@ -400,7 +400,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Batched (or stacked) queries 批量查询</h1>
 <p>You can use batched queries to execute multiple queries in succession. Note that while the subsequent queries are executed, the results are not returned to the application. Hence this technique is primarily of use in relation to blind vulnerabilities where you can use a second query to trigger a DNS lookup, conditional error, or time delay.</p>
 <table>
@@ -429,7 +429,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Time delays 时间延迟</h1>
 <p>You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.</p>
 <table>
@@ -458,7 +458,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>Conditional time delays 有条件的时间延迟</h1>
 <p>You can test a single boolean condition and trigger a time delay if the condition is true.</p>
 <table>
@@ -487,7 +487,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>DNS lookup DNS查询</h1>
 <p>You can cause the database to perform a DNS lookup to an external domain. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to confirm that a DNS lookup occurred.</p>
 <table>
@@ -516,7 +516,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>DNS lookup with data exfiltration 使用数据泄露进行DNS查找</h1>
 <p>You can cause the database to perform a DNS lookup to an external domain containing the results of an injected query. To do this, you will need to use Burp Collaborator client to generate a unique Burp Collaborator subdomain that you will use in your attack, and then poll the Collaborator server to retrieve details of any DNS interactions, including the exfiltrated data.</p>
 <table>
@@ -545,7 +545,7 @@
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h1>总结:</h1>
 <p>SQL注入在不同数据库的表现,可表现在这些方面:</p>
 <ul class="lvl-0">
@@ -574,11 +574,11 @@
 <p>Conditional time delays 有条件的时间延迟</p>
 </li>
 <li class="lvl-2">
-<p>DNS lookup DNS查询<br>
+<p>DNS lookup DNS查询<br />
 DNS lookup with data exfiltration 使用数据泄露进行DNS查找</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -711,7 +711,7 @@ DNS lookup with data exfiltration 使用数据泄露进行DNS查找</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -766,12 +766,12 @@ DNS lookup with data exfiltration 使用数据泄露进行DNS查找</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -264,12 +264,12 @@
         <h1>Pre:</h1>
 <p>rarity有一些web界面，可供玩家去冒险、升级。但是为了方便，能够自动去冒险、升级，还是自己简单写个脚本try一下。</p>
 <p>顺便熟悉一下<code>solidty</code>和<code>web3js</code></p>
-<hr>
+<hr />
 <h1>Rarity:</h1>
 <h2 id="简介-2">简介:</h2>
 <p>Yearn Finance 创始人 Andre Cronje 发文称受到 Loot 启发推出游戏 Rarity，在该游戏中玩家可创建召唤师，Rarity 总量没有限制，除 Gas 外无需其他费用，召唤师每天可以通过冒险赚取 xp 经验值，一旦获得了一定量的 xp 就可以升级，获得特技和法术。</p>
 <p>游戏共有 11 个角色，分别是野人、吟游诗人、牧师、德鲁伊、斗士、僧侣、圣骑士、游侠、巡逻兵、巫师、法师。</p>
-<hr>
+<hr />
 <h2 id="合约源码">合约源码:</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/andrecronje/rarity/blob/main/core/rarity.sol">rarity solidity源码</a></p>
 <p>简单通读一下源码,发现solidity写的代码还是挺简单的，并没想象中的难，可能跟没有那么多操作要放在链上有关。</p>
@@ -304,7 +304,7 @@
 <p>output:角色的经验、下一次冒险的时间戳、职业类别、等级</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png" alt="25641732-8ED4-4D10-81F4-B5E90094D83D"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/25641732-8ED4-4D10-81F4-B5E90094D83D.png" alt="25641732-8ED4-4D10-81F4-B5E90094D83D" /></p>
 <blockquote>
 <p>xp_required</p>
 </blockquote>
@@ -343,11 +343,11 @@
 <p>input:角色id</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>脚本:</h1>
 <h2 id="流程图-2">流程图:</h2>
 <p>自动冒险:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png" alt="DF22C901-3AC7-48EE-8D73-592181380B59"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/DF22C901-3AC7-48EE-8D73-592181380B59.png" alt="DF22C901-3AC7-48EE-8D73-592181380B59" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>查出自己地址有哪些角色id</p>
@@ -363,7 +363,7 @@
 </li>
 </ul>
 <p>自动升级:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png" alt="84454A4B-F8F1-444D-AB4A-79B47F941381"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/84454A4B-F8F1-444D-AB4A-79B47F941381.png" alt="84454A4B-F8F1-444D-AB4A-79B47F941381" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>调用合约函数<code>summoner</code>，知道当前经验值</p>
@@ -375,19 +375,19 @@
 <p>满足条件的话，调用合约的<code>level_up</code>，让角色去升级</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>一些问题:</h1>
 <h1>gas：</h1>
 <p>自己的脚本和<code>https://rarityextended.com/</code>执行的gas费有些差异,后续有空要看一下怎么样省一下gas fee，虽然也很少钱。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png" alt="2749692E-F7D8-49E0-A22D-BD8AE0CC1040"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2749692E-F7D8-49E0-A22D-BD8AE0CC1040.png" alt="2749692E-F7D8-49E0-A22D-BD8AE0CC1040" /></p>
 <h1>交易失败:</h1>
 <p>脚本定时跑起来后，常有几笔失败的交易，可能跟nonce设置有关系。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png" alt="20210927120445"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210927120445.png" alt="20210927120445" /></p>
+<hr />
 <h1>总结:</h1>
 <p>脚本定时跑起来后，就不用去web页面上一个个点去冒险和升级，方便了不少，写之前觉得挺麻烦的，有点无从下手，写完才发现很简单。hhh</p>
 <p>后续加点、玩副本这些，有空再研究补充下吧~</p>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -425,10 +425,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -535,7 +535,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -590,12 +590,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

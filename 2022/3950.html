@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 每处理一笔交易，就要新建一个 EVM对象 来处理交易。 EVM 对象内部主要依赖三个对象：  解释器 Interpreter 虚拟机相关配置对象 vm.Config 以太坊状态数据库 StateDB  这次先看解释器对象的源码 EVM解释器对象： 解释器对象EVMInterpreter 用来解释执行指定的合约指令。 不过需要说明一点的是，实际的指令解释执行并不真正由解释器对象完成的，而是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-以太坊源码分析-EVM解释器对象">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/3950.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 每处理一笔交易，就要新建一个 EVM对象 来处理交易。 EVM 对象内部主要依赖三个对象：  解释器 Interpreter 虚拟机相关配置对象 vm.Config 以太坊状态数据库 StateDB  这次先看解释器对象的源码 EVM解释器对象： 解释器对象EVMInterpreter 用来解释执行指定的合约指令。 不过需要说明一点的是，实际的指令解释执行并不真正由解释器对象完成的，而是">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722104219.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722112806.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722114340.png">
+<meta property="article:published_time" content="2022-07-22T04:36:34.000Z">
+<meta property="article:modified_time" content="2022-07-22T04:05:05.469Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722104219.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/3950.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-以太坊源码分析-EVM解释器对象 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/3950.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-以太坊源码分析-EVM解释器对象
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-07-22 12:36:34 / Modified: 12:05:05" itemprop="dateCreated datePublished" datetime="2022-07-22T12:36:34+08:00">2022-07-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>每处理一笔交易，就要新建一个 <code>EVM对象</code> 来处理交易。<br />
+EVM 对象内部主要依赖三个对象：</p>
+<ul class="lvl-0">
+<li class="lvl-2">解释器 <code>Interpreter</code></li>
+<li class="lvl-2">虚拟机相关配置对象 <code>vm.Config</code></li>
+<li class="lvl-2">以太坊状态数据库 <code>StateDB</code></li>
+</ul>
+<p>这次先看<code>解释器对象</code>的源码</p>
+<h1>EVM解释器对象：</h1>
+<p>解释器对象<code>EVMInterpreter</code> 用来解释执行指定的合约指令。<br />
+不过需要说明一点的是，实际的指令解释执行并不真正由解释器对象完成的，而是由 <code>vm.Config.JumpTable</code> 中的 operation 对象完成的，<br />
+解释器对象只是负责逐条解析指令码，然后获取相应的 <code>operation</code> 对象，并在调用真正解释指令的 <code>operation.execute</code> 函数之前检查堆栈等对象。</p>
+<p>也可以说，<strong>解释器对象只是负责解释的调度工作</strong>。</p>
+<h1>创建EVM解释器对象：</h1>
+<p><code>NewEVMInterpreter()</code>函数的主要操作:</p>
+<ol>
+<li class="lvl-3">
+<p>根据不同的以太坊版本，使用不同对象填充<code>cfg.JumpTable</code>字段</p>
+</li>
+<li class="lvl-3">
+<p>填充<code>cfg.ExtraEips</code>字段</p>
+</li>
+<li class="lvl-3">
+<p>生成一个 <code>EVMInterpreter</code> 对象并返回</p>
+</li>
+</ol>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NewEVMInterpreter returns a new instance of the Interpreter.</span></span><br><span class="line"><span class="comment">// 创建解释器</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEVMInterpreter</span><span class="params">(evm *EVM, cfg Config)</span></span> *EVMInterpreter &#123;</span><br><span class="line">	<span class="comment">// If jump table was not initialised we set the default one.</span></span><br><span class="line">	<span class="comment">// 在这里设置 操作码对应的函数 </span></span><br><span class="line">	<span class="comment">// 主要原因是以太坊经历版本迭代之后 操作码有了一些变化</span></span><br><span class="line">	<span class="comment">// 我们移植的时候 这个地方只会保留最新版本的操作码表</span></span><br><span class="line">	<span class="keyword">if</span> cfg.JumpTable == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">switch</span> &#123;</span><br><span class="line">		<span class="comment">// 根据不同的以太坊版本，使用不同对象填充cfg.JumpTable字段</span></span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsMerge:</span><br><span class="line">			cfg.JumpTable = &amp;mergeInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsLondon:</span><br><span class="line">			cfg.JumpTable = &amp;londonInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsBerlin:</span><br><span class="line">			cfg.JumpTable = &amp;berlinInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsIstanbul:</span><br><span class="line">			cfg.JumpTable = &amp;istanbulInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsConstantinople:</span><br><span class="line">			cfg.JumpTable = &amp;constantinopleInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsByzantium:</span><br><span class="line">			cfg.JumpTable = &amp;byzantiumInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsEIP158:</span><br><span class="line">			cfg.JumpTable = &amp;spuriousDragonInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsEIP150:</span><br><span class="line">			cfg.JumpTable = &amp;tangerineWhistleInstructionSet</span><br><span class="line">		<span class="keyword">case</span> evm.chainRules.IsHomestead:</span><br><span class="line">			cfg.JumpTable = &amp;homesteadInstructionSet</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			cfg.JumpTable = &amp;frontierInstructionSet</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> i, eip := <span class="keyword">range</span> cfg.ExtraEips &#123;</span><br><span class="line">			<span class="built_in">copy</span> := *cfg.JumpTable</span><br><span class="line">			<span class="keyword">if</span> err := EnableEIP(eip, &amp;<span class="built_in">copy</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="comment">// Disable it, so caller can check if it&#x27;s activated or not</span></span><br><span class="line">				<span class="comment">// 填充cfg.ExtraEips字段</span></span><br><span class="line">				cfg.ExtraEips = <span class="built_in">append</span>(cfg.ExtraEips[:i], cfg.ExtraEips[i+<span class="number">1</span>:]...)</span><br><span class="line">				log.Error(<span class="string">&quot;EIP activation failed&quot;</span>, <span class="string">&quot;eip&quot;</span>, eip, <span class="string">&quot;error&quot;</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line">			cfg.JumpTable = &amp;<span class="built_in">copy</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> &amp;EVMInterpreter&#123;</span><br><span class="line">		evm: evm,</span><br><span class="line">		cfg: cfg,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>EVMInterpreter</code> 关键方法是 <code>Run</code> 方法</p>
+<h1>Interpreter.Run():</h1>
+<h2 id="初始化执行循环中的中间变量">初始化执行循环中的中间变量:</h2>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Increment the call depth which is restricted to 1024</span></span><br><span class="line"><span class="comment">// 调用深度递增，evm执行栈的深度不能超过1024</span></span><br><span class="line">in.evm.depth++</span><br><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; in.evm.depth-- &#125;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Make sure the readOnly is only set if we aren&#x27;t in readOnly yet.</span></span><br><span class="line"><span class="comment">// This also makes sure that the readOnly flag isn&#x27;t removed for child calls.</span></span><br><span class="line"><span class="comment">// 将readOnly设置为true</span></span><br><span class="line"><span class="keyword">if</span> readOnly &amp;&amp; !in.readOnly &#123;</span><br><span class="line">	in.readOnly = <span class="literal">true</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; in.readOnly = <span class="literal">false</span> &#125;()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reset the previous call&#x27;s return data. It&#x27;s unimportant to preserve the old buffer</span></span><br><span class="line"><span class="comment">// as every returning call will return new data anyway.</span></span><br><span class="line"><span class="comment">// 重置上一个call的返回数据 保留旧的缓冲区是不重要的,因为每个有返回的调用都会返回新数据。</span></span><br><span class="line">in.returnData = <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Don&#x27;t bother with the execution if there&#x27;s no code.</span></span><br><span class="line"><span class="comment">// 如果合约代码为空则直接退出</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(contract.Code) == <span class="number">0</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	op          OpCode        <span class="comment">// current opcode // 当前的指令集</span></span><br><span class="line">	mem         = NewMemory() <span class="comment">// bound memory // 新建内存</span></span><br><span class="line">	stack       = newstack()  <span class="comment">// local stack // 新建堆栈</span></span><br><span class="line">	callContext = &amp;ScopeContext&#123;</span><br><span class="line">		Memory:   mem,</span><br><span class="line">		Stack:    stack,</span><br><span class="line">		Contract: contract,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// For optimisation reason we&#x27;re using uint64 as the program counter.</span></span><br><span class="line">	<span class="comment">// It&#x27;s theoretically possible to go above 2^64. The YP defines the PC</span></span><br><span class="line">	<span class="comment">// to be uint256. Practically much less so feasible.</span></span><br><span class="line">	pc   = <span class="type">uint64</span>(<span class="number">0</span>) <span class="comment">// program counter // 重置计数器</span></span><br><span class="line">	cost <span class="type">uint64</span></span><br><span class="line">	<span class="comment">// copies used by tracer</span></span><br><span class="line">	pcCopy  <span class="type">uint64</span> <span class="comment">// needed for the deferred EVMLogger</span></span><br><span class="line">	gasCopy <span class="type">uint64</span> <span class="comment">// for EVMLogger to log gas remaining before execution</span></span><br><span class="line">	logged  <span class="type">bool</span>   <span class="comment">// deferred EVMLogger should ignore already logged steps</span></span><br><span class="line">	res     []<span class="type">byte</span> <span class="comment">// result of the opcode execution function</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// Don&#x27;t move this deferred function, it&#x27;s placed before the capturestate-deferred method,</span></span><br><span class="line"><span class="comment">// so that it get&#x27;s executed _after_: the capturestate needs the stacks before</span></span><br><span class="line"><span class="comment">// they are returned to the pools</span></span><br><span class="line"><span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	returnStack(stack)</span><br><span class="line">&#125;()</span><br><span class="line">contract.Input = input</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> in.cfg.Debug &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> !logged &#123;</span><br><span class="line">				in.cfg.Tracer.CaptureState(pcCopy, op, gasCopy, cost, callContext, in.returnData, in.evm.depth, err)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				in.cfg.Tracer.CaptureFault(pcCopy, op, gasCopy, cost, callContext, in.evm.depth, err)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="进入主循环">进入主循环:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>根据<code>pc</code>获取一条指令</p>
+</li>
+<li class="lvl-2">
+<p>根据指令从<code>JumpTable</code>中获得操作码</p>
+</li>
+<li class="lvl-2">
+<p>检查堆栈上的参数 是否服符合操作码函数的要求</p>
+</li>
+<li class="lvl-2">
+<p>计算指令所需要的内存大小</p>
+</li>
+<li class="lvl-2">
+<p>获取这个指令需要gas消耗，然后从交易余额中扣除当前指令的消耗，如果余额不足，直接返回<code>ErrOutOfGas</code></p>
+</li>
+<li class="lvl-2">
+<p>计算新的内存大小以动态调整内存大小，必要时进行扩容(按32字节)</p>
+</li>
+<li class="lvl-2">
+<p>所有使用动态内存的操作码都有动态的gas成本，扣除动态gas成本，如果不够，就返回<code>ErrOutOfGas</code>错误</p>
+</li>
+<li class="lvl-2">
+<p>执行操作指令</p>
+</li>
+<li class="lvl-2">
+<p>处理操作指令的返回值</p>
+</li>
+</ul>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Interpreter main run loop (contextual). This loop runs until either an</span></span><br><span class="line"><span class="comment">// explicit STOP, RETURN or SELFDESTRUCT is executed, an error occurred during</span></span><br><span class="line"><span class="comment">// the execution of one of the operations or until the done flag is set by the</span></span><br><span class="line"><span class="comment">// parent context.</span></span><br><span class="line"><span class="comment">// 解释器主循环，循环运行直到执行显式STOP，RETURN或SELFDESTRUCT指令被执行，或者是遇到任意错误，或者说done标志被父context设置</span></span><br><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> in.cfg.Debug &#123;</span><br><span class="line">		<span class="comment">// Capture pre-execution values for tracing.</span></span><br><span class="line">		<span class="comment">// 捕获预执行的值进行跟踪</span></span><br><span class="line">		logged, pcCopy, gasCopy = <span class="literal">false</span>, pc, contract.Gas</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Get the operation from the jump table and validate the stack to ensure there are</span></span><br><span class="line">	<span class="comment">// enough stack items available to perform the operation.</span></span><br><span class="line">	<span class="comment">// 从合约的二进制数据i获取第pc个opcode操作符</span></span><br><span class="line">	<span class="comment">// opcode是以太坊虚拟机指令，一共不超过256个，正好一个byte大小能装下</span></span><br><span class="line">	<span class="comment">// 根据pc获取一条指令</span></span><br><span class="line">	op = contract.GetOp(pc)</span><br><span class="line">	<span class="comment">// 根据指令从JumpTable中获得操作码</span></span><br><span class="line">	operation := in.cfg.JumpTable[op]</span><br><span class="line">	<span class="comment">// 获取这个指令需要gas消耗</span></span><br><span class="line">	cost = operation.constantGas <span class="comment">// For tracing</span></span><br><span class="line">	<span class="comment">// Validate stack 检查堆栈</span></span><br><span class="line">	<span class="comment">// 检查：检查堆栈上的参数是否符合指令函数的要求</span></span><br><span class="line">	<span class="keyword">if</span> sLen := stack.<span class="built_in">len</span>(); sLen &lt; operation.minStack &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, &amp;ErrStackUnderflow&#123;stackLen: sLen, required: operation.minStack&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> sLen &gt; operation.maxStack &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, &amp;ErrStackOverflow&#123;stackLen: sLen, limit: operation.maxStack&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 扣除当前指令的消耗</span></span><br><span class="line">	<span class="keyword">if</span> !contract.UseGas(cost) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, ErrOutOfGas</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> operation.dynamicGas != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// All ops with a dynamic memory usage also has a dynamic gas cost.</span></span><br><span class="line">		<span class="comment">// 所有使用动态内存的操作码都有动态的gas成本。</span></span><br><span class="line">		<span class="keyword">var</span> memorySize <span class="type">uint64</span></span><br><span class="line">		<span class="comment">// calculate the new memory size and expand the memory to fit</span></span><br><span class="line">		<span class="comment">// the operation</span></span><br><span class="line">		<span class="comment">// 计算新的内存大小以适应操作，必要时进行扩容</span></span><br><span class="line">		<span class="comment">// Memory check needs to be done prior to evaluating the dynamic gas portion,</span></span><br><span class="line">		<span class="comment">// to detect calculation overflows</span></span><br><span class="line">		<span class="comment">// 在评估动态气体部分之前需要进行内存检查，检测计算溢出</span></span><br><span class="line">		<span class="keyword">if</span> operation.memorySize != <span class="literal">nil</span> &#123; <span class="comment">// 计算内存使用量，先判断内存大小是否足够</span></span><br><span class="line">			memSize, overflow := operation.memorySize(stack)</span><br><span class="line">			<span class="keyword">if</span> overflow &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span>, ErrGasUintOverflow</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// memory is expanded in words of 32 bytes. Gas</span></span><br><span class="line">			<span class="comment">// is also calculated in words.</span></span><br><span class="line">			<span class="comment">// 扩容按32字节的字扩展</span></span><br><span class="line">			<span class="keyword">if</span> memorySize, overflow = math.SafeMul(toWordSize(memSize), <span class="number">32</span>); overflow &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span>, ErrGasUintOverflow</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Consume the gas and return an error if not enough gas is available.</span></span><br><span class="line">		<span class="comment">// cost is explicitly set so that the capture state defer method can get the proper cost</span></span><br><span class="line">		<span class="comment">// 计算执行操作所需要的gas</span></span><br><span class="line">		<span class="comment">// 计算gas的Cost 并使用，如果不够，就返回OutOfGas错误。</span></span><br><span class="line">		<span class="keyword">var</span> dynamicCost <span class="type">uint64</span></span><br><span class="line">		dynamicCost, err = operation.dynamicGas(in.evm, contract, stack, mem, memorySize)</span><br><span class="line">		cost += dynamicCost <span class="comment">// for tracing</span></span><br><span class="line">		<span class="comment">// 扣除gas</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> || !contract.UseGas(dynamicCost) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, ErrOutOfGas</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Do tracing before memory expansion</span></span><br><span class="line">		<span class="keyword">if</span> in.cfg.Debug &#123;</span><br><span class="line">			in.cfg.Tracer.CaptureState(pc, op, gasCopy, cost, callContext, in.returnData, in.evm.depth, err)</span><br><span class="line">			logged = <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> memorySize &gt; <span class="number">0</span> &#123;  <span class="comment">//扩大内存范围</span></span><br><span class="line">			mem.Resize(memorySize)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> in.cfg.Debug &#123;</span><br><span class="line">		in.cfg.Tracer.CaptureState(pc, op, gasCopy, cost, callContext, in.returnData, in.evm.depth, err)</span><br><span class="line">		logged = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// execute the operation</span></span><br><span class="line">	<span class="comment">// 执行操作</span></span><br><span class="line">	res, err = operation.execute(&amp;pc, in, callContext)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">	pc++</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> err == errStopToken &#123;</span><br><span class="line">	err = <span class="literal">nil</span> <span class="comment">// clear stop token error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总体来说，解释器执行循环的过程如下图：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722104219.png" alt="20220722104219" /></p>
+<h1>EVM指令与操作:</h1>
+<p>我们先看下EVM模块的代码结构：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> evm.<span class="property">go</span>	        		  <span class="comment">// 定义了EVM运行环境结构体，并实现 转账处理 这些比较高级的，跟交易本身有关的功能 </span></span><br><span class="line">└── vm</span><br><span class="line">    ├── analysis.<span class="property">go</span>      <span class="comment">// 跳转目标判断</span></span><br><span class="line">    ├── common.<span class="property">go</span>		 <span class="comment">// 一些共有方法</span></span><br><span class="line">    ├── contract.<span class="property">go</span>		 <span class="comment">// 智能合约</span></span><br><span class="line">    ├── contracts.<span class="property">go</span></span><br><span class="line">    ├── doc.<span class="property">go</span></span><br><span class="line">    ├── eips.<span class="property">go</span></span><br><span class="line">    ├── errors.<span class="property">go</span>		 <span class="comment">// 错误类</span></span><br><span class="line">    ├── evm.<span class="property">go</span>           <span class="comment">// evm对外接口,定义了EVM结构体，提供Create和Call方法，作为虚拟机的入口，分别对应创建合约和执行合约代码</span></span><br><span class="line">    ├── gas.<span class="property">go</span>			 <span class="comment">// gas花费计算</span></span><br><span class="line">    ├── gas_table.<span class="property">go</span>     <span class="comment">// 绝大部分操作码所需的gas计算表</span></span><br><span class="line">    ├── instructions.<span class="property">go</span>  <span class="comment">// 绝大部分的操作码对应的实现都在这里  </span></span><br><span class="line">    ├── interface.<span class="property">go</span></span><br><span class="line">    ├── interpreter.<span class="property">go</span>   <span class="comment">// 虚拟机的调度器，开始真正的解析执行合约代码</span></span><br><span class="line">    ├── jump_table.<span class="property">go</span>	 <span class="comment">// 定义了operation，就是将opcode和gas计算函数、具体实现函数等关联起来</span></span><br><span class="line">    ├── logger.<span class="property">go</span>		 <span class="comment">// evm日志</span></span><br><span class="line">    ├── memory.<span class="property">go</span>		 <span class="comment">// evm的内存结构</span></span><br><span class="line">    ├── memory_table.<span class="property">go</span></span><br><span class="line">    ├── opcodes.<span class="property">go</span>       <span class="comment">// op指令集</span></span><br><span class="line">    ├── operations_acl.<span class="property">go</span></span><br><span class="line">    ├── runtime</span><br><span class="line">    │   ├── doc.<span class="property">go</span></span><br><span class="line">    │   ├── env.<span class="property">go</span>		  <span class="comment">// 执行环境</span></span><br><span class="line">    │   ├── runtime.<span class="property">go</span>	  <span class="comment">// 运行时</span></span><br><span class="line">    ├── stack.<span class="property">go</span>		  <span class="comment">// evm所需要的栈</span></span><br><span class="line">    ├── stack_table.<span class="property">go</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722112806.png" alt="20220722112806" /></p>
+<p>从上图来看:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>opcodes</code> 中储存的是所有指令码，比如<code>ADD</code>的指令码就是0x01</p>
+</li>
+<li class="lvl-2">
+<p><code>jump_table</code> 定义了每一个指令对应的指令码、gas花费</p>
+</li>
+<li class="lvl-2">
+<p><code>instructions</code> 中是所有的指令执行函数的实现，通过这些函数来对堆栈<code>stack</code>进行操作，比如<code>pop()</code>、<code>push()</code>等。</p>
+</li>
+</ul>
+<p>当一个contract对象传入<code>interpreter</code>模块，首先调用了contract的<code>GetOp(n)</code>方法，从Contract对象的Code中拿到<code>n</code>对应的指令。<br />
+参数n就是我们上面在<code>Run()</code>函数中定义的pc，是一个程序的计数器。<br />
+每次指令执行后都会让<code>pc++</code>，从而调用下一个指令，除非指令执行到最后是退出函数，比如<code>return</code>、<code>stop</code>或<code>selfDestruct</code>。</p>
+<figure class="highlight go"><figcaption><span>core/vm/contract.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GetOp returns the n&#x27;th element in the contract&#x27;s byte array</span></span><br><span class="line"><span class="comment">// 用来获取下一跳指令</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> GetOp(n <span class="type">uint64</span>) OpCode &#123;</span><br><span class="line">	<span class="keyword">if</span> n &lt; <span class="type">uint64</span>(<span class="built_in">len</span>(c.Code)) &#123;</span><br><span class="line">		<span class="keyword">return</span> OpCode(c.Code[n])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> STOP</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>基于堆栈的虚拟机:</h1>
+<p>虚拟机实际上是从软件层面对物理机器的模拟，但以太坊虚拟机相对于我们日常常见到的狭义的虚拟机如vmware或者v-box不同，<br />
+仅仅是为了模拟对字节码的取指令、译码、执行和结果储存返回等操作，这些步骤跟真实物理机器上的概念都很类似。<br />
+当然，不管虚拟机怎么实现，最终都还是要依靠物理资源。</p>
+<p>如今虚拟机的实现方式有两种，一种就是基于栈的，另一种是基于寄存器的。<br />
+基于栈的虚拟机有<code>JVM</code>，<code>CPython</code>等，而基于寄存器的有<code>Dalvik</code>以及<code>Lua5.0</code>。<br />
+这两种实现方式虽然机制不同，但最终都要实现：</p>
+<ol>
+<li class="lvl-3">
+<p>从内存中取指令；</p>
+</li>
+<li class="lvl-3">
+<p>译码，将指令转义成特定的操作；</p>
+</li>
+<li class="lvl-3">
+<p>执行，也就是在栈或者寄存器中进行计算；</p>
+</li>
+<li class="lvl-3">
+<p>返回计算结果。</p>
+</li>
+</ol>
+<p>我们这里简单通过一张图回顾上面那个ADD指令的执行，了解一下基于栈的计算如何执行，以便我们能对以太坊EVM的原理有更深的理解。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722114340.png" alt="20220722114340" /></p>
+<p>我们栈上先PUSH了3和4在栈顶，现在当收到ADD指令时，调用<code>opAdd()</code>函数。<br />
+先执行<code>x = stack.pop()</code>，将栈顶的3取出并赋值给x，删除栈顶的3，<br />
+然后执行<code>y = stack.peek()</code>，取出此时栈顶的4但是不删除。<br />
+然后执行<code>y.Add(x,y)</code>得到y==7，再讲7压如栈顶。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/chaors/Ethereum_read">go-ethereum-read：以太坊源码注释</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lj900911/article/details/84939308">https://blog.csdn.net/lj900911/article/details/84939308</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/17822.html" rel="prev" title="StudyRecord-以太坊源码分析-EVM对象">
+      <i class="fa fa-chevron-left"></i> StudyRecord-以太坊源码分析-EVM对象
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">EVM解释器对象：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">创建EVM解释器对象：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Interpreter.Run():</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%A7%E8%A1%8C%E5%BE%AA%E7%8E%AF%E4%B8%AD%E7%9A%84%E4%B8%AD%E9%97%B4%E5%8F%98%E9%87%8F"><span class="nav-number">4.1.</span> <span class="nav-text">初始化执行循环中的中间变量:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E4%B8%BB%E5%BE%AA%E7%8E%AF"><span class="nav-number">4.2.</span> <span class="nav-text">进入主循环:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">EVM指令与操作:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">基于堆栈的虚拟机:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">113</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">567k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">8:36</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

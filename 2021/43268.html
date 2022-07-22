@@ -259,7 +259,7 @@
 
       
         <h1>Pre:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png" alt="20220512174618"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174618.png" alt="20220512174618" /></p>
 <p>朋友有需求，想要监控<code>Raca NFT</code>市场在BSC链上的实时交易记录特别是某几类物品挂的卖单，比如药水等，方便他可以买到较便宜的物品。</p>
 <p>要获取Raca NFT市场的实时交易记录，有两个数据来源：</p>
 <ol>
@@ -274,7 +274,7 @@
 <h1>读取Bsc Block Data</h1>
 <h2 id="快速读取block数据">快速读取block数据</h2>
 <p>bsc链上约3s左右出一个块,出块的频率很高。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174907.png" alt="20220512174907"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220512174907.png" alt="20220512174907" /></p>
 <p>一开始是简单使用<code>time.sleep()</code>去停顿几秒，避免对节点发起过多的请求，但是这样会出现漏块的问题。</p>
 <p>后来想到是，配置多个节点地址，每次查询前随机选用一个节点，这样既可以减少漏块的几率，也不会因为查询频率过高被节点ban.</p>
 <p>经过多次测试，此类大量查询的情况下，官方给的节点相比商用的有限制次数的节点会更好用。</p>
@@ -289,7 +289,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">parse_transaction</span>(<span class="params">self, transaction, block_timestamp</span>):</span><br><span class="line">    <span class="comment"># logger.debug(&quot;parse transaction. hash:&#123;&#125;&quot;.format(hash_info[&quot;hash&quot;]))</span></span><br><span class="line">    transaction_info = &#123;&#125;</span><br><span class="line">    transaction_info[<span class="string">&quot;tx&quot;</span>] = transaction[<span class="string">&quot;hash&quot;</span>].<span class="built_in">hex</span>()</span><br><span class="line">    transaction_info[<span class="string">&quot;from&quot;</span>] = transaction[<span class="string">&quot;from&quot;</span>]</span><br><span class="line">    transaction_info[<span class="string">&quot;time&quot;</span>] = timestamp2date(<span class="built_in">int</span>(block_timestamp))</span><br><span class="line"></span><br><span class="line">    input_data = transaction[<span class="string">&quot;input&quot;</span>]</span><br><span class="line">    four_byte = input_data[<span class="number">0</span>:<span class="number">10</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> four_byte == <span class="string">&quot;0x467f963d&quot;</span>:  <span class="comment"># sell的函数选择器</span></span><br><span class="line">        transaction_info[<span class="string">&quot;type&quot;</span>] = <span class="string">&quot;SELL&quot;</span></span><br><span class="line">        nft_token, token_id, num, per_price = self.parse_sell_input_data(input_data)</span><br><span class="line">        transaction_info[<span class="string">&quot;token&quot;</span>] = Web3.toChecksumAddress(nft_token)</span><br><span class="line">        transaction_info[<span class="string">&quot;tokenId&quot;</span>] = token_id</span><br><span class="line">        transaction_info[<span class="string">&quot;count&quot;</span>] = num</span><br><span class="line">        transaction_info[<span class="string">&quot;amount&quot;</span>] = <span class="built_in">str</span>(per_price)</span><br><span class="line">        <span class="comment"># 。。。。</span></span><br></pre></td></tr></table></figure>
 <p>剩下的部分,就是对各个参数进行解析了。</p>
 <blockquote>
-<p>data组成规则:<br>
+<p>data组成规则:<br />
 关于data，前八位为方法名以及参数类型的hash，只要方法名，参数个数，参数顺序以及参数类型确定，方法名hash就确定</p>
 <p>hash往后64位进行分割，每一段就是方法的参数，不足64前面补零凑64位</p>
 <p>参数中对于数组类型要注意，解析会有点特殊，一般会先以位数序号进行占位，然后到指定位序才是真正数组数据的起点，数组数据起点会先表明下面数据有多少位，然后才是数组数据的依次排列</p>
@@ -308,7 +308,7 @@
 </li>
 </ul>
 <p>就基本可以完成对<code>Raca NFT</code>市场实时交易记录的监控了。</p>
-<hr>
+<hr />
 <p>在开发的过程中，也发现了一些有趣的点。</p>
 <h1>有趣的点：</h1>
 <h2 id="科学家抢购">科学家抢购:</h2>
@@ -335,10 +335,10 @@
       <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -448,7 +448,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -503,12 +503,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

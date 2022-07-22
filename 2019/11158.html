@@ -262,20 +262,20 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sqlmap paths</span></span><br><span class="line">paths = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store original command line options</span></span><br><span class="line">cmdLineOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store merged options (command line, configuration file and default options)</span></span><br><span class="line">mergedOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes command</span></span><br><span class="line"><span class="comment"># line options and settings</span></span><br><span class="line">conf = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes results</span></span><br><span class="line">kb = AttribDict()</span><br></pre></td></tr></table></figure>
 <p>所以有必要看看<code>AttribDict</code>这个类.</p>
 <p>顺便总结一下自己不熟悉的相关知识点.</p>
-<hr>
+<hr />
 <h1><code>AttribDict</code>组成:</h1>
 <p>这个类通过override了几个<code>super method</code>.</p>
 <p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt="" /></p>
+<hr />
 <h2 id="定义-2">定义:</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
-<p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br>
+<p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br />
 现在的自定义字典的用法:<code>dict1.key</code></p>
-<hr>
+<hr />
 <h2 id="init-初始化"><code>__init__</code> 初始化</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, indict=<span class="literal">None</span>, attribute=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">if</span> indict <span class="keyword">is</span> <span class="literal">None</span>: </span><br><span class="line">        indict = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Set any attributes here - before initialisation</span></span><br><span class="line">    <span class="comment"># these remain as normal attributes   在初始化之前设置通用属性</span></span><br><span class="line">    self.attribute = attribute</span><br><span class="line">    <span class="built_in">dict</span>.__init__(self, indict)</span><br><span class="line">    self.__initialised = <span class="literal">True</span> <span class="comment"># 初始化标志</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># After initialisation, setting attributes</span></span><br><span class="line">    <span class="comment"># is the same as setting an item  初始化之后</span></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="setattr-对一个属性赋值"><code>__setattr__</code> 对一个属性赋值</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__setattr__</span>(<span class="params">self, item, value</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Maps attributes to values</span></span><br><span class="line"><span class="string">    Only if we are initialised   只对初始化过的实例赋值</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># This test allows attributes to be set in the __init__ method</span></span><br><span class="line">    <span class="comment"># 允许在初始化的时候设置属性</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;_AttribDict__initialised&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> self.__dict__:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">dict</span>.__setattr__(self, item, value)</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Any normal attributes are handled normally</span></span><br><span class="line">    <span class="keyword">elif</span> item <span class="keyword">in</span> self.__dict__: <span class="comment"># 如果已经设置过了</span></span><br><span class="line">        <span class="built_in">dict</span>.__setattr__(self, item, value)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>: <span class="comment"># 没设置过的</span></span><br><span class="line">        self.__setitem__(item, value)</span><br></pre></td></tr></table></figure>
 <p>例如执行以下代码</p>
@@ -302,7 +302,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.__setitem__(item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self[key] = val`,对新索引值赋值</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="getattr-访问一个不存在的属性"><code>__getattr__</code> 访问一个不存在的属性</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__getattr__</span>(<span class="params">self, item</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; </span></span><br><span class="line"><span class="string">    Maps values to attributes</span></span><br><span class="line"><span class="string">    Only called if there *is NOT* an attribute with this name </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> self.__getitem__(item) <span class="comment"># 通过key获取value</span></span><br><span class="line">    <span class="keyword">except</span> KeyError:</span><br><span class="line">        <span class="keyword">raise</span> AttributeError(<span class="string">&quot;unable to access item &#x27;%s&#x27;&quot;</span> % item)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line"><span class="built_in">print</span> kb.a</span><br></pre></td></tr></table></figure>
@@ -319,17 +319,17 @@
 </li>
 </ul>
 <p>额,效果只是让错误输出更友好而已…</p>
-<hr>
+<hr />
 <h2 id="getstate-序列化"><code>__getstate__</code> 序列化</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__getstate__</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">return</span> self.__dict__</span><br></pre></td></tr></table></figure>
 <p>代替对象的__dict__属性被保存。</p>
 <p>当对象pickled，你可返回一个自定义的状态被保存。当对象unpickled时，这个状态将会被<code>__setstate__</code>使用。</p>
-<hr>
+<hr />
 <h2 id="setstate-序列化"><code>__setstate__</code> 序列化</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__setstate__</span>(<span class="params">self, <span class="built_in">dict</span></span>):</span><br><span class="line">    self.__dict__ = <span class="built_in">dict</span></span><br></pre></td></tr></table></figure>
 <p>对象unpickled时，如果<code>__setstate__</code>定义对象状态会传递来代替用对象的__dict__属性。</p>
 <p>这正好跟<code>__getstate__</code>手牵手：当二者都被定义了，你可以描述对象的pickled状态，任何你想要的。</p>
-<hr>
+<hr />
 <h2 id="deepcopy-深复制"><code>__deepcopy__</code> 深复制</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__deepcopy__</span>(<span class="params">self, memo</span>):</span><br><span class="line">    retVal = self.__class__()</span><br><span class="line">    memo[<span class="built_in">id</span>(self)] = retVal</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> attr <span class="keyword">in</span> <span class="built_in">dir</span>(self):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> attr.startswith(<span class="string">&#x27;_&#x27;</span>):</span><br><span class="line">            value = <span class="built_in">getattr</span>(self, attr)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(value, (types.BuiltinFunctionType, types.FunctionType, types.MethodType)):</span><br><span class="line">                <span class="built_in">setattr</span>(retVal, attr, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> self.items():</span><br><span class="line">        retVal.__setitem__(key, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> retVal</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -339,7 +339,7 @@
 <p>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</p>
 </blockquote>
 <p>嵌套的复杂object,为了保证数据的独立性,要尽量的使用deepcopy.</p>
-<hr>
+<hr />
 <h1>好处:</h1>
 <p>kb作为一个全局的字典,保留了相关的配置信息,很多代码里都会用到这个全局的字典,暂时能想到这样的好处就是</p>
 <ul class="lvl-0">
@@ -353,14 +353,14 @@
 <p>扫描中断需要继续的话,可以自定义序列化的内容,便于自己保存对象.</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>相关知识点:</h1>
 <h2 id="special-method">special method:</h2>
 <h3 id="特殊之处在哪呢">特殊之处在哪呢?</h3>
 <p>它的特殊之处在于:</p>
 <p>如果把Python当成一个<code>framework</code>的话，这些预留的特殊方法相当于接口<code>interface</code>.</p>
 <p>你可以通过这些接口,使得<code>your-object</code>就跟<code>built-in object</code>高度一致,也能复用到<code>built in-object</code>原有的强大的功能.</p>
-<hr>
+<hr />
 <h2 id="有哪些类型的接口呢">有哪些类型的接口呢?</h2>
 <p>可以在以下这些方面定制你自己的类:</p>
 <ol>
@@ -389,7 +389,7 @@
 <p>复制</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h3 id="什么时候会用到特殊方法呢">什么时候会用到特殊方法呢?</h3>
 <p><strong>原有的数据类型的功能不能满足你的要求.</strong></p>
 <p>例子:</p>
@@ -401,7 +401,7 @@
 <p>自带的<code>dict</code>是无序的,如果你想用有序的字典.你可以用<code>collections</code>模块的<code>OrderedDict</code>.而这个<code>OrderedDict</code>就是在<code>dict</code>的基础上拓展来的.</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h2 id="dict-对象的属性系统"><code>__dict__</code> 对象的属性系统:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -430,7 +430,7 @@
 <p><strong>当我们需要调用某个属性的时候，Python会一层层向上遍历，直到找到那个属性。</strong>(某个属性可能出现再不同的层被重复定义，Python向上的过程中，会选取先遇到的那一个，也就是比较低层的属性定义)。</p>
 <p>当我们有一个summer对象的时候，分别查询summer对象、chicken类、bird类以及object类的属性，就可以知道summer对象所有的<code>__dict__</code>，就可以找到通过对象summer可以调用和修改的所有属性了.</p>
 <p>refs: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html">Python深入03 对象的属性</a></p>
-<hr>
+<hr />
 <h2 id="deep-copy和shadow-copy">deep copy和shadow copy:</h2>
 <blockquote>
 <ul class="lvl-1">
@@ -457,7 +457,7 @@
 </ul>
 </blockquote>
 <p>refs: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hokky/p/8476698.html">Python-copy()与deepcopy()区别</a></p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -620,7 +620,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -675,12 +675,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

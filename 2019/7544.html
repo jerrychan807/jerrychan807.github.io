@@ -259,14 +259,14 @@
 
       
         <h1>整体流程图</h1>
-<p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
-<hr>
+<p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg" /></p>
+<hr />
 <h2 id="PerFolder-每个目录">PerFolder (每个目录)</h2>
 <p>比如有一个url为:<code>http://xxxxxxxx/imcloud/static/seat/build/images/pic.jpg</code></p>
 <p>拆解后的目录为:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://10.125.20.39/</span><br><span class="line">http://10.125.20.39/imcloud/</span><br><span class="line">http://10.125.20.39/imcloud/static/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/</span><br><span class="line">http://10.125.20.39/imcloud/static/seat/build/images/</span><br></pre></td></tr></table></figure>
 <p>然后以这些目录url为基础,拼接url去扫描</p>
-<hr>
+<hr />
 <h3 id="备份文件扫描">备份文件扫描:</h3>
 <p>原理:</p>
 <p>获取来自服务器的原始套接字响应即通过文件头来识别。</p>
@@ -280,13 +280,13 @@
 <p>字典这玩意可大可小</p>
 </blockquote>
 <p>通过拼接url,如果<code>status_code</code>是200而且文件头符合,则判断为扫出了备份文件。</p>
-<hr>
+<hr />
 <h3 id="目录遍历">目录遍历:</h3>
-<p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/12/18/v1jFySAURNh76Cm.jpg" alt="" /></p>
 <p>找出一些常见的目录遍历的页面,html源码中有这些特征</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;directory listing for&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;title&gt;directory&quot;</span><br><span class="line"></span><br><span class="line">&quot;&lt;head&gt;&lt;title&gt;index of&quot;</span><br><span class="line"></span><br><span class="line">&#x27;&lt;table summary=&quot;directory listing&quot;&#x27;</span><br><span class="line"></span><br><span class="line">&#x27;last modified&lt;/a&gt;&#x27;</span><br></pre></td></tr></table></figure>
 <p>如果在返回包的源码中发现这些特征,则判断这个页面有目录遍历漏洞。</p>
-<hr>
+<hr />
 <h3 id="敏感文件扫描">敏感文件扫描:</h3>
 <p>敏感文件字典采集于bbscan</p>
 <p>总的敏感文件有以下这些</p>
@@ -316,24 +316,24 @@
 <p>不在文件拓展名黑名单</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h3 id="idea-工作目录解析">.idea 工作目录解析:</h3>
 <p>原理:</p>
 <p>url拼接上<code>/.idea/workspace.xml</code></p>
 <p>如果返回包源码中能正则匹配到<code>&lt;project version=&quot;\w+&quot;&gt;</code>，正则匹配版本号,则判定为 JetBrans .idea 泄漏.</p>
-<hr>
+<hr />
 <h3 id="phpinfo探测解析">phpinfo探测解析:</h3>
 <p>字典为</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;phpinfo.php&quot;,</span><br><span class="line">&quot;pi.php&quot;,</span><br><span class="line">&quot;php.php&quot;,</span><br><span class="line">&quot;i.php&quot;,</span><br><span class="line">&quot;test.php&quot;,</span><br><span class="line">&quot;temp.php&quot;,</span><br><span class="line">&quot;info.php&quot;,</span><br></pre></td></tr></table></figure>
 <p>原理:</p>
 <p>拼接Url,发包访问,如果返回包中含<code>&lt;title&gt;phpinfo()&lt;/title&gt;</code>, 则判定为存在phpinfo文件</p>
-<hr>
+<hr />
 <h3 id="git-svn-bzr-hg泄漏">git svn bzr hg泄漏:</h3>
 <p>字典为</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flag = &#123;</span><br><span class="line">    <span class="string">&quot;/.svn/all-wcprops&quot;</span>: <span class="string">&quot;svn:wc:ra_dav:version-url&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/.git/config&quot;</span>: <span class="string">&#x27;repositoryformatversion[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&quot;/.bzr/README&quot;</span>: <span class="string">&#x27;This\sis\sa\sBazaar[\s\S]&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/CVS/Root&#x27;</span>: <span class="string">&#x27;:pserver:[\s\S]*?:[\s\S]*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/.hg/requires&#x27;</span>: <span class="string">&#x27;^revlogv1.*&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>键为文件路径,值为正则匹配规则。</p>
 <p>拼接url, 正则匹配返回包内容,匹配成功则判定为目录下有仓库源码泄漏漏洞</p>
-<hr>
+<hr />
 <h3 id="Sftp探测">Sftp探测:</h3>
 <p>字典:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/sftp-config.json</span><br><span class="line">/recentservers.xml</span><br></pre></td></tr></table></figure>
@@ -341,7 +341,7 @@
 <p><code>(&quot;type&quot;:[\s\S]*?&quot;host&quot;:[\s\S]*?&quot;user&quot;:[\s\S]*?</code></p>
 <p><code>&quot;password&quot;:[\s\S]*&quot;)</code>,<code>(&lt;Pass&gt;[\s\S]*?&lt;\/Pass&gt;)</code></p>
 <p>匹配到则认为找到sftp</p>
-<hr>
+<hr />
 <h3 id="WEB编辑器探测">WEB编辑器探测:</h3>
 <p>规则格式和判定方式和敏感文件扫描一样。</p>
 <p>规则格式:<code>&#123;'path': '/fckeditor/_samples/default.html', 'tag': '&lt;title&gt;FCKeditor', 'content-type': 'html',                      'content-type_no': ''&#125;</code></p>
@@ -358,7 +358,7 @@
 <p>不在文件拓展名黑名单</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -491,7 +491,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -546,12 +546,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

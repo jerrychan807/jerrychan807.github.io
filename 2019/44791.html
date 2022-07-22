@@ -261,7 +261,7 @@
 <p>最近打算捣鼓一个黑链扫描器.</p>
 <p>当你打开浏览器去访问被挂了黑链的网站的时候,渲染执行完js代码后,就会跳转到恶意的网站.</p>
 <p>那么这种情况应该选用什么爬虫的解决方案呢?即技术选型</p>
-<hr>
+<hr />
 <h1>技术选型:</h1>
 <h2 id="方案一-静态爬虫">方案一 静态爬虫:</h2>
 <p>在python中最常见的就是用<code>requests</code>,<code>urllib2</code>等库来模拟发包,执行简单的HTTP请求并获取HTML页面.</p>
@@ -284,7 +284,7 @@
 </li>
 </ul>
 <p>基于以上两点,果断弃之.</p>
-<hr>
+<hr />
 <h2 id="方案二-动态爬虫">方案二 动态爬虫:</h2>
 <p>选型1: 使用<code>Selenium</code>等库来驱动Chrome、Firefox或PhantomJS.</p>
 <blockquote>
@@ -295,10 +295,10 @@
 <p>选型2: <code>pyppeteer</code>+<code>Chromium headless</code></p>
 <blockquote>
 <p>在去年，puppeteer和Chromium项目在经历了不断迭代后，新增了一些关键功能，Headless模式现在已经能大致胜任扫描器爬虫的任务。</p>
-<p>所以我们在去年果断更新了扫描器的动态爬虫，采用Chromium的Headless模式作为网页内容解析引擎<br>
+<p>所以我们在去年果断更新了扫描器的动态爬虫，采用Chromium的Headless模式作为网页内容解析引擎<br />
 ----<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/178339">漏扫动态爬虫实践</a></p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="总结-3">总结:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -313,28 +313,28 @@
 </ul>
 <p>综上,就决定使用<code>pyppeteer</code>+<code>Chromium headless</code>这个搭配方案了.</p>
 <p>那么,现在就跑个Demo来试试水.(参考<a target="_blank" rel="noopener" href="https://medium.com/z1digitalstudio/pyppeteer-the-snake-charmer-f3d1843ddb19">Pyppeteer, the snake charmer</a>)</p>
-<hr>
+<hr />
 <h1>Demo:</h1>
 <blockquote>
-<p>原文章里的代码基本可以运行.<br>
+<p>原文章里的代码基本可以运行.<br />
 就是<code>url</code>和需要提取信息的<code>xpath</code>发送了一些变化.稍作修改即可</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="静态爬虫">静态爬虫:</h2>
 <p>先用最原始的方式,确认能够获取得到信息.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> lxml.html</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_page</span>(<span class="params">url</span>):</span><br><span class="line">    <span class="keyword">return</span> request.urlopen(url)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_document</span>(<span class="params">response</span>):</span><br><span class="line">    <span class="keyword">return</span> response.read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extract_data</span>(<span class="params">document</span>):</span><br><span class="line">    <span class="comment"># Generate document tree</span></span><br><span class="line">    tree = lxml.html.fromstring(document)</span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = tree.xpath(<span class="string">&#x27;//*[@id=&quot;mw-content-text&quot;]/div/table[1]/tbody/tr[th and td]&#x27;</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        th, td = element.iterchildren()</span><br><span class="line">        result.update(&#123;</span><br><span class="line">            th.text_content(): td.text_content()</span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">&quot;python&quot;</span>: <span class="string">&quot;https://en.wikipedia.org/wiki/Python_(programming_language)&quot;</span>,</span><br><span class="line">        <span class="comment"># &quot;Rust&quot;: &quot;https://es.wikipedia.org/wiki/Rust_(lenguaje_de_programaci%C3%B3n)&quot;,</span></span><br><span class="line">        <span class="comment"># &quot;Java&quot;: &quot;https://es.wikipedia.org/wiki/Java_(lenguaje_de_programaci%C3%B3n)&quot;,</span></span><br><span class="line">        <span class="comment"># &quot;Javascript&quot;: &quot;https://es.wikipedia.org/wiki/JavaScript&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        response = get_page(url)</span><br><span class="line">        document = read_document(response)</span><br><span class="line">        result.update(&#123;name: extract_data(document)&#125;)</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>预期结果:</p>
-<p><img src="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/05/19/5ce1767fb20d290774.png" alt="" /></p>
+<hr />
 <h2 id="puppeteer">puppeteer:</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Time    : 2019/5/18 11:32 PM</span></span><br><span class="line"><span class="comment"># @Author  : Jerry</span></span><br><span class="line"><span class="comment"># @Desc    : </span></span><br><span class="line"><span class="comment"># @File    : pyppeteer1.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> pyppeteer <span class="keyword">import</span> launch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">get_browser</span>():  <span class="comment"># 启动浏览器</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> launch(&#123;<span class="string">&quot;headless&quot;</span>: <span class="literal">False</span>&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">get_page</span>(<span class="params">browser, url</span>):</span><br><span class="line">    page = <span class="keyword">await</span> browser.newPage()</span><br><span class="line">    <span class="keyword">await</span> page.goto(url)</span><br><span class="line">    <span class="keyword">return</span> page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">extract</span>(<span class="params">browser, name, url</span>):</span><br><span class="line">    page = <span class="keyword">await</span> get_page(browser, url)</span><br><span class="line">    <span class="keyword">return</span> &#123;name: <span class="keyword">await</span> extract_data(page)&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">extract_data</span>(<span class="params">page</span>):  <span class="comment"># 数据提取</span></span><br><span class="line">    <span class="comment"># Select tr with a th and td descendant from table</span></span><br><span class="line">    elements = <span class="keyword">await</span> page.xpath(</span><br><span class="line">        <span class="string">&#x27;//*[@id=&quot;mw-content-text&quot;]/div/table[1]/tbody/tr[th and td]&#x27;</span>)</span><br><span class="line">    <span class="comment"># Extract data</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> elements:</span><br><span class="line">        title, content = <span class="keyword">await</span> page.evaluate(</span><br><span class="line">            <span class="string">&#x27;&#x27;&#x27;(element) =&gt;</span></span><br><span class="line"><span class="string">                [...element.children].map(child =&gt; child.textContent)&#x27;&#x27;&#x27;</span>,</span><br><span class="line">            element)</span><br><span class="line">        result.update(&#123;title: content&#125;)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">extract_all</span>(<span class="params">languages</span>):  <span class="comment"># 程序入口</span></span><br><span class="line">    browser = <span class="keyword">await</span> get_browser()  <span class="comment"># 启动浏览器</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name, url <span class="keyword">in</span> languages.items():</span><br><span class="line">        result.update(<span class="keyword">await</span> extract(browser, name, url))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    languages = &#123;</span><br><span class="line">        <span class="string">&quot;python&quot;</span>: <span class="string">&quot;https://en.wikipedia.org/wiki/Python_(programming_language)&quot;</span>,</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loop = asyncio.get_event_loop()</span><br><span class="line">    result = loop.run_until_complete(extract_all(languages))</span><br><span class="line"></span><br><span class="line">    pprint.pprint(result)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>同样能够获取到和预期一样的结果</p>
-<hr>
+<hr />
 <h1>总结:</h1>
-<p>从Demo出发,再不断改进优化功能.<br>
-便能慢慢有些雏形出来了.<br>
+<p>从Demo出发,再不断改进优化功能.<br />
+便能慢慢有些雏形出来了.<br />
 Keeo Moving.</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -476,7 +476,7 @@ Keeo Moving.</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -531,12 +531,12 @@ Keeo Moving.</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -265,30 +265,30 @@
 <p>可是这种做法毕竟不是长久之计，机器重启或者不小心kill了某个进程，后台运行的这个进程可能就不小心死掉了。</p>
 <p>后来开源界的大牛建议我用supervisor。尝试之后，简直是如获至宝。作为一个存在了长达10年多的进程管理软件，他已经相当成熟。</p>
 </blockquote>
-<hr>
+<hr />
 <h1>Supervisor组成部分:</h1>
 <ol>
 <li class="lvl-3">
-<p><strong>supervisord: 服务守护进程</strong>:<br>
+<p><strong>supervisord: 服务守护进程</strong>:<br />
 supervisor服务器的进程名是supervisord。它主要负责在自己的调用中启动子程序，响应客户端的命令，重新启动崩溃或退出的进程，记录其子进程stdout和stderr的输出，以及生成和处理对应于子进程生命周期中的&quot;event&quot;服务器进程使用的配置文件，通常路径存放在/etc/supervisord.confa中。此配置文件是INI格式的配置文件。</p>
 </li>
 <li class="lvl-3">
-<p><strong>supervisorctl：命令行客户端</strong>:<br>
+<p><strong>supervisorctl：命令行客户端</strong>:<br />
 supervisor命令行的客户端名称是supervisorctl。它为supervisord提供了一个类似于shell的交互界面。使用supervisorctl，用户可以查看不同的supervisord进程列表，获取控制子进程的状态，如停止和启动子进程</p>
 </li>
 <li class="lvl-3">
 <p>Web Server：提供与supervisorctl功能相当的WEB操作界面一个可以通过Web界面来查看和控制进程的状态，默认监听在9091上。</p>
 </li>
 <li class="lvl-3">
-<p>XML-RPC Interface：XML-RPC接口<br>
+<p>XML-RPC Interface：XML-RPC接口<br />
 supervisor用于控制的XML-RPC接口</p>
 </li>
 </ol>
-<hr>
+<hr />
 <h1>安装&amp;初始化:</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">/usr/local/bin/pip2.7 install supervisor</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化配置文件</span></span><br><span class="line">/usr/local/bin/echo_supervisord_conf &gt; /xxx/supervisord.conf</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>编辑配置文件:</h1>
 <p>编辑<code>supervisord.conf</code></p>
 <p>示例:</p>
@@ -296,20 +296,20 @@ supervisor用于控制的XML-RPC接口</p>
 <blockquote>
 <p>配置项有很多…</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="tips">tips:</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/Supervisor/supervisor/issues/980">supervisor crash when config command include java “%t %p” variable</a></p>
 <p>如果在运行的命令中有用到<code>%</code>,会报格式错误.这个时候只需要双写<code>%</code>即<code>%%</code>就好了.</p>
-<hr>
+<hr />
 <h1>基本操作命令:</h1>
 <h2 id="启停supervisor">启停supervisor:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisord -c /etc/supervisord.conf </span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl /etc/supervisord.conf shutdown</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重载</span></span><br><span class="line">supervisorctl /etc/supervisord.conf reload</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="管理进程">管理进程:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf start program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf restart program_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止全部进程</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf stop all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></span><br><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="加入启动项">加入启动项:</h2>
 <blockquote>
 <p>centos7环境下</p>
@@ -320,17 +320,17 @@ supervisor用于控制的XML-RPC接口</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置权限</span></span><br><span class="line"><span class="built_in">chmod</span> 755 /usr/lib/systemd/system/supervisord.service</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> supervisord.service</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动supervisor进程</span></span><br><span class="line">systemctl start supervisord</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭supervisor进程</span></span><br><span class="line">systemctl stop supervisord</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果修改了supervisor.service文件，可以通过reload命令来重新加载配置文件</span></span><br><span class="line">systemctl reload supervisord</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>定期重启指定进程方法</h1>
 <p><code>Supervisor</code>配合<code>crontab</code>可定期重启.</p>
 <p>例:每小时重启进程abc</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 * * * * supervisorctl -c /etc/supervisord.conf restart abc</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>总结:</h1>
 <p>初步使用的感觉是,配置起来不麻烦,要重启进程的话也很方便,不用在手打冗长的命令.</p>
 <p>但是配置项不算少,要真正用得好,还是要在实践中慢慢定下适合自己程序的配置项.</p>
 <p>配置项的介绍可以参考<a target="_blank" rel="noopener" href="https://www.rddoc.com/doc/Supervisor/3.3.1/zh/">Supervisor文档</a></p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -478,7 +478,7 @@ supervisor用于控制的XML-RPC接口</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -533,12 +533,12 @@ supervisor用于控制的XML-RPC接口</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

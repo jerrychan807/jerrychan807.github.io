@@ -274,16 +274,16 @@
 </ul>
 <h1>监控bscscan:</h1>
 <p>这部分我没有去具体实现，暂时能想到的有几个实现的方向已知项目方的地址后，去监控对应地址有没<code>Add Liquidity</code>的动作</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150515.png" alt="20220513150515"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150515.png" alt="20220513150515" /></p>
 <p>或者监控<code>PancakeSwap: Router v2</code>合约的交互记录里的<code>Add Liquidity</code>的动作</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150709.png" alt="20220513150709"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513150709.png" alt="20220513150709" /></p>
 <h1>LP地址在配对主流币种合约里的余额</h1>
 <p>如果是在bsc上的话，一般添加流动性的时候，Token会与<code>BNB</code>、<code>USDT</code>、<code>BUSD</code>、<code>CAKE</code>、<code>USDC</code>等主流的币种进行组合。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513151119.png" alt="20220513151119"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513151119.png" alt="20220513151119" /></p>
 <p>例如该<code>token</code>是和<code>USDT</code>组合的，那用<code>LP Token</code>地址在<code>USDT</code>的合约能查询到对应的余额。</p>
 <p>例如某token只和<code>USDT</code>组合添加了流动性，那在看k线网站上<code>liquidity</code>数值和<code>LP Token</code>地址在<code>USDT</code>的合约里的余额是一样的。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152149.png" alt="20220513152149"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152421.png" alt="20220513152421"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152149.png" alt="20220513152149" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220513152421.png" alt="20220513152421" /></p>
 <p>那么我们就能通过<code>LP Token</code>地址在主流币种合约里的余额来判断、监控 首次添加的流动性的动作。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部分代码</span></span><br><span class="line">USDT_contract = bsc_ins.get_token_contract_with_abi(contract_address=USDT_token, abi=erc20abi) <span class="comment"># usdt合约实例</span></span><br><span class="line">YourToken_usdt_lp = Web3.toChecksumAddress(<span class="string">&quot;0x5eaa1c251db4b0aea24619a37c5c311111111111&quot;</span>) <span class="comment"># token&amp;USDT 组成的lp地址</span></span><br><span class="line">balanceOf = USDT_contract.functions.balanceOf(Web3.toChecksumAddress(YourToken_usdt_lp)).call() <span class="comment"># 查询Lp地址的USDT的余额</span></span><br><span class="line"><span class="keyword">if</span> balanceOf &gt; <span class="number">0</span>:</span><br><span class="line">    notify_content = <span class="string">&quot;&quot;&quot;🟢Usdt lp池子监控存在 \n&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -421,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -476,12 +476,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

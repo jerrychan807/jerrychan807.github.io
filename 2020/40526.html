@@ -261,7 +261,7 @@
 <h2 id="DNS记录分类">DNS记录分类</h2>
 <p>常见的DNS记录有以下几类：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">A记录       IP地址记录,记录一个域名对应的IP地址</span><br><span class="line">AAAA记录    IPv6地址记录，记录一个域名对应的IPv6地址</span><br><span class="line">CNAME记录   别名记录，记录一个主机的别名</span><br><span class="line">MX记录      电子邮件交换记录，记录一个邮件域名对应的IP地址</span><br><span class="line">NS记录      域名服务器记录 ,记录该域名由哪台域名服务器解析</span><br><span class="line">PTR记录     反向记录，也即从IP地址到域名的一条记录</span><br><span class="line">TXT记录     记录域名的相关文本信息</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="原理-2">原理:</h2>
 <p>DNS服务器分为：主服务器、备份服务器和缓存服务器。</p>
 <p>在主备服务器之间同步数据库，需要使用“DNS域传送”。</p>
@@ -275,11 +275,11 @@
 <p>3）测试服务器的IP地址，</p>
 <p>4）VPN服务器地址泄露</p>
 <p>5）其他敏感服务器</p>
-<hr>
+<hr />
 <h2 id="检测">检测:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap --script dns-zone-transfer --script-args dns-zone-transfer.domain=li-ning.com -p 53 -Pn ns.lining.cn</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201113100039.png" alt="20201113100039"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20201113100039.png" alt="20201113100039" /></p>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -412,7 +412,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -467,12 +467,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

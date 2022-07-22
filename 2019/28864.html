@@ -265,59 +265,59 @@
 <p>celery的worker进程中,报错</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  File <span class="string">&quot;/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/strategies.py&quot;</span>, line <span class="number">106</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> dialect.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">&quot;/usr/local/lib/python2.7/site-packages/sqlalchemy/engine/default.py&quot;</span>, line <span class="number">412</span>, <span class="keyword">in</span> connect</span><br><span class="line">    <span class="keyword">return</span> self.dbapi.connect(*cargs, **cparams)</span><br><span class="line">  File <span class="string">&quot;/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py&quot;</span>, line <span class="number">130</span>, <span class="keyword">in</span> connect</span><br><span class="line">    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)</span><br><span class="line">OperationalError: (psycopg2.OperationalError) could <span class="keyword">not</span> receive data <span class="keyword">from</span> server: Connection timed out</span><br><span class="line"> (Background on this error at: http://sqlalche.me/e/e3q8)</span><br></pre></td></tr></table></figure>
 <p>连接超时,无法取得数据.</p>
-<hr>
+<hr />
 <h1>Debug思路:</h1>
 <h2 id="1-连接数">1.连接数:</h2>
 <p>看到报错 <code>could not receive data from server: Connection timed out</code></p>
 <p>一开始觉得是最大连接数的问题.</p>
 <p>因为别的正在泡的应用会用<code>pool_size=100</code>的连接池去连接<code>postgresql</code>里的某个数据库,</p>
 <p>查询最大连接数<code>show max_connections;</code></p>
-<p><img src="https://i.loli.net/2019/05/30/5cef801e4f8e874593.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef801e4f8e874593.png" alt="" /></p>
 <blockquote>
 <p>最大连接连接数默认才100,那么<code>pool_size=100</code>的连接池去连接的话会全部占用了吧…</p>
 </blockquote>
 <p>再继续查询</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> max_conn,used,res_for_super,max_conn<span class="operator">-</span>used<span class="operator">-</span>res_for_super res_for_normal </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">  (<span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) used <span class="keyword">from</span> pg_stat_activity) t1,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="type">int</span> res_for_super <span class="keyword">from</span> pg_settings <span class="keyword">where</span> name<span class="operator">=</span>$$superuser_reserved_connections$$) t2,</span><br><span class="line">  (<span class="keyword">select</span> setting::<span class="type">int</span> max_conn <span class="keyword">from</span> pg_settings <span class="keyword">where</span> name<span class="operator">=</span>$$max_connections$$) t3</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/05/30/5cef80989906427300.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef80989906427300.png" alt="" /></p>
 <p>实际上,并非连接数被占满了,还是有空余的连接数的.</p>
 <p>既然还有剩余的,那我这个应用把连接池的<code>pool_size</code>改为<code>10</code>,应该能正常连接上吧.</p>
 <p>修改之后,还是报同样的错误不行.</p>
-<hr>
+<hr />
 <p>搜索了一下,然后根据这个链接<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
 <p>继续排错:</p>
 <blockquote>
 <p>连接超时错误表明无法通过网络上的设置访问数据库服务器，其方式不会立即返回错误。</p>
 <p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
 </blockquote>
-<hr>
+<hr />
 <ol>
 <li class="lvl-3">
 <p>你能从服务器ping服务器吗？如果没有，请从故障排除网络开始</p>
 </li>
 </ol>
-<p><img src="https://i.loli.net/2019/05/30/5cef8390689c218268.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef8390689c218268.png" alt="" /></p>
 <blockquote>
 <p>ping 第一个网段的ip 发现会丢包…有点奇怪…</p>
 </blockquote>
 <p>ping另一个网段的ip</p>
-<p><img src="https://i.loli.net/2019/05/30/5cef85fa2890d42171.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/05/30/5cef85fa2890d42171.png" alt="" /></p>
 <blockquote>
 <p>不会丢包.难道要用另一个网段的ip来建立数据库连接?</p>
 </blockquote>
-<hr>
+<hr />
 <ol start="2">
 <li class="lvl-3">
 <p>你可以使用相同的端口，IP地址等通过psql连接到服务器吗？如果超时，您可能需要检查防火墙和postgresql配置</p>
 </li>
 </ol>
 <p>查看postgre 数据库所在的服务器的防火墙设置.发现也正常.</p>
-<p>在客户端写了个简单的脚本,发现也连接正常.<br>
-<img src="https://i.loli.net/2019/05/30/5cef8456dc52c19819.png" alt=""></p>
-<hr>
+<p>在客户端写了个简单的脚本,发现也连接正常.<br />
+<img src="https://i.loli.net/2019/05/30/5cef8456dc52c19819.png" alt="" /></p>
+<hr />
 <h1>真正的问题:</h1>
 <p>最终发现.用来连接数据库的内网ip冲突了…</p>
 <p>omg…</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -468,7 +468,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -523,12 +523,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

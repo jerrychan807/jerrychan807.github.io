@@ -291,8 +291,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安裝 docker image：</span></span><br><span class="line">docker pull trailofbits/eth-security-toolbox</span><br></pre></td></tr></table></figure>
 <h2 id="docker共享目录volume">docker共享目录volume:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker里创建目录:</span></span><br><span class="line"><span class="comment"># 源代码文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> contracts</span><br><span class="line"><span class="comment"># 库文件夹</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> @openzeppelin</span><br></pre></td></tr></table></figure>
-<p>我是使用图形化工具共享目录<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png" alt="EC7266A8-3812-4827-8BCD-2CBFAA44330B"></p>
+<p>我是使用图形化工具共享目录<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/EC7266A8-3812-4827-8BCD-2CBFAA44330B.png" alt="EC7266A8-3812-4827-8BCD-2CBFAA44330B" /></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 共享源文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/openzeppelin-contracts/contracts </span><br><span class="line"></span><br><span class="line">/home/contracts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 共享库文件目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/cool-erc20/blacklist/node_modules/@openzeppelin</span><br><span class="line"></span><br><span class="line">/home/@openzeppelin</span><br></pre></td></tr></table></figure>
 <h1>SLITHER使用:</h1>
 <h2 id="检查solc版本">检查solc版本:</h2>
@@ -301,15 +301,15 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开始扫描</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/ERC20Snapshot.sol</span><br></pre></td></tr></table></figure>
 <p>报错，不支持相对导入<code> import &quot;../ERC20.sol&quot;;</code>修改import语句，成<code>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 指定 --solc-remaps 来告诉编译器 openzeppelin 的具体位置</span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ </span><br></pre></td></tr></table></figure>
-<p>扫描结果：<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png" alt="2859ABE2-0593-4DC4-9786-E6CDC6F945BF"></p>
+<p>扫描结果：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/2859ABE2-0593-4DC4-9786-E6CDC6F945BF.png" alt="2859ABE2-0593-4DC4-9786-E6CDC6F945BF" /></p>
 <h2 id="输出合约继承关系图：">输出合约继承关系图：</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出合约继承关系 --print inheritance-graph</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> inheritance-graph</span><br></pre></td></tr></table></figure>
-<p>执行结果:<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/881C71ED-C4E0-476D-81D8-879BE8B4D25A.png" alt="881C71ED-C4E0-476D-81D8-879BE8B4D25A"></p>
+<p>执行结果:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/881C71ED-C4E0-476D-81D8-879BE8B4D25A.png" alt="881C71ED-C4E0-476D-81D8-879BE8B4D25A" /></p>
 <p>生成的是<code>.dot文件</code>使用在线工具，转换一下<code>.dot</code>格式的文件，来输出图形</p>
 <p><a target="_blank" rel="noopener" href="https://dreampuf.github.io/GraphvizOnline/#digraph%20G%20%7B%0A%0A%20%20subgraph%20cluster_0%20%7B%0A%20%20%20%20style%3Dfilled%3B%0A%20%20%20%20color%3Dlightgrey%3B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%2Ccolor%3Dwhite%5D%3B%0A%20%20%20%20a0%20-%3E%20a1%20-%3E%20a2%20-%3E%20a3%3B%0A%20%20%20%20label%20%3D%20%22process%20%231%22%3B%0A%20%20%7D%0A%0A%20%20subgraph%20cluster_1%20%7B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%5D%3B%0A%20%20%20%20b0%20-%3E%20b1%20-%3E%20b2%20-%3E%20b3%3B%0A%20%20%20%20label%20%3D%20%22process%20%232%22%3B%0A%20%20%20%20color%3Dblue%0A%20%20%7D%0A%20%20start%20-%3E%20a0%3B%0A%20%20start%20-%3E%20b0%3B%0A%20%20a1%20-%3E%20b3%3B%0A%20%20b2%20-%3E%20a3%3B%0A%20%20a3%20-%3E%20a0%3B%0A%20%20a3%20-%3E%20end%3B%0A%20%20b3%20-%3E%20end%3B%0A%0A%20%20start%20%5Bshape%3DMdiamond%5D%3B%0A%20%20end%20%5Bshape%3DMsquare%5D%3B%0A%7D">Graphviz在线使用</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3ADC3166-CCB2-43A5-B9F8-52CE1EB66491.png" alt="3ADC3166-CCB2-43A5-B9F8-52CE1EB66491"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3ADC3166-CCB2-43A5-B9F8-52CE1EB66491.png" alt="3ADC3166-CCB2-43A5-B9F8-52CE1EB66491" /></p>
 <p>图示说明：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -334,11 +334,11 @@
 <h2 id="输出合同的快速摘要">输出合同的快速摘要:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print contract-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> contract-summary</span><br></pre></td></tr></table></figure>
 <p>这跟继承关系差不多，呈现的方式有些不一样。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C37B62B5-7370-4BFA-A83C-9D0B56BDA109.png" alt="C37B62B5-7370-4BFA-A83C-9D0B56BDA109"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C37B62B5-7370-4BFA-A83C-9D0B56BDA109.png" alt="C37B62B5-7370-4BFA-A83C-9D0B56BDA109" /></p>
 <p>更多打印功能，可看<a target="_blank" rel="noopener" href="https://github.com/crytic/slither/wiki/Printer-Documentation">slither Printer documentation</a>，这个工具还是蛮实用和有趣的,So cool ~</p>
 <h2 id="输出可读的合同摘要">输出可读的合同摘要:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --print human-summary</span></span><br><span class="line">slither /home/contracts/token/ERC20/extensions/scan/ERC20Snapshot_bak.sol --solc-remaps @openzeppelin/=/home/@openzeppelin/ --<span class="built_in">print</span> human-summary</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/150FDB31-BD8C-4A9D-83B2-A6A768631844.png" alt="150FDB31-BD8C-4A9D-83B2-A6A768631844"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/150FDB31-BD8C-4A9D-83B2-A6A768631844.png" alt="150FDB31-BD8C-4A9D-83B2-A6A768631844" /></p>
 <p>内容大概有：代码总行数、汇编代码总行数、漏洞检测汇总信息等。</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -485,7 +485,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -540,12 +540,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

@@ -262,17 +262,17 @@
       
         <h1>Pre:</h1>
 <p>朋友有一批raca potion的nft要出售,尝试用程序去挂单</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119161018.png" alt="20211119161018" /></p>
 <p>raca的nft market的合约没开源，自然无法用abi、合约地址去实例化合约对象，然后快速调用合约对应函数。需要自己构造data，与合约交互。</p>
-<hr>
+<hr />
 <h1>InputData例子解析:</h1>
 <p>先了解一下InputData是怎么构成的。以下面最简单的合约为例，我们看看用参数 1 调用set(uint x)，这个交易附带的数据是什么。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.4</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">SimpleStorage</span> &#123;</span><br><span class="line">    </span><br><span class="line">    uint storedData;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set</span>(<span class="params">uint x</span>) public &#123;</span><br><span class="line">        storedData = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">get</span>(<span class="params"></span>) public constant returns (uint) &#123;</span><br><span class="line">        <span class="keyword">return</span> storedData;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>当然第一步需要先把合约部署到以太坊网络上，然后用 “1” 作为参数调用set，如下图:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175500.png" alt="20211117175500" /></p>
 <p>然后打开etherscan查看交易详情数据, 可以看到其附加数据如下图：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532"></p>
-<p>这个数据就是ABI的编码数据：<br>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211117175532.png" alt="20211117175532" /></p>
+<p>这个数据就是ABI的编码数据：<br />
 <code>0x60fe47b10000000000000000000000000000000000000000000000000000000000000001</code></p>
 <p>把上面交易的附加数据拷贝出来分析一下，这个数据可以分成两个子部分：</p>
 <p>函数选择器(4字节)</p>
@@ -309,7 +309,7 @@
 <h1>raca nft挂单卖出:</h1>
 <h2 id="授权：">授权：</h2>
 <p>授权这个data比较简单，找到多几个tx比较一下。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211119155832.png" alt="20211119155832" /></p>
 <p>可知他的data是固定的，直接用就行了。</p>
 <h2 id="挂单卖出：">挂单卖出：</h2>
 <p>依然是找到多几个tx比较一下，按照data的组成规则分开观察。</p>
@@ -464,7 +464,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -519,12 +519,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

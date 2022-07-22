@@ -260,7 +260,7 @@
       
         <h1>参数动态性检测:</h1>
 <p>直接抄一下别人的流程图:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/024A031F-AB6F-4E2F-BFD3-7FEB419DA68A.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/024A031F-AB6F-4E2F-BFD3-7FEB419DA68A.png" alt="" /></p>
 <p>其实很简单,简而言之</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -273,18 +273,18 @@
 <p>如果不相似,那么这个参数具有动态性(这个参数的变化导致了页面的变化)</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>代码:</h1>
 <p>实际的代码也是很少。(如果在理解了页面相似度这个概念的前提下)</p>
 <p>在开始检测的sql注入的<code>start()</code>函数有调用到<code>checkDynParam</code>函数</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/7653A023-2E37-4DAA-953B-2D704694060A.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/7653A023-2E37-4DAA-953B-2D704694060A.png" alt="" /></p>
 <p>经过这个检测参数动态性的函数之后,就可以看到熟悉的提示了。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[23:16:00] [INFO] testing if GET parameter &#x27;id&#x27; is dynamic</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">checkDynParam</span>(<span class="params">place, parameter, value</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    This function checks if the URL parameter is dynamic. If it is</span></span><br><span class="line"><span class="string">    dynamic, the content of the page differs, otherwise the</span></span><br><span class="line"><span class="string">    dynamicity might depend on another parameter.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> kb.redirectChoice:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    kb.matchRatio = <span class="literal">None</span></span><br><span class="line">    dynResult = <span class="literal">None</span></span><br><span class="line">    randInt = randomInt() <span class="comment"># 生成一个四位随机数</span></span><br><span class="line"></span><br><span class="line">    paramType = conf.method <span class="keyword">if</span> conf.method <span class="keyword">not</span> <span class="keyword">in</span> (<span class="literal">None</span>, HTTPMETHOD.GET, HTTPMETHOD.POST) <span class="keyword">else</span> place <span class="comment"># paramType:&#x27;GET&#x27;</span></span><br><span class="line"></span><br><span class="line">    infoMsg = <span class="string">&quot;testing if %s parameter &#x27;%s&#x27; is dynamic&quot;</span> % (paramType, parameter)</span><br><span class="line">    logger.info(infoMsg) <span class="comment"># 输出提示信息</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        payload = agent.payload(place, parameter, value, getUnicode(randInt)) <span class="comment"># payload: u&#x27;id=__PAYLOAD_DELIMITER__1412__PAYLOAD_DELIMITER__&#x27;</span></span><br><span class="line">        dynResult = Request.queryPage(payload, place, raise404=<span class="literal">False</span>) <span class="comment"># 这里面会发包,并且判断相似度</span></span><br><span class="line">    <span class="keyword">except</span> SqlmapConnectionException:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    result = <span class="literal">None</span> <span class="keyword">if</span> dynResult <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="keyword">not</span> dynResult</span><br><span class="line">    kb.dynamicParameter = result</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
 <p>函数功能注释也解释了。</p>
 <p>这个函数用于测试参数是否是动态的。如果它是动态的话，(替换成一个新的值之后)那么页面的内容会发生变化。</p>
 <p>如果这个参数不是动态的，那么动态性可能要取决于别的参数。</p>
-<hr>
+<hr />
 <h1>inspire:</h1>
 <p>在实际的渗透测试时，用brupsuite抓包的时候，会有这种感觉。</p>
 <p>不知道对哪个参数下手，不知道对哪个参数的值替换成payload进行测试。</p>
@@ -297,7 +297,7 @@
 <blockquote>
 <p>那么是不是可以编写一个brupsuite插件或者一个小工具，对数据包的参数批量的先检测它是否具有动态性,毕竟这个是注入的前提之一。</p>
 </blockquote>
-<hr>
+<hr />
 <h1>refs：</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -438,7 +438,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -493,12 +493,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

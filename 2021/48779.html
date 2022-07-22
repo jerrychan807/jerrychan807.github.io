@@ -267,7 +267,7 @@
       
         <h1>Pre:</h1>
 <p>无意中看到这个<a target="_blank" rel="noopener" href="https://youtu.be/yPQYHxwfC1g">视频</a>，有介绍到tradingview这个网站和SuperTrend这个指标,看起来还不错,尝试写个简单的交易脚本试试水。</p>
-<hr>
+<hr />
 <h1>SuperTrend指标:</h1>
 <h2 id="简介">简介:</h2>
 <p>SuperTrend指标主要用于为投资者提供价格上涨或下跌的范围</p>
@@ -276,33 +276,33 @@
 <blockquote>
 <p>简单的说,会给出<code>Buy</code>或者<code>Sell</code>信号</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png" alt="8ECBDBBC-A854-461F-A069-7A54DFE82690"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/8ECBDBBC-A854-461F-A069-7A54DFE82690.png" alt="8ECBDBBC-A854-461F-A069-7A54DFE82690" /></p>
 <h2 id="原理">原理:</h2>
 <p><strong>原理是判断收盘价是否突破ATR通道（通道 = 均价上下n倍ATR）</strong></p>
 <blockquote>
 <p>Todo:还未完全理解hhh，后续补补</p>
 </blockquote>
 <h2 id="我的理解">我的理解:</h2>
-<hr>
+<hr />
 <h3 id="是否可以按照信号进行交易">是否可以按照信号进行交易?</h3>
 <blockquote>
 <p><strong>一般来说，这个指标不用于判断进场信号，但买入价位可以在绿线上方寻找，而卖出价位则可以在红线下方寻找。</strong></p>
 </blockquote>
 <p>如果严格按照<code>Buy</code>或者<code>Sell</code>信号去执行交易的话,效果可能不会很好。</p>
 <p>很有可能会在相邻的信号时，<code>Buy</code>信号的价格比<code>Sell</code>信号要高</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5DC72757-B5E7-4E13-B371-10A557367EE9.png" alt="5DC72757-B5E7-4E13-B371-10A557367EE9"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5DC72757-B5E7-4E13-B371-10A557367EE9.png" alt="5DC72757-B5E7-4E13-B371-10A557367EE9" /></p>
 <p>例如发送了<code>Buy</code>信号,最理想的情况当然是连续的Green的K棒</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C1843CAA-777B-46DD-B03E-8647D9D13C73.png" alt="C1843CAA-777B-46DD-B03E-8647D9D13C73"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/C1843CAA-777B-46DD-B03E-8647D9D13C73.png" alt="C1843CAA-777B-46DD-B03E-8647D9D13C73" /></p>
 <p>也有可能,随后就遇到红色的K棒</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B.png" alt="6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B.png" alt="6F4D976F-F12B-473A-A6AC-B9DE5ED5A83B" /></p>
 <p>所以嘛,指标只能作为参考,当然也和你的交易周期有关(看K棒的周期)。</p>
-<hr>
+<hr />
 <h3 id="信号发送频率">信号发送频率?</h3>
 <p>跟你看线设置的周期有关:</p>
 <p>如果设置<code>1分钟</code>,那么信号频率会很高,可能几分钟就一次</p>
 <p>如果设置<code>4小时</code>,那么信号频率会很低,可能要好几天一次,胜率可能会高很多。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/D7DB9AF1-26AC-4D78-B645-701E5B39024B.png" alt="D7DB9AF1-26AC-4D78-B645-701E5B39024B"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/D7DB9AF1-26AC-4D78-B645-701E5B39024B.png" alt="D7DB9AF1-26AC-4D78-B645-701E5B39024B" /></p>
+<hr />
 <h1>交易脚本:</h1>
 <h2 id="策略">策略:</h2>
 <ul class="lvl-0">
@@ -323,7 +323,7 @@
 </li>
 </ul>
 <h2 id="流程图">流程图:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5CFD73E4-C26C-41D5-9635-68A71FBBB2B9.png" alt="5CFD73E4-C26C-41D5-9635-68A71FBBB2B9"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/5CFD73E4-C26C-41D5-9635-68A71FBBB2B9.png" alt="5CFD73E4-C26C-41D5-9635-68A71FBBB2B9" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>自己提供一个api,由tradingview进行发送<code>Buy</code>信号触发</p>
@@ -346,11 +346,11 @@
 </ul>
 <h2 id="效果-2">效果:</h2>
 <p>tradingview设置alert,设置webhook</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210926131021.png" alt="20210926131021"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20210926131021.png" alt="20210926131021" /></p>
 <p>市价买入:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/AB2C4958-CB89-42EB-A5CF-89826075AEE7.png" alt="AB2C4958-CB89-42EB-A5CF-89826075AEE7"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/AB2C4958-CB89-42EB-A5CF-89826075AEE7.png" alt="AB2C4958-CB89-42EB-A5CF-89826075AEE7" /></p>
 <p>限价卖出:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/08095169-9D4A-493F-B992-697B6F3E56CB.png" alt="08095169-9D4A-493F-B992-697B6F3E56CB"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/08095169-9D4A-493F-B992-697B6F3E56CB.png" alt="08095169-9D4A-493F-B992-697B6F3E56CB" /></p>
 <h2 id="Todo">Todo:</h2>
 <p>目前是初步尝试,跑一个月看看，后面再持续优化一下以下几个参数</p>
 <ul class="lvl-0">
@@ -364,7 +364,7 @@
 <p>止盈收益率</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -396,10 +396,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/56133.html" rel="bookmark">Crypto-pancakeSwap收税地址的简单分析</a></div>
@@ -506,7 +506,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -561,12 +561,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

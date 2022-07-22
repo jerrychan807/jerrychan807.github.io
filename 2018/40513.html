@@ -278,12 +278,12 @@
 <p>Result Backend：任务处理完后保存状态信息和结果，以供查询。Celery默认已支持Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy等方式。</p>
 </li>
 </ol>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35803f2f.jpg" alt="" /></p>
+<hr />
 <h1>初始化:</h1>
 <h2 id="1-运行celery">1.运行celery</h2>
 <p>mac环境下的celery一下载就能直接运行。但是centos6.9 环境下好像下载之后并不能直接运行，估计是环境变量没有配好。需要加上celery的安装路径。使用<code>/usr/local/bin/celery -A your_app worker --loglevel=info</code></p>
-<hr>
+<hr />
 <h2 id="2-以守护进程运行celery">2.以守护进程运行celery:</h2>
 <p>需要一个初始化脚本：celeryd</p>
 <ul class="lvl-0">
@@ -303,7 +303,7 @@
 <p><a target="_blank" rel="noopener" href="http://blog.csdn.net/happyAnger6/article/details/51626516">Celery教程-------------以守护进程方式运行worker</a></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="3-使用redis">3.使用redis:</h2>
 <p>mac下安装redis</p>
 <ul class="lvl-0">
@@ -344,7 +344,7 @@
 <p>参考：<a target="_blank" rel="noopener" href="http://www.cnblogs.com/likwo/p/5903377.html">开启redis 允许外网IP 访问</a></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>celery基本操作命令：</h1>
 <p>参考：</p>
 <ul class="lvl-0">
@@ -355,7 +355,7 @@
 <p><a target="_blank" rel="noopener" href="http://blog.csdn.net/libing_thinking/article/category/7287529">Celery-4.1 用户指南</a></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>celery worker:</h1>
 <h2 id="1-启动worker">1.启动worker:</h2>
 <ul class="lvl-0">
@@ -363,12 +363,12 @@
 <p><code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/ </code></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="2-停止worker">2.停止worker:</h2>
 <p><code>ps auxww | grep 'celery worker' | awk '&#123;print $2&#125;' | xargs kill -9</code></p>
-<hr>
+<hr />
 <h2 id="3-在celery中使用多进程：">3.在celery中使用多进程：</h2>
-<p>我用的是<code>from multiprocessing import Pool</code>来实现多进程。但是在运行过程中会直接报出这个错误<br>
+<p>我用的是<code>from multiprocessing import Pool</code>来实现多进程。但是在运行过程中会直接报出这个错误<br />
 <code>AssertionError: daemonic processes are not allowed to have children</code></p>
 <p>解决方法：</p>
 <ul class="lvl-0">
@@ -376,20 +376,20 @@
 <p>重写一个Mypool<code>https://stackoverflow.com/questions/6974695/python-process-pool-non-daemonic</code></p>
 </li>
 <li class="lvl-2">
-<p>设置环境变量<br>
+<p>设置环境变量<br />
 <code>export PYTHONOPTIMIZE=1</code></p>
 </li>
 </ul>
-<p>由于过段时间就会失效。。所以每次启动worker的时候的时候：<br>
+<p>由于过段时间就会失效。。所以每次启动worker的时候的时候：<br />
 <code>export PYTHONOPTIMIZE=1 &amp;&amp; /usr/local/bin/celery -A your_app worker --loglevel=debug --workdir=/your_dir/your_dir/your_dir/</code></p>
 <p>以下 的方法没试过：</p>
 <blockquote>
-<p>there are two method to solve this problem ,disable assert：<br>
-1.where celery starts set export PYTHONOPTIMIZE=1 OR start celery with this parameter -O OPTIMIZATION<br>
-2.disable python packet multiprocessing <a target="_blank" rel="noopener" href="http://process.py">process.py</a> line 102:<br>
+<p>there are two method to solve this problem ,disable assert：<br />
+1.where celery starts set export PYTHONOPTIMIZE=1 OR start celery with this parameter -O OPTIMIZATION<br />
+2.disable python packet multiprocessing <a target="_blank" rel="noopener" href="http://process.py">process.py</a> line 102:<br />
 assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes are not allowed to have children’</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="4-调用worker、添加任务：">4.调用worker、添加任务：</h2>
 <p>delay()和apply_async()</p>
 <p>我们之前调用任务使用了”delay()”方法，它其实是对”apply_async()”方法的封装，使得你只要传入任务所需的参数即可。对于特殊的任务调度需求，你需要使用”apply_async()”，其常用的参数有：</p>
@@ -413,7 +413,7 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 <p>serializer: 参数和返回值的序列化方式</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>celery beat 定时任务</h1>
 <h2 id="一个时间的Bug：">一个时间的Bug：</h2>
 <ul class="lvl-0">
@@ -429,15 +429,15 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 </ul>
 <p>另一种可行但麻烦的思路：</p>
 <p>celery的定时任务会有一定时间的延迟。比如，我规定模拟登陆新浪微博任务每隔10个小时执行一次，那么定时任务第一次执行就会在开启定时任务之后的10个小时后才会执行。而我抓取微博需要马上执行，需要带上cookie，所以不能等那1个小时。这个没有一个比较好的解决方法，可以使用celery的crontab()来代替schdule做定时，它会在启动的时候就执行。我采用的方法是第一次手动执行该任务，然后再通过schedule执行。</p>
-<hr>
+<hr />
 <h2 id="使用命令：">使用命令：</h2>
 <p>进入到对应your_app对应的目录下：<code>cd /your_dir/your_dir/your_dir</code>再执行：<code>/usr/local/bin/celery -A your_app beat -l info </code></p>
 <p>最方便的是，在命令中指定工作目录，一条命令即可：</p>
 <p><code>/usr/local/bin/celery -A your_dir beat -l info --workdir=/your_dir/your_dir/your_dir/</code></p>
-<hr>
+<hr />
 <h2 id="定时任务参数参考表：">定时任务参数参考表：</h2>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e358c3d84.jpg" alt="" /></p>
+<hr />
 <h2 id="动态管理定时任务：">动态管理定时任务：</h2>
 <p>查过挺多资料，有两种解决方法。跟celery运行的调度器(schedule)息息相关的。</p>
 <ul class="lvl-0">
@@ -453,7 +453,7 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 </li>
 </ul>
 <p>我使用的是这一种方法。只能管理celery的配置文件了，每次增加或减少定时任务的时候，都要对配置文件进行相应的修改。每次修改完都要重启celerybeat，试过多种方法，发现用supervisor来管理celery beat的进程是比较好的。</p>
-<hr>
+<hr />
 <h2 id="管理celery-beat进程">管理celery beat进程</h2>
 <p>用supervisor来管理celery beat进程。</p>
 <ul class="lvl-0">
@@ -467,7 +467,7 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 <p><code>/usr/local/bin/echo_supervisord_conf  &gt; /etc/supervisord.conf</code></p>
 </li>
 <li class="lvl-3">
-<p><img src="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e359693ae.jpg" alt="" /></p>
 </li>
 <li class="lvl-2">
 <p>操作：</p>
@@ -482,7 +482,7 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 <p>关闭:<code>supervisorctl -c /etc/supervisord.conf shutdown</code></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>other:</h1>
 <h2 id="分布式：">分布式：</h2>
 <ul class="lvl-0">
@@ -493,8 +493,8 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 <p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ee14ed9e4989">《Python分布式计算》 第4章 Celery分布式应用 （Distributed Computing with Python）</a></p>
 </li>
 </ul>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35a0c484.jpg" alt="" /></p>
+<hr />
 <h2 id="队列：">队列：</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -504,11 +504,11 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
 <p><a target="_blank" rel="noopener" href="http://blog.csdn.net/vintage_1/article/details/47664139">celery beat实战</a></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h2 id="flower">flower:</h2>
 <p>图形化管理celery界面：</p>
 <p><code>/usr/local/bin/celery -A celery_app flower --port=5555</code></p>
-<hr>
+<hr />
 <h2 id="参考：">参考：</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -647,7 +647,7 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -702,12 +702,12 @@ assert not _current_process._config.get(‘daemon’), \ ‘daemonic processes a
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

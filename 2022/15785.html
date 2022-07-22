@@ -328,7 +328,7 @@
 <h1>getReserves获取储备量</h1>
 <p>getReserves</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getReserves</span>(<span class="params"></span>) external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);</span><br></pre></td></tr></table></figure>
-<p>Returns the reserves of token0 and token1 used to price trades and distribute liquidity. See Pricing.<br>
+<p>Returns the reserves of token0 and token1 used to price trades and distribute liquidity. See Pricing.<br />
 Also returns the block.timestamp (mod 2**32) of the last block during which an interaction occured for the pair.</p>
 <p>主要是返回Pair里token0和token1的储备量</p>
 <h1>token0 &amp; token1</h1>
@@ -351,7 +351,7 @@ Also returns the block.timestamp (mod 2**32) of the last block during which an i
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  10151827943605108889(10.151827943605108889) USDT</span><br><span class="line">&gt;  _reserve1   uint112 :  10005383891113691435(10.005383891113691435) Token</span><br></pre></td></tr></table></figure>
 <p>token卖成USDT</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;  _reserve0   uint112 :  9669575752865546229(9.669575752865546229) USDT ↓</span><br><span class="line">&gt;  _reserve1   uint112 :  10505383891113691435(10.505383891113691435) Token ↑</span><br></pre></td></tr></table></figure>
-<p>token传进pair，token储备量增加<br>
+<p>token传进pair，token储备量增加<br />
 pair流出USDT，USDT储备量减少</p>
 <h2 id="Buy">Buy:</h2>
 <p>与Sell行为相反，USDT ↑、Token↓</p>
@@ -524,7 +524,7 @@ pair流出USDT，USDT储备量减少</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -579,12 +579,12 @@ pair流出USDT，USDT储备量减少</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

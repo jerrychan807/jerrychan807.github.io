@@ -257,7 +257,7 @@
       
         <h1>Pre:</h1>
 <p>在使用celery的时候,可以根据任务情况(任务类型,任务参数),更灵活的把任务分发到不同的队列里.</p>
-<hr>
+<hr />
 <h1>任务的去向</h1>
 <p>在Celery中, 任务的目的是由下列因素决定（按顺序）:</p>
 <ol>
@@ -272,18 +272,18 @@
 </li>
 </ol>
 <p>最佳实践是<strong>不写死这些设置，而是通过 Routers 将它作为配置选项；这是最灵活的方式</strong>，但是合理的默认值仍然可以设置称任务属性。</p>
-<hr>
+<hr />
 <h1>手动路由做法:</h1>
 <p>一般都会在celery的配置文件里静态写死队列和路由即默认值.如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_QUEUES=(Queue(<span class="string">&quot;fingerprint&quot;</span>, Exchange(<span class="string">&quot;fingerprint&quot;</span>),routing_key=<span class="string">&quot;fingerprint&quot;</span>),  <span class="comment"># 指纹识别)</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_ROUTES=&#123; <span class="string">&#x27;fingerprint_all_scanner.tasks.startDetectUrl&#x27;</span>: &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;,&#125;</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>动态路由做法:</h1>
 <p>自定义一个Router类</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyRouter</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">route_for_task</span>(<span class="params">self, task, args=<span class="literal">None</span>, kwargs=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="built_in">print</span> task  <span class="comment"># 任务类型</span></span><br><span class="line">        <span class="built_in">print</span> args  <span class="comment"># 列表任务参数</span></span><br><span class="line">        <span class="built_in">print</span> kwargs <span class="comment"># 键值对任务参数</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 在此处可以自定义代码,可以根据任务参数或者任务类型更灵活的将任务发到不同的队列里</span></span><br><span class="line">        <span class="keyword">if</span> task.startswith(<span class="string">&#x27;fingerprint_all_scanner&#x27;</span>):</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;queue&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>, <span class="string">&quot;routing_key&quot;</span>: <span class="string">&quot;fingerprint&quot;</span>&#125;</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>然后把配置替换为如下即可</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CELERY_ROUTES=(MyRouter(),)</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -422,7 +422,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -477,12 +477,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

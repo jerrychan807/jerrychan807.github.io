@@ -258,7 +258,7 @@
         <h1>Pre:</h1>
 <p><code>celery</code>+<code>redis</code> 经常会出现重复任务.</p>
 <p>所以打算用<code>rabbitmq</code>替换<code>redis</code>.</p>
-<hr>
+<hr />
 <h1>下载与安装:</h1>
 <h2 id="erlang">erlang:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装erlang</span></span><br><span class="line">yum install erlang -y</span><br></pre></td></tr></table></figure>
@@ -266,7 +266,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装RabbitMQ</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载rpm</span></span><br><span class="line">wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-3.6.6-1.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install rabbitmq-server-3.6.6-1.el7.noarch.rpm -y</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 完成后启动服务：</span></span><br><span class="line">service rabbitmq-server start</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看服务状态：</span></span><br><span class="line">service rabbitmq-server status</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活开机启动命令</span></span><br><span class="line">systemctl <span class="built_in">enable</span> rabbitmq-server.service</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>初始化配置:</h1>
 <h2 id="创建配置文件">创建配置文件:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/rabbitmq/</span><br><span class="line">vi rabbitmq.config</span><br><span class="line"><span class="comment"># 编辑内容如下：</span></span><br><span class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</span><br></pre></td></tr></table></figure>
@@ -275,18 +275,18 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user celery celery</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加虚拟主机</span></span><br><span class="line">rabbitmqctl add_vhost myvhost</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 赋予用户权限</span></span><br><span class="line">rabbitmqctl set_permissions -p myvhost celery <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span> <span class="string">&quot;.*&quot;</span></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>修改celery配置文件:</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CELERY_BROKER_URL = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br><span class="line">CELERY_RESULT_BACKEND = <span class="string">&#x27;amqp://celery:celery@your_ip:5672/myvhost&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>修改配置文件后,就可以无缝接入<code>rabbitmq</code>,成功替换掉<code>redis</code>了.</p>
-<hr>
+<hr />
 <h1>总结:</h1>
 <p>只能说这个分布式队列的框架设计得特别好,把功能解耦开了,以至于在替换其中一个组件的时候,是如此的方便,无痛.</p>
 <p>好的程序设计思想:<strong>高内聚,低耦合</strong>永不过时.</p>
 <p>如果一开始贪快,没有设计好模块间的关系,初期可能感觉关系不大.</p>
 <p>但是到了后期要拓展,要debug的时候,才会发现把模块解耦的巨大好处.</p>
 <p>所以一开始的模块设计还是要花点心思的.多画画图,没什么坏处.</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -422,7 +422,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -477,12 +477,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

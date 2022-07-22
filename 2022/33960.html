@@ -271,7 +271,7 @@
 </blockquote>
 <p>试试在<code>rinkby</code>测试网上能否执行借款还款操作</p>
 <h1>DoDo闪电交换机制:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png" alt="20220226162909"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png" alt="20220226162909" /></p>
 <h1>Code:</h1>
 <h2 id="solidity代码">solidity代码:</h2>
 <p>参考文档里<a target="_blank" rel="noopener" href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a>，有代码例子该代码则是只实现了借款和还款的操作，具体的借款后的操作逻辑还要自己实现</p>
@@ -285,7 +285,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network, interface</span><br><span class="line"></span><br><span class="line">ETHERSCAN_TX_URL = <span class="string">&quot;https://rinkeby.etherscan.io/tx/&#123;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Executes the funcitonality of the flash loan.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    acct = accounts.add(config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Getting Flashloan contract...&quot;</span>)</span><br><span class="line">    flashloan = Flashloan[<span class="built_in">len</span>(Flashloan) - <span class="number">1</span>]</span><br><span class="line">    usdc = interface.IERC20(config[<span class="string">&quot;networks&quot;</span>][network.show_active()][<span class="string">&quot;usdc&quot;</span>])</span><br><span class="line"></span><br><span class="line">    balance = usdc.balanceOf(acct) </span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Executing Flashloan...&quot;</span>)</span><br><span class="line">    tx = flashloan.dodoFlashLoan(<span class="string">&quot;0x446Bb563EEC2E5C439f5b94C6DaAebcCF5d2F99C&quot;</span>,<span class="number">10000000</span>,<span class="string">&quot;0xab0733588776B8881F7712f6AbCa98F510e6B63D&quot;</span>,  &#123;<span class="string">&quot;from&quot;</span>: acct, <span class="string">&quot;gas_limit&quot;</span>:<span class="string">&quot;5074044&quot;</span>, <span class="string">&quot;allow_revert&quot;</span>:<span class="literal">True</span>&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;You did it! View your tx here: &quot;</span> + ETHERSCAN_TX_URL.<span class="built_in">format</span>(tx.txid))</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="执行效果">执行效果:</h2>
 <p><a target="_blank" rel="noopener" href="https://rinkeby.etherscan.io/tx/0xbc67ada4c2d570f8aba40cae4bd47794d9f25f4969b72792b30d2e23f0c8481b">tx</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550" /></p>
 <p>能成功借款还款</p>
 <h1>遇到的问题:</h1>
 <p>dodoFlashLoan函数有3个参数:</p>
@@ -303,18 +303,18 @@
 <h2 id="选择池子地址">选择池子地址:</h2>
 <p>在<code>https://app.dodoex.io/pool/list?network=rinkeby</code>可以看到有哪些池子信息</p>
 <p>比如此处我要借usdc，就可以搜索一下</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537" /></p>
 <p>然后该池子还要支持flashloan，比如上图第一个池子就不支持，第二个池子才支持</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948" /></p>
 <h2 id="借款数量">借款数量</h2>
 <p>一开始我填的<code>loanAmount</code>为10 ether,想借10个，转换成wei则为<code>10000000000000000000</code>执行后报错，无法正常借款还款</p>
-<p>查一下报错<br>
+<p>查一下报错<br />
 <code>https://dashboard.tenderly.co/tx/rinkeby/0xee7f3a6e0ef5906f8f95cbc789151e1d62da424dc80c6d93c80307ba060be646</code></p>
 <p><code>Error Message:ERC20: transfer amount exceeds balance</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png" alt="20220226162947"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png" alt="20220226162947" /></p>
 <p>对比一下Dodo流程，此时池子在借款的时候，要发送token给我合约时报错了，报错信息为转账数量超过余额了。</p>
 <p>减少<code>loanAmount</code>为<code>10000000</code>后，发现能成功，原来该usdc的精度为6位</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700" /></p>
 <p>以后要注意一下，大多数代币的精度为18位，但有些代币不是。</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -456,7 +456,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -511,12 +511,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

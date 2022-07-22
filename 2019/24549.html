@@ -259,8 +259,8 @@
 
       
         <h1>整体流程图</h1>
-<p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg"></p>
-<hr>
+<p><img src="https://i.loli.net/2019/12/17/b27hPyBAzm3vN5g.png" alt="W13SCAN-DESIGN.jpg" /></p>
+<hr />
 <h2 id="PerFile-每个文件">PerFile (每个文件)</h2>
 <h3 id="序列化参数分析">序列化参数分析</h3>
 <blockquote>
@@ -292,19 +292,19 @@
 <p>Python 的序列化和反序列化是将一个类对象向字节流转化从而进行存储和传输，然后使用的时候再将字节流转化回原始的对象的一个过程。</p>
 </blockquote>
 <p>原理:根据序列化后参数的<strong>字节的特征序列</strong></p>
-<hr>
+<hr />
 <h3 id="asp代码执行">asp代码执行</h3>
 <p>暂只支持Get请求方式和回显型的ASP代码注入</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">&#x27;response.write(&#123;&#125;*&#123;&#125;)&#x27;</span>.<span class="built_in">format</span>(randint1, randint2),</span><br><span class="line">    <span class="string">&#x27;\&#x27;+response.write(&#123;&#125;*&#123;&#125;)+\&#x27;&#x27;</span>.<span class="built_in">format</span>(randint1, randint2),</span><br><span class="line">    <span class="string">&#x27;&quot;response.write(&#123;&#125;*&#123;&#125;)+&quot;&#x27;</span>.<span class="built_in">format</span>(randint1, randint2),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p><code>response.write()</code>函数相当于<code>print()</code>,上面的payload就是输出随机字符</p>
 <p>原理:</p>
 <p>某个参数点如果能执行我们payload里的输出函数,输出一个我们自己定义的随机字符，则认为有代码注入</p>
-<hr>
+<hr />
 <h3 id="php代码执行">php代码执行</h3>
 <p>暂只支持Get请求方式和回显型的PHP代码注入以及cookie中的代码注入</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">&quot;print(md5(&#123;&#125;));&quot;</span>,</span><br><span class="line">    <span class="string">&quot;;print(md5(&#123;&#125;));&quot;</span>,</span><br><span class="line">    <span class="string">&quot;&#x27;;print(md5(&#123;&#125;));$a=&#x27;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\&quot;;print(md5(&#123;&#125;));$a=\&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;$&#123;&#123;@print(md5(&#123;&#125;))&#125;&#125;\\&quot;</span>,</span><br><span class="line">    <span class="string">&quot;&#x27;.print(md5(&#123;&#125;)).&#x27;&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>原理:同上</p>
-<hr>
+<hr />
 <h3 id="系统命令执行">系统命令执行</h3>
 <p>测试系统命令注入，支持Windows/Linux,暂只支持Get请求方式和回显型的命令注入</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">url_flag = &#123;</span><br><span class="line">            <span class="string">&quot;set|set&amp;set&quot;</span>: [</span><br><span class="line">                <span class="string">&#x27;Path=[\s\S]*?PWD=&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Path=[\s\S]*?PATHEXT=&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Path=[\s\S]*?SHELL=&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Path\x3d[\s\S]*?PWD\x3d&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Path\x3d[\s\S]*?PATHEXT\x3d&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Path\x3d[\s\S]*?SHELL\x3d&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;SERVER_SIGNATURE=[\s\S]*?SERVER_SOFTWARE=&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;SERVER_SIGNATURE\x3d[\s\S]*?SERVER_SOFTWARE\x3d&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Non-authoritative\sanswer:\s+Name:\s*&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Server:\s*.*?\nAddress:\s*&#x27;</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;echo `echo 6162983|base64`6162983&quot;</span>.<span class="built_in">format</span>(randint): [</span><br><span class="line">                <span class="string">&quot;NjE2Mjk4Mwo=6162983&quot;</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
@@ -313,12 +313,12 @@
 <p>set指令能设置所使用shell的执行方式，可依照不同的需求来做设置。</p>
 </blockquote>
 <p>value<code>'Path=[\s\S]*?PWD='</code>这个是正则表达式。</p>
-<hr>
+<hr />
 <h3 id="cors检测">cors检测</h3>
 <p>寻找CORS能否利用</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&quot;access-control-allow-origin&quot;</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">&quot;access-control-allow-origin&quot;</span>] == <span class="string">&quot;*&quot;</span>:</span><br><span class="line">   <span class="keyword">if</span> <span class="string">&quot;access-control-allow-credentials&quot;</span> <span class="keyword">in</span> resp_headers <span class="keyword">and</span> resp_headers[<span class="string">&quot;access-control-allow-credentials&quot;</span>].lower() == <span class="string">&#x27;true&#x27;</span>:</span><br><span class="line">       out.success(url, self.name, payload=<span class="built_in">str</span>(data), method=method)</span><br></pre></td></tr></table></figure>
 <p>原理:识别返回包header中的特征</p>
-<hr>
+<hr />
 <h3 id="目录穿越">目录穿越</h3>
 <p>通过url特征判断系统的指纹</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">&quot;.aspx&quot;</span>) <span class="keyword">or</span> filepath.endswith(<span class="string">&quot;.asp&quot;</span>): <span class="comment"># 有.aspx和.asp</span></span><br><span class="line">    isunix = <span class="number">2</span>   <span class="comment"># 不是unix</span></span><br><span class="line">    iswin = <span class="number">1</span>    <span class="comment"># 肯定是win</span></span><br><span class="line">    isjava = <span class="number">2</span>   <span class="comment"># 不是java</span></span><br><span class="line"><span class="keyword">if</span> filepath.endswith(<span class="string">&quot;.jsp&quot;</span>):<span class="comment"># 有.jsp</span></span><br><span class="line">    isjava = <span class="number">1</span>   <span class="comment"># 肯定是java</span></span><br></pre></td></tr></table></figure>
@@ -326,13 +326,13 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isunix &gt;= <span class="number">0</span>:  <span class="comment"># Unix平台</span></span><br><span class="line">    payloads.append(<span class="string">&quot;../../../../../../../../../../etc/passwd&quot;</span>)</span><br><span class="line">    payloads.append(<span class="string">&quot;/etc/passwd&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">&quot;/../../../../../../../../../../etc/passwd&quot;</span>)</span><br><span class="line">        payloads.append(dirname + <span class="string">&quot;/../../../../../../../../../../etc/passwd&#123;&#125;&quot;</span>.<span class="built_in">format</span>(</span><br><span class="line">            unquote(<span class="string">&quot;%00&quot;</span>) + default_extension))</span><br><span class="line">    payloads.append(<span class="string">&quot;../../../../../../../../../../etc/passwd&#123;&#125;&quot;</span>.<span class="built_in">format</span>(unquote(<span class="string">&quot;%00&quot;</span>)))</span><br><span class="line">    payloads.append(</span><br><span class="line">        <span class="string">&quot;../../../../../../../../../../etc/passwd&#123;&#125;&quot;</span>.<span class="built_in">format</span>(unquote(<span class="string">&quot;%00&quot;</span>)) + default_extension)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= iswin &gt;= <span class="number">0</span>:   <span class="comment"># wins平台</span></span><br><span class="line">    payloads.append(<span class="string">&quot;../../../../../../../../../../windows/win.ini&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> origin:</span><br><span class="line">        payloads.append(dirname + <span class="string">&quot;/../../../../../../../../../../windows/win.ini&quot;</span>)</span><br><span class="line">    payloads.append(<span class="string">&quot;C:\\WINDOWS\\system32\\drivers\\etc\\hosts&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="number">1</span> &gt;= isjava &gt;= <span class="number">0</span>:  <span class="comment"># java语言</span></span><br><span class="line">    payloads.append(<span class="string">&quot;/WEB-INF/web.xml&quot;</span>)</span><br><span class="line">    payloads.append(<span class="string">&quot;../../WEB-INF/web.xml&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p>判断返回包有目录穿越的规则:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">plainArray = [     <span class="comment"># 字符串特征</span></span><br><span class="line">    <span class="string">&quot;; for 16-bit app support&quot;</span>,</span><br><span class="line">    <span class="string">&quot;[MCI Extensions.BAK]&quot;</span>,</span><br><span class="line">    <span class="string">&quot;# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.&quot;</span>,</span><br><span class="line">    <span class="string">&quot;# localhost name resolution is handled within DNS itself.&quot;</span>,</span><br><span class="line">    <span class="string">&quot;[boot loader]&quot;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">regexArray = [      <span class="comment"># 正则表达式</span></span><br><span class="line">    <span class="string">&#x27;(Linux+\sversion\s+[\d\.\w\-_\+]+\s+\([^)]+\)\s+\(gcc\sversion\s[\d\.\-_]+\s)&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;(root:.*:.*:)&#x27;</span>,</span><br><span class="line">    <span class="string">&quot;System\.IO\.FileNotFoundException: Could not find file\s&#x27;\w:&quot;</span>,</span><br><span class="line">    <span class="string">&quot;System\.IO\.DirectoryNotFoundException: Could not find a part of the path\s&#x27;\w:&quot;</span>,</span><br><span class="line">    <span class="string">&quot;&lt;b&gt;Warning&lt;\/b&gt;:\s\sDOMDocument::load\(\)\s\[&lt;a\shref=&#x27;domdocument.load&#x27;&gt;domdocument.load&lt;\/a&gt;\]:\s(Start tag expected|I\/O warning : failed to load external entity).*(Windows\/win.ini|\/etc\/passwd).*\sin\s&lt;b&gt;.*?&lt;\/b&gt;\son\sline\s&lt;b&gt;\d+&lt;\/b&gt;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;(&lt;web-app[\s\S]+&lt;\/web-app&gt;)&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="模板表达式注入">模板表达式注入</h3>
 <p>服务端模板注入SSTI,对GET请求参数进行相关测试</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = &#123;</span><br><span class="line">                <span class="string">&quot;&#123;ranstr&#125;$&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;&quot;</span>.<span class="built_in">format</span>(ranstr=randstr, int1=randint1, int2=randint2),</span><br><span class="line">                <span class="string">&quot;&#123;ranstr&#125;#&#123;&#123;&#123;int1&#125;*&#123;int2&#125;&#125;&#125;&#123;ranstr&#125;&quot;</span>.<span class="built_in">format</span>(ranstr=randstr, int1=randint1, int2=randint2)</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>在 Twig 模板引擎里,   除了可以输出传递的变量以外,还能<strong>执行一些基本的表达式然后将其结果作为该模板变量的值</strong>,例如这里用户输入 name=20 ,则在服务端拼接的模版内容为:<br>
-<img src="https://i.loli.net/2019/12/30/TbMXmH87tdzeUQc.png" alt="20191230202751.png"></p>
+<p>在 Twig 模板引擎里,   除了可以输出传递的变量以外,还能<strong>执行一些基本的表达式然后将其结果作为该模板变量的值</strong>,例如这里用户输入 name=20 ,则在服务端拼接的模版内容为:<br />
+<img src="https://i.loli.net/2019/12/30/TbMXmH87tdzeUQc.png" alt="20191230202751.png" /></p>
 </blockquote>
 <p>原理:</p>
 <ul class="lvl-0">
@@ -343,32 +343,32 @@
 <p>前后加随机字符串是为了减少误报</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h3 id="js敏感文件探测">js敏感文件探测</h3>
 <p>从返回js的包中匹配敏感内容</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">regx = (</span><br><span class="line">        <span class="comment"># 匹配url</span></span><br><span class="line">        <span class="string">r&#x27;(\b|\&#x27;|&quot;)(?:http:|https:)(?:[\w/\.]+)?(?:[a-zA-Z0-9_\-\.]&#123;1,&#125;)\.(?:php|asp|ashx|jspx|aspx|jsp|json|action|html|txt|xml|do)(\b|\&#x27;|&quot;)&#x27;</span>,</span><br><span class="line">        <span class="comment"># 匹配邮箱</span></span><br><span class="line">        <span class="string">r&#x27;[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+&#x27;</span>,</span><br><span class="line">        <span class="comment"># 匹配token或者密码泄露</span></span><br><span class="line">        <span class="comment"># 例如token = xxxxxxxx, 或者&quot;apikey&quot; : &quot;xssss&quot;</span></span><br><span class="line">        <span class="string">r&#x27;\b(?:secret|secret_key|token|secret_token|auth_token|access_token|username|password|aws_access_key_id|aws_secret_access_key|secretkey|authtoken|accesstoken|access-token|authkey|client_secret|bucket|email|HEROKU_API_KEY|SF_USERNAME|PT_TOKEN|id_dsa|clientsecret|client-secret|encryption-key|pass|encryption_key|encryptionkey|secretkey|secret-key|bearer|JEKYLL_GITHUB_TOKEN|HOMEBREW_GITHUB_API_TOKEN|api_key|api_secret_key|api-key|private_key|client_key|client_id|sshkey|ssh_key|ssh-key|privatekey|DB_USERNAME|oauth_token|irc_pass|dbpasswd|xoxa-2|xoxrprivate-key|private_key|consumer_key|consumer_secret|access_token_secret|SLACK_BOT_TOKEN|slack_api_token|api_token|ConsumerKey|ConsumerSecret|SESSION_TOKEN|session_key|session_secret|slack_token|slack_secret_token|bot_access_token|passwd|api|eid|sid|api_key|apikey|userid|user_id|user-id)[&quot;\s]*(?::|=|=:|=&gt;)[&quot;\s]*[a-z0-9A-Z]&#123;8,64&#125;&quot;?&#x27;</span>,</span><br><span class="line">        <span class="comment"># 匹配IP地址</span></span><br><span class="line">        <span class="string">r&#x27;\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)&#123;3&#125;(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b&#x27;</span>,</span><br><span class="line">        <span class="comment"># 匹配云泄露</span></span><br><span class="line">        <span class="string">r&#x27;[\w]+\.cloudfront\.net&#x27;</span>,</span><br><span class="line">        <span class="string">r&#x27;[\w\-.]+\.appspot\.com&#x27;</span>,</span><br><span class="line">        <span class="string">r&#x27;[\w\-.]*s3[\w\-.]*\.?amazonaws\.com\/?[\w\-.]*&#x27;</span>,</span><br><span class="line">        <span class="string">r&#x27;([\w\-.]*\.?digitaloceanspaces\.com\/?[\w\-.]*)&#x27;</span>,</span><br><span class="line">        <span class="string">r&#x27;(storage\.cloud\.google\.com\/[\w\-.]+)&#x27;</span>,</span><br><span class="line">        <span class="string">r&#x27;([\w\-.]*\.?storage.googleapis.com\/?[\w\-.]*)&#x27;</span>,</span><br><span class="line">        <span class="comment"># 匹配手机号</span></span><br><span class="line">        <span class="string">r&#x27;(?:139|138|137|136|135|134|147|150|151|152|157|158|159|178|182|183|184|187|188|198|130|131|132|155|156|166|185|186|145|175|176|133|153|177|173|180|181|189|199|170|171)[0-9]&#123;8&#125;&#x27;</span></span><br><span class="line">        <span class="comment"># 匹配域名</span></span><br><span class="line">        <span class="string">r&#x27;((?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]&#123;0,61&#125;[a-zA-Z0-9])?\.)+(?:biz|cc|club|cn|com|co|edu|fun|group|info|ink|kim|link|live|ltd|mobi|net|online|org|pro|pub|red|ren|shop|site|store|tech|top|tv|vip|wang|wiki|work|xin|xyz|me))&#x27;</span></span><br><span class="line"></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="jsonp探测">jsonp探测</h3>
-<hr>
+<hr />
 <h3 id="通用敏感文件探测">通用敏感文件探测</h3>
 <p>从返回包中搜集通用的敏感信息</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># phpinfo</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;&lt;title&gt;phpinfo()&lt;/title&gt;&quot;</span> <span class="keyword">in</span> resp_str:</span><br><span class="line">    info = get_phpinfo(resp_str)</span><br><span class="line">    out.success(url, self.name, info=info)</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="php真实路径检测">php真实路径检测</h3>
 <p>对于一些php网站，将正常参数替换为<code>[]</code>可能造成真实信息泄漏</p>
 <p>篡改:正常参数替换为<code>[]</code></p>
 <p>判断:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&quot;Warning&quot;</span> <span class="keyword">in</span> r.text <span class="keyword">and</span> <span class="string">&quot;array given&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">    path = get_middle_text(r.text, <span class="string">&#x27;array given in &#x27;</span>, <span class="string">&#x27; on line&#x27;</span>)</span><br><span class="line">    out.success(_, self.name, path=path, raw=r.raw)</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="重定向插件">重定向插件</h3>
 <p>支持检查 html meta 跳转、30x 跳转、JavaScript跳转等等</p>
-<hr>
+<hr />
 <h3 id="sql注入-基于报错">sql注入 (基于报错)</h3>
 <p>支持GET、COOKIE、HEADER头注入</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = <span class="string">&#x27;鎈\&#x27;&quot;\(&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>这是sqli测试最简单的一种,就是用某个字符尝试去引起sql报错，然后回显在页面。</p>
 <p>接着用正则去匹配不同数据库的错误信息。</p>
-<hr>
+<hr />
 <h3 id="sql注入-布尔盲注">sql注入(布尔盲注)</h3>
 <p>布尔盲注利用前提:</p>
 <p>页面没有显示位，没有输出SQL语句执行错误信息，只能通过页面返回正常不正常来判断是否存在注入。</p>
@@ -399,13 +399,13 @@
 <p>有空还需要再认真看一下这部分的代码</p>
 </blockquote>
 <blockquote>
-<p>原作者的说明:<br>
-首先访问一次网页，和原网页对比，若相似度小于0.98则动态去除网页中不同的部分。访问一次False页面，得到False页面与原页面的相似度 <code>ratio_false</code><br>
-访问一次True页面，得到True页面与原页面的相似度 <code>ratio_true</code><br>
-<code>ratio_true</code> &gt; 0.88 and <code>ratio_true</code> - <code>ratio_false</code> &gt; 0.05 and <code>ratio_false</code> &lt; 0.98 即可判断为sql注入否则按照换行符分隔原始页面，True页面，False页面获得<code>originSet</code>,<code>trueSet</code>,<code>falseSet</code>集合。<br>
+<p>原作者的说明:<br />
+首先访问一次网页，和原网页对比，若相似度小于0.98则动态去除网页中不同的部分。访问一次False页面，得到False页面与原页面的相似度 <code>ratio_false</code><br />
+访问一次True页面，得到True页面与原页面的相似度 <code>ratio_true</code><br />
+<code>ratio_true</code> &gt; 0.88 and <code>ratio_true</code> - <code>ratio_false</code> &gt; 0.05 and <code>ratio_false</code> &lt; 0.98 即可判断为sql注入否则按照换行符分隔原始页面，True页面，False页面获得<code>originSet</code>,<code>trueSet</code>,<code>falseSet</code>集合。<br />
 <code>originSet</code> 对 <code>trueSet</code>的差集小于2并且 <code>trueSet</code> != <code>falseSet</code> 并且 <code>trueSet</code> 对<code>falseSet</code>差集大于0 即可判断为注入。</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="sql注入-基于时间">sql注入(基于时间)</h3>
 <p>这部分内容我不太懂,直接copy原作者的描述好了。。。</p>
 <p>基于时间的探测方式，会因为一些网络的波动，影响最后的判断结果。sqlmap的时间盲注会先发送30个请求来建立模型，但对扫描器来说，这样的效率太低了，所以就采用了awvs的时间盲注检测方法。</p>
@@ -441,11 +441,11 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sql_flag = [</span><br><span class="line">        &#x27;/**/aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn+sElect+1)&#x27;,</span><br><span class="line">        &quot;&#x27;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&#x27;&quot;,</span><br><span class="line">        &#x27;&quot;aNd(sEleCt+slEEp(&#123;time&#125;)uNiOn/**/sElect+1)=&quot;&#x27;,</span><br><span class="line">    ]</span><br></pre></td></tr></table></figure>
 <p>比较精妙之处在于多次发包，再判断。</p>
 <p>此处缺一个图。</p>
-<hr>
+<hr />
 <h3 id="被动子域名搜索">被动子域名搜索</h3>
 <p>从返回包中搜集子域名</p>
 <p>正则匹配</p>
-<hr>
+<hr />
 <h3 id="xpath-注入">xpath 注入</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">&quot;&#x27;\&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;&lt;!--&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>篡改发包:</p>
@@ -468,7 +468,7 @@
   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">regexArray = [</span><br><span class="line">    <span class="string">&quot;(Invalid (predicate|expression|type) in .*?\son line)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\s&#x27;.*&#x27;\shas\san\sinvalid\stoken\.&lt;br&gt;&lt;br&gt;)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;(&lt;b&gt;\sException\sDetails:\s&lt;\/b&gt;System\.Xml\.XPath\.XPathException:\sThis\sis\san\sunclosed\sstring\.&lt;br&gt;&lt;br&gt;)&quot;</span>,</span><br><span class="line">    <span class="string">&quot;(System.Xml.XPath.XPathException\:)&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<hr>
+<hr />
 <h3 id="xss注入">xss注入</h3>
 <p>暂只支持Get请求方式</p>
 <p>payload:</p>
@@ -479,18 +479,18 @@
 <blockquote>
 <p>需要补充…</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="crlf注入">crlf注入</h3>
 <p>暂只支持Get请求方式</p>
 <p>payloads:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">payloads = [</span><br><span class="line">    <span class="string">&quot;\r\nTestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\r\n\tTestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\r\n TestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\r\tTestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\nTestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="string">&quot;\rTestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="comment"># twitter crlf</span></span><br><span class="line">    <span class="string">&quot;嘊嘍TestInject: w13scan&quot;</span>,</span><br><span class="line">    <span class="comment"># nodejs crlf</span></span><br><span class="line">    <span class="string">&quot;čĊTestInject: w13scan&quot;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>发包:</p>
-<hr>
+<hr />
 <h3 id="cookie控制插件">cookie控制插件</h3>
-<hr>
+<hr />
 <h3 id="js漏洞库查找">js漏洞库查找</h3>
 <p>检测到当前页面存在过时的含有漏洞的js组件</p>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -635,7 +635,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -690,12 +690,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

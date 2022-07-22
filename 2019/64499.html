@@ -265,12 +265,12 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> <span class="built_in">type</span>(a)</span><br><span class="line"></span><br><span class="line">&lt;<span class="built_in">type</span> <span class="string">&#x27;int&#x27;</span>&gt;</span><br></pre></td></tr></table></figure>
 <p>我们并没有显示声明<code>a</code>是个变量而且它的类型为<code>int</code></p>
 <p>那么python是怎么知道<code>a</code>是个变量而且知道它的类型的呢?</p>
-<hr>
+<hr />
 <h2 id="Question2">Question2:</h2>
 <p>执行以下代码</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">&#x27;string&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line"><span class="string">&#x27;string&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>a 的类型怎么发生了变化?</p>
-<hr>
+<hr />
 <p>以上2个问题涉及到python的一个重要的概念:<strong>动态类型(dynamic typing)</strong></p>
 <p>要搞清楚动态类型之前要先搞清楚3个重要的概念及其关系:</p>
 <ul class="lvl-0">
@@ -284,23 +284,23 @@
 <p>Variable 变量</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>三个重要的概念:</h1>
 <h2 id="Object">Object:</h2>
 <p>对象是我们分配的内存块,有足够的空间去存储数据.</p>
 <p>所以<code>dict</code>、<code>list</code>、<code>string</code>这些对象在内存中都是一段01序列</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7188bb7d.jpg" alt="" /></p>
 <p>除了告诉解释器它是多少位后,它还要声明类型.</p>
 <p>所以每个对象都有一个标准头部信息:类型标识符<code>type designator</code>来表示对象的类型.</p>
-<hr>
+<hr />
 <h2 id="Reference">Reference:</h2>
 <p>由于我们不能直接接触到存在内存中的对象,能操作的是变量名,所以我们要将变量和对象建立一个关系:引用<code>reference</code></p>
 <p>python的引用跟C语言的指针很像,因为引用就是用指针实现的.</p>
-<hr>
+<hr />
 <h2 id="Variable">Variable:</h2>
 <p>建立引用关系之后,我们就可以用变量名来操控对象了.</p>
 <p>所以,变量是对对象的引用的一个符号名。</p>
-<hr>
+<hr />
 <h2 id="三者的关系">三者的关系:</h2>
 <p>变量和对象存储在内存的不同部分中,并链接了起来(由指针).</p>
 <p>实际就是,执行一个赋值语句的时候,python会做三件事:</p>
@@ -315,17 +315,17 @@
 <p>将<code>对象3</code>和<code>变量a</code>关联起来</p>
 </li>
 </ol>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt=""></p>
-<hr>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71989d84.jpg" alt="" /></p>
+<hr />
 <h1>共享引用</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71a328d9.jpg" alt="" /></p>
 <p>多个变量名同时指向同一个对象,称为共享引用<code>Shared References</code>.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">&#x27;spam&#x27;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71adac08.jpg" alt="" /></p>
 <p><code>变量a</code> 改变了指向，指向到了<code>'spam'对象</code></p>
 <p>而<code>变量b</code>还是指向原来的<code>3对象</code>,所以值没有改变</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -458,7 +458,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -513,12 +513,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

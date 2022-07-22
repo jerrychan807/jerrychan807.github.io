@@ -262,7 +262,7 @@
       
         <h1>Pre:</h1>
 <p>上篇,讲的解析请求参数函数<code>_setRequestParams()</code>,里面有多处会调用到<code>paramToDict()</code>函数.</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35bb65bd.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35bb65bd.jpg" alt="" /></p>
 <p>如图所示,会调用<code>paramToDict</code>去不同位置的参数:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -275,7 +275,7 @@
 <p>Cookie参数</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>函数说明:</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">paramToDict</span>(<span class="params">place, parameters=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Split the parameters into names and values, check if these parameters</span></span><br><span class="line"><span class="string">    are within the testable parameters and return in a dictionary. </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 <p>作用:</p>
@@ -290,7 +290,7 @@
 <h1>paramToDict的主要流程</h1>
 <h2 id="去除html编码">去除html编码</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parameters = re.sub(<span class="string">r&quot;&amp;(\w&#123;1,4&#125;);&quot;</span>, <span class="string">r&quot;%s\g&lt;1&gt;%s&quot;</span> % (PARAMETER_AMP_MARKER, PARAMETER_SEMICOLON_MARKER), parameters)</span><br></pre></td></tr></table></figure>
-<p>参数里可能会包含html编码字符,例如<code>__AMP__</code>, <code>__SEMICOLON__</code><br>
+<p>参数里可能会包含html编码字符,例如<code>__AMP__</code>, <code>__SEMICOLON__</code><br />
 如果有的话,将参数提取出来.</p>
 <blockquote>
 <p>算是一种优化的手段吧.</p>
@@ -309,7 +309,7 @@
 </blockquote>
 <p>处理后的结果为列表:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[u&#x27;wd=parameter &#x27;, u&#x27;rsv_spt=1&#x27;, u&#x27;rsv_iqid=0x895d84b600069e8d&#x27;, u&#x27;issp=1&#x27;, u&#x27;f=3&#x27;, u&#x27;rsv_bp=1&#x27;, u&#x27;rsv_idx=2&#x27;, u&#x27;ie=utf-8&#x27;]</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="对每个参数进行检验、解析">对每个参数进行检验、解析</h2>
 <h3 id="参数名和值分隔">参数名和值分隔</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> element <span class="keyword">in</span> splitParams:</span><br><span class="line">    element = re.sub(<span class="string">r&quot;%s(.+?)%s&quot;</span> % (PARAMETER_AMP_MARKER, PARAMETER_SEMICOLON_MARKER), <span class="string">r&quot;&amp;\g&lt;1&gt;;&quot;</span>, element) <span class="comment"># 去除html标签</span></span><br><span class="line">    parts = element.split(<span class="string">&quot;=&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(parts) &gt;= <span class="number">2</span>:</span><br><span class="line">        parameter = urldecode(parts[<span class="number">0</span>].replace(<span class="string">&quot; &quot;</span>, <span class="string">&quot;&quot;</span>)) <span class="comment"># 解码</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> parameter:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> conf.paramDel <span class="keyword">and</span> conf.paramDel == <span class="string">&#x27;\n&#x27;</span>:</span><br><span class="line">            parts[-<span class="number">1</span>] = parts[-<span class="number">1</span>].rstrip()</span><br></pre></td></tr></table></figure>
@@ -338,7 +338,7 @@
 <p>该参数的位置在cookie 同时 该参数在cookie里</p>
 </li>
 </ul>
-<hr>
+<hr />
 <h3 id="开始检验参数值-参数值是否异常-被污染">开始检验参数值-参数值是否异常(被污染)</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> condition:</span><br><span class="line">    testableParameters[parameter] = <span class="string">&quot;=&quot;</span>.join(parts[<span class="number">1</span>:])</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> conf.multipleTargets <span class="keyword">and</span> <span class="keyword">not</span> (conf.csrfToken <span class="keyword">and</span> re.search(conf.csrfToken, parameter, re.I)):</span><br><span class="line">        _ = urldecode(testableParameters[parameter], convall=<span class="literal">True</span>) <span class="comment"># url解码</span></span><br><span class="line">        <span class="keyword">if</span> (_.endswith(<span class="string">&quot;&#x27;&quot;</span>) <span class="keyword">and</span> _.count(<span class="string">&quot;&#x27;&quot;</span>) == <span class="number">1</span> <span class="keyword">or</span> re.search(<span class="string">r&#x27;\A9&#123;3,&#125;&#x27;</span>, _) <span class="keyword">or</span> re.search(<span class="string">r&#x27;\A-\d+\Z&#x27;</span>, _) <span class="keyword">or</span> re.search(DUMMY_USER_INJECTION, _)) <span class="keyword">and</span> <span class="keyword">not</span> parameter.upper().startswith(GOOGLE_ANALYTICS_COOKIE_PREFIX): <span class="comment"># 正则匹配是否含异常字段</span></span><br><span class="line">            warnMsg = <span class="string">&quot;it appears that you have provided tainted parameter values &quot;</span> <span class="comment"># 提示信息</span></span><br><span class="line">            warnMsg += <span class="string">&quot;(&#x27;%s&#x27;) with most likely leftover &quot;</span> % element</span><br><span class="line">            warnMsg += <span class="string">&quot;chars/statements from manual SQL injection test(s). &quot;</span></span><br><span class="line">            warnMsg += <span class="string">&quot;Please, always use only valid parameter values &quot;</span></span><br><span class="line">            warnMsg += <span class="string">&quot;so sqlmap could be able to run properly&quot;</span></span><br><span class="line">            logger.warn(warnMsg)</span><br><span class="line"></span><br><span class="line">            message = <span class="string">&quot;are you really sure that you want to continue (sqlmap could have problems)? [y/N] &quot;</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> readInput(message, default=<span class="string">&#x27;N&#x27;</span>, boolean=<span class="literal">True</span>):</span><br><span class="line">                <span class="keyword">raise</span> SqlmapSilentQuitException</span><br><span class="line">        <span class="keyword">elif</span> <span class="keyword">not</span> _:</span><br><span class="line">            warnMsg = <span class="string">&quot;provided value for parameter &#x27;%s&#x27; is empty. &quot;</span> % parameter</span><br><span class="line">            warnMsg += <span class="string">&quot;Please, always use only valid parameter values &quot;</span></span><br><span class="line">            warnMsg += <span class="string">&quot;so sqlmap could be able to run properly&quot;</span></span><br><span class="line">            logger.warn(warnMsg)</span><br></pre></td></tr></table></figure>
 <p>如果同时满足以下情况:</p>
@@ -373,7 +373,7 @@
 <p>如果参照值提前含有这些<code>payload</code>字眼,很可能会造成后面的异常.</p>
 <p>所以它会提示你</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">are you really sure that you want to continue (sqlmap could have problems)? [y/N] </span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h3 id="检验Get、Post参数值">检验Get、Post参数值</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> place <span class="keyword">in</span> (PLACE.POST, PLACE.GET):</span><br><span class="line">    <span class="keyword">for</span> regex <span class="keyword">in</span> (<span class="string">r&quot;\A((?:&lt;[^&gt;]+&gt;)+\w+)((?:&lt;[^&gt;]+&gt;)+)\Z&quot;</span>, <span class="string">r&quot;\A([^\w]+.*\w+)([^\w]+)\Z&quot;</span>): </span><br><span class="line">        match = re.search(regex, testableParameters[parameter]) <span class="comment"># 正则匹配</span></span><br><span class="line">        <span class="keyword">if</span> match:</span><br><span class="line">            <span class="comment"># ....</span></span><br></pre></td></tr></table></figure>
 <p>通过正则去检验参数值是否特殊,如含特殊的符号.</p>
@@ -389,7 +389,7 @@
 <blockquote>
 <p>这两个正则有点难理解.</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="解析Get、Post参数值">解析Get、Post参数值</h3>
 <p><strong>参数值</strong>如果比较特殊,就会尝试去解析.</p>
 <ul class="lvl-0">
@@ -408,17 +408,17 @@
 <p>如果该参数值能够反序列化,<code>sqlmap</code>会提示说</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xx parameter is JSON deserializable. Do you want to inject inside?</span><br></pre></td></tr></table></figure>
 <p>例子:</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35c6d51b.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35c6d51b.jpg" alt="" /></p>
 <p>比如通过表单的方式来传json类型的数据.</p>
 <p>整个包不符合json类型,但是里面的参数值是可以被Json反序列化的.</p>
 <h4 id="尝试xml解析">尝试xml解析:</h4>
 <p>比如这类的数据包(为了方便看,xml参数已urldecode):</p>
-<p><img src="https://i.loli.net/2019/04/26/5cc2e35d21b7a.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/26/5cc2e35d21b7a.jpg" alt="" /></p>
 <p>比如通过表单的方式来传xml类型的数据.</p>
 <p>整个包不符合xml类型,但是里面的某个参数值是xml类型的数据.</p>
 <p>解析到该类型数据,<code>sqlmap</code>会提示说</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">it appears that provided value for POST parameter &#x27;xml&#x27; has boundaries. Do you want to inject inside? </span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="结束解析">结束解析:</h2>
 <h3 id="判断指定的参数有没在可测试的参数字典里面">判断指定的参数有没在可测试的参数字典里面.</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 函数开始</span></span><br><span class="line">testableParameters = OrderedDict() </span><br></pre></td></tr></table></figure>
@@ -426,15 +426,15 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> conf.testParameter: <span class="comment"># 通过-p指定可测试参数,如果给了</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> testableParameters: <span class="comment"># 如果没有可测试参数</span></span><br><span class="line">        paramStr = <span class="string">&quot;, &quot;</span>.join(test <span class="keyword">for</span> test <span class="keyword">in</span> conf.testParameter)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(conf.testParameter) &gt; <span class="number">1</span>:</span><br><span class="line">            warnMsg = <span class="string">&quot;provided parameters &#x27;%s&#x27; &quot;</span> % paramStr</span><br><span class="line">            warnMsg += <span class="string">&quot;are not inside the %s&quot;</span> % place</span><br><span class="line">            logger.warn(warnMsg)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            parameter = conf.testParameter[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> intersect(USER_AGENT_ALIASES + REFERER_ALIASES + HOST_ALIASES, parameter, <span class="literal">True</span>):</span><br><span class="line">                debugMsg = <span class="string">&quot;provided parameter &#x27;%s&#x27; &quot;</span> % paramStr</span><br><span class="line">                debugMsg += <span class="string">&quot;is not inside the %s&quot;</span> % place</span><br><span class="line">                logger.debug(debugMsg)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(conf.testParameter) != <span class="built_in">len</span>(testableParameters):</span><br><span class="line">        <span class="keyword">for</span> parameter <span class="keyword">in</span> conf.testParameter:</span><br><span class="line">            <span class="keyword">if</span> parameter <span class="keyword">not</span> <span class="keyword">in</span> testableParameters:</span><br><span class="line">                debugMsg = <span class="string">&quot;provided parameter &#x27;%s&#x27; &quot;</span> % parameter</span><br><span class="line">                debugMsg += <span class="string">&quot;is not inside the %s&quot;</span> % place</span><br><span class="line">                logger.debug(debugMsg)</span><br></pre></td></tr></table></figure>
 <p>经过检验和解析后,testableParameters里存放着<code>sqlmap</code>认为可以测试的点.</p>
 <p>例子:</p>
-<p>一个普通的post包:<br>
-<img src="https://i.loli.net/2019/04/26/5cc2e35dbda98.jpg" alt=""></p>
+<p>一个普通的post包:<br />
+<img src="https://i.loli.net/2019/04/26/5cc2e35dbda98.jpg" alt="" /></p>
 <p>通过post传过去的参数只有<code>sceneId</code></p>
 <p>但是<code>sqlmap</code>认为可测试的点有很多</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-------testableParameters--------</span><br><span class="line">OrderedDict([(u&#x27;JSESSIONID&#x27;, u&#x27;6006F1BD1A9B669150FBF263483BE49B&#x27;), (u&#x27;gr_user_id&#x27;, u&#x27;6f346caa-beb4-49c1-bab6-4c684bb5680a&#x27;), (u&#x27;ajs_user_id&#x27;, u&#x27;null&#x27;), (u&#x27;ajs_group_id&#x27;, u&#x27;null&#x27;), (u&#x27;ajs_anonymous_id&#x27;, u&#x27;%2265b5e8a7-ef15-4279-8897-0cf64a34baaa%22&#x27;), (u&#x27;zg_did&#x27;, u&#x27;%7B%22did%22%3A%20%221693241ce78150-0e47fe537c96ac-4c322f7c-144000-1693241ce796db%22%7D&#x27;), (u&#x27;zg_153e3dce26ad42f2af4ae846edfdc259&#x27;, u&#x27;%7B%22sid%22%3A%201551335266969%2C%22updated%22%3A%201551335266979%2C%22info%22%3A%201551326367365%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22landHref%22%3A%20%22http%3A%2F%2Fwotubbs.vanke.com%2Fwotuhome_node%2F%23%2F%22%7D&#x27;), (u&#x27;UM_distinctid&#x27;, u&#x27;16955f9cc826fe-022ac9d6e823218-4c322f7c-144000-16955f9cc83645&#x27;)])</span><br><span class="line">-------testableParameters--------</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>可能就这是自动化工具与手工测试的差别</p>
 </blockquote>
-<hr>
+<hr />
 <h3 id="尝试对参数值解密">尝试对参数值解密:</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> testableParameters: <span class="comment"># 有可测试的参数</span></span><br><span class="line">    <span class="keyword">for</span> parameter, value <span class="keyword">in</span> testableParameters.items():</span><br><span class="line">        <span class="keyword">if</span> value <span class="keyword">and</span> <span class="keyword">not</span> value.isdigit():</span><br><span class="line">            <span class="keyword">for</span> encoding <span class="keyword">in</span> (<span class="string">&quot;hex&quot;</span>, <span class="string">&quot;base64&quot;</span>):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    decoded = value.decode(encoding) <span class="comment"># 尝试解码</span></span><br><span class="line">                    <span class="keyword">if</span> <span class="built_in">len</span>(decoded) &gt; MIN_ENCODED_LEN_CHECK <span class="keyword">and</span> <span class="built_in">all</span>(_ <span class="keyword">in</span> string.printable <span class="keyword">for</span> _ <span class="keyword">in</span> decoded): <span class="comment">#</span></span><br><span class="line">                        <span class="comment"># MIN_ENCODED_LEN_CHECK:5</span></span><br><span class="line">                        warnMsg = <span class="string">&quot;provided parameter &#x27;%s&#x27; &quot;</span> % parameter</span><br><span class="line">                        warnMsg += <span class="string">&quot;appears to be &#x27;%s&#x27; encoded&quot;</span> % encoding</span><br><span class="line">                        logger.warn(warnMsg)</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">except</span>:</span><br><span class="line">                    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
 <p>解密方式:</p>
@@ -446,7 +446,7 @@
 <p><code>base64</code></p>
 </li>
 </ul>
-<hr>
+<hr />
 <h1>总结:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -618,7 +618,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -673,12 +673,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

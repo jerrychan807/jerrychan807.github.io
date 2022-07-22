@@ -261,9 +261,9 @@
       
         <h1>Pre:</h1>
 <p>进程卡死,在日志里看不出个所以然.</p>
-<hr>
+<hr />
 <h1>查看任务log:</h1>
-<p><img src="https://i.loli.net/2019/07/23/5d369f195c02a22001.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/23/5d369f195c02a22001.png" alt="" /></p>
 <p>时间是中时区,要加8. 即为12点16分.</p>
 <h1>查看进程:</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -auxf | grep xxx</span><br></pre></td></tr></table></figure>
@@ -271,11 +271,11 @@
 <p>f：用ASCII字符显示树状结构，表达程序间的相互关系。</p>
 </blockquote>
 <p>进程太多的话,加上f,看起来会更清晰一些.</p>
-<p><img src="https://i.loli.net/2019/07/23/5d36a09fabd4b79059.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/23/5d36a09fabd4b79059.png" alt="" /></p>
 <p>可以找到时间对应的那几个进程.</p>
 <h1>跟踪：</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 跟踪进程执行时的系统调用和所接收的信号</span></span><br><span class="line"><span class="comment"># 即它跟踪到一个进程产生的系统调用，包括参数、返回值、执行消耗的时间</span></span><br><span class="line">strace -p pid  </span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/07/23/5d36a15d2bda319560.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/07/23/5d36a15d2bda319560.png" alt="" /></p>
 <p>然后就可以以<code>FUTEX_WAIT_PRIVATE</code>这个为线索继续去搜索.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看进程文件描述符目录</span></span><br><span class="line">ll /proc/<span class="variable">$pid</span>/fd/</span><br></pre></td></tr></table></figure>
 <p>初步猜测是</p>
@@ -285,7 +285,7 @@
 </li>
 </ul>
 <p>只能继续排查了…</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -427,7 +427,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -482,12 +482,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

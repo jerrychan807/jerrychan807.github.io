@@ -306,7 +306,7 @@
 <p>solc编译：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin Greeter.sol</span><br><span class="line"></span><br><span class="line">======= Greeter.sol:Greeter =======</span><br><span class="line">Binary:</span><br><span class="line">608060405234801561001057600080fd5b5060405161040e38038061040e8339818101604052602081101561003357600080fd5b810190808051604051939291908464010000000082111561005357600080fd5b8382019150602082018581111561006957600080fd5b825186600182028301116401000000008211171561008657600080fd5b8083526020830192505050908051906020019080838360005b838110156100ba57808201518184015260208101905061009f565b50505050905090810190601f1680156100e75780820380516001836020036101000a031916815260200191505b50604052505050336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550806001908051906020019061014492919061014b565b50506101f0565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061018c57805160ff19168380011785556101ba565b828001600101855582156101ba579182015b828111156101b957825182559160200191906001019061019e565b5b5090506101c791906101cb565b5090565b6101ed91905b808211156101e95760008160009055506001016101d1565b5090565b90565b61020f806101ff6000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806341c0e1b51461003b578063cfae321714610045575b600080fd5b6100436100c8565b005b61004d610138565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561008d578082015181840152602081019050610072565b50505050905090810190601f1680156100ba5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415610136573373ffffffffffffffffffffffffffffffffffffffff16ff5b565b606060018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156101d05780601f106101a5576101008083540402835291602001916101d0565b820191906000526020600020905b8154815290600101906020018083116101b357829003601f168201915b505050505090509056fea265627a7a723158206f24f4307507b779edd30cf59bfb6e8ace69f2973e780c4ec5701dbf9a62257f64736f6c63430005110032</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ solc --bin-runtime Greeter.sol</span><br><span class="line"></span><br><span class="line">======= Greeter.sol:Greeter =======</span><br><span class="line">Binary of the runtime part:</span><br><span class="line">608060405234801561001057600080fd5b50600436106100365760003560e01c806341c0e1b51461003b578063cfae321714610045575b600080fd5b6100436100c8565b005b61004d610138565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561008d578082015181840152602081019050610072565b50505050905090810190601f1680156100ba5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415610136573373ffffffffffffffffffffffffffffffffffffffff16ff5b565b606060018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156101d05780601f106101a5576101008083540402835291602001916101d0565b820191906000526020600020905b8154815290600101906020018083116101b357829003601f168201915b505050505090509056fea265627a7a723158206f24f4307507b779edd30cf59bfb6e8ace69f2973e780c4ec5701dbf9a62257f64736f6c63430005110032</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717140120.png" alt="20220717140120"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717140120.png" alt="20220717140120" /></p>
 <p>如上所示，我们可知<code>runtime bytecode</code>是<code>contract bytecode</code>的一个子集。</p>
 <h1>逆向分析:</h1>
 <p>我们只逆向runtime bytecode，因为这个过程足以告诉我们合约具体做了哪些工作。</p>
@@ -329,29 +329,29 @@
 </li>
 </ul>
 <h2 id="QuickView">QuickView:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717141936.png" alt="20220717141936"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717141936.png" alt="20220717141936" /></p>
 <blockquote>
 <p>与原文的图不一样，问题不大，参考思路，自己推导</p>
 </blockquote>
 <p>Ethersplay插件可以识别runtime bytecode中的所有函数，从逻辑上进行划分。对于这个合约，<code>Ethersplay</code>发现了函数：<code>kill()</code> 、<code>greet()</code>。后面我们会介绍如何提取这些函数。</p>
 <h2 id="第一条指令">第一条指令:</h2>
 <p>当我们向智能合约发起交易时，首先碰到的是合约的<code>dispatcher(调度器)</code>。<code>Dispatcher</code>会处理交易数据，确定我们需要交互的具体函数。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717161417.png" alt="20220717161417"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717161417.png" alt="20220717161417" /></p>
 <p>模拟opcode在栈里的操作：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717165456.png" alt="20220717165456"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717165456.png" alt="20220717165456" /></p>
 <h2 id="函数调度的前置判断：">函数调度的前置判断：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717165643.png" alt="20220717165643"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717165643.png" alt="20220717165643" /></p>
 <p>模拟opcode在栈里的操作：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717171226.png" alt="20220717171226"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717171226.png" alt="20220717171226" /></p>
 <p>为什么EVM需要检查我们提供的calldata大小是否至少为4字节？这里涉及到函数的识别过程。</p>
 <p>EVM会通过函数keccak256哈希的前4个字节来识别函数。也就是说，<code>函数原型（函数名以及所需参数）</code>需要交给keccak256哈希函数处理。在这个合约中，我们可以得到如下结果：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">keccak256(&quot;greet()&quot;) = cfae3217...</span><br><span class="line">keccak256(&quot;kill()&quot;) = 41c0e1b5...</span><br></pre></td></tr></table></figure>
 <p>因此，<code>greet()</code>的函数标识符为<code>cfae3217</code>，<code>kill()</code>的函数标识符为<code>41c0e1b5</code>。Dispatcher会检查我们发往合约的<code>calldata</code>（或者消息数据）大小至少为4字节，以确保我们的确想跟某个函数交互。</p>
 <p>函数标识符大小始终为4字节，因此如果我们发往智能合约的数据小于4字节，除非定义了回退函数，否则必定无法匹配到可交互的函数，就无法与任何函数交互。</p>
 <h2 id="函数调度">函数调度:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717175933.png" alt="20220717175933"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717175933.png" alt="20220717175933" /></p>
 <p>模拟opcode在栈里的操作：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717175844.png" alt="20220717175844"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717175844.png" alt="20220717175844" /></p>
 <p>其中重要的操作是：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -368,12 +368,12 @@
 <p><code>Dispatcher</code>会检查智能合约中的每个函数，如果不能找到匹配的函数，则会将我们引导至程序退出代码。</p>
 <h1>Summary:</h1>
 <p>以上是对以太坊虚拟机工作原理的简单介绍，画个图总结一下</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717182929.png" alt="20220717182929"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717182929.png" alt="20220717182929" /></p>
 <p>(6) kill()的函数标识符与 tx的函数标识符比对，跳转到kill函数</p>
 <h1>Online Solidity Decompiler:</h1>
 <p><a target="_blank" rel="noopener" href="https://ethervm.io/decompile">online decompile</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183206.png" alt="20220717183206"><br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183235.png" alt="20220717183235"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183206.png" alt="20220717183206" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717183235.png" alt="20220717183235" /></p>
 <p>有一些提示信息不错，伪代码，反编译块的输入和输出，前期不熟悉的时候可以自己手动模拟stack的操作了，后期可以直接看input/output。</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -533,7 +533,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -588,12 +588,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

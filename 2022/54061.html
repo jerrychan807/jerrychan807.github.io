@@ -298,35 +298,35 @@
 <p>因此，用<code>∆x</code>数量的<code>X</code>币来购买<code>Y</code>币所能得到的数量<code>∆y</code>、或是为了购买<code>∆y</code>需要付出的<code>∆x</code>数量</p>
 <p>依照此公式进行计算：<code>(x+∆x)(y-∆y) = k</code>，而交易的价格就是两币量 <code>∆x</code> 和 <code>∆y</code> 的比。</p>
 <p>以下公式用 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 来表示 <code>∆x</code> 和 <code>∆y</code> 及 <code>X</code> <code>Y</code> 两币在交易发生后的新均衡数量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133127.png" alt="20220219133127" /></p>
 <p>公式推导:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219131154.png" alt="20220219131154" /></p>
 <p>这样可以推导出前2行</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132237.png" alt="20220219132237" /></p>
 <p>接着推导<code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132331.png" alt="20220219132331" /></p>
 <p>推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132509.png" alt="20220219132509" /></p>
 <p>第一个图里的公式，都推导完了。</p>
 <h2 id="计入手续费">计入手续费:</h2>
 <p>在 Uniswap 进行的每一笔交易都会被收取 <code>ρ = 0.003 / 0.3%</code> 的手续费回馈给流动性提供者liquidity provider，因此要将手续费纳入公式的考量：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219132744.png" alt="20220219132744" /></p>
 <p>文里作者推荐从 <code>∆x</code> 和 <code>∆y</code> 两值开始去推导</p>
 <p>手续费 ρ = 0.3% 的意思是会从付款中扣掉 0.3 %，也就是从<code>∆x</code>扣。</p>
 <p>在有手续费的情况下 <code>∆x</code> 就变成了 <code>(1-ρ)∆x</code> ，若令 <code>γ = 1-ρ</code> 则为 <code>γ∆x</code>。因此，将图一中的 <code>∆x</code> 换成 <code>γ∆x</code>，就会得到以下式子：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133241.png" alt="20220219133241" /></p>
 <p>将等号左方的 <code>γ</code> 移到右方后就得到了图二中的 <code>∆x</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133820.png" alt="20220219133820" /></p>
 <p>接着推导<code>∆y</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219133922.png" alt="20220219133922" /></p>
 <p>而 <code>x’</code> 还有 <code>y’</code> 就可以由 <code>∆x</code> 和 <code>∆y</code> 推出来</p>
 <p>推导<code>x’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219134244.png" alt="20220219134244" /></p>
 <p>推导<code>y’</code> ：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135742.png" alt="20220219135742" /></p>
 <p>将图二中得到的 x’ 和 y’ 相乘，会得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219135907.png" alt="20220219135907" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219140837.png" alt="20220219140837" /></p>
 <p>当有手续费使得<code>γ != 1</code>或<code>ρ != 0</code>，<code>x’ρ * y’ρ</code> 的值其实会稍微和 <code>xy = k</code> 不同</p>
 <p>实际上 <code>γ = 0.997</code> 或 <code>ρ = 0.003</code>，因此 1除以0.997-1 =&gt; <code>1/γ-1 ≒ 0.003</code>。</p>
 <p><code>β = ∆y / y</code> 代表的是换得的 Y 币佔总量的比例，即使最大值为1(全部兑换出来)，误差也只有 1 * 0.003，故可知手续费 = 0.3% 对于 k 值的影响极小。</p>
@@ -334,14 +334,14 @@
 <p>给定<code>∆x</code>能购买多少<code>∆y</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输出数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输入量和配对的储备，返回另一项资产的最大输出量</span></span><br><span class="line"><span class="comment">// @param amountIn 输入数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountOut 输出数额</span></span><br><span class="line"><span class="comment">// given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountOut</span>(<span class="params">uint amountIn, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	<span class="comment">// 确认输入数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountIn &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 税后输入数额 = 输入数额 * 997</span></span><br><span class="line">	uint amountInWithFee = amountIn.<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 分子 = 税后输入数额 * 储备量Out</span></span><br><span class="line">	uint numerator = amountInWithFee.<span class="title function_">mul</span>(reserveOut);</span><br><span class="line">	<span class="comment">// 分母 = 储备量In * 1000 + 税后输入数额</span></span><br><span class="line">	uint denominator = reserveIn.<span class="title function_">mul</span>(<span class="number">1000</span>).<span class="title function_">add</span>(amountInWithFee);</span><br><span class="line">	<span class="comment">// 输出数额 = 分子 / 分母</span></span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面已知</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219141804.png" alt="20220219141804" /></p>
 <p>代码和公式表达方式不同，因此先将 <code>α = ∆x / x</code> 和 <code>β = ∆y / y</code> 代换回来并将上下同乘 <code>x</code>：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142103.png" alt="20220219142103" /></p>
 <p>由于 <code>γ = 0.997</code>，可以将上下同乘 1000 后得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142135.png" alt="20220219142135" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219142216.png" alt="20220219142216" /></p>
 <p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219143438.png" alt="20220219143438" /></p>
 <p>getAmountOut函数，通过入参：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -363,9 +363,9 @@
 <p>指定的<code>∆y</code>需要多少<code>∆x</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @dev 获取的单个输入数额</span></span><br><span class="line"><span class="comment">// @notice 给定一项资产的输出量和配对的储备，返回其他资产的所需输入量</span></span><br><span class="line"><span class="comment">// @param amountOut 输出数额</span></span><br><span class="line"><span class="comment">// @param reserveIn 储备量In</span></span><br><span class="line"><span class="comment">// @param reserveOut 储备量Out</span></span><br><span class="line"><span class="comment">// @return amountIn 输入数额</span></span><br><span class="line"><span class="comment">// given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getAmountIn</span>(<span class="params">uint amountOut, uint reserveIn, uint reserveOut</span>) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	<span class="comment">// 确认输出数额大于0</span></span><br><span class="line">	<span class="built_in">require</span>(amountOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;</span>);</span><br><span class="line">	<span class="comment">// 确认储备量In和储备量Out大于0</span></span><br><span class="line">	<span class="built_in">require</span>(reserveIn &gt; <span class="number">0</span> &amp;&amp; reserveOut &gt; <span class="number">0</span>, <span class="string">&#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;</span>);</span><br><span class="line">	<span class="comment">// 分子 = 储备量In * 储备量Out * 1000</span></span><br><span class="line">	uint numerator = reserveIn.<span class="title function_">mul</span>(amountOut).<span class="title function_">mul</span>(<span class="number">1000</span>);</span><br><span class="line">	<span class="comment">// 分母 = 储备量Out - 输出数额 * 997</span></span><br><span class="line">	uint denominator = reserveOut.<span class="title function_">sub</span>(amountOut).<span class="title function_">mul</span>(<span class="number">997</span>);</span><br><span class="line">	<span class="comment">// 输入数额 = ( 分子 / 分母 ) + 1</span></span><br><span class="line">	amountIn = (numerator / denominator).<span class="title function_">add</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>一样先将 <code>α = ∆x / x</code> 、<code>β = ∆y / y</code> 和 <code>γ = 0.997</code> 代换并上下同乘 <code>1000y</code> 得到：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219152828.png" alt="20220219152828" /></p>
 <p>将代码和公式结合起来：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220219153330.png" alt="20220219153330" /></p>
 <p>getAmountIn函数，通过入参：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -384,7 +384,7 @@
 <p>amountIn —— ∆x —— ∆x数量的x币</p>
 </li>
 </ul>
-<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br>
+<p>最后有个+1，因为<code>solidity</code>在进行整数除法的时候，余数部分是会被抛弃掉的，相当于向下取整。<br />
 +1之后，交易者需要付出多一点点</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -524,7 +524,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -579,12 +579,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

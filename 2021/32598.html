@@ -267,48 +267,48 @@
       
         <h1>Pre:</h1>
 <p>来自朋友的需求,bp项目方某个钱包地址每隔一段时间就会回购宝石代币要监控该钱包回购的动作</p>
-<hr>
+<hr />
 <h1>脚本:</h1>
 <h2 id="思路">思路:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008145806.png" alt="20211008145806"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008145806.png" alt="20211008145806" /></p>
 <p>一开始打算用爬虫,不过想起之前写<code>rarity</code>的升级脚本调用过<code>ftmscan</code>的api</p>
 <p>所以看了一下<code>bscscan</code>的api文档，找到个方法能满足需求</p>
 <p><code>Get a list of 'Normal' Transactions By Address</code>获取地址的交易记录</p>
-<hr>
+<hr />
 <h2 id="解析input-data">解析input data:</h2>
 <p><code>https://api.bscscan.com/api?module=account&amp;action=txlist&amp;address=0xF426a8d0A94bf039A35CEE66dBf0227A7a12D11e&amp;startblock=0&amp;endblock=99999999&amp;page=1&amp;offset=10&amp;sort=asc&amp;apikey=YourApiKeyToken</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008151300.png" alt="20211008151300"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008151300.png" alt="20211008151300" /></p>
 <p>api获取到json结果，本来想拿到它的hash再去进一步查询，但是看到<code>input</code>的数据，这里面其实也是包含了交易的内容，可以尝试去decode这些数据。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008153504.png" alt="20211008153504"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008153504.png" alt="20211008153504" /></p>
 <p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/11144/how-to-decode-input-data-from-a-transaction">How to decode input data from a transaction?</a></p>
 <p>搜索了一下，似乎是可以定义<code>contract</code>对象，调用函数直接decode</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contract.decode_function_input(transaction.input)</span><br></pre></td></tr></table></figure>
-<p>每次回购动作，都是去跟合约交互<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008151537.png" alt="20211008151537"></p>
+<p>每次回购动作，都是去跟合约交互<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008151537.png" alt="20211008151537" /></p>
 <p>但是这个合约没有开源，没法拿到abi,没法获得<code>contract</code>对象，似乎就没法直接去decode。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/7A702759-9A99-4885-8FE9-26DFBE6BC98F.png" alt="7A702759-9A99-4885-8FE9-26DFBE6BC98F"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/7A702759-9A99-4885-8FE9-26DFBE6BC98F.png" alt="7A702759-9A99-4885-8FE9-26DFBE6BC98F" /></p>
 <p>再观察一下其中一个input数据:</p>
 <p><code>0x5c11d79500000000000000000000000000000000000000000000065a4da25d3016c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000c6ce2918d13b7983fa6c305e726c3dc4c805b42100000000000000000000000000000000000000000000000000000000615fe5380000000000000000000000000000000000000000000000000000000000000002000000000000000000000000acb8f52dc63bb752a51186d1c55868adbffee9c1000000000000000000000000197ea04912dc81fcd19992e6210168109aa9c3fe</code></p>
 <p>最后一段数据是 回购宝石代币的代币地址</p>
 <p>暂且判断最后一段数据，是哪个代币地址，则是回购了哪个代币</p>
-<hr>
+<hr />
 <h2 id="效果">效果:</h2>
 <p>定时任务+tg提醒</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/03DD10DA-7E3B-46BD-9ECA-A0B600AA74AC.png" alt="03DD10DA-7E3B-46BD-9ECA-A0B600AA74AC"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/03DD10DA-7E3B-46BD-9ECA-A0B600AA74AC.png" alt="03DD10DA-7E3B-46BD-9ECA-A0B600AA74AC" /></p>
+<hr />
 <h1>Bug:</h1>
 <p>刚开始跑的时候，发现有延迟</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008153914.png" alt="20211008153914"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211008153914.png" alt="20211008153914" /></p>
 <p><code>https://api.bscscan.com/api?module=account&amp;action=txlist&amp;address=0xF426a8d0A94bf039A35CEE66dBf0227A7a12D11e&amp;startblock=0&amp;endblock=99999999&amp;page=1&amp;offset=10&amp;sort=asc&amp;apikey=YourApiKeyToken</code></p>
 <p>猜测是<code>startblock</code>参数造成的，不要从0区块开始查，后续每次跑的时候都更新一下这个参数即可。</p>
-<hr>
+<hr />
 <h1>decode input data试验:</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python</span></span><br><span class="line">infuraurl = <span class="string">&#x27;https://rpcapi.fantom.network&#x27;</span></span><br><span class="line">web3_ins = Web3(Web3.HTTPProvider(infuraurl))</span><br><span class="line">connection_status = (web3_ins.isConnected())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[*] fantom network connect status : &#123;&#125;&quot;</span>.<span class="built_in">format</span>(connection_status))</span><br><span class="line">contract = web3_ins.eth.contract(address=Contract_Addr, abi=json.loads(Contract_Abi))</span><br><span class="line"></span><br><span class="line">input_data= <span class="string">&quot;0x9024944800000000000000000000000000000000000000000000000000000000001215e0&quot;</span></span><br><span class="line"></span><br><span class="line">result  = contract.decode_function_input(input_data)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
 <p>在有abi的情况下，确实是可以解出input data的</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(&lt;Function level_up(uint256)&gt;, &#123;&#x27;_summoner&#x27;: 1185248&#125;)</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3C8C2ECB-DEF5-45CC-BFA8-088E83552776.png" alt="3C8C2ECB-DEF5-45CC-BFA8-088E83552776"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/556A7322-7E85-4AD0-B6CB-CCAA10C09D20.png" alt="556A7322-7E85-4AD0-B6CB-CCAA10C09D20"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/3C8C2ECB-DEF5-45CC-BFA8-088E83552776.png" alt="3C8C2ECB-DEF5-45CC-BFA8-088E83552776" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/556A7322-7E85-4AD0-B6CB-CCAA10C09D20.png" alt="556A7322-7E85-4AD0-B6CB-CCAA10C09D20" /></p>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -331,10 +331,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -444,7 +444,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -499,12 +499,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

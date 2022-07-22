@@ -267,7 +267,7 @@
         <h1>Pre:</h1>
 <p>自己拍脑袋写了个idor_auto脚本去扫描越权漏洞。发现效果还可以。</p>
 <p>上网查下资料整理下思路。</p>
-<hr>
+<hr />
 <h1>越权漏洞</h1>
 <h2 id="简介-3">简介:</h2>
 <p>定义: 增、删、改、查，缺乏权限鉴定或者鉴定不严</p>
@@ -283,23 +283,23 @@
 <p>垂直越权</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154039.png" alt="20200406154039"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154039.png" alt="20200406154039" /></p>
+<hr />
 <h2 id="案例">案例:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154235.png" alt="20200406154235"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154235.png" alt="20200406154235" /></p>
+<hr />
 <h2 id="越权漏洞的痛点">越权漏洞的痛点:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154303.png" alt="20200406154303"></p>
-<hr>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406154303.png" alt="20200406154303" /></p>
+<hr />
 <h1>工具的设计思路:</h1>
 <h2 id="第一版">第一版:</h2>
 <p><a href="https://jerrychan807.github.io/2019/12/29/%E8%B6%8A%E6%9D%83%E5%8D%8A%E8%87%AA%E5%8A%A8%E5%8C%96%E6%8F%92%E4%BB%B6%E7%9A%84%E5%B0%9D%E8%AF%95/">越权半自动化插件的尝试</a></p>
 <p>缺点在于要自己先找到某个包的某个参数是存在越权漏洞的,不够自动化。</p>
-<hr>
+<hr />
 <h2 id="第二版">第二版:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406165919.png" alt="20200406165919"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406165919.png" alt="20200406165919" /></p>
 <p>输出的结果:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406173351.png" alt="20200406173351"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406173351.png" alt="20200406173351" /></p>
 <p>相对第一版来说,更通用。自动化程度更高</p>
 <p>缺点:需要2个账户在登录下，尽可能多的点击相同的功能点,触发请求，效率有点低。</p>
 <p>存在误报的情况:</p>
@@ -307,25 +307,25 @@
 <p>用两个账户的token去请求链接可以得到同样的响应结果,但是该页面本身没有数据操作的功能。</p>
 <p>可以理解为这类结果为公共接口，例如 获取地区省市县的接口，获取最新更新包的下载地址接口。</p>
 <p>不管用谁的token获取的结果都是一样的。</p>
-<hr>
+<hr />
 <h1>参考别人的思路:</h1>
 <h2 id="ele">ele:</h2>
 <h3 id="思路设计1-Request重放">思路设计1:Request重放</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406155039.png" alt="20200406155039"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406155039.png" alt="20200406155039" /></p>
 <p>缺乏鉴权的部分,图中的用法是单纯替换token,而我的工具的做法是,替换整个请求body。</p>
 <p>单纯替换token的粒度更低,相比我的方案可以发现更多:在url上的越权,一些头部字段的越权，这感觉效果更好。</p>
 <p>而且,可以只需要用单一用户点击功能，触发请求就可以了。相比我的方案(两个账户触发请求)来说，效率更高。</p>
 <p>修改ID的部分,感觉不能单纯的对数字加一减一,效果不好，比如说订单号order_id,加一减一之后不一定是真实存在的订单号。</p>
 <p>过滤部分，过滤掉本身无需鉴权的请求,这一点可以大大减少误报。</p>
-<hr>
+<hr />
 <h3 id="思路设计2-Response比对">思路设计2:Response比对</h3>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406175758.png" alt="20200406175758"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406175758.png" alt="20200406175758" /></p>
 <p>比较body的内容是否完全一样,这样会漏报。因为有些response里面含有一些随机值。</p>
 <p>比较body length的话,可能会误报,但是总比漏报好。</p>
 <p>比较好的比对方案是: status code + body length</p>
-<hr>
+<hr />
 <h2 id="中通scr">中通scr:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406182126.png" alt="20200406182126"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20200406182126.png" alt="20200406182126" /></p>
 <p>开发了浏览器插件供QA人员使用,触发请求部分不需要由安全的同事来做,这一点很赞。</p>
 <blockquote>
 <p>首先我们来看，越权漏洞的本质是服务方没有正确地进行鉴权，如果能够准确无误地执行了鉴权的动作，那就不会存在越权漏洞。这里有一个前提就是合理的权限设定，判断是否正确地执行了鉴权，其实就是判断真实的响应结果是否和规划的权限设定里测试用例的预期结果是否一致，如果一致那就不存在越权漏洞，反之则存在，以上是整个方案的基础原理。</p>
@@ -337,7 +337,7 @@
 <p>由于自动化授权的敏感性，可以由检测应用和部署检测应用的设备结合成网络代理并且由安全测试人员提供TOTP满足信任要求，另外测试用例要做到生产环境的无害性，这样也可以直接部署到生产环境进行定期自动化测试。接下来对部分细节作简要阐述，在传统开发模式中，系统规划的权限设定通常存在开发人员的大脑和服务的鉴权代码中，这样非常不利于上线前权限设计的合理性和正确性的评审以及上线后鉴权逻辑实现正确性的核查，也是越权漏洞频发的根因，我们需要在服务开发之初就文档化下来，包括服务的定义、安全测试用例及预期的结果，在开发实现方面，我们可以借助流行的IDL接口描述语言的一些特性，如protobuf的descriptor或option，IDL用来定义服务，其中的一些特性用来定义安全测试用例及预期的结果，结合起来可以支持非常复杂的场景，服务方面既可以提供RPC也可以提供RESTful形式，意味着既可以支持中台对外服务也可以支持对内的微服务（对内的微服务作为独立的身份实体），安全测试用例方面既可以支持行为、菜单等权限，也可以支持数据权限，整个的定义如proto文件需要自动化地解析到资源中心并且和应用标识关联起来。另外在统一权限中心的设计方面，我们需要将应用所有的权限集中配置和使用，并且做到配置项和服务的关联，这样可以实现任意权限模型的支持，如RBAC、ABAC等。</p>
 </blockquote>
 <p>这个零信任安全架构下的全新思路有点东西。。。</p>
-<hr>
+<hr />
 <h1>构思:另一种更好的方案:</h1>
 <p>半自动化的原因是因为触发请求的部分最好是由人来触发。这样能保证请求的真实、多和全。</p>
 <p>甲方的话可以通过查询api的日志来做到这一点。</p>
@@ -346,7 +346,7 @@
 <p>然后进行测试，首先这样就做到了在收集数据包方面的自动化，不需要再一个个的去点了。</p>
 <p>但是这样的话，有个需要考虑的点：如果是在生产环境，很容易出现给其他用户写入脏数据</p>
 <p>怎么样保证无害化？又是一个值得考虑的点。比如用生产环境的日志(生产环境的日志可能又不够全)。</p>
-<hr>
+<hr />
 <h1>其他问题:</h1>
 <h2 id="增删改查">增删改查</h2>
 <p>查是最容易实现的，那么增删改呢？</p>
@@ -354,7 +354,7 @@
 <p>有些接口,如果你的2个测试账户都是没有数据的话，往往测试账号都是没有什么信息的。</p>
 <p>那么不管怎么测，他们的结果都是空的，没有什么意义的数据。</p>
 <p>这个时候在实际的渗透测试中,比如phone参数,你会用特制的手机号列表去遍历，直到一个length特别不同的包出现，这个时候才能真正的证明这个接口是有越权的。</p>
-<hr>
+<hr />
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -496,7 +496,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -551,12 +551,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

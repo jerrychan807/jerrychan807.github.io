@@ -261,23 +261,23 @@
 <p>但有时候第三方工具会因为特殊情况而卡死,从而导致整个程序卡死.</p>
 <p>此时,我们可以设置一个最大的超时时间.</p>
 <p>当这个命令超过这个最大时间的时候,我们主动kill掉,以保证程序接下来可以正常运行.</p>
-<hr>
+<hr />
 <h1>py3:</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p = subprocess.Popen([cmd],stdout=subprocess.PIPE)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    (stdoutput, erroutput) = p.communicate(timeout=TIMEOUT)  <span class="comment"># 超时时间</span></span><br><span class="line"><span class="keyword">except</span> subprocess.TimeoutExpired:</span><br><span class="line">    p.kill()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[*] TIMEOUT: %s&quot;</span> % cmd)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
 <p>py3的<code>subprocess</code>库原生支持了超时时间的参数.</p>
 <p>过了超时时间的时候,会抛出<code>TimeoutExpired</code>异常.我们只需要<code>catch</code>到再做处理就行了.</p>
-<hr>
+<hr />
 <h1>py2:</h1>
 <p>没想到py2的<code>subprocess</code>库还并没有支持<code>timeout</code>参数.只能自己手动计时.到时间kill掉.</p>
 <p>搜索到的实现比较好的示例代码,只需要简单改改就可以用了.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Timer</span><br><span class="line"> </span><br><span class="line">kill = <span class="keyword">lambda</span> process: process.kill()</span><br><span class="line">cmd = [<span class="string">&#x27;ping&#x27;</span>, <span class="string">&#x27;www.google.com&#x27;</span>]</span><br><span class="line">ping = subprocess.Popen(</span><br><span class="line">    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line"> </span><br><span class="line">my_timer = Timer(<span class="number">5</span>, kill, [ping])</span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    my_timer.start()</span><br><span class="line">    stdout, stderr = ping.communicate()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    my_timer.cancel()</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>另一种卡死的情况:</h1>
 <blockquote>
 <p>原因是使用<code>Popen.wait()</code>后直接读<code>PIPE.stdout.read()</code>之前，可能缓存已经满了，此时导致了卡死。</p>
 <p>解决办法：使用<code>communicate()</code>,这个方法会把输出放在内存，而不是管道里，所以这时候上限就和内存大小有关了，一般不会有问题。</p>
 </blockquote>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -398,7 +398,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -453,12 +453,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

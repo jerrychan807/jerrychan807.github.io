@@ -280,24 +280,24 @@
         <h1>漏洞复现</h1>
 <p>未开启debug模式,</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg" alt="" /></p>
 <h1>漏洞分析:</h1>
 <p>定位关键代码:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg" alt="" /></p>
 <p>第525行: 读取了配置文件的<code>var_method</code>,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg" alt="" /></p>
 <p>并赋值</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
 <p>第526行:</p>
 <p>引用了外部变量$POST</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg" alt="" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">$this</span>-&gt;&#123;<span class="variable language_">$this</span>-&gt;method&#125;(<span class="variable">$_POST</span>);  </span><br></pre></td></tr></table></figure>
 <p>执行结果:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70444143.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d70444143.jpg" alt="" /></p>
 <p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7055332e.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7055332e.jpg" alt="" /></p>
 <p>构造函数引入了外部变量,准备创建一个新实例</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d705c5a02.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d705c5a02.jpg" alt="" /></p>
 <p>这个实例的属性</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -310,18 +310,18 @@
 <p>全局过滤规则<code>$filter</code>被设置成了一个array,值为<code>system</code></p>
 </li>
 </ul>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7068e01a.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d7068e01a.jpg" alt="" /></p>
 <p>这个时候实例的初始化完成了。</p>
 <p>跳回到了<code>Route.php</code>检测URL路由的函数<code>check()</code>,这个时候的<code>method</code>值为<code>get</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d707cf7fd.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d707cf7fd.jpg" alt="" /></p>
 <p>经过一连串检测之后,</p>
 <p><code>App.php</code>run()函数对请求执行调用分发</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70872afc.jpg" alt=""></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt=""></p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d70872afc.jpg" alt="" /></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt="" /></p>
 <p>继续跟进，</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt=""></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt="" /></p>
 <p>调用栈:</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt=""></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt="" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>param()</code>获取当前请求的参数</p>
@@ -339,40 +339,40 @@
 <p><code>getFilter()</code>获取过滤方法</p>
 </li>
 </ul>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt="" /></p>
 <p>这个时候我们之前创建的请求实例的<code>filter</code>方法为<code>system</code></p>
 <p>继续</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt=""></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt="" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>param()</code>获取当前请求的参数</p>
 </li>
 </ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt=""></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt="" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>get()</code>设置获取GET参数</p>
 </li>
 </ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt=""></p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt=""></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt="" /></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt="" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>input()</code>获取变量 支持过滤和默认值</p>
 </li>
 </ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt=""></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt="" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>array_walk_recursive()</code></p>
 </li>
 <li class="lvl-2">
-<p><code>filterValue</code>递归过滤给定的值<br>
-<img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt=""></p>
+<p><code>filterValue</code>递归过滤给定的值<br />
+<img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt="" /></p>
 </li>
 </ul>
 <p>执行结果:</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt=""></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt="" /></p>
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -502,7 +502,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -557,12 +557,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

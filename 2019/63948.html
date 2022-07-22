@@ -263,13 +263,13 @@
 <p>这样的话,每次在执行sql语句的时候,都会跟数据库建立链接,执行结束后,再释放连接.</p>
 <p>这样在高并发的情况下会频繁连接数据库，占用很多连接数.</p>
 <p>所以这个时候要适当增大mysql的最大连接数.</p>
-<hr>
+<hr />
 <h1>查询:</h1>
 <p>查询最大连接数</p>
 <p><code>show variables like '%max_connections%';</code></p>
 <p>历史最大连接数量</p>
 <p><code>show global status like 'Max_used_connections';</code></p>
-<hr>
+<hr />
 <h1>修改最大连接数:</h1>
 <h2 id="修改mysql配置文件">修改mysql配置文件:</h2>
 <blockquote>
@@ -280,17 +280,17 @@
 <blockquote>
 <p>第一次只修改了配置文件,也没有及时验证有无修改成功.才发现改了配置文件还不够,还需要继续往下修改.</p>
 </blockquote>
-<hr>
+<hr />
 <h2 id="配置limits-conf">配置limits.conf:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/security/limits.conf</span><br><span class="line"><span class="comment">#  添加mysql用户配置</span></span><br><span class="line">mysql hard nofile 65535</span><br><span class="line">mysql soft nofile 65535</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="配置mariadb-service">配置mariadb.service:</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/lib/systemd/system/mysqld.service</span><br><span class="line"><span class="comment"># 添加参数</span></span><br><span class="line">LimitNOFILE=65535</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="重启">重启</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重启mysql</span></span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>总结:</h1>
 <p>之前在解决类似的数据库错误的时候,确实是比较难定位到具体的原因.</p>
 <p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37612800/postgresql-connection-timed-out-operationalerror-on-django-and-new-server">PostgreSQL Connection Timed Out OperationalError on Django and new server</a></p>
@@ -299,7 +299,7 @@
 <p>根据我的经验，最好的方法是分别对连接的两侧进行故障排除。这意味着首先从psql命令行测试连接的服务器端，然后在解析后测试django端。</p>
 </blockquote>
 <p>最好的方法是对涉及到组件(元素)一一去排查原因,不要一直想当然的陷入到代码里.那样会只见树不见林…</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -441,7 +441,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -496,12 +496,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

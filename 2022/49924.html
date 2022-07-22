@@ -284,7 +284,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">RewardsPerBlock</span> = <span class="number">1</span>$</span><br><span class="line"><span class="title class_">On</span> block <span class="number">0</span>, <span class="title class_">Staker</span> A deposits $<span class="number">100</span></span><br><span class="line"><span class="title class_">On</span> block <span class="number">10</span>, <span class="title class_">Staker</span> B deposits $<span class="number">100</span></span><br><span class="line"><span class="title class_">On</span> block <span class="number">15</span>, <span class="title class_">Staker</span> A harvests all rewards</span><br><span class="line"><span class="title class_">On</span> block <span class="number">25</span>, <span class="title class_">Staker</span> B harvests all rewards</span><br><span class="line"><span class="title class_">On</span> block <span class="number">30</span>, both stakers harvests all rewards.</span><br></pre></td></tr></table></figure>
 <p>前10个区块，用户A独享全部奖励即10$</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">From</span> block <span class="number">0</span> to <span class="number">10</span>:</span><br><span class="line"><span class="title class_">BlocksPassed</span>: <span class="number">10</span></span><br><span class="line"><span class="title class_">BlockRewards</span> = <span class="title class_">BlocksPassed</span> * <span class="title class_">RewardsPerBlock</span> </span><br><span class="line"><span class="title class_">BlockRewards</span> = $<span class="number">10</span></span><br><span class="line"><span class="title class_">StakerATokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">TotalTokens</span>: $<span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">StakerAShare</span> = <span class="title class_">StakerATokens</span> / <span class="title class_">TotalTokens</span></span><br><span class="line"><span class="title class_">StakerAShare</span> = <span class="number">1</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span> = <span class="title class_">BlockRewards</span> * <span class="title class_">StakerAShare</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span> = $<span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>10个区块后，用户B质押$100<br>
+<p>10个区块后，用户B质押$100<br />
 在第15个区块时，用户A提取所有收益</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">From</span> <span class="title class_">Block</span> <span class="number">10</span> to <span class="number">15</span>:</span><br><span class="line"><span class="title class_">BlocksPassed</span>: <span class="number">5</span></span><br><span class="line"><span class="title class_">BlockRewards</span> = <span class="title class_">BlocksPassed</span> * <span class="title class_">RewardsPerBlock</span> </span><br><span class="line"><span class="title class_">BlockRewards</span> = $<span class="number">5</span></span><br><span class="line"><span class="title class_">StakerATokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">StakerBTokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">TotalTokens</span>: $<span class="number">200</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">StakerAShare</span> = <span class="title class_">StakerATokens</span> / <span class="title class_">TotalTokens</span></span><br><span class="line"><span class="title class_">StakerAShare</span> = <span class="number">1</span>/<span class="number">2</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span> = (<span class="title class_">BlockRewards</span> * <span class="title class_">StakerAShare</span>) + <span class="title class_">StakerAAccumulatedRewards</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span> = $<span class="number">2.5</span> + $<span class="number">10</span> = $<span class="number">12.5</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">StakerBShare</span> = <span class="title class_">StakerBTokens</span> / <span class="title class_">TotalTokens</span></span><br><span class="line"><span class="title class_">StakerBShare</span> = <span class="number">1</span>/<span class="number">2</span></span><br><span class="line"><span class="title class_">StakerBAccumulatedRewards</span> = <span class="title class_">BlockRewards</span> * <span class="title class_">StakerBShare</span></span><br><span class="line"><span class="title class_">StakerBAccumulatedRewards</span> = $<span class="number">2.5</span></span><br></pre></td></tr></table></figure>
 <p>用户A提取收益后,<code>StakerAAccumulatedRewards</code>重置为 0。用户B在区块10~15累积奖励为 $2.5</p>
@@ -292,7 +292,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">From</span> <span class="title class_">Block</span> <span class="number">15</span> to <span class="number">25</span>:</span><br><span class="line"><span class="title class_">BlocksPassed</span>: <span class="number">10</span></span><br><span class="line"><span class="title class_">BlockRewards</span>: $<span class="number">10</span></span><br><span class="line"><span class="title class_">StakerATokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">StakerBTokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">TotalTokens</span>: $<span class="number">200</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span>: $<span class="number">5</span></span><br><span class="line"><span class="title class_">StakerBAccumulatedRewards</span>: $<span class="number">2.5</span> + $<span class="number">5</span> = $<span class="number">7.5</span></span><br></pre></td></tr></table></figure>
 <p>用户B提取收益后，<code>StakerBAccumulatedRewards</code>重置为 0。最后，两个用户在第30区块后，同时提取奖励</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">From</span> <span class="title class_">Block</span> <span class="number">25</span> to <span class="number">30</span>:</span><br><span class="line"><span class="title class_">BlocksPassed</span>: <span class="number">5</span></span><br><span class="line"><span class="title class_">BlockRewards</span>: $<span class="number">5</span></span><br><span class="line"><span class="title class_">StakerATokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">StakerBTokens</span>: $<span class="number">100</span></span><br><span class="line"><span class="title class_">TotalTokens</span>: $<span class="number">200</span></span><br><span class="line"><span class="title class_">StakerAAccumulatedRewards</span>: $<span class="number">5</span> + $<span class="number">2.5</span> = $<span class="number">7.5</span></span><br><span class="line"><span class="title class_">StakerBAccumulatedRewards</span>: $<span class="number">2.5</span></span><br></pre></td></tr></table></figure>
-<p>30个区块共产生奖励 $30<br>
+<p>30个区块共产生奖励 $30<br />
 用户A、B总收益分别为：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -327,7 +327,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">StakerBRewards</span> = <span class="number">100</span> * (<span class="number">0.025</span> + <span class="number">0.05</span> + <span class="number">0.025</span>) = <span class="number">10</span></span><br></pre></td></tr></table></figure>
 <p>两个用户都验证正确，然后在计算奖励时，他们有共同的除法总和：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">5</span>  / <span class="number">200</span>) + (<span class="number">10</span> / <span class="number">200</span>) + (<span class="number">5</span>  / <span class="number">200</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220715231308.png" alt="20220715231308"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220715231308.png" alt="20220715231308" /></p>
 <p><code>SushiSwap</code> 称这个除法总和为<code>accSushiPerShare</code></p>
 <p>每一部分，我们定义为<code>RewardsPerShare</code></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">区块区间奖励 / 区块区间总质押数 = 区块区间 每个质押<span class="title class_">Token</span>可以奖励多少</span><br><span class="line"><span class="title class_">RewardsPerShareOn0</span>to10  = (<span class="number">10</span> / <span class="number">100</span>)   </span><br><span class="line"><span class="title class_">RewardsPerShareOn10</span>to15 = (<span class="number">5</span>  / <span class="number">500</span>)</span><br><span class="line"><span class="title class_">RewardsPerShareOn15</span>to25 = (<span class="number">10</span> / <span class="number">500</span>)</span><br><span class="line"><span class="title class_">RewardsPerShareOn25</span>to30 = (<span class="number">5</span>  / <span class="number">500</span>)</span><br></pre></td></tr></table></figure>
@@ -357,17 +357,17 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">StakerBRewards</span> = <span class="title class_">StakerBTokens</span> * </span><br><span class="line">(<span class="title class_">AccumulatedRewardsPerShare</span> - <span class="title class_">RewardsPerShareOn0</span>to10)</span><br></pre></td></tr></table></figure>
 <p>代入数据验证一下：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">StakerATokens</span> = <span class="number">100</span></span><br><span class="line"><span class="title class_">AccumulatedRewardsPerShare</span> = (<span class="number">10</span> / <span class="number">100</span>) + (<span class="number">5</span> / <span class="number">200</span>) + (<span class="number">10</span> / <span class="number">200</span>) + (<span class="number">5</span> / <span class="number">200</span>)</span><br><span class="line"><span class="title class_">AccumulatedRewardsPerShareOn0</span>to15 = (<span class="number">10</span> / <span class="number">100</span>) + (<span class="number">5</span> / <span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"><span class="title class_">StakerARewardsOn15</span>to30 = <span class="title class_">StakerATokens</span> * (<span class="title class_">AccumulatedRewardsPerShare</span> - <span class="title class_">AccumulatedRewardsPerShareOn0</span>to15)</span><br><span class="line"><span class="title class_">StakerARewardsOn15</span>to30 = <span class="number">100</span> * ((<span class="number">10</span> / <span class="number">200</span>) + (<span class="number">5</span> / <span class="number">200</span>)) = <span class="number">100</span> * (<span class="number">0.05</span> + <span class="number">0.025</span>) = <span class="number">7.5</span></span><br><span class="line"><span class="title class_">StakerARewardsOn15</span>to30 = <span class="number">7.5</span></span><br></pre></td></tr></table></figure>
-<p>验证正确，这意味着，如果我们在每次存款或取款时，保存一下<code>BlockNtoMRewardsPerShare</code>，累加成<code>AccumulatedRewardsPerShare</code>.<br>
+<p>验证正确，这意味着，如果我们在每次存款或取款时，保存一下<code>BlockNtoMRewardsPerShare</code>，累加成<code>AccumulatedRewardsPerShare</code>.<br />
 再减去之前没参加的区块奖励。</p>
 <p>这就是MasterChef里的<code>rewardDebt</code>(奖励欠款)的含义。这就像计算一个质押者自第0块以来的总奖励，但删除他们已经获得的奖励或他们没有资格获得的奖励，因为他们还没有质押。</p>
 <h1>gas比较：</h1>
 <p>我们一开始的思路是 Pool里总质押量发生变化时，要遍历所有用户并更新他们的累加奖励。现在的思路是：总质押量变化时，仅更新<code>AccumulatedRewardsPerShare</code></p>
-<p>引用<a target="_blank" rel="noopener" href="https://dev.to/heymarkkop/understanding-sushiswaps-masterchef-staking-rewards-1m6f">文章</a>里的.<br>
+<p>引用<a target="_blank" rel="noopener" href="https://dev.to/heymarkkop/understanding-sushiswaps-masterchef-staking-rewards-1m6f">文章</a>里的.<br />
 使用<code>hardhat-gas-reporter</code>，我们可以看到每个实现的成本是多少。</p>
 <p>对于第一个思路（遍历所有质押者）:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716102735.png" alt="20220716102735"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716102735.png" alt="20220716102735" /></p>
 <p>对于第二个思路（使用 AccumulatedRewardsPerShare）：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716102822.png" alt="20220716102822"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716102822.png" alt="20220716102822" /></p>
 <p><strong>即使只有两个质押者，这也节省了 20% 的gas。</strong></p>
 <p>经过以上的推导过程后，再来看看源码.</p>
 <h1>pendingSushi计算待奖励函数:</h1>
@@ -419,7 +419,7 @@
 <p>用户的奖励债务 更新</p>
 </li>
 </ol>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716115809.png" alt="20220716115809"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716115809.png" alt="20220716115809" /></p>
 <h1>Summary:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -435,7 +435,7 @@
 <li class="lvl-4">apr高，吸引新用户进来，买矿币，矿币价格↑，暂时没抛压</li>
 <li class="lvl-4">矿币价格可能在上升期，挖提卖就很爽,双倍快乐 😋😋😋</li>
 <li class="lvl-4">Be a Degen？？？</li>
-<li class="lvl-4"><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716120707.png" alt="20220716120707"></li>
+<li class="lvl-4"><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220716120707.png" alt="20220716120707" /></li>
 </ul>
 </li>
 </ul>
@@ -488,10 +488,10 @@
       <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
     </li>
   </ul>
 
@@ -596,7 +596,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -651,12 +651,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

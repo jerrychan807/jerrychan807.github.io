@@ -282,21 +282,21 @@
 </tbody>
 </table>
 <p>现在要把linux的修改成wins的一样。。。</p>
-<hr>
+<hr />
 <h1>配置文件:</h1>
 <h2 id="wvs-ini：">wvs.ini：</h2>
 <p>配置文件</p>
 <p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">logging.file.file_name</span>=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line"><span class="attr">logging.file.level</span>=INFO</span><br><span class="line"><span class="attr">server.address</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="number">3443</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">server.host</span>=debian</span><br><span class="line"><span class="attr">server.frontend.session_secret</span>=<span class="number">6</span>rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line"><span class="attr">wvs.temp_dir</span>=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line"><span class="attr">server.ssl.certificate</span>=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line"><span class="attr">server.ssl.private_key</span>=~/.acunetix_trial/data/certs/server.key</span><br><span class="line"><span class="attr">databases.connections.master.connection.user</span>=acunetix</span><br><span class="line"><span class="attr">databases.connections.master.connection.host</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.port</span>=<span class="number">35432</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.db</span>=wvs</span><br><span class="line"><span class="attr">databases.connections.master.connection.password</span>=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line"><span class="attr">server.static_document_root</span>=~/.acunetix_trial/v_190325161/ui</span><br><span class="line"><span class="attr">wvs.app_dir</span>=~/.acunetix_trial/v_190325161/scanner</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h2 id="start-sh"><a target="_blank" rel="noopener" href="http://start.sh">start.sh</a></h2>
 <p>启动脚本</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop previous database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to start the db&quot;</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">&quot;--port=<span class="variable">$db_port</span>&quot;</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;attempting to start the backend&quot;</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;backend exited with&quot;</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop the database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;bye.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <h1>数据库文件:</h1>
 <h2 id="pg-hba-conf">pg_hba.conf:</h2>
 <p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
-<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png" alt="" /></p>
 <p>跟原来的wins有些许差异.</p>
 <table>
 <thead>
@@ -317,15 +317,15 @@
 </tbody>
 </table>
 <p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
-<hr>
+<hr />
 <h2 id="postgresql-conf">postgresql.conf</h2>
 <p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">&#x27;*&#x27;</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">&#x27;Acunetix Trial Database&#x27;</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
 <p>然后就可以连接了。。。</p>
-<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png" alt=""></p>
+<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png" alt="" /></p>
 <p>密码在<code>wvs.ini</code>里。</p>
-<hr>
+<hr />
 <h1>refs:</h1>
 <p><a target="_blank" rel="noopener" href="https://www.acunetix.com/blog/category/docs/">acunetix docs</a></p>
 <p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
@@ -455,7 +455,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -510,12 +510,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

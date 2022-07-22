@@ -279,7 +279,7 @@
 <p>下面，我们定义一个<code>TransferNotOwner</code>异常，当用户不是代币<code>owner</code>的时候尝试转账，会抛出错误：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">error <span class="title class_">TransferNotOwner</span>(); <span class="comment">// 自定义error</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在执行当中，error必须搭配revert（回退）命令使用。</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">transferOwner1</span>(<span class="params">uint256 tokenId, address newOwner</span>) public &#123;</span><br><span class="line">        <span class="keyword">if</span>(_owners[tokenId] != msg.<span class="property">sender</span>)&#123;</span><br><span class="line">            revert <span class="title class_">TransferNotOwner</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        _owners[tokenId] = newOwner;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h1>require:</h1>
-<p><code>require</code> is used to validate inputs and conditions before execution<br>
+<p><code>require</code> is used to validate inputs and conditions before execution<br />
 用于在代码执行之前验证输入和条件，常见3种使用场景：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -303,7 +303,7 @@
 <h1>revert:</h1>
 <p><code>revert</code> 类似 <code>require</code>，相比可选填写异常描述的<code>require</code>，准确的描述会更user friendly，但遇到复杂的检验条件时，会选用<code>revert</code>.</p>
 <h1>assert:</h1>
-<p><code>assert</code> is used to check for code that should never be false.<br>
+<p><code>assert</code> is used to check for code that should never be false.<br />
 Failing assertion probably means that there is a bug.</p>
 <p>断言真假，常用于<code>after execution</code>的位置</p>
 <p>使用场景：一般用于用于内部错误检查或去检查一些不变量，因为它不能解释抛出异常的原因,所以不是对外使用的，是在内部使用的。</p>
@@ -314,7 +314,7 @@ Failing assertion probably means that there is a bug.</p>
 <p>看看成熟代码里怎么用</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">check_liquidityNet_invariant</span>(<span class="params"></span>) internal &#123;</span><br><span class="line">    int128 liquidityNet = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (uint256 i = <span class="number">0</span>; i &lt; usedTicks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">        (, int128 tickLiquidityNet, , ) = pool.<span class="title function_">ticks</span>(usedTicks[i]);</span><br><span class="line">        int128 result = liquidityNet + tickLiquidityNet;</span><br><span class="line">        <span class="title function_">assert</span>(</span><br><span class="line">            (tickLiquidityNet &gt;= <span class="number">0</span> &amp;&amp; result &gt;= liquidityNet) || (tickLiquidityNet &lt; <span class="number">0</span> &amp;&amp; result &lt; liquidityNet)</span><br><span class="line">        );</span><br><span class="line">        liquidityNet = result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// prop #20  常用于尾部，执行逻辑后</span></span><br><span class="line">    <span class="title function_">assert</span>(liquidityNet == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">check_liquidity_invariant</span>(<span class="params"></span>) internal &#123;</span><br><span class="line">    (, int24 currentTick, , , , , ) = pool.<span class="title function_">slot0</span>();</span><br><span class="line"></span><br><span class="line">    int128 liquidity = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (uint256 i = <span class="number">0</span>; i &lt; usedTicks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">        int24 tick = usedTicks[i];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (tick &lt;= currentTick) &#123;</span><br><span class="line">            (, int128 tickLiquidityNet, , ) = pool.<span class="title function_">ticks</span>(tick);</span><br><span class="line"></span><br><span class="line">            int128 result = liquidity + tickLiquidityNet;</span><br><span class="line">            <span class="title function_">assert</span>((tickLiquidityNet &gt;= <span class="number">0</span> &amp;&amp; result &gt;= liquidity) || (tickLiquidityNet &lt; <span class="number">0</span> &amp;&amp; result &lt; liquidity));</span><br><span class="line">            liquidity = result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// prop #21</span></span><br><span class="line">    <span class="title function_">assert</span>(<span class="title function_">uint128</span>(liquidity) == pool.<span class="title function_">liquidity</span>());</span><br><span class="line">    <span class="title function_">assert</span>(liquidity &gt;= <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1>gas对比:</h1>
-<p>基于<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTFSolidity/blob/main/15_Errors/Error.sol">代码</a>,简单对比,好像没啥意义。。。😨😨😨<br>
+<p>基于<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTFSolidity/blob/main/15_Errors/Error.sol">代码</a>,简单对比,好像没啥意义。。。😨😨😨<br />
 仅仅是小小gas优化的，单个交易看不出啥，multi tx才能看出来。</p>
 <table>
 <thead>
@@ -349,9 +349,9 @@ Failing assertion probably means that there is a bug.</p>
 </blockquote>
 <p>群友回复:</p>
 <p>0.8版本之前 <code>assert()</code>会消耗完所有gas</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140615.png" alt="20220714140615"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140615.png" alt="20220714140615" /></p>
 <p>0.8版本后assert(）在编译时将操作码从<code>FE</code>改为了<code>FD</code>不会消耗完gas</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140629.png" alt="20220714140629"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714140629.png" alt="20220714140629" /></p>
 <p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/solidity/080-breaking-changes.html">Solidity v0.8.0 重大更新</a>：</p>
 <blockquote>
 <p>Failing <code>assertions</code> and other internal checks like division by zero or arithmetic overflow do not use the <code>invalid opcode</code> but instead the <code>revert opcode</code></p>
@@ -360,7 +360,7 @@ Failing assertion probably means that there is a bug.</p>
 <p>assert的操作码改变了：<code>invalid opcode</code> -&gt;<code>revert opcode</code>,会返还<code>gas</code></p>
 <h2 id="Q2-require带错误描述为啥更耗gas">Q2: require带错误描述为啥更耗gas?</h2>
 <p><code>ErrorRequire.evm</code> Vs <code>ErrorRequireText.evm</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714142719.png" alt="20220714142719"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714142719.png" alt="20220714142719" /></p>
 <blockquote>
 <p>所有命运赠送的礼物，早已在暗中标好了价格 —— 茨威格</p>
 </blockquote>
@@ -425,7 +425,7 @@ Failing assertion probably means that there is a bug.</p>
 <p>多积累基础知识，少超前诠释知识</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714144530.png" alt="20220714144530"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220714144530.png" alt="20220714144530" /></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>除了细读文档，还要看看版本更新了啥新特性，太难了</p>
@@ -576,7 +576,7 @@ Failing assertion probably means that there is a bug.</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -631,12 +631,12 @@ Failing assertion probably means that there is a bug.</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

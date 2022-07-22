@@ -266,37 +266,37 @@
       
         <h1>Pre:</h1>
 <p>朋友发了个tx给我，发现自己在pancakeSwap添加流动性时，没有获得全部的lptoken,一部分lptoken发送到了<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址里，觉得很奇怪。。叫我看一下原因。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004342.png" alt="20220711004342" /></p>
 <h1>分析过程:</h1>
 <h2 id="Erc20合约：">Erc20合约：</h2>
 <p>一开始猜测有可能这个地址是erc20合约本身的收税地址，先看看该合约有无tax fee</p>
 <p>用这个<a target="_blank" rel="noopener" href="https://cryptogems.tips/scanner?address=0xc4eeb3199df249a6bce8ff706fe86c08c5f847d0&amp;blockchain=bsc">cryptogems</a>网站查很方便,确实有tax fee</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png" alt="20220711010514"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010514.png" alt="20220711010514" /></p>
 <p>但去合约代码里查，<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址不是erc20合约里的预留地址/收税地址，那就不是代币合约的问题。。。</p>
 <h2 id="Google">Google:</h2>
 <p>google搜索了一下<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>这个地址，发现也有部分人有遇到同样的问题，他们也没有讨论出个所以然来。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png" alt="20220711004630"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711004630.png" alt="20220711004630" /></p>
 <blockquote>
 <p>一度怀疑，他们是用同一个erc20合约自动生成工具，去发布token，被开发者预留了收税地址，强行收税。。。</p>
 </blockquote>
 <h2 id="Bscscan">Bscscan:</h2>
-<p>先去bscscan查查这个地址，<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307"><br>
-该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br>
+<p>先去bscscan查查这个地址，<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005307.png" alt="20220711005307" /><br />
+该地址<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>是个代理合约，他的执行合约是<br />
 <code>0xc06e6ed003763d173b5b9f35960ad359d0339c96</code></p>
-<p>继续查一下<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421"></p>
+<p>继续查一下<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711005421.png" alt="20220711005421" /></p>
 <p>执行合约名称为<code>PCSFeeHandler</code>，可能跟pancake有关系，还是没看出个所以然来。。。</p>
 <h2 id="tenderly">tenderly</h2>
-<p>去<code>tenderly</code> Debug一下，<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150"></p>
+<p>去<code>tenderly</code> Debug一下，<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711010150.png" alt="20220711010150" /></p>
 <p>先关注几个<code>transfer</code>相关的函数，也没看到<code>0x0ed943ce24baebf257488771759f9bf482c39706</code>的踪影。</p>
-<p>然后在debugger里的参数里有看到这个地址出现。<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212"></p>
-<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br>
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324"></p>
+<p>然后在debugger里的参数里有看到这个地址出现。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011212.png" alt="20220711011212" /></p>
+<p>向上找，是在<code>mint</code>铸造lptoken的流程里，会交税给这个地址。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011324.png" alt="20220711011324" /></p>
 <h3 id="mint函数流程：">mint函数流程：</h3>
 <p>接着就去看一下PancakePair<a target="_blank" rel="noopener" href="https://github.com/pancakeswap/pancake-swap-core/blob/master/contracts/PancakePair.sol">代码</a>里的<code>mint</code>函数</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png" alt="20220711011758"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711011758.png" alt="20220711011758" /></p>
 <ol>
 <li class="lvl-3">
 <p><code>feeOn</code>开关由<code>_mintFee</code>函数控制</p>
@@ -305,7 +305,7 @@
 <p>查询工厂函数的<code>feeTo</code>地址</p>
 </li>
 </ol>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png" alt="20220711012157"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012157.png" alt="20220711012157" /></p>
 <ol start="3">
 <li class="lvl-3">
 <p><code>feeTo</code>地址不为0地址，则<code>feeOn</code>收税开关为开启</p>
@@ -314,8 +314,8 @@
 <p>所以就是，添加流动性的时候，由于<code>pancakeswap</code>开启了收税开关，<code>mint</code>出来的部分<code>lptoken</code>打到了官方的收税地址里了。</p>
 <h3 id="验证：-2">验证：</h3>
 <p>随便找两个和<code>router</code><a target="_blank" rel="noopener" href="https://bscscan.com/address/0x10ed43c718714eb63d5aa57b78b54704e256024e">合约</a>交互，调用了<code>addLiquidity</code>函数的tx看看,都是同样有被官方收税。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554"></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012554.png" alt="20220711012554" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711012643.png" alt="20220711012643" /></p>
 <p>确实是被官方收税了,Done！</p>
 <h1>小结:</h1>
 <ol>
@@ -333,7 +333,7 @@
 <p>之前的添加流动性也是有交税的，应该tax fee比较低，无感知。所以tax开关是一直开启的，并不是最近才开启的。</p>
 <h1>bitquery数据分析:</h1>
 <p>看看收税地址的<a target="_blank" rel="noopener" href="https://explorer.bitquery.io/zh/bsc/smart_contract/0x0ed943ce24baebf257488771759f9bf482c39706/inflow?from=2022-01-01&amp;till=2022-07-11">入账情况</a>:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711182547.png" alt="20220711182547"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711182547.png" alt="20220711182547" /></p>
 <p>能发现到一些有趣的信息，交税次数最多的token：<a target="_blank" rel="noopener" href="https://bscscan.com/address/0x20f663cea80face82acdfa3aae6862d246ce0333"> DRIP Token (DRIP)</a>，还以为是bnb这类主流token呢。。</p>
 <p>一些信息：</p>
 <ul class="lvl-0">
@@ -347,7 +347,7 @@
 <p><a target="_blank" rel="noopener" href="https://www.bsc.news/post/exploring-the-drip-platform-with-forex-sharks">BscNews-Exploring the Drip Platform With Forex Shark</a></p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711222207.png" alt="20220711222207"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220711222207.png" alt="20220711222207" /></p>
 <p>有一定热度，代币机制有10%的税，会自动添加流动性，所以才会频繁mint LpToken，频繁交税。</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -374,10 +374,10 @@
       <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
@@ -484,7 +484,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -539,12 +539,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

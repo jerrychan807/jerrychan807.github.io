@@ -269,7 +269,7 @@
 <p>每次升级都可以上传新的智能合约，并在每次合约升级时为用户提供一个新地址。然而，这不是一个非常用户友好的设计模式。</p>
 <p>为了方便用户更换地址，可以维护注册表合约。通过某合约提供的函数可方便让用户查询到新合约的最新地址。</p>
 <p>例如，AAVE 维护一个<code>地址提供者注册表</code>提供不同市场的活跃借贷池地址,即用户可以调用合约的函数获取最新的地址。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628000242.png" alt="20220628000242"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628000242.png" alt="20220628000242" /></p>
 <p>建议在不更改地址和丢失数据的情况下升级合约</p>
 <h1>接口模式：</h1>
 <p>这是一种常见的面向对象的编程模式。在这种模式下，用户总是与包含一些业务逻辑的<code>主合约</code>进行交互；但是，<code>主合约</code>也依赖于与<code>卫星合约</code>通信的接口。主合约包含一个<code>upgradeTo</code>方法，该方法允许主合约的所有者更改实现地址</p>
@@ -285,8 +285,8 @@
 <p>如果 <code>MainContract</code> 的所有者想要更改逻辑，他们需要部署一个单独的 <code>SatteliteContract</code> 并修改业务逻辑，并使用新的 <code>SatteliteContract</code> 的地址调用 <code>MainContract</code> 的<code>upgradeTo</code>方法。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./../../interfaces/simple-interface/ILogic.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">contract <span class="title class_">MainContract</span> &#123;</span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">ILogic</span> satteliteContract;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.修改业务逻辑 2.执行更新函数</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">upgradeTo</span>(<span class="params">address newImplementation</span>) public &#123;</span><br><span class="line">        <span class="comment">// 更新</span></span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Only Owner&quot;</span>);</span><br><span class="line">        satteliteContract = <span class="title class_">ILogic</span>(newImplementation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// MainContract 在内部使用 SatteliteContract 的数据来响应用户的查询</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getFirstName</span>(<span class="params"></span>) external returns (bytes32)&#123;</span><br><span class="line">        <span class="keyword">return</span> satteliteContract.<span class="title function_">getFirstName</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getLastName</span>(<span class="params"></span>) external returns (bytes32)&#123;</span><br><span class="line">        <span class="keyword">return</span> satteliteContract.<span class="title function_">getLastName</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setFirstName</span>(<span class="params">bytes32 _firstName</span>) external &#123;</span><br><span class="line">        satteliteContract.<span class="title function_">setFirstName</span>(_firstName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setLastName</span>(<span class="params">bytes32 _lastName</span>) external &#123;</span><br><span class="line">        satteliteContract.<span class="title function_">setLastName</span>(_lastName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="缺点：">缺点：</h2>
-<p>虽然实现简单，但<strong>接口模式非常死板且效率低下</strong>。<br>
-<code>ILogic</code> 接口用于 <code>MainContract</code> 内部，其地址不允许更改。因此，无法修改 <code>ILogic</code> 接口内的函数。此外，实际数据存储在扩展此 <code>ILogic</code> 接口的合同中。当用户设置名字和姓氏时，这些值会在 <code>SatteliteContract</code> 中更新。<br>
+<p>虽然实现简单，但<strong>接口模式非常死板且效率低下</strong>。<br />
+<code>ILogic</code> 接口用于 <code>MainContract</code> 内部，其地址不允许更改。因此，无法修改 <code>ILogic</code> 接口内的函数。此外，实际数据存储在扩展此 <code>ILogic</code> 接口的合同中。当用户设置名字和姓氏时，这些值会在 <code>SatteliteContract</code> 中更新。<br />
 <code>MainContract</code> 只是调用 <code>SatteliteContract</code> 中的函数。如果需要更新逻辑，则需要创建一个新的 <code>SatteliteContract</code>。</p>
 <p>一旦使用新的 <code>SatteliteContract</code> 的地址调用 <code>MainContract</code> 的 <code>upgradeTo</code> 方法，存储在原始 <code>SatteliteContract</code> 中的数据就不能再被 <code>MainContract</code> 访问。</p>
 <p>所以，必须将原始 <code>SatteliteContract</code> 的存储复制到新的 <code>SatteliteContract</code> 以保持不同版本之间的应用程序状态完整。</p>
@@ -298,8 +298,8 @@
 <p>由于 <code>MainContract</code> 导入了 <code>ILogic</code> 接口，因此无法向 <code>ILogic </code>接口添加新功能（不部署新的 <code>MainContract</code>，因为这会更改应用程序地址）。</p>
 <p><strong>这种逻辑依赖关系使得合约耦合性比较大</strong>。一个好的方法是从 <code>MainContract</code> 中删除这个接口依赖，这样逻辑就很容易修改。</p>
 <p>然而，移除接口会隐藏 <code>MainContract</code> 的逻辑实现。换句话说，删除逻辑接口后，<code>MainContract</code> 的职责将减少为仅充当用户和逻辑合约之间的代理。</p>
-<p><strong>幸运的是，Solidity 允许使用 <code>fallback</code> 函数和 <code>delegatecall </code>关键字的代理模式。</strong><br>
-在讨论代理模式实现之前，让我们先解决高效存储的问题。<br>
+<p><strong>幸运的是，Solidity 允许使用 <code>fallback</code> 函数和 <code>delegatecall </code>关键字的代理模式。</strong><br />
+在讨论代理模式实现之前，让我们先解决高效存储的问题。<br />
 <strong>存储管理在设计良好的升级模式中起着至关重要的作用。一个好的存储设计必须是节约gas的。</strong></p>
 <p>继承、永久和非结构化存储是一些常见存储模式的示例。许多存储模式依赖于代理和低级委托调用。因此，建议先了解代理和委托调用。</p>
 <h1>简单代理模式：</h1>
@@ -312,15 +312,15 @@
 <p>我是用hardhat编写同样的测试逻辑</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 测试结果</span></span><br><span class="line">expect logicMyInt = <span class="number">10</span> </span><br><span class="line"><span class="comment">// 代理合约调用 logic合约查询出来的MyInt，与预期的10不一致</span></span><br><span class="line"><span class="attr">logicMyInt</span>: <span class="number">546584486846459126461364135121053344201067465379</span></span><br><span class="line"><span class="comment">// 代理合约查询出来的实现地址</span></span><br><span class="line"><span class="attr">implementationAddress</span>: <span class="number">0x0000000000000000000000000000000000000014</span></span><br><span class="line"><span class="comment">// 部署的logic合约地址</span></span><br><span class="line">logic <span class="title class_">Address</span>: <span class="number">0x5FbDB2315678afecb367f032d93F642f64180aa3</span></span><br></pre></td></tr></table></figure>
 <p><code>代理合约</code>使用 <code>delegatecall</code> 方法来调用<code>逻辑合约</code>的 <code>getMyInt()</code> 函数。<code>getMyInt()</code> 函数返回 <code>myInt</code> 变量中的值。创建<code>逻辑合约</code>时，其构造函数将整数值 10 分配给 <code>myInt</code> 变量。但是，测试表明 <code>getMyInt</code> 返回一个非常大的整数值，不等于 10。这是由于<strong>存储冲突</strong>引起的。</p>
-<p><strong>在智能合约中，存储分为 32 字节的插槽。EVM 是一个字长为 256 位（32 字节）的状态机。</strong><br>
-合约的状态变量（myInt）映射到这些槽。<br>
+<p><strong>在智能合约中，存储分为 32 字节的插槽。EVM 是一个字长为 256 位（32 字节）的状态机。</strong><br />
+合约的状态变量（myInt）映射到这些槽。<br />
 <strong>访问状态变量意味着访问存储在 EVM 插槽中该状态变量位置的值。</strong></p>
 <p>例如，<code>uint 256 myInt</code> 是 <code>逻辑合约</code> 中的第一个状态变量，而 <code>uint256</code> 类型值需要 32 个字节（一个完整的插槽）。由于<code>myInt</code>是第一个状态变量，所以它的值存储在第一个 EVM 插槽中。在 <code>getMyInt()</code> 函数中返回 <code>myInt</code> 意味着返回存储在 EVM 槽中变量 <code>myInt</code> 位置的值。请记住，<code>代理合约</code> 正在使用<code>delegatecall</code>来调用 <code>逻辑合约</code>中的 <code>getMyInt()</code> 函数。</p>
-<p><strong>由于通过委托调用该函数，EVM 将使用代理合约的存储而不是逻辑合约的存储。</strong><br>
+<p><strong>由于通过委托调用该函数，EVM 将使用代理合约的存储而不是逻辑合约的存储。</strong><br />
 但是，代理合约存储有一个地址变量存储在 EVM 的第一个插槽中。</p>
 <p>当从存储访问 <code>myInt</code> 变量时，EVM 返回存储在 <code>Proxy</code> 合约的第一个存储槽中的值。因此，十进制系统中的地址表示被返回并且测试用例失败。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220630194901.png" alt="20220630194901"></p>
-<p>同样，当调用 <code>setMyInt()</code> 函数时，修改了实现地址而不是 <code>myInt</code> 变量。<br>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220630194901.png" alt="20220630194901" /></p>
+<p>同样，当调用 <code>setMyInt()</code> 函数时，修改了实现地址而不是 <code>myInt</code> 变量。<br />
 <strong>此问题称为存储冲突。这是一个关键问题，需要在我们的可升级模式中进行适当的存储管理。</strong></p>
 <p>让我们在本系列的下一部分中了解一些流行的存储管理模式。</p>
 <h1>Summary:</h1>
@@ -352,7 +352,7 @@
 <p>每次升级，新的子合约和旧的子合约间要进行数据同步，耗gas</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628112359.png" alt="20220628112359"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628112359.png" alt="20220628112359" /></p>
 <p>简单代理模式：</p>
 <p>合约间的关系：</p>
 <ul class="lvl-0">
@@ -378,7 +378,7 @@
 <p><code>代理合约</code>委托调用来执行<code>逻辑合约</code>中存在的函数,<code>代理合约</code>允许<code>逻辑合约</code>修改其存储，而<code>逻辑合约</code>的存储保持不变。</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628112426.png" alt="20220628112426"></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628112426.png" alt="20220628112426" /></p>
 <p>简单代理模式的实现中出现了存储冲突的问题，需要在接下来的系列文章中继续探讨</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -408,10 +408,10 @@
       <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
     </li>
   </ul>
 
@@ -516,7 +516,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -571,12 +571,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">550k</span>
+    <span title="Symbols count total">567k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8:20</span>
+    <span title="Reading time total">8:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
