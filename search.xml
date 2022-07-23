@@ -13909,4 +13909,225 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
         <tag>SecurityTools</tag>
       </tags>
   </entry>
+  <entry>
+    <title>StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</title>
+    <url>/2022/15749.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220720154820.png" alt="20220720154820" /><br />
+如图所示，在<code>TransitionDb()</code>函数中，执行交易前，会对交易的目的进行判断。</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 0地址为创建合约，否则是交易或合约调用</span></span><br><span class="line">contractCreation = msg.To() == <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>如果交易的接收者为空，则代表此条交易的目的是要创建一条合约，随后调用 <code>evm.Create()</code> 执行相关的功能。<br />
+现在我们就来看看<code>evm.Create()</code>方法是如何实现合约的创建的。</p>
+<h1>创建合约 evm.Create:</h1>
+<p>首先看一看创建一个合约所需要的参数：</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Create creates a new contract using code as deployment code.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> Create(caller ContractRef, code []<span class="type">byte</span>, gas <span class="type">uint64</span>, value *big.Int) (ret []<span class="type">byte</span>, contractAddr common.Address, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	contractAddr = crypto.CreateAddress(caller.Address(), evm.StateDB.GetNonce(caller.Address()))</span><br><span class="line">	<span class="keyword">return</span> evm.create(caller, &amp;codeAndHash&#123;code: code&#125;, gas, value, contractAddr, CREATE)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>caller</code>：转出方地址</p>
+</li>
+<li class="lvl-2">
+<p><code>code</code>：代码（input）</p>
+</li>
+<li class="lvl-2">
+<p><code>gas</code>：当前交易的剩余gas</p>
+</li>
+<li class="lvl-2">
+<p><code>value</code>：转账额度</p>
+</li>
+</ul>
+<p><code>Create()</code>方法主要操作:</p>
+<ol>
+<li class="lvl-3">
+<p>首先对发送者地址（caller.Address）和账户的nonce进行<code>keccak256</code>计算得到合约地址</p>
+</li>
+<li class="lvl-3">
+<p>然后将合约地址传入<code>create()</code>方法</p>
+</li>
+<li class="lvl-3">
+<p>调用是<code>evm.create()</code> 合约创建的真正函数。</p>
+</li>
+</ol>
+<p><code>create()</code>方法主要操作:</p>
+<ol>
+<li class="lvl-3">
+<p>交易执行前的检查</p>
+</li>
+<li class="lvl-3">
+<p>确保当前要创建的地址在世界状态中没有合约存在，如果存在，直接返回；</p>
+</li>
+<li class="lvl-3">
+<p>在<code>StateDB</code>创建一个新的合约账户，设置新账户为<code>nonce</code>为1；</p>
+</li>
+<li class="lvl-3">
+<p>给新合约账户进行转账</p>
+</li>
+<li class="lvl-3">
+<p>创建一个待执行的合约对象，并在解释器执行合约初始化字节码；</p>
+</li>
+<li class="lvl-3">
+<p>处理返回值,在<code>StateDB</code>存储合约的运行时字节码:</p>
+</li>
+</ol>
+<p>分几个部分看看<code>create()</code>方法的具体实现：</p>
+<h2 id="检查1-调用栈深度、用户余额：">检查1-调用栈深度、用户余额：</h2>
+<p>首先，在执行交易之前需要进行检查：</p>
+<ol>
+<li class="lvl-3">
+<p>深度判断</p>
+</li>
+<li class="lvl-3">
+<p>余额是否足够；</p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">   <span class="comment">// Depth check execution. Fail if we&#x27;re trying to execute above the</span></span><br><span class="line"><span class="comment">// limit.</span></span><br><span class="line"><span class="comment">// 执行深度检查，如果超出设定的深度限制  创建失败</span></span><br><span class="line"><span class="keyword">if</span> evm.depth &gt; <span class="type">int</span>(params.CallCreateDepth) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrDepth</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 账户余额不足，创建失败</span></span><br><span class="line"><span class="keyword">if</span> !evm.Context.CanTransfer(evm.StateDB, caller.Address(), value) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrInsufficientBalance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个 if 判断中的 <code>evm.depth</code> 记录者合约的递归调用次数。<br />
+在 solidity 语言中，允许在合约中通过 <code>new</code> 关键字创建新的合约对象，但这种「在合约中创建合约」的递归调用是有限制的，这也是这个 if 判断的意义。</p>
+<h2 id="检查2-是否有相同地址的合约">检查2-是否有相同地址的合约</h2>
+<p>然后，给交易发送者的账户<code>nonce</code>加1（普通转账时，是在外面加1的，即在<code>TransitionDb</code>中），<br />
+接着判断当前要创建的地址在是世界状态中没有合约存在，如果存在直接返回。</p>
+<p>需要注意的点：<br />
+由于用到了账户的 <code>Nonce</code> 值，所以同一份合约代码，每次创建合约时得到的合约地址都是不一样的（因为合约是通过发送交易创建，而每发送一次交易 <code>Nonce</code> 值都会改变）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">nonce := evm.StateDB.GetNonce(caller.Address())</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> nonce+<span class="number">1</span> &lt; nonce &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrNonceUintOverflow</span><br><span class="line">	&#125;</span><br><span class="line">	evm.StateDB.SetNonce(caller.Address(), nonce+<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// We add this to the access list _before_ taking a snapshot. Even if the creation fails,</span></span><br><span class="line">	<span class="comment">// the access-list change should not be rolled back</span></span><br><span class="line">	<span class="keyword">if</span> evm.chainRules.IsBerlin &#123;</span><br><span class="line">		evm.StateDB.AddAddressToAccessList(address)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Ensure there&#x27;s no existing contract already at the designated address</span></span><br><span class="line">	<span class="comment">// 确保指定地址没有已存在的相同合约</span></span><br><span class="line">	contractHash := evm.StateDB.GetCodeHash(address)</span><br><span class="line">	<span class="keyword">if</span> evm.StateDB.GetNonce(address) != <span class="number">0</span> || (contractHash != (common.Hash&#123;&#125;) &amp;&amp; contractHash != emptyCodeHash) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, <span class="number">0</span>, ErrContractAddressCollision</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建新的合约账户：">创建新的合约账户：</h2>
+<p>第三步，如果上面两个检查都没有问题，那么我们就可以创建新的合约账户了。<br />
+先用合约地址在状态数据库中创建一个合约账户，然后给合约账户设置<code>nonce</code>为1。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先对当前StateDB进行快照</span></span><br><span class="line">snapshot := evm.StateDB.Snapshot()</span><br><span class="line"><span class="comment">// 创建新合约并将合约的nonce设置为1</span></span><br><span class="line">evm.StateDB.CreateAccount(address)</span><br><span class="line"><span class="keyword">if</span> evm.ChainConfig().IsEIP158(evm.BlockNumber) &#123;</span><br><span class="line">    evm.StateDB.SetNonce(address, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="给新的合约账户转账：">给新的合约账户转账：</h2>
+<p>第四步是进行转账，将我们创建合约交易时的的以太币数值<code>value</code>转入智能合约账户。<br />
+转账的过程很简单，就是sender的账户减减（- -），合约账户加加（++）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转账操作</span></span><br><span class="line">evm.Context.Transfer(evm.StateDB, caller.Address(), address, value)</span><br></pre></td></tr></table></figure>
+<h2 id="创建合约对象：">创建合约对象：</h2>
+<p>第五步是创建合约<code>Contract</code>对象，并执行。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Initialise a new contract and set the code that is to be used by the EVM.</span></span><br><span class="line"><span class="comment">// The contract is a scoped environment for this execution context only.</span></span><br><span class="line"><span class="comment">// 创建合约</span></span><br><span class="line">contract := NewContract(caller, AccountRef(address), value, gas)</span><br><span class="line"><span class="comment">// 设置合约字节码、包含构造函数部分</span></span><br><span class="line">contract.SetCodeOptionalHash(&amp;address, codeAndHash)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">  <span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureStart(evm, caller.Address(), address, <span class="literal">true</span>, codeAndHash.code, gas, value)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureEnter(typ, caller.Address(), address, codeAndHash.code, gas, value)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start := time.Now()</span><br></pre></td></tr></table></figure>
+<p>使用caller地址 、合约地址、转账额和交易余额传入<code>NewContract()</code>方法。<br />
+然后执行<code>contract.SetCodeOptionalHash()</code>，将合约代码<code>code</code>（包含构造函数部分）设置到合约中：</p>
+<figure class="highlight go"><figcaption><span>core/vm/contract.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// SetCodeOptionalHash can be used to provide code, but it&#x27;s optional to provide hash.</span></span><br><span class="line"><span class="comment">// In case hash is not provided, the jumpdest analysis will not be saved to the parent context</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> SetCodeOptionalHash(addr *common.Address, codeAndHash *codeAndHash) &#123;</span><br><span class="line">	c.Code = codeAndHash.code</span><br><span class="line">	c.CodeHash = codeAndHash.hash</span><br><span class="line">	c.CodeAddr = addr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Contract对象">Contract对象:</h3>
+<p>看看<code>Contract</code>对象的数据结构:</p>
+<p>一个 Contract 对象包含和维护了合约在执行过程中的必要信息，比如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>合约创建者</p>
+</li>
+<li class="lvl-2">
+<p>合约自身地址</p>
+</li>
+<li class="lvl-2">
+<p>合约剩余 gas</p>
+</li>
+<li class="lvl-2">
+<p>合约代码</p>
+</li>
+<li class="lvl-2">
+<p>代码的 jumpdests 记录</p>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Contract represents an ethereum contract in the state database. It contains</span></span><br><span class="line"><span class="comment">// the contract code, calling arguments. Contract implements ContractRef</span></span><br><span class="line"><span class="comment">// 数据库中的以太坊智能合约，包括合约代码和调用参数</span></span><br><span class="line"><span class="keyword">type</span> Contract <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// CallerAddress is the result of the caller which initialised this</span></span><br><span class="line">	<span class="comment">// contract. However when the &quot;call method&quot; is delegated this value</span></span><br><span class="line">	<span class="comment">// needs to be initialised to that of the caller&#x27;s caller.</span></span><br><span class="line">	<span class="comment">// CallerAddress是初始化这个合约的人。 如果是delegate，这个值被设置为调用者的调用者。</span></span><br><span class="line">	CallerAddress common.Address</span><br><span class="line">	caller        ContractRef</span><br><span class="line">	self          ContractRef</span><br><span class="line"></span><br><span class="line">	<span class="comment">// JUMPDEST指令分析的结果</span></span><br><span class="line">	jumpdests <span class="keyword">map</span>[common.Hash]bitvec <span class="comment">// Aggregated result of JUMPDEST analysis.</span></span><br><span class="line">	analysis  bitvec                 <span class="comment">// Locally cached result of JUMPDEST analysis</span></span><br><span class="line">	</span><br><span class="line">	Code     []<span class="type">byte</span>  				<span class="comment">// 合约代码</span></span><br><span class="line">	CodeHash common.Hash 			<span class="comment">//代码的HASH</span></span><br><span class="line">	CodeAddr *common.Address 		<span class="comment">//代码地址 // 合约地址</span></span><br><span class="line">	Input    []<span class="type">byte</span> 				<span class="comment">// 入参</span></span><br><span class="line"></span><br><span class="line">	Gas   <span class="type">uint64</span> 					<span class="comment">// 合约还有多少Gas</span></span><br><span class="line">	value *big.Int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解释器执行合约初始化代码">解释器执行合约初始化代码:</h2>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约的初始化</span></span><br><span class="line">ret, err := evm.interpreter.Run(contract, <span class="literal">nil</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<p><code>run()</code>函数将<code>contract</code>交给了evm解释器，返回<code>interpreter.Run（contract, input, readOnly）</code>的执行结果。<br />
+此时合约对象中存储的字节码是Deployment Bytecode(部署字节码)，包含了:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>用户实际交易调用这个新合约时需要执行的字节码(即运行时字节码)</p>
+</li>
+<li class="lvl-2">
+<p>合约的构造函数中进行初始化处理的代码</p>
+</li>
+</ul>
+<p>至于<code>interpreter</code>如何执行合约，另post文分析。</p>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约代码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in *EVMInterpreter)</span></span> Run(contract *Contract, input []<span class="type">byte</span>, readOnly <span class="type">bool</span>) (ret []<span class="type">byte</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="StateDB存储合约的运行时字节码">StateDB存储合约的运行时字节码:</h2>
+<p>第六步，处理<code>interpreter.Run</code>返回值<br />
+<code>interpreter.Run</code>函数的两个返回值分别是<code>ret(运行时字节码)</code>和<code>err</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>约定合约代码最大长度为24576，检查代码长度不超过24576</p>
+</li>
+<li class="lvl-2">
+<p>如果执行没有报错：</p>
+<ul class="lvl-2">
+<li class="lvl-4">计算本次合约创建消耗的gas，每字节200gas, 扣除gas</li>
+<li class="lvl-4">在StateDB存储合约的<code>Runtime bytecode</code>运行时字节码,</li>
+</ul>
+</li>
+<li class="lvl-2">
+<p>如果报错：</p>
+<ul class="lvl-2">
+<li class="lvl-4">恢复之前的快照</li>
+<li class="lvl-4">如果不是<code>revert</code>指令导致的错误，要扣除所有的gas</li>
+</ul>
+</li>
+</ul>
+<p><code>evm.Create()</code>最后返回 合约代码、合约地址、gas余额和错误</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Check whether the max code size has been exceeded, assign err if the case.</span></span><br><span class="line"><span class="comment">// 检查初始化生成的代码长度是否超过限制,约定合约代码最大长度为24576</span></span><br><span class="line"><span class="comment">// 如果执行没有错且代码长度不超过24576</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; evm.chainRules.IsEIP158 &amp;&amp; <span class="built_in">len</span>(ret) &gt; params.MaxCodeSize &#123;</span><br><span class="line">	err = ErrMaxCodeSizeExceeded</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reject code starting with 0xEF if EIP-3541 is enabled.</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; <span class="built_in">len</span>(ret) &gt;= <span class="number">1</span> &amp;&amp; ret[<span class="number">0</span>] == <span class="number">0xEF</span> &amp;&amp; evm.chainRules.IsLondon &#123;</span><br><span class="line">	err = ErrInvalidCode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// if the contract creation ran successfully and no errors were returned</span></span><br><span class="line"><span class="comment">// calculate the gas required to store the code. If the code could not</span></span><br><span class="line"><span class="comment">// be stored due to not enough gas set an error and let it be handled</span></span><br><span class="line"><span class="comment">// by the error checking condition below.</span></span><br><span class="line"><span class="comment">// 合约创建成功</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="comment">// 计算本次合约创建消耗的gas，每字节200gas</span></span><br><span class="line">	createDataGas := <span class="type">uint64</span>(<span class="built_in">len</span>(ret)) * params.CreateDataGas</span><br><span class="line">	<span class="comment">// 如果交易gas余额足够，则成功部署合约，将合约代码设置到账户储存中</span></span><br><span class="line">	<span class="keyword">if</span> contract.UseGas(createDataGas) &#123;</span><br><span class="line">		evm.StateDB.SetCode(address, ret) <span class="comment">// !!!!!!! 注意点1</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;     <span class="comment">// 否则返回余额不足</span></span><br><span class="line">		<span class="comment">// 当前拥有的Gas不足以存储代码</span></span><br><span class="line">		err = ErrCodeStoreOutOfGas</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// When an error was returned by the EVM or when setting the creation code</span></span><br><span class="line"><span class="comment">// above we revert to the snapshot and consume any gas remaining. Additionally</span></span><br><span class="line"><span class="comment">// when we&#x27;re in homestead this also counts for code storage gas errors.</span></span><br><span class="line"><span class="comment">// 如果代码长度受限或执行错误,合约创建失败，借助上面创建的快照快速回滚</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &amp;&amp; (evm.chainRules.IsHomestead || err != ErrCodeStoreOutOfGas) &#123;</span><br><span class="line">	<span class="comment">// 恢复之前的快照</span></span><br><span class="line">	evm.StateDB.RevertToSnapshot(snapshot)</span><br><span class="line">	<span class="comment">// 如果不是revert指令导致的错误，要扣除所有的gas</span></span><br><span class="line">	<span class="keyword">if</span> err != ErrExecutionReverted &#123;</span><br><span class="line">		contract.UseGas(contract.Gas)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">	<span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureEnd(ret, gas-contract.Gas, time.Since(start), err)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureExit(ret, gas-contract.Gas, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 最后返回合约代码、合约地址、gas余额和错误</span></span><br><span class="line"><span class="keyword">return</span> ret, address, contract.Gas, err</span><br></pre></td></tr></table></figure>
+<h3 id="注意点1：">注意点1：</h3>
+<p>为什么存储的合约代码是合约运行后的返回码，而不是原来交易中的数据（即 <code>Transaction.data.Payload</code>，或者说 <code>EVM.Create</code> 方法的 <code>code</code> 参数）?</p>
+<p>这是因为合约源代码在编译成二进制数据时，<strong>除了合约原有的代码外，编译器还另外插入了一些代码</strong>，以便执行相关的功能。<br />
+对于创建来说，编译器插入了执行合约「构造函数」（即合约对象的 <code>constructor</code> 方法）的代码。<br />
+<strong>因此在将编译器编译后的二进制提交以太坊节点创建合约时，EVM 执行这段二进制代码，实际上主要执行了合约的 <code>constructor</code> 方法</strong>，然后将合约的其它字节码返回，所以才会有这里的 <code>ret</code> 变量<strong>作为合约的真正代码存储到状态数据库中</strong>。</p>
+<p>也就是说，创建合约交易的初始字节码可分成3个部分:</p>
+<ol>
+<li class="lvl-3">
+<p>Deployment Bytecode(部署字节码) ：</p>
+<ul class="lvl-2">
+<li class="lvl-6">执行初始化新合约账户的所有操作</li>
+<li class="lvl-6">包含 <code>Runtime bytecode</code></li>
+<li class="lvl-6">包含 构造函数的字节码</li>
+<li class="lvl-6">并不存储在<code>StateDB</code></li>
+</ul>
+</li>
+<li class="lvl-3">
+<p>Runtime bytecode(运行时字节码)：</p>
+<ul class="lvl-2">
+<li class="lvl-6">合约本身的代码</li>
+<li class="lvl-6">当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</li>
+<li class="lvl-6">存储在<code>StateDB</code></li>
+</ul>
+</li>
+<li class="lvl-3">
+<p>Auxdata</p>
+</li>
+</ol>
+<h3 id="注意点2：">注意点2：</h3>
+<p>值得注意的是，如果代码执行错误是<code>revert</code>错误，则不会收取<code>gas</code>，否则<code>gas</code>会被扣除。</p>
+<p>那么这个<code>revert</code>是什么？<br />
+revert是evm中的一条指令，在我们高级编程语言（solidity）中有<code>require</code>和<code>revert</code>这两个判断。<br />
+如果<code>require</code>和<code>revert</code>判断错误，那么就会返回一个<code>revert</code>指令错误，此时就不会收取<code>gas</code>。<br />
+这也就是为什么solidity中<code>require</code>和<code>revert</code>执行不会扣除gas的原因。<br />
+当然，这个方法是在拜占庭分叉后出现的。</p>
+<h1>Summary:</h1>
+<p>最后，一张图看看智能合约创建的过程：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722155925.png" alt="20220722155925" /></p>
+<p><code>interpreter.Run()</code>返回的是<code>Runtime bytecode(运行时字节码)</code>：当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://github.com/chaors/Ethereum_read">go-ethereum-read：以太坊源码注释</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/jerrychan807/go-ethereum/blob/master/core/vm/evm.go">https://github.com/jerrychan807/go-ethereum/blob/master/core/vm/evm.go</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://willzhuang.github.io/2019/03/20/evm%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">https://willzhuang.github.io/2019/03/20/evm之源码分析/</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="http://yangzhe.me/2019/08/12/ethereum-evm/#%E5%88%9B%E5%BB%BA-evm">http://yangzhe.me/2019/08/12/ethereum-evm/#创建-evm</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.md">https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm源码分析.md</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/lj900911/article/details/84888688">以太坊源码解读（18）以太坊交易的执行基本流程——将交易递交给EVM</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
 </search>
