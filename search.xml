@@ -69,88 +69,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Awvs-linux版配置文件修改</title>
-    <url>/2019/42460.html</url>
-    <content><![CDATA[<h1>pre:</h1>
-<p>linux版相较于wins版,默认配置有些许差异</p>
-<table>
-<thead>
-<tr>
-<th>version</th>
-<th>api-port</th>
-<th>db-port</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>wins</td>
-<td>3443</td>
-<td>35432</td>
-</tr>
-<tr>
-<td>linux</td>
-<td>13443</td>
-<td>45432</td>
-</tr>
-</tbody>
-</table>
-<p>现在要把linux的修改成wins的一样。。。</p>
-<hr />
-<h1>配置文件:</h1>
-<h2 id="wvs-ini：">wvs.ini：</h2>
-<p>配置文件</p>
-<p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
-<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">logging.file.file_name</span>=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line"><span class="attr">logging.file.level</span>=INFO</span><br><span class="line"><span class="attr">server.address</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="number">3443</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">server.host</span>=debian</span><br><span class="line"><span class="attr">server.frontend.session_secret</span>=<span class="number">6</span>rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line"><span class="attr">wvs.temp_dir</span>=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line"><span class="attr">server.ssl.certificate</span>=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line"><span class="attr">server.ssl.private_key</span>=~/.acunetix_trial/data/certs/server.key</span><br><span class="line"><span class="attr">databases.connections.master.connection.user</span>=acunetix</span><br><span class="line"><span class="attr">databases.connections.master.connection.host</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.port</span>=<span class="number">35432</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.db</span>=wvs</span><br><span class="line"><span class="attr">databases.connections.master.connection.password</span>=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line"><span class="attr">server.static_document_root</span>=~/.acunetix_trial/v_190325161/ui</span><br><span class="line"><span class="attr">wvs.app_dir</span>=~/.acunetix_trial/v_190325161/scanner</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<hr />
-<h2 id="start-sh"><a href="http://start.sh">start.sh</a></h2>
-<p>启动脚本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop previous database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to start the db&quot;</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">&quot;--port=<span class="variable">$db_port</span>&quot;</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;attempting to start the backend&quot;</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;backend exited with&quot;</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop the database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;bye.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<hr />
-<h1>数据库文件:</h1>
-<h2 id="pg-hba-conf">pg_hba.conf:</h2>
-<p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
-<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png" alt="" /></p>
-<p>跟原来的wins有些许差异.</p>
-<table>
-<thead>
-<tr>
-<th>version</th>
-<th>method</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>wins</td>
-<td>trust</td>
-</tr>
-<tr>
-<td>linux</td>
-<td>md5</td>
-</tr>
-</tbody>
-</table>
-<p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
-<hr />
-<h2 id="postgresql-conf">postgresql.conf</h2>
-<p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
-<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">&#x27;*&#x27;</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">&#x27;Acunetix Trial Database&#x27;</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
-<hr />
-<p>然后就可以连接了。。。</p>
-<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png" alt="" /></p>
-<p>密码在<code>wvs.ini</code>里。</p>
-<hr />
-<h1>refs:</h1>
-<p><a href="https://www.acunetix.com/blog/category/docs/">acunetix docs</a></p>
-<p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
-]]></content>
-      <categories>
-        <category>SecurityTools</category>
-      </categories>
-      <tags>
-        <tag>SecurityTools</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</title>
     <url>/2018/62100.html</url>
     <content><![CDATA[<h1>略读代码：</h1>
@@ -299,6 +217,88 @@ There are many times that you want to send data that is not form-encoded. If you
       </categories>
       <tags>
         <tag>VulnAnalysis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Awvs-linux版配置文件修改</title>
+    <url>/2019/42460.html</url>
+    <content><![CDATA[<h1>pre:</h1>
+<p>linux版相较于wins版,默认配置有些许差异</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>api-port</th>
+<th>db-port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wins</td>
+<td>3443</td>
+<td>35432</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>13443</td>
+<td>45432</td>
+</tr>
+</tbody>
+</table>
+<p>现在要把linux的修改成wins的一样。。。</p>
+<hr />
+<h1>配置文件:</h1>
+<h2 id="wvs-ini：">wvs.ini：</h2>
+<p>配置文件</p>
+<p>路径:<code>/home/acunetix/.acunetix_trial/wvs.ini</code></p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">logging.file.file_name</span>=~/.acunetix_trial/logs/backend.log</span><br><span class="line"><span class="attr">base_storage</span>=~/.acunetix_trial/data</span><br><span class="line"><span class="attr">logging.file.level</span>=INFO</span><br><span class="line"><span class="attr">server.address</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="number">3443</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">server.host</span>=debian</span><br><span class="line"><span class="attr">server.frontend.session_secret</span>=<span class="number">6</span>rRI3RtEOQbZJLXdQBIZdhKzL8q4D2YS</span><br><span class="line"><span class="attr">wvs.temp_dir</span>=~/.acunetix_trial/data/temp</span><br><span class="line"><span class="attr">target_secret_salt</span>=<span class="number">1</span>e79Bc99vW2r4H51chSULiA5WCXXPCGQ</span><br><span class="line"><span class="attr">uploads_salt</span>=mX75i7UNuXVKStEjM2ihLQy4SByclCkB</span><br><span class="line"><span class="attr">server.ssl.certificate</span>=~/.acunetix_trial/data/certs/server.cer</span><br><span class="line"><span class="attr">server.ssl.private_key</span>=~/.acunetix_trial/data/certs/server.key</span><br><span class="line"><span class="attr">databases.connections.master.connection.user</span>=acunetix</span><br><span class="line"><span class="attr">databases.connections.master.connection.host</span>=<span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.port</span>=<span class="number">35432</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">databases.connections.master.connection.db</span>=wvs</span><br><span class="line"><span class="attr">databases.connections.master.connection.password</span>=j3ASXBKVp7f9lZDii9JwJKyKOUjI2ezy</span><br><span class="line"><span class="attr">server.static_document_root</span>=~/.acunetix_trial/v_190325161/ui</span><br><span class="line"><span class="attr">wvs.app_dir</span>=~/.acunetix_trial/v_190325161/scanner</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="start-sh"><a href="http://start.sh">start.sh</a></h2>
+<p>启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">version=v_190325161</span><br><span class="line">db_port=35432  <span class="comment"># !!!edit</span></span><br><span class="line">product_name=acunetix_trial</span><br><span class="line">engine_only=0</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop previous database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to start the db&quot;</span></span><br><span class="line">    setsid ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -o <span class="string">&quot;--port=<span class="variable">$db_port</span>&quot;</span> -w start</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;attempting to start the backend&quot;</span></span><br><span class="line"><span class="comment">#~/.$product_name/$version/venv/bin/python3 ~/.$product_name/$version/backend/wvs.py --conf ~/.$product_name/wvs.ini</span></span><br><span class="line"><span class="built_in">cd</span> ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/</span><br><span class="line">~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/backend/opsrv --conf ~/.<span class="variable">$product_name</span>/wvs.ini</span><br><span class="line"></span><br><span class="line">backend_exit_code=$?</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;backend exited with&quot;</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$engine_only</span> != 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;attempting to stop the database&quot;</span></span><br><span class="line">    ~/.<span class="variable">$product_name</span>/<span class="variable">$version</span>/database/bin/pg_ctl -D ~/.<span class="variable">$product_name</span>/db -w stop</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;bye.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$backend_exit_code</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr />
+<h1>数据库文件:</h1>
+<h2 id="pg-hba-conf">pg_hba.conf:</h2>
+<p>路径: <code>/home/acunetix/.acunetix_trial/db/pg_hba.conf</code></p>
+<p><img src="https://i.loli.net/2019/06/17/5d07572f4704659796.png" alt="" /></p>
+<p>跟原来的wins有些许差异.</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>wins</td>
+<td>trust</td>
+</tr>
+<tr>
+<td>linux</td>
+<td>md5</td>
+</tr>
+</tbody>
+</table>
+<p>按上面的提示所说,<code>wins</code>的是用了<code>trust</code>是明文,linux是用加密的密码去连接.后面实际连接数据库要用.</p>
+<hr />
+<h2 id="postgresql-conf">postgresql.conf</h2>
+<p>路径: <code>/home/acunetix/.acunetix_trial/db/postgresql.conf</code></p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">listen_addresses</span> = <span class="string">&#x27;*&#x27;</span> <span class="comment"># !!!edit</span></span><br><span class="line"><span class="attr">port</span> = <span class="number">45432</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">ssl</span> = <span class="literal">off</span></span><br><span class="line"><span class="attr">shared_buffers</span> = <span class="number">128</span>MB</span><br><span class="line"><span class="attr">huge_pages</span> = try</span><br><span class="line"><span class="attr">event_source</span> = <span class="string">&#x27;Acunetix Trial Database&#x27;</span></span><br><span class="line"><span class="attr">client_min_messages</span> = notice</span><br><span class="line"><span class="attr">log_min_messages</span> = fatal</span><br><span class="line"><span class="attr">log_min_error_statement</span> = fatal</span><br></pre></td></tr></table></figure>
+<hr />
+<p>然后就可以连接了。。。</p>
+<p><img src="https://i.loli.net/2019/06/18/5d085b3be432277542.png" alt="" /></p>
+<p>密码在<code>wvs.ini</code>里。</p>
+<hr />
+<h1>refs:</h1>
+<p><a href="https://www.acunetix.com/blog/category/docs/">acunetix docs</a></p>
+<p>没事看看文档或者他家的博客,学习点扫描器思路再拿来自己写扫描器也是不错滴.</p>
+]]></content>
+      <categories>
+        <category>SecurityTools</category>
+      </categories>
+      <tags>
+        <tag>SecurityTools</tag>
       </tags>
   </entry>
   <entry>
@@ -4002,6 +4002,287 @@ TODOTODO</p>
       </tags>
   </entry>
   <entry>
+    <title>OpenZeppelin-代码库QuickView</title>
+    <url>/2022/23566.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>OpenZeppelin代码库概览，了解有什么功能的库，方便后续使用</p>
+<h1>文件夹：</h1>
+<table>
+<thead>
+<tr>
+<th>folder</th>
+<th>模块功能</th>
+<th>简述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access</td>
+<td>权限控制</td>
+<td>限制谁可以访问合约功能或何时可以访问的方法</td>
+</tr>
+<tr>
+<td>crosschain</td>
+<td>跨链</td>
+<td>代币可跨链</td>
+</tr>
+<tr>
+<td>finance</td>
+<td>金融系统原型</td>
+<td>支付拆分模式(单笔支付可自定义比例拆分成ether、erc20)、退休金模式(合约锁仓、按自定义时间释放给受益人)</td>
+</tr>
+<tr>
+<td>governance</td>
+<td>链上治理</td>
+<td>链上投票协议</td>
+</tr>
+<tr>
+<td>interfaces</td>
+<td>标准接口</td>
+<td>各类erc提案的标准接口库</td>
+</tr>
+<tr>
+<td>metatx</td>
+<td>元交易</td>
+<td>——</td>
+</tr>
+<tr>
+<td>mocks</td>
+<td>模拟</td>
+<td>——</td>
+</tr>
+<tr>
+<td>proxy</td>
+<td>可升级的代理合约模式</td>
+<td>Transparent(可由管理员升级的代理)、UUPS(基于UUPS设计的可升级机制)</td>
+</tr>
+<tr>
+<td>security</td>
+<td>安全库</td>
+<td>常见的安全实践：防重入、紧急响应机制</td>
+</tr>
+<tr>
+<td>token</td>
+<td>代币</td>
+<td>ERC20(可替代代币)、ERC721(不可替代代币)、ERC1155(可/半可/不可替代代币)、ERC777(erc20+转账通知机制)</td>
+</tr>
+<tr>
+<td>utils</td>
+<td>实用工具</td>
+<td>处理新数据类型、签名验证、安全数学计算等</td>
+</tr>
+<tr>
+<td>vendor</td>
+<td>第三方合约库</td>
+<td>arbitrum、compound、optimism等</td>
+</tr>
+</tbody>
+</table>
+<h1>QuickView：</h1>
+<h2 id="access-权限控制">access (权限控制)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── access (权限控制)</span><br><span class="line">│   ├── AccessControl.sol (基于角色的访问控制机制)</span><br><span class="line">│   ├── AccessControlCrossChain.sol (扩展：跨链)</span><br><span class="line">│   ├── AccessControlEnumerable.sol (扩展：可枚举各角色的成员)</span><br><span class="line">│   ├── IAccessControl.sol</span><br><span class="line">│   ├── IAccessControlEnumerable.sol</span><br><span class="line">│   ├── Ownable.sol (管理员访问控制机制)</span><br></pre></td></tr></table></figure>
+<h2 id="crosschain-跨链">crosschain (跨链)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── crosschain (跨链)</span><br><span class="line">│   ├── CrossChainEnabled.sol (接收跨链消息时的控制执行流程)</span><br><span class="line">│   │</span><br><span class="line">│   ├── amb (在两个evm链之间中继任意数据)</span><br><span class="line">│   │   ├── CrossChainEnabledAMB.sol (基于amb bridge)</span><br><span class="line">│   │   └── LibAMB.sol</span><br><span class="line">│   ├── arbitrum</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL1.sol (基于ArbitrumL1 bridge)</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL2.sol (基于ArbitrumL2 bridge)</span><br><span class="line">│   │   ├── LibArbitrumL1.sol </span><br><span class="line">│   │   └── LibArbitrumL2.sol </span><br><span class="line">│   ├── errors.sol</span><br><span class="line">│   ├── optimism</span><br><span class="line">│   │   ├── CrossChainEnabledOptimism.sol (基于Optimism bridge)</span><br><span class="line">│   │   └── LibOptimism.sol</span><br><span class="line">│   └── polygon</span><br><span class="line">│       └── CrossChainEnabledPolygonChild.sol (基于Polygon bridge)</span><br></pre></td></tr></table></figure>
+<h2 id="finance-金融系统原型">finance (金融系统原型)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── finance (金融系统原型)</span><br><span class="line">│   ├── PaymentSplitter.sol (支付拆分模式:单笔支付可自定义比例拆分成ether、erc20)</span><br><span class="line">│   └── VestingWallet.sol (退休金模式:锁仓、按自定义时间释放给受益人) </span><br><span class="line">├── governance (链上治理)</span><br><span class="line">│   ├── Governor.sol (抽象合约:只包含治理系统的核心部分，需要用其他模块进行拓展)</span><br><span class="line">│   ├── IGovernor.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── TimelockController.sol (时间锁控制器)</span><br><span class="line">│   ├── compatibility (兼容层)</span><br><span class="line">│   │   ├── GovernorCompatibilityBravo.sol</span><br><span class="line">│   │   └── IGovernorCompatibilityBravo.sol</span><br><span class="line">│   ├── extensions (拓展方案)</span><br><span class="line">│   │   ├── GovernorCountingSimple.sol (简单的投票机制,有3个投票选项:反对、赞成和弃权)</span><br><span class="line">│   │   ├── GovernorPreventLateQuorum.sol (防止持票巨鲸最后时刻控制投票结果)</span><br><span class="line">│   │   ├── GovernorProposalThreshold.sol (限制具有最低余额的代币持有者的提案)</span><br><span class="line">│   │   ├── GovernorSettings.sol (可更新治理方案的设置)</span><br><span class="line">│   │   ├── GovernorTimelockCompound.sol (加上复合时间锁)</span><br><span class="line">│   │   ├── GovernorTimelockControl.sol (加上时间锁)</span><br><span class="line">│   │   ├── GovernorVotes.sol (从代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesComp.sol (从多个代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesQuorumFraction.sol (从代币和法定人数中提取投票权重)</span><br><span class="line">│   │   └── IGovernorTimelock.sol </span><br><span class="line">│   └── utils</span><br><span class="line">│       ├── IVotes.sol</span><br><span class="line">│       └── Votes.sol (抽象合约：投票权可转移/委托,可汇集给代表代投)</span><br></pre></td></tr></table></figure>
+<h2 id="interfaces-标准接口">interfaces (标准接口):</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── interfaces (标准接口)</span><br><span class="line">│   ├── IERC1155.sol (单合约可存多个代币)</span><br><span class="line">│   ├── IERC1155MetadataURI.sol</span><br><span class="line">│   ├── IERC1155Receiver.sol</span><br><span class="line">│   ├── IERC1271.sol (让智能合约验证其它智能合约的签名)</span><br><span class="line">│   ├── IERC1363.sol (在单个交易中,在转移/批准后允许回调)</span><br><span class="line">│   ├── IERC1363Receiver.sol</span><br><span class="line">│   ├── IERC1363Spender.sol</span><br><span class="line">│   ├── IERC165.sol (检测合约实现了哪些接口)</span><br><span class="line">│   ├── IERC1820Implementer.sol</span><br><span class="line">│   ├── IERC1820Registry.sol</span><br><span class="line">│   ├── IERC20.sol (可替代代币)</span><br><span class="line">│   ├── IERC20Metadata.sol</span><br><span class="line">│   ├── IERC2981.sol (NFT版权标准)</span><br><span class="line">│   ├── IERC3156.sol (闪电贷)</span><br><span class="line">│   ├── IERC3156FlashBorrower.sol</span><br><span class="line">│   ├── IERC3156FlashLender.sol</span><br><span class="line">│   ├── IERC4626.sol (代币化的金库)</span><br><span class="line">│   ├── IERC721.sol (不可替代代币)</span><br><span class="line">│   ├── IERC721Enumerable.sol</span><br><span class="line">│   ├── IERC721Metadata.sol</span><br><span class="line">│   ├── IERC721Receiver.sol</span><br><span class="line">│   ├── IERC777.sol (erc20+转账通知机制)</span><br><span class="line">│   ├── IERC777Recipient.sol</span><br><span class="line">│   ├── IERC777Sender.sol</span><br><span class="line">│   ├── draft-IERC1822.sol</span><br><span class="line">│   └── draft-IERC2612.sol</span><br></pre></td></tr></table></figure>
+<h2 id="metatx-元交易">metatx (元交易):</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── metatx (元交易)</span><br><span class="line">│   ├── ERC2771Context.sol</span><br><span class="line">│   └── MinimalForwarder.sol</span><br></pre></td></tr></table></figure>
+<h2 id="mocks-模拟">mocks (模拟)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">│   </span><br><span class="line">├── mocks (模拟)</span><br><span class="line">│   ├── AccessControlCrossChainMock.sol</span><br><span class="line">│   ├── AccessControlEnumerableMock.sol</span><br><span class="line">│   ├── AccessControlMock.sol</span><br><span class="line">│   ├── AddressImpl.sol</span><br><span class="line">│   ├── ArraysImpl.sol</span><br><span class="line">│   ├── BadBeacon.sol</span><br><span class="line">│   ├── Base64Mock.sol</span><br><span class="line">│   ├── BitmapMock.sol</span><br><span class="line">│   ├── CallReceiverMock.sol</span><br><span class="line">│   ├── CheckpointsImpl.sol</span><br><span class="line">│   ├── ClashingImplementation.sol</span><br><span class="line">│   ├── ClonesMock.sol</span><br><span class="line">│   ├── ConditionalEscrowMock.sol</span><br><span class="line">│   ├── ContextMock.sol</span><br><span class="line">│   ├── CountersImpl.sol</span><br><span class="line">│   ├── Create2Impl.sol</span><br><span class="line">│   ├── DoubleEndedQueueMock.sol</span><br><span class="line">│   ├── DummyImplementation.sol</span><br><span class="line">│   ├── ECDSAMock.sol</span><br><span class="line">│   ├── EIP712External.sol</span><br><span class="line">│   ├── ERC1155BurnableMock.sol</span><br><span class="line">│   ├── ERC1155Mock.sol</span><br><span class="line">│   ├── ERC1155PausableMock.sol</span><br><span class="line">│   ├── ERC1155ReceiverMock.sol</span><br><span class="line">│   ├── ERC1155SupplyMock.sol</span><br><span class="line">│   ├── ERC1155URIStorageMock.sol</span><br><span class="line">│   ├── ERC1271WalletMock.sol</span><br><span class="line">│   ├── ERC165</span><br><span class="line">│   │   ├── ERC165InterfacesSupported.sol</span><br><span class="line">│   │   ├── ERC165MissingData.sol</span><br><span class="line">│   │   └── ERC165NotSupported.sol</span><br><span class="line">│   ├── ERC165CheckerMock.sol</span><br><span class="line">│   ├── ERC165Mock.sol</span><br><span class="line">│   ├── ERC165StorageMock.sol</span><br><span class="line">│   ├── ERC1820ImplementerMock.sol</span><br><span class="line">│   ├── ERC20BurnableMock.sol</span><br><span class="line">│   ├── ERC20CappedMock.sol</span><br><span class="line">│   ├── ERC20DecimalsMock.sol</span><br><span class="line">│   ├── ERC20FlashMintMock.sol</span><br><span class="line">│   ├── ERC20Mock.sol</span><br><span class="line">│   ├── ERC20PausableMock.sol</span><br><span class="line">│   ├── ERC20PermitMock.sol</span><br><span class="line">│   ├── ERC20SnapshotMock.sol</span><br><span class="line">│   ├── ERC20TokenizedVaultMock.sol</span><br><span class="line">│   ├── ERC20VotesCompMock.sol</span><br><span class="line">│   ├── ERC20VotesMock.sol</span><br><span class="line">│   ├── ERC20WrapperMock.sol</span><br><span class="line">│   ├── ERC2771ContextMock.sol</span><br><span class="line">│   ├── ERC3156FlashBorrowerMock.sol</span><br><span class="line">│   ├── ERC721BurnableMock.sol</span><br><span class="line">│   ├── ERC721EnumerableMock.sol</span><br><span class="line">│   ├── ERC721Mock.sol</span><br><span class="line">│   ├── ERC721PausableMock.sol</span><br><span class="line">│   ├── ERC721ReceiverMock.sol</span><br><span class="line">│   ├── ERC721RoyaltyMock.sol</span><br><span class="line">│   ├── ERC721URIStorageMock.sol</span><br><span class="line">│   ├── ERC721VotesMock.sol</span><br><span class="line">│   ├── ERC777Mock.sol</span><br><span class="line">│   ├── ERC777SenderRecipientMock.sol</span><br><span class="line">│   ├── EnumerableMapMock.sol</span><br><span class="line">│   ├── EnumerableSetMock.sol</span><br><span class="line">│   ├── EtherReceiverMock.sol</span><br><span class="line">│   ├── GovernorCompMock.sol</span><br><span class="line">│   ├── GovernorCompatibilityBravoMock.sol</span><br><span class="line">│   ├── GovernorMock.sol</span><br><span class="line">│   ├── GovernorPreventLateQuorumMock.sol</span><br><span class="line">│   ├── GovernorTimelockCompoundMock.sol</span><br><span class="line">│   ├── GovernorTimelockControlMock.sol</span><br><span class="line">│   ├── GovernorVoteMock.sol</span><br><span class="line">│   ├── GovernorWithParamsMock.sol</span><br><span class="line">│   ├── InitializableMock.sol</span><br><span class="line">│   ├── MathMock.sol</span><br><span class="line">│   ├── MerkleProofWrapper.sol</span><br><span class="line">│   ├── MulticallTest.sol</span><br><span class="line">│   ├── MulticallTokenMock.sol</span><br><span class="line">│   ├── MultipleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── OwnableMock.sol</span><br><span class="line">│   ├── PausableMock.sol</span><br><span class="line">│   ├── PullPaymentMock.sol</span><br><span class="line">│   ├── ReentrancyAttack.sol</span><br><span class="line">│   ├── ReentrancyMock.sol</span><br><span class="line">│   ├── RegressionImplementation.sol</span><br><span class="line">│   ├── SafeCastMock.sol</span><br><span class="line">│   ├── SafeERC20Helper.sol</span><br><span class="line">│   ├── SafeMathMock.sol</span><br><span class="line">│   ├── SignatureCheckerMock.sol</span><br><span class="line">│   ├── SignedMathMock.sol</span><br><span class="line">│   ├── SignedSafeMathMock.sol</span><br><span class="line">│   ├── SingleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── StorageSlotMock.sol</span><br><span class="line">│   ├── StringsMock.sol</span><br><span class="line">│   ├── TimersBlockNumberImpl.sol</span><br><span class="line">│   ├── TimersTimestampImpl.sol</span><br><span class="line">│   ├── UUPS</span><br><span class="line">│   │   ├── UUPSLegacy.sol</span><br><span class="line">│   │   └── UUPSUpgradeableMock.sol</span><br><span class="line">│   ├── VotesMock.sol</span><br><span class="line">│   ├── compound</span><br><span class="line">│   │   └── CompTimelock.sol</span><br><span class="line">│   ├── crosschain</span><br><span class="line">│   │   ├── bridges.sol</span><br><span class="line">│   │   └── receivers.sol</span><br><span class="line">│   └── wizard</span><br><span class="line">│       ├── MyGovernor1.sol</span><br><span class="line">│       ├── MyGovernor2.sol</span><br><span class="line">│       └── MyGovernor3.sol</span><br><span class="line">│</span><br></pre></td></tr></table></figure>
+<h2 id="proxy-代理模式">proxy (代理模式):</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── proxy (代理模式)</span><br><span class="line">│   ├── Clones.sol (部署最简单代理合约的标准)</span><br><span class="line">│   ├── ERC1967</span><br><span class="line">│   │   ├── ERC1967Proxy.sol (调用委托给可更改的执行合约，防存储冲突)</span><br><span class="line">│   │   └── ERC1967Upgrade.sol</span><br><span class="line">│   ├── Proxy.sol</span><br><span class="line">│   ├── beacon</span><br><span class="line">│   │   ├── BeaconProxy.sol (执行合约地址存储在uint256(keccak256(&#x27;eip1967.proxy.beacon&#x27;)) - 1中，防存储冲突)</span><br><span class="line">│   │   ├── IBeacon.sol</span><br><span class="line">│   │   └── UpgradeableBeacon.sol</span><br><span class="line">│   ├── transparent (透明代理)</span><br><span class="line">│   │   ├── ProxyAdmin.sol</span><br><span class="line">│   │   └── TransparentUpgradeableProxy.sol (可由管理员升级的代理。管理员可以访问管理功能，调用不会被转发)</span><br><span class="line">│   └── utils </span><br><span class="line">│       ├── Initializable.sol (基础合约，用于编写可升级合约)</span><br><span class="line">│       └── UUPSUpgradeable.sol (为 UUPS 代理设计的可升级机制)</span><br></pre></td></tr></table></figure>
+<h2 id="security-安全机制库">security (安全机制库)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── security (安全机制库)</span><br><span class="line">│   ├── Pausable.sol (一种可用于避免重入攻击的模式)</span><br><span class="line">│   ├── PullPayment.sol (在某些功能期间可以防止重入的修饰符)</span><br><span class="line">│   └── ReentrancyGuard.sol (一种常见的紧急响应机制，可以在修复待处理时暂停合约)</span><br></pre></td></tr></table></figure>
+<h2 id="token-代币">token (代币)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── token (代币)</span><br><span class="line">│   ├── ERC1155</span><br><span class="line">│   │   ├── ERC1155.sol</span><br><span class="line">│   │   ├── IERC1155.sol</span><br><span class="line">│   │   ├── IERC1155Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC1155Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC1155Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC1155Supply.sol (可跟踪每个id的总供应量)</span><br><span class="line">│   │   │   ├── ERC1155URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   └── IERC1155MetadataURI.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   ├── ERC1155PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── ERC1155Holder.sol</span><br><span class="line">│   │       └── ERC1155Receiver.sol</span><br><span class="line">│   ├── ERC20 (同质化代币)</span><br><span class="line">│   │   ├── ERC20.sol</span><br><span class="line">│   │   ├── IERC20.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC20Burnable.sol (销毁自己的代币)</span><br><span class="line">│   │   │   ├── ERC20Capped.sol (在铸币时对总供应量设定一个不可变的上限值)</span><br><span class="line">│   │   │   ├── ERC20FlashMint.sol (支持闪电贷)</span><br><span class="line">│   │   │   ├── ERC20Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC20Snapshot.sol (有效存储过去的代币余额/供应量，以便以后随时查询)</span><br><span class="line">│   │   │   ├── ERC20TokenizedVault.sol</span><br><span class="line">│   │   │   ├── ERC20Votes.sol (支持投票和投票委托)</span><br><span class="line">│   │   │   ├── ERC20VotesComp.sol (支持投票和投票委托,兼容Compound的token，有uint96限制)</span><br><span class="line">│   │   │   ├── ERC20Wrapper.sol</span><br><span class="line">│   │   │   ├── IERC20Metadata.sol</span><br><span class="line">│   │   │   ├── draft-ERC20Permit.sol</span><br><span class="line">│   │   │   └── draft-IERC20Permit.sol</span><br><span class="line">│   │   ├── presets (预设、已废弃)</span><br><span class="line">│   │   │   ├── ERC20PresetFixedSupply.sol (预设固定供应量)</span><br><span class="line">│   │   │   ├── ERC20PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── SafeERC20.sol</span><br><span class="line">│   │       └── TokenTimelock.sol (时间锁)</span><br><span class="line">│   ├── ERC721 非同质化代币</span><br><span class="line">│   │   ├── ERC721.sol</span><br><span class="line">│   │   ├── IERC721.sol</span><br><span class="line">│   │   ├── IERC721Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC721Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── ERC721Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC721Royalty.sol ()</span><br><span class="line">│   │   │   ├── ERC721URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   ├── IERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── IERC721Metadata.sol</span><br><span class="line">│   │   │   └── draft-ERC721Votes.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   └── ERC721PresetMinterPauserAutoId.sol</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       └── ERC721Holder.sol</span><br><span class="line">│   ├── ERC777 (ERC20+转账通知机制)</span><br><span class="line">│   │   ├── ERC777.sol</span><br><span class="line">│   │   ├── IERC777.sol</span><br><span class="line">│   │   ├── IERC777Recipient.sol</span><br><span class="line">│   │   ├── IERC777Sender.sol</span><br><span class="line">│   │   └── presets</span><br><span class="line">│   │       └── ERC777PresetFixedSupply.sol</span><br><span class="line">│   └── common</span><br><span class="line">│       └── ERC2981.sol</span><br></pre></td></tr></table></figure>
+<h2 id="utils-实用工具库">utils (实用工具库)</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">├── utils (实用工具库)</span><br><span class="line">│   ├── Address.sol</span><br><span class="line">│   ├── Arrays.sol</span><br><span class="line">│   ├── Base64.sol</span><br><span class="line">│   ├── Checkpoints.sol</span><br><span class="line">│   ├── Context.sol</span><br><span class="line">│   ├── Counters.sol</span><br><span class="line">│   ├── Create2.sol</span><br><span class="line">│   ├── Multicall.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── StorageSlot.sol</span><br><span class="line">│   ├── Strings.sol</span><br><span class="line">│   ├── Timers.sol</span><br><span class="line">│   ├── cryptography</span><br><span class="line">│   │   ├── ECDSA.sol</span><br><span class="line">│   │   ├── MerkleProof.sol</span><br><span class="line">│   │   ├── SignatureChecker.sol</span><br><span class="line">│   │   └── draft-EIP712.sol</span><br><span class="line">│   ├── escrow</span><br><span class="line">│   │   ├── ConditionalEscrow.sol</span><br><span class="line">│   │   ├── Escrow.sol</span><br><span class="line">│   │   └── RefundEscrow.sol</span><br><span class="line">│   ├── introspection</span><br><span class="line">│   │   ├── ERC165.sol</span><br><span class="line">│   │   ├── ERC165Checker.sol</span><br><span class="line">│   │   ├── ERC165Storage.sol</span><br><span class="line">│   │   ├── ERC1820Implementer.sol</span><br><span class="line">│   │   ├── IERC165.sol</span><br><span class="line">│   │   ├── IERC1820Implementer.sol</span><br><span class="line">│   │   └── IERC1820Registry.sol</span><br><span class="line">│   ├── math</span><br><span class="line">│   │   ├── Math.sol</span><br><span class="line">│   │   ├── SafeCast.sol</span><br><span class="line">│   │   ├── SafeMath.sol</span><br><span class="line">│   │   ├── SignedMath.sol</span><br><span class="line">│   │   └── SignedSafeMath.sol</span><br><span class="line">│   └── structs</span><br><span class="line">│       ├── BitMaps.sol</span><br><span class="line">│       ├── DoubleEndedQueue.sol</span><br><span class="line">│       ├── EnumerableMap.sol</span><br><span class="line">│       └── EnumerableSet.sol</span><br></pre></td></tr></table></figure>
+<h3 id="vendor-第三方库">vendor (第三方库)</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">└── vendor (第三方库)</span><br><span class="line">    ├── amb</span><br><span class="line">    │   └── IAMB.sol</span><br><span class="line">    ├── arbitrum</span><br><span class="line">    │   ├── IArbSys.sol</span><br><span class="line">    │   ├── IBridge.sol</span><br><span class="line">    │   ├── IInbox.sol</span><br><span class="line">    │   ├── IMessageProvider.sol</span><br><span class="line">    │   └── IOutbox.sol</span><br><span class="line">    ├── compound</span><br><span class="line">    │   └── ICompoundTimelock.sol</span><br><span class="line">    │   </span><br><span class="line">    ├── optimism</span><br><span class="line">    │   └── ICrossDomainMessenger.sol</span><br><span class="line">    │</span><br><span class="line">    └── polygon</span><br><span class="line">        └── IFxMessageProcessor.sol</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>EIP-Ethereum Improvement Proposals 以太坊改进提案</p>
+</li>
+<li class="lvl-2">
+<p>ERC-Ethereum Request for Comment 以太坊意见征求稿</p>
+</li>
+</ul>
+</blockquote>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://eips.ethereum.org/erc">erc标准</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.youtube.com/watch?v=Kw9R-N2m98I">教程：以太坊智能合约(三十一) | Openzeppelin合约代码向导</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://docs.openzeppelin.com/contracts/4.x/api/access">openzeppelin Docs</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>SmartContract</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+        <tag>SmartContract</tag>
+        <tag>Solidity</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Project-BscTradeHistory交易历史网站</title>
+    <url>/2021/7095.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
+<h1>debank交易历史界面:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825" /></p>
+<p>有以下功能点:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>钱包余额总值</p>
+</li>
+<li class="lvl-2">
+<p>不同的公链</p>
+</li>
+<li class="lvl-2">
+<p>交易时间</p>
+</li>
+<li class="lvl-2">
+<p>交易hash</p>
+</li>
+<li class="lvl-2">
+<p>与什么合约做了什么交互动作</p>
+</li>
+<li class="lvl-2">
+<p>token的传输记录，增加了X Token,减少了X Token</p>
+</li>
+<li class="lvl-2">
+<p>gas费用换算成u</p>
+</li>
+</ul>
+<h1>项目效果图:</h1>
+<p>项目地址:<a href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542" /></p>
+<h1>功能点:</h1>
+<h2 id="合约交互记录-重点">合约交互记录-重点:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445" /></p>
+<p>有以下几个点:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>项目的logo</p>
+</li>
+<li class="lvl-2">
+<p>项目名字</p>
+</li>
+<li class="lvl-2">
+<p>调用合约的具体函数</p>
+</li>
+</ul>
+<h2 id="合约交互记录-项目logo和名字">合约交互记录-项目logo和名字:</h2>
+<p>交易记录里，会记录你地址与哪个合约发生了交互</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723" /></p>
+<p>可以知道合约地址，一个项目可以有好几个合约地址，比如<code>PancakeSwap</code>可以有几个合约地址</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>PancakeSwap: Router v2</code></p>
+</li>
+<li class="lvl-2">
+<p><code>PancakeSwap: Router v1</code></p>
+</li>
+<li class="lvl-2">
+<p>…</p>
+</li>
+</ul>
+<p>这里主要是要找到<code>合约地址</code>和<code>项目</code>的映射关系暂时有几个思路:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>contract creator</code> 部署项目合约的地址</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png" alt="20211031162907" /></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>在项目源码找常量，记录了那些项目合约地址</p>
+</li>
+</ul>
+<p>这一块感觉后续要不断去维护这些映射关系</p>
+<h2 id="合约交互记录-调用合约的具体函数">合约交互记录-调用合约的具体函数:</h2>
+<p>调用bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口,可以获得以下数据</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527" /></p>
+<p>调用合约的具体函数可以通过解析<code>input_data</code>得知</p>
+<p>如果项目合约是开源验证过的话，可以通过<code>decode_function_input</code>接得</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">contract_ins = self.get_token_contract_with_abi(contract_address, contract_abi_json)</span><br><span class="line">func, params = contract_ins.decode_function_input(input_data)</span><br></pre></td></tr></table></figure>
+<p>如果项目合约未开源,<code>input_data</code>的前4个字节是函数原型的<code>Keccak256</code>哈希，可以调用<a href="https://www.4byte.directory/docs/">4byte.directory</a>进行哈希查询，反查出函数名。</p>
+<hr />
+<h2 id="transaction里的token传输记录">transaction里的token传输记录:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png" alt="20211104131002" /></p>
+<p>要怎么解析出交易里代币的传输记录？<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png" alt="20211029094938" /></p>
+<p>token基本都是符合<code>erc20</code>标准,都含有标准的<code>Transfer</code>函数要知道该次交易里token的传输记录，要解析log里的<code>Transfer event</code></p>
+<p>但并不是所有log里，都能看到<code>Transfer</code>的字眼<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png" alt="20211029100319" /></p>
+<p>有的就没有<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png" alt="20211029100713" /></p>
+<p>由于符合erc20标准的代币的<code>Transfer(address from, address to, uint256 value)</code>函数是固定的，经过<code>keccak</code>哈希后,可得到哈希字符串<code>0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef</code></p>
+<p>如果该次交易里含有erc20代币的传输，那么就存在含有该哈希的<code>event</code>.<br />
+接下来去解析这些<code>event</code>就可以知道token的传输记录了</p>
+<p>参考:<a href="https://stackoverflow.com/questions/52222758/erc20-tokens-transferred-information-from-transaction-hash">ERC20 Tokens Transferred Information from Transaction Hash</a></p>
+<hr />
+<h1>Bug&amp;Todo:</h1>
+<h2 id="个人地址转账">个人地址转账:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png" alt="20211103115056" /></p>
+<p>如何判断一个地址是合约地址还是个人地址？</p>
+<p><a href="https://ethereum.stackexchange.com/questions/28521/how-to-detect-if-an-address-is-a-contract">How to detect if an address is a contract?</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png" alt="20211103115835" /></p>
+<p>个人地址的转账记录这块还没做对应的解析</p>
+<h2 id="SSL-error">SSL error:</h2>
+<p>[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2570)</p>
+<h2 id="normal">normal</h2>
+<p>只用了bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口，还有一些交易类型没收录进去，仍有欠缺</p>
+<hr />
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://medium.com/coinmonks/discovering-the-secrets-of-an-ethereum-transaction-64febb00935c">Unlocking the Secrets of an Ethereum Transaction</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://stackoverflow.com/questions/55258332/find-the-function-name-and-parameter-from-input-data">Find the function name and parameter from input data</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.4byte.directory/">https://www.4byte.directory/</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/mikeshultz/py4byte">py4byte</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://stackoverflow.com/questions/48004356/get-token-transfer-detail-from-transaction-hash-with-web3js">Get token transfer detail from transaction hash with web3js</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://ethereum.stackexchange.com/questions/80135/getting-tokens-transferred-from-web3-py">Getting Tokens Transferred from Web3.py</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://zhuanlan.zhihu.com/p/389359014">web3.py extraData 错误</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://code.z01.com/bootstrap-vue/docs/">bootstrapvue中文文档</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://zhuanlan.zhihu.com/p/311323583">用Flask和Vue制作一个单页应用（一）</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OpenZeppelin-ERC20-extensions源码学习(一)</title>
     <url>/2022/43604.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -4291,287 +4572,6 @@ TODOTODO</p>
         <tag>Crypto</tag>
         <tag>SmartContract</tag>
         <tag>Solidity</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OpenZeppelin-代码库QuickView</title>
-    <url>/2022/23566.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>OpenZeppelin代码库概览，了解有什么功能的库，方便后续使用</p>
-<h1>文件夹：</h1>
-<table>
-<thead>
-<tr>
-<th>folder</th>
-<th>模块功能</th>
-<th>简述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Access</td>
-<td>权限控制</td>
-<td>限制谁可以访问合约功能或何时可以访问的方法</td>
-</tr>
-<tr>
-<td>crosschain</td>
-<td>跨链</td>
-<td>代币可跨链</td>
-</tr>
-<tr>
-<td>finance</td>
-<td>金融系统原型</td>
-<td>支付拆分模式(单笔支付可自定义比例拆分成ether、erc20)、退休金模式(合约锁仓、按自定义时间释放给受益人)</td>
-</tr>
-<tr>
-<td>governance</td>
-<td>链上治理</td>
-<td>链上投票协议</td>
-</tr>
-<tr>
-<td>interfaces</td>
-<td>标准接口</td>
-<td>各类erc提案的标准接口库</td>
-</tr>
-<tr>
-<td>metatx</td>
-<td>元交易</td>
-<td>——</td>
-</tr>
-<tr>
-<td>mocks</td>
-<td>模拟</td>
-<td>——</td>
-</tr>
-<tr>
-<td>proxy</td>
-<td>可升级的代理合约模式</td>
-<td>Transparent(可由管理员升级的代理)、UUPS(基于UUPS设计的可升级机制)</td>
-</tr>
-<tr>
-<td>security</td>
-<td>安全库</td>
-<td>常见的安全实践：防重入、紧急响应机制</td>
-</tr>
-<tr>
-<td>token</td>
-<td>代币</td>
-<td>ERC20(可替代代币)、ERC721(不可替代代币)、ERC1155(可/半可/不可替代代币)、ERC777(erc20+转账通知机制)</td>
-</tr>
-<tr>
-<td>utils</td>
-<td>实用工具</td>
-<td>处理新数据类型、签名验证、安全数学计算等</td>
-</tr>
-<tr>
-<td>vendor</td>
-<td>第三方合约库</td>
-<td>arbitrum、compound、optimism等</td>
-</tr>
-</tbody>
-</table>
-<h1>QuickView：</h1>
-<h2 id="access-权限控制">access (权限控制)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── access (权限控制)</span><br><span class="line">│   ├── AccessControl.sol (基于角色的访问控制机制)</span><br><span class="line">│   ├── AccessControlCrossChain.sol (扩展：跨链)</span><br><span class="line">│   ├── AccessControlEnumerable.sol (扩展：可枚举各角色的成员)</span><br><span class="line">│   ├── IAccessControl.sol</span><br><span class="line">│   ├── IAccessControlEnumerable.sol</span><br><span class="line">│   ├── Ownable.sol (管理员访问控制机制)</span><br></pre></td></tr></table></figure>
-<h2 id="crosschain-跨链">crosschain (跨链)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── crosschain (跨链)</span><br><span class="line">│   ├── CrossChainEnabled.sol (接收跨链消息时的控制执行流程)</span><br><span class="line">│   │</span><br><span class="line">│   ├── amb (在两个evm链之间中继任意数据)</span><br><span class="line">│   │   ├── CrossChainEnabledAMB.sol (基于amb bridge)</span><br><span class="line">│   │   └── LibAMB.sol</span><br><span class="line">│   ├── arbitrum</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL1.sol (基于ArbitrumL1 bridge)</span><br><span class="line">│   │   ├── CrossChainEnabledArbitrumL2.sol (基于ArbitrumL2 bridge)</span><br><span class="line">│   │   ├── LibArbitrumL1.sol </span><br><span class="line">│   │   └── LibArbitrumL2.sol </span><br><span class="line">│   ├── errors.sol</span><br><span class="line">│   ├── optimism</span><br><span class="line">│   │   ├── CrossChainEnabledOptimism.sol (基于Optimism bridge)</span><br><span class="line">│   │   └── LibOptimism.sol</span><br><span class="line">│   └── polygon</span><br><span class="line">│       └── CrossChainEnabledPolygonChild.sol (基于Polygon bridge)</span><br></pre></td></tr></table></figure>
-<h2 id="finance-金融系统原型">finance (金融系统原型)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── finance (金融系统原型)</span><br><span class="line">│   ├── PaymentSplitter.sol (支付拆分模式:单笔支付可自定义比例拆分成ether、erc20)</span><br><span class="line">│   └── VestingWallet.sol (退休金模式:锁仓、按自定义时间释放给受益人) </span><br><span class="line">├── governance (链上治理)</span><br><span class="line">│   ├── Governor.sol (抽象合约:只包含治理系统的核心部分，需要用其他模块进行拓展)</span><br><span class="line">│   ├── IGovernor.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── TimelockController.sol (时间锁控制器)</span><br><span class="line">│   ├── compatibility (兼容层)</span><br><span class="line">│   │   ├── GovernorCompatibilityBravo.sol</span><br><span class="line">│   │   └── IGovernorCompatibilityBravo.sol</span><br><span class="line">│   ├── extensions (拓展方案)</span><br><span class="line">│   │   ├── GovernorCountingSimple.sol (简单的投票机制,有3个投票选项:反对、赞成和弃权)</span><br><span class="line">│   │   ├── GovernorPreventLateQuorum.sol (防止持票巨鲸最后时刻控制投票结果)</span><br><span class="line">│   │   ├── GovernorProposalThreshold.sol (限制具有最低余额的代币持有者的提案)</span><br><span class="line">│   │   ├── GovernorSettings.sol (可更新治理方案的设置)</span><br><span class="line">│   │   ├── GovernorTimelockCompound.sol (加上复合时间锁)</span><br><span class="line">│   │   ├── GovernorTimelockControl.sol (加上时间锁)</span><br><span class="line">│   │   ├── GovernorVotes.sol (从代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesComp.sol (从多个代币中提取投票权重)</span><br><span class="line">│   │   ├── GovernorVotesQuorumFraction.sol (从代币和法定人数中提取投票权重)</span><br><span class="line">│   │   └── IGovernorTimelock.sol </span><br><span class="line">│   └── utils</span><br><span class="line">│       ├── IVotes.sol</span><br><span class="line">│       └── Votes.sol (抽象合约：投票权可转移/委托,可汇集给代表代投)</span><br></pre></td></tr></table></figure>
-<h2 id="interfaces-标准接口">interfaces (标准接口):</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── interfaces (标准接口)</span><br><span class="line">│   ├── IERC1155.sol (单合约可存多个代币)</span><br><span class="line">│   ├── IERC1155MetadataURI.sol</span><br><span class="line">│   ├── IERC1155Receiver.sol</span><br><span class="line">│   ├── IERC1271.sol (让智能合约验证其它智能合约的签名)</span><br><span class="line">│   ├── IERC1363.sol (在单个交易中,在转移/批准后允许回调)</span><br><span class="line">│   ├── IERC1363Receiver.sol</span><br><span class="line">│   ├── IERC1363Spender.sol</span><br><span class="line">│   ├── IERC165.sol (检测合约实现了哪些接口)</span><br><span class="line">│   ├── IERC1820Implementer.sol</span><br><span class="line">│   ├── IERC1820Registry.sol</span><br><span class="line">│   ├── IERC20.sol (可替代代币)</span><br><span class="line">│   ├── IERC20Metadata.sol</span><br><span class="line">│   ├── IERC2981.sol (NFT版权标准)</span><br><span class="line">│   ├── IERC3156.sol (闪电贷)</span><br><span class="line">│   ├── IERC3156FlashBorrower.sol</span><br><span class="line">│   ├── IERC3156FlashLender.sol</span><br><span class="line">│   ├── IERC4626.sol (代币化的金库)</span><br><span class="line">│   ├── IERC721.sol (不可替代代币)</span><br><span class="line">│   ├── IERC721Enumerable.sol</span><br><span class="line">│   ├── IERC721Metadata.sol</span><br><span class="line">│   ├── IERC721Receiver.sol</span><br><span class="line">│   ├── IERC777.sol (erc20+转账通知机制)</span><br><span class="line">│   ├── IERC777Recipient.sol</span><br><span class="line">│   ├── IERC777Sender.sol</span><br><span class="line">│   ├── draft-IERC1822.sol</span><br><span class="line">│   └── draft-IERC2612.sol</span><br></pre></td></tr></table></figure>
-<h2 id="metatx-元交易">metatx (元交易):</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── metatx (元交易)</span><br><span class="line">│   ├── ERC2771Context.sol</span><br><span class="line">│   └── MinimalForwarder.sol</span><br></pre></td></tr></table></figure>
-<h2 id="mocks-模拟">mocks (模拟)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">│   </span><br><span class="line">├── mocks (模拟)</span><br><span class="line">│   ├── AccessControlCrossChainMock.sol</span><br><span class="line">│   ├── AccessControlEnumerableMock.sol</span><br><span class="line">│   ├── AccessControlMock.sol</span><br><span class="line">│   ├── AddressImpl.sol</span><br><span class="line">│   ├── ArraysImpl.sol</span><br><span class="line">│   ├── BadBeacon.sol</span><br><span class="line">│   ├── Base64Mock.sol</span><br><span class="line">│   ├── BitmapMock.sol</span><br><span class="line">│   ├── CallReceiverMock.sol</span><br><span class="line">│   ├── CheckpointsImpl.sol</span><br><span class="line">│   ├── ClashingImplementation.sol</span><br><span class="line">│   ├── ClonesMock.sol</span><br><span class="line">│   ├── ConditionalEscrowMock.sol</span><br><span class="line">│   ├── ContextMock.sol</span><br><span class="line">│   ├── CountersImpl.sol</span><br><span class="line">│   ├── Create2Impl.sol</span><br><span class="line">│   ├── DoubleEndedQueueMock.sol</span><br><span class="line">│   ├── DummyImplementation.sol</span><br><span class="line">│   ├── ECDSAMock.sol</span><br><span class="line">│   ├── EIP712External.sol</span><br><span class="line">│   ├── ERC1155BurnableMock.sol</span><br><span class="line">│   ├── ERC1155Mock.sol</span><br><span class="line">│   ├── ERC1155PausableMock.sol</span><br><span class="line">│   ├── ERC1155ReceiverMock.sol</span><br><span class="line">│   ├── ERC1155SupplyMock.sol</span><br><span class="line">│   ├── ERC1155URIStorageMock.sol</span><br><span class="line">│   ├── ERC1271WalletMock.sol</span><br><span class="line">│   ├── ERC165</span><br><span class="line">│   │   ├── ERC165InterfacesSupported.sol</span><br><span class="line">│   │   ├── ERC165MissingData.sol</span><br><span class="line">│   │   └── ERC165NotSupported.sol</span><br><span class="line">│   ├── ERC165CheckerMock.sol</span><br><span class="line">│   ├── ERC165Mock.sol</span><br><span class="line">│   ├── ERC165StorageMock.sol</span><br><span class="line">│   ├── ERC1820ImplementerMock.sol</span><br><span class="line">│   ├── ERC20BurnableMock.sol</span><br><span class="line">│   ├── ERC20CappedMock.sol</span><br><span class="line">│   ├── ERC20DecimalsMock.sol</span><br><span class="line">│   ├── ERC20FlashMintMock.sol</span><br><span class="line">│   ├── ERC20Mock.sol</span><br><span class="line">│   ├── ERC20PausableMock.sol</span><br><span class="line">│   ├── ERC20PermitMock.sol</span><br><span class="line">│   ├── ERC20SnapshotMock.sol</span><br><span class="line">│   ├── ERC20TokenizedVaultMock.sol</span><br><span class="line">│   ├── ERC20VotesCompMock.sol</span><br><span class="line">│   ├── ERC20VotesMock.sol</span><br><span class="line">│   ├── ERC20WrapperMock.sol</span><br><span class="line">│   ├── ERC2771ContextMock.sol</span><br><span class="line">│   ├── ERC3156FlashBorrowerMock.sol</span><br><span class="line">│   ├── ERC721BurnableMock.sol</span><br><span class="line">│   ├── ERC721EnumerableMock.sol</span><br><span class="line">│   ├── ERC721Mock.sol</span><br><span class="line">│   ├── ERC721PausableMock.sol</span><br><span class="line">│   ├── ERC721ReceiverMock.sol</span><br><span class="line">│   ├── ERC721RoyaltyMock.sol</span><br><span class="line">│   ├── ERC721URIStorageMock.sol</span><br><span class="line">│   ├── ERC721VotesMock.sol</span><br><span class="line">│   ├── ERC777Mock.sol</span><br><span class="line">│   ├── ERC777SenderRecipientMock.sol</span><br><span class="line">│   ├── EnumerableMapMock.sol</span><br><span class="line">│   ├── EnumerableSetMock.sol</span><br><span class="line">│   ├── EtherReceiverMock.sol</span><br><span class="line">│   ├── GovernorCompMock.sol</span><br><span class="line">│   ├── GovernorCompatibilityBravoMock.sol</span><br><span class="line">│   ├── GovernorMock.sol</span><br><span class="line">│   ├── GovernorPreventLateQuorumMock.sol</span><br><span class="line">│   ├── GovernorTimelockCompoundMock.sol</span><br><span class="line">│   ├── GovernorTimelockControlMock.sol</span><br><span class="line">│   ├── GovernorVoteMock.sol</span><br><span class="line">│   ├── GovernorWithParamsMock.sol</span><br><span class="line">│   ├── InitializableMock.sol</span><br><span class="line">│   ├── MathMock.sol</span><br><span class="line">│   ├── MerkleProofWrapper.sol</span><br><span class="line">│   ├── MulticallTest.sol</span><br><span class="line">│   ├── MulticallTokenMock.sol</span><br><span class="line">│   ├── MultipleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── OwnableMock.sol</span><br><span class="line">│   ├── PausableMock.sol</span><br><span class="line">│   ├── PullPaymentMock.sol</span><br><span class="line">│   ├── ReentrancyAttack.sol</span><br><span class="line">│   ├── ReentrancyMock.sol</span><br><span class="line">│   ├── RegressionImplementation.sol</span><br><span class="line">│   ├── SafeCastMock.sol</span><br><span class="line">│   ├── SafeERC20Helper.sol</span><br><span class="line">│   ├── SafeMathMock.sol</span><br><span class="line">│   ├── SignatureCheckerMock.sol</span><br><span class="line">│   ├── SignedMathMock.sol</span><br><span class="line">│   ├── SignedSafeMathMock.sol</span><br><span class="line">│   ├── SingleInheritanceInitializableMocks.sol</span><br><span class="line">│   ├── StorageSlotMock.sol</span><br><span class="line">│   ├── StringsMock.sol</span><br><span class="line">│   ├── TimersBlockNumberImpl.sol</span><br><span class="line">│   ├── TimersTimestampImpl.sol</span><br><span class="line">│   ├── UUPS</span><br><span class="line">│   │   ├── UUPSLegacy.sol</span><br><span class="line">│   │   └── UUPSUpgradeableMock.sol</span><br><span class="line">│   ├── VotesMock.sol</span><br><span class="line">│   ├── compound</span><br><span class="line">│   │   └── CompTimelock.sol</span><br><span class="line">│   ├── crosschain</span><br><span class="line">│   │   ├── bridges.sol</span><br><span class="line">│   │   └── receivers.sol</span><br><span class="line">│   └── wizard</span><br><span class="line">│       ├── MyGovernor1.sol</span><br><span class="line">│       ├── MyGovernor2.sol</span><br><span class="line">│       └── MyGovernor3.sol</span><br><span class="line">│</span><br></pre></td></tr></table></figure>
-<h2 id="proxy-代理模式">proxy (代理模式):</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── proxy (代理模式)</span><br><span class="line">│   ├── Clones.sol (部署最简单代理合约的标准)</span><br><span class="line">│   ├── ERC1967</span><br><span class="line">│   │   ├── ERC1967Proxy.sol (调用委托给可更改的执行合约，防存储冲突)</span><br><span class="line">│   │   └── ERC1967Upgrade.sol</span><br><span class="line">│   ├── Proxy.sol</span><br><span class="line">│   ├── beacon</span><br><span class="line">│   │   ├── BeaconProxy.sol (执行合约地址存储在uint256(keccak256(&#x27;eip1967.proxy.beacon&#x27;)) - 1中，防存储冲突)</span><br><span class="line">│   │   ├── IBeacon.sol</span><br><span class="line">│   │   └── UpgradeableBeacon.sol</span><br><span class="line">│   ├── transparent (透明代理)</span><br><span class="line">│   │   ├── ProxyAdmin.sol</span><br><span class="line">│   │   └── TransparentUpgradeableProxy.sol (可由管理员升级的代理。管理员可以访问管理功能，调用不会被转发)</span><br><span class="line">│   └── utils </span><br><span class="line">│       ├── Initializable.sol (基础合约，用于编写可升级合约)</span><br><span class="line">│       └── UUPSUpgradeable.sol (为 UUPS 代理设计的可升级机制)</span><br></pre></td></tr></table></figure>
-<h2 id="security-安全机制库">security (安全机制库)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── security (安全机制库)</span><br><span class="line">│   ├── Pausable.sol (一种可用于避免重入攻击的模式)</span><br><span class="line">│   ├── PullPayment.sol (在某些功能期间可以防止重入的修饰符)</span><br><span class="line">│   └── ReentrancyGuard.sol (一种常见的紧急响应机制，可以在修复待处理时暂停合约)</span><br></pre></td></tr></table></figure>
-<h2 id="token-代币">token (代币)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">├── token (代币)</span><br><span class="line">│   ├── ERC1155</span><br><span class="line">│   │   ├── ERC1155.sol</span><br><span class="line">│   │   ├── IERC1155.sol</span><br><span class="line">│   │   ├── IERC1155Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC1155Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC1155Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC1155Supply.sol (可跟踪每个id的总供应量)</span><br><span class="line">│   │   │   ├── ERC1155URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   └── IERC1155MetadataURI.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   ├── ERC1155PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── ERC1155Holder.sol</span><br><span class="line">│   │       └── ERC1155Receiver.sol</span><br><span class="line">│   ├── ERC20 (同质化代币)</span><br><span class="line">│   │   ├── ERC20.sol</span><br><span class="line">│   │   ├── IERC20.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC20Burnable.sol (销毁自己的代币)</span><br><span class="line">│   │   │   ├── ERC20Capped.sol (在铸币时对总供应量设定一个不可变的上限值)</span><br><span class="line">│   │   │   ├── ERC20FlashMint.sol (支持闪电贷)</span><br><span class="line">│   │   │   ├── ERC20Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC20Snapshot.sol (有效存储过去的代币余额/供应量，以便以后随时查询)</span><br><span class="line">│   │   │   ├── ERC20TokenizedVault.sol</span><br><span class="line">│   │   │   ├── ERC20Votes.sol (支持投票和投票委托)</span><br><span class="line">│   │   │   ├── ERC20VotesComp.sol (支持投票和投票委托,兼容Compound的token，有uint96限制)</span><br><span class="line">│   │   │   ├── ERC20Wrapper.sol</span><br><span class="line">│   │   │   ├── IERC20Metadata.sol</span><br><span class="line">│   │   │   ├── draft-ERC20Permit.sol</span><br><span class="line">│   │   │   └── draft-IERC20Permit.sol</span><br><span class="line">│   │   ├── presets (预设、已废弃)</span><br><span class="line">│   │   │   ├── ERC20PresetFixedSupply.sol (预设固定供应量)</span><br><span class="line">│   │   │   ├── ERC20PresetMinterPauser.sol</span><br><span class="line">│   │   │   └── README.md</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       ├── SafeERC20.sol</span><br><span class="line">│   │       └── TokenTimelock.sol (时间锁)</span><br><span class="line">│   ├── ERC721 非同质化代币</span><br><span class="line">│   │   ├── ERC721.sol</span><br><span class="line">│   │   ├── IERC721.sol</span><br><span class="line">│   │   ├── IERC721Receiver.sol</span><br><span class="line">│   │   ├── extensions (拓展)</span><br><span class="line">│   │   │   ├── ERC721Burnable.sol (可销毁)</span><br><span class="line">│   │   │   ├── ERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── ERC721Pausable.sol (可暂停)</span><br><span class="line">│   │   │   ├── ERC721Royalty.sol ()</span><br><span class="line">│   │   │   ├── ERC721URIStorage.sol (可管理uri的存储)</span><br><span class="line">│   │   │   ├── IERC721Enumerable.sol</span><br><span class="line">│   │   │   ├── IERC721Metadata.sol</span><br><span class="line">│   │   │   └── draft-ERC721Votes.sol</span><br><span class="line">│   │   ├── presets</span><br><span class="line">│   │   │   └── ERC721PresetMinterPauserAutoId.sol</span><br><span class="line">│   │   └── utils</span><br><span class="line">│   │       └── ERC721Holder.sol</span><br><span class="line">│   ├── ERC777 (ERC20+转账通知机制)</span><br><span class="line">│   │   ├── ERC777.sol</span><br><span class="line">│   │   ├── IERC777.sol</span><br><span class="line">│   │   ├── IERC777Recipient.sol</span><br><span class="line">│   │   ├── IERC777Sender.sol</span><br><span class="line">│   │   └── presets</span><br><span class="line">│   │       └── ERC777PresetFixedSupply.sol</span><br><span class="line">│   └── common</span><br><span class="line">│       └── ERC2981.sol</span><br></pre></td></tr></table></figure>
-<h2 id="utils-实用工具库">utils (实用工具库)</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">├── utils (实用工具库)</span><br><span class="line">│   ├── Address.sol</span><br><span class="line">│   ├── Arrays.sol</span><br><span class="line">│   ├── Base64.sol</span><br><span class="line">│   ├── Checkpoints.sol</span><br><span class="line">│   ├── Context.sol</span><br><span class="line">│   ├── Counters.sol</span><br><span class="line">│   ├── Create2.sol</span><br><span class="line">│   ├── Multicall.sol</span><br><span class="line">│   ├── README.adoc</span><br><span class="line">│   ├── StorageSlot.sol</span><br><span class="line">│   ├── Strings.sol</span><br><span class="line">│   ├── Timers.sol</span><br><span class="line">│   ├── cryptography</span><br><span class="line">│   │   ├── ECDSA.sol</span><br><span class="line">│   │   ├── MerkleProof.sol</span><br><span class="line">│   │   ├── SignatureChecker.sol</span><br><span class="line">│   │   └── draft-EIP712.sol</span><br><span class="line">│   ├── escrow</span><br><span class="line">│   │   ├── ConditionalEscrow.sol</span><br><span class="line">│   │   ├── Escrow.sol</span><br><span class="line">│   │   └── RefundEscrow.sol</span><br><span class="line">│   ├── introspection</span><br><span class="line">│   │   ├── ERC165.sol</span><br><span class="line">│   │   ├── ERC165Checker.sol</span><br><span class="line">│   │   ├── ERC165Storage.sol</span><br><span class="line">│   │   ├── ERC1820Implementer.sol</span><br><span class="line">│   │   ├── IERC165.sol</span><br><span class="line">│   │   ├── IERC1820Implementer.sol</span><br><span class="line">│   │   └── IERC1820Registry.sol</span><br><span class="line">│   ├── math</span><br><span class="line">│   │   ├── Math.sol</span><br><span class="line">│   │   ├── SafeCast.sol</span><br><span class="line">│   │   ├── SafeMath.sol</span><br><span class="line">│   │   ├── SignedMath.sol</span><br><span class="line">│   │   └── SignedSafeMath.sol</span><br><span class="line">│   └── structs</span><br><span class="line">│       ├── BitMaps.sol</span><br><span class="line">│       ├── DoubleEndedQueue.sol</span><br><span class="line">│       ├── EnumerableMap.sol</span><br><span class="line">│       └── EnumerableSet.sol</span><br></pre></td></tr></table></figure>
-<h3 id="vendor-第三方库">vendor (第三方库)</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">└── vendor (第三方库)</span><br><span class="line">    ├── amb</span><br><span class="line">    │   └── IAMB.sol</span><br><span class="line">    ├── arbitrum</span><br><span class="line">    │   ├── IArbSys.sol</span><br><span class="line">    │   ├── IBridge.sol</span><br><span class="line">    │   ├── IInbox.sol</span><br><span class="line">    │   ├── IMessageProvider.sol</span><br><span class="line">    │   └── IOutbox.sol</span><br><span class="line">    ├── compound</span><br><span class="line">    │   └── ICompoundTimelock.sol</span><br><span class="line">    │   </span><br><span class="line">    ├── optimism</span><br><span class="line">    │   └── ICrossDomainMessenger.sol</span><br><span class="line">    │</span><br><span class="line">    └── polygon</span><br><span class="line">        └── IFxMessageProcessor.sol</span><br></pre></td></tr></table></figure>
-<blockquote>
-<ul class="lvl-1">
-<li class="lvl-2">
-<p>EIP-Ethereum Improvement Proposals 以太坊改进提案</p>
-</li>
-<li class="lvl-2">
-<p>ERC-Ethereum Request for Comment 以太坊意见征求稿</p>
-</li>
-</ul>
-</blockquote>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://eips.ethereum.org/erc">erc标准</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://www.youtube.com/watch?v=Kw9R-N2m98I">教程：以太坊智能合约(三十一) | Openzeppelin合约代码向导</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://docs.openzeppelin.com/contracts/4.x/api/access">openzeppelin Docs</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>SmartContract</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
-        <tag>SmartContract</tag>
-        <tag>Solidity</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Project-BscTradeHistory交易历史网站</title>
-    <url>/2021/7095.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>debank是个很好用的产品,比如交易历史功能，相比原生的bscsan的原生记录，debank的展示得更清晰，某笔交易和哪个项目的做了什么交互动作、token的交换记录、gas费用转换成u显示。看着不错，仿照debank的交易历史功能做个小项目练练手。</p>
-<h1>debank交易历史界面:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031160825.png" alt="20211031160825" /></p>
-<p>有以下功能点:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>钱包余额总值</p>
-</li>
-<li class="lvl-2">
-<p>不同的公链</p>
-</li>
-<li class="lvl-2">
-<p>交易时间</p>
-</li>
-<li class="lvl-2">
-<p>交易hash</p>
-</li>
-<li class="lvl-2">
-<p>与什么合约做了什么交互动作</p>
-</li>
-<li class="lvl-2">
-<p>token的传输记录，增加了X Token,减少了X Token</p>
-</li>
-<li class="lvl-2">
-<p>gas费用换算成u</p>
-</li>
-</ul>
-<h1>项目效果图:</h1>
-<p>项目地址:<a href="https://github.com/jerrychan807/bsc_trade_history">bsc_trade_history</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104122542.png" alt="20211104122542" /></p>
-<h1>功能点:</h1>
-<h2 id="合约交互记录-重点">合约交互记录-重点:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161445.png" alt="20211031161445" /></p>
-<p>有以下几个点:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>项目的logo</p>
-</li>
-<li class="lvl-2">
-<p>项目名字</p>
-</li>
-<li class="lvl-2">
-<p>调用合约的具体函数</p>
-</li>
-</ul>
-<h2 id="合约交互记录-项目logo和名字">合约交互记录-项目logo和名字:</h2>
-<p>交易记录里，会记录你地址与哪个合约发生了交互</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031161723.png" alt="20211031161723" /></p>
-<p>可以知道合约地址，一个项目可以有好几个合约地址，比如<code>PancakeSwap</code>可以有几个合约地址</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>PancakeSwap: Router v2</code></p>
-</li>
-<li class="lvl-2">
-<p><code>PancakeSwap: Router v1</code></p>
-</li>
-<li class="lvl-2">
-<p>…</p>
-</li>
-</ul>
-<p>这里主要是要找到<code>合约地址</code>和<code>项目</code>的映射关系暂时有几个思路:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>contract creator</code> 部署项目合约的地址</p>
-</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211031162907.png" alt="20211031162907" /></p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>在项目源码找常量，记录了那些项目合约地址</p>
-</li>
-</ul>
-<p>这一块感觉后续要不断去维护这些映射关系</p>
-<h2 id="合约交互记录-调用合约的具体函数">合约交互记录-调用合约的具体函数:</h2>
-<p>调用bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口,可以获得以下数据</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104123527.png" alt="20211104123527" /></p>
-<p>调用合约的具体函数可以通过解析<code>input_data</code>得知</p>
-<p>如果项目合约是开源验证过的话，可以通过<code>decode_function_input</code>接得</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">contract_ins = self.get_token_contract_with_abi(contract_address, contract_abi_json)</span><br><span class="line">func, params = contract_ins.decode_function_input(input_data)</span><br></pre></td></tr></table></figure>
-<p>如果项目合约未开源,<code>input_data</code>的前4个字节是函数原型的<code>Keccak256</code>哈希，可以调用<a href="https://www.4byte.directory/docs/">4byte.directory</a>进行哈希查询，反查出函数名。</p>
-<hr />
-<h2 id="transaction里的token传输记录">transaction里的token传输记录:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211104131002.png" alt="20211104131002" /></p>
-<p>要怎么解析出交易里代币的传输记录？<br />
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029094938.png" alt="20211029094938" /></p>
-<p>token基本都是符合<code>erc20</code>标准,都含有标准的<code>Transfer</code>函数要知道该次交易里token的传输记录，要解析log里的<code>Transfer event</code></p>
-<p>但并不是所有log里，都能看到<code>Transfer</code>的字眼<br />
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100319.png" alt="20211029100319" /></p>
-<p>有的就没有<br />
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211029100713.png" alt="20211029100713" /></p>
-<p>由于符合erc20标准的代币的<code>Transfer(address from, address to, uint256 value)</code>函数是固定的，经过<code>keccak</code>哈希后,可得到哈希字符串<code>0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef</code></p>
-<p>如果该次交易里含有erc20代币的传输，那么就存在含有该哈希的<code>event</code>.<br />
-接下来去解析这些<code>event</code>就可以知道token的传输记录了</p>
-<p>参考:<a href="https://stackoverflow.com/questions/52222758/erc20-tokens-transferred-information-from-transaction-hash">ERC20 Tokens Transferred Information from Transaction Hash</a></p>
-<hr />
-<h1>Bug&amp;Todo:</h1>
-<h2 id="个人地址转账">个人地址转账:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115056.png" alt="20211103115056" /></p>
-<p>如何判断一个地址是合约地址还是个人地址？</p>
-<p><a href="https://ethereum.stackexchange.com/questions/28521/how-to-detect-if-an-address-is-a-contract">How to detect if an address is a contract?</a></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20211103115835.png" alt="20211103115835" /></p>
-<p>个人地址的转账记录这块还没做对应的解析</p>
-<h2 id="SSL-error">SSL error:</h2>
-<p>[SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC] decryption failed or bad record mac (_ssl.c:2570)</p>
-<h2 id="normal">normal</h2>
-<p>只用了bscscan的这个<code>Get a list of 'Normal' Transactions By Address</code>接口，还有一些交易类型没收录进去，仍有欠缺</p>
-<hr />
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://medium.com/coinmonks/discovering-the-secrets-of-an-ethereum-transaction-64febb00935c">Unlocking the Secrets of an Ethereum Transaction</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://stackoverflow.com/questions/55258332/find-the-function-name-and-parameter-from-input-data">Find the function name and parameter from input data</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://www.4byte.directory/">https://www.4byte.directory/</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://github.com/mikeshultz/py4byte">py4byte</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://stackoverflow.com/questions/48004356/get-token-transfer-detail-from-transaction-hash-with-web3js">Get token transfer detail from transaction hash with web3js</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://ethereum.stackexchange.com/questions/80135/getting-tokens-transferred-from-web3-py">Getting Tokens Transferred from Web3.py</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://zhuanlan.zhihu.com/p/389359014">web3.py extraData 错误</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://code.z01.com/bootstrap-vue/docs/">bootstrapvue中文文档</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://zhuanlan.zhihu.com/p/311323583">用Flask和Vue制作一个单页应用（一）</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Project</category>
-      </categories>
-      <tags>
-        <tag>Crypto</tag>
       </tags>
   </entry>
   <entry>
@@ -7445,6 +7445,53 @@ Post-EIP-2929: <code>2100 SLOAD + 2900 warm SSTORE = 5000</code></p>
       </tags>
   </entry>
   <entry>
+    <title>StudyRecord-OpenSea制作NFT初步使用</title>
+    <url>/2022/32598.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>OpenSea制作NFT初步使用</p>
+<h1>部署ERC721合约：</h1>
+<p><a href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
+<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上部署时，填入<code>_reserveAddress</code>网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
+<h1>上传图片及NFT元数据文件：</h1>
+<p>我这里暂用自己的github public仓库作为存储的地方</p>
+<p>原项目<code>KILLAz</code>的元数据文件：<code>https://gateway.pinata.cloud/ipfs/QmeLBX1hPFeZTk61rtJAxdrjFdTttR7D6Q9XFuXU5fSoEQ/1</code></p>
+<p>copy原项目的数据，新建txt文档，文档中存储构造符合OpenSea标准的NFT 元数据（元数据中保存了图片的url），如下：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.txt</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Background&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Beige&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Body&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Ancient One&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Weapon&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Katana&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Clothing&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Mask&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Primary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Spirit Necklace&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Secondary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;KILLAz #1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;image&quot;</span><span class="punctuation">:</span><span class="string">&quot;https://raw.githubusercontent.com/jerrychan807/imggg/master/721/1.jpg&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png" alt="20220622190753" /></p>
+<h1>合约初始化设置：</h1>
+<h2 id="打开售卖开关：">打开售卖开关：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550" /></p>
+<h2 id="设置baseUri">设置baseUri:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719" /></p>
+<h2 id="铸造nft：">铸造nft：</h2>
+<p>铸造3个，单价0.029，总价0.087</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192005.png" alt="20220622192005" /></p>
+<h1>导入opensea：</h1>
+<p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192229.png" alt="20220622192229" /></p>
+<p>发布成功：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192313.png" alt="20220622192313" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192333.png" alt="20220622192333" /></p>
+<h1>Bug:</h1>
+<p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622193055.png" alt="20220622193055" /></p>
+<p>基于合约发的nft可以很轻松的做到批量的效果。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>StudyRecord-Solidity异常处理</title>
     <url>/2022/18978.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -7639,53 +7686,6 @@ Failing assertion probably means that there is a bug.</p>
 </li>
 <li class="lvl-2">
 <p><a href="https://github.com/djrtwo/evm-opcode-gas-costs/blob/master/opcode-gas-costs_EIP-150_revision-1e18248_2017-04-12.csv">evm-opcode-gas-costs</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>StudyRecord</category>
-      </categories>
-      <tags>
-        <tag>SmartContract</tag>
-        <tag>StudyRecord</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>StudyRecord-OpenSea制作NFT初步使用</title>
-    <url>/2022/32598.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p>OpenSea制作NFT初步使用</p>
-<h1>部署ERC721合约：</h1>
-<p><a href="https://gist.github.com/jerrychan807/1d59896d43ed8f4b3d918388bc4eb459">KILLAz.sol源代码</a></p>
-<p>将<code>KILLAz.sol</code>通过remix部署到<code>rinkeby</code>测试网上部署时，填入<code>_reserveAddress</code>网页售卖收款地址。在rinkeby上验证合约源码，方便后面修改合约的一些变量</p>
-<h1>上传图片及NFT元数据文件：</h1>
-<p>我这里暂用自己的github public仓库作为存储的地方</p>
-<p>原项目<code>KILLAz</code>的元数据文件：<code>https://gateway.pinata.cloud/ipfs/QmeLBX1hPFeZTk61rtJAxdrjFdTttR7D6Q9XFuXU5fSoEQ/1</code></p>
-<p>copy原项目的数据，新建txt文档，文档中存储构造符合OpenSea标准的NFT 元数据（元数据中保存了图片的url），如下：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.txt</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Background&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Beige&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Body&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Ancient One&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Weapon&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Katana&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Clothing&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Mask&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Primary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;Spirit Necklace&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span><span class="attr">&quot;trait_type&quot;</span><span class="punctuation">:</span><span class="string">&quot;Secondary Accessory&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="string">&quot;None&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;KILLAz #1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;image&quot;</span><span class="punctuation">:</span><span class="string">&quot;https://raw.githubusercontent.com/jerrychan807/imggg/master/721/1.jpg&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622190753.png" alt="20220622190753" /></p>
-<h1>合约初始化设置：</h1>
-<h2 id="打开售卖开关：">打开售卖开关：</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191550.png" alt="20220622191550" /></p>
-<h2 id="设置baseUri">设置baseUri:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622191719.png" alt="20220622191719" /></p>
-<h2 id="铸造nft：">铸造nft：</h2>
-<p>铸造3个，单价0.029，总价0.087</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192005.png" alt="20220622192005" /></p>
-<h1>导入opensea：</h1>
-<p>导入opensea，查看我们发布的NFT，拷贝合约地址到<code>https://testnets.opensea.io/get-listed/step-two</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192229.png" alt="20220622192229" /></p>
-<p>发布成功：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192313.png" alt="20220622192313" /></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622192333.png" alt="20220622192333" /></p>
-<h1>Bug:</h1>
-<p>元数据文件和图片地址要在导入opensea之前检查好，不然导入后再修改会没有效果。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220622193055.png" alt="20220622193055" /></p>
-<p>基于合约发的nft可以很轻松的做到批量的效果。</p>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a href="https://blog.csdn.net/JAVA_HHHH/article/details/120348901#comments_20646978">使用以太坊在OpenSea制作NFT完整版</a></p>
 </li>
 </ul>
 ]]></content>
@@ -8946,6 +8946,215 @@ EVM 对象内部主要依赖三个对象：</p>
 </li>
 <li class="lvl-2">
 <p><a href="https://blog.csdn.net/lj900911/article/details/84888688">以太坊源码解读（18）以太坊交易的执行基本流程——将交易递交给EVM</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>SmartContract</tag>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</title>
+    <url>/2022/15749.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220720154820.png" alt="20220720154820" /><br />
+如图所示，在<code>TransitionDb()</code>函数中，执行交易前，会对交易的目的进行判断。</p>
+<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 0地址为创建合约，否则是交易或合约调用</span></span><br><span class="line">contractCreation = msg.To() == <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>如果交易的接收者为空，则代表此条交易的目的是要创建一条合约，随后调用 <code>evm.Create()</code> 执行相关的功能。<br />
+现在我们就来看看<code>evm.Create()</code>方法是如何实现合约的创建的。</p>
+<h1>创建合约 evm.Create:</h1>
+<p>首先看一看创建一个合约所需要的参数：</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Create creates a new contract using code as deployment code.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> Create(caller ContractRef, code []<span class="type">byte</span>, gas <span class="type">uint64</span>, value *big.Int) (ret []<span class="type">byte</span>, contractAddr common.Address, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	contractAddr = crypto.CreateAddress(caller.Address(), evm.StateDB.GetNonce(caller.Address()))</span><br><span class="line">	<span class="keyword">return</span> evm.create(caller, &amp;codeAndHash&#123;code: code&#125;, gas, value, contractAddr, CREATE)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>caller</code>：转出方地址</p>
+</li>
+<li class="lvl-2">
+<p><code>code</code>：代码（input）</p>
+</li>
+<li class="lvl-2">
+<p><code>gas</code>：当前交易的剩余gas</p>
+</li>
+<li class="lvl-2">
+<p><code>value</code>：转账额度</p>
+</li>
+</ul>
+<p><code>Create()</code>方法主要操作:</p>
+<ol>
+<li class="lvl-3">
+<p>首先对发送者地址（caller.Address）和账户的nonce进行<code>keccak256</code>计算得到合约地址</p>
+</li>
+<li class="lvl-3">
+<p>然后将合约地址传入<code>create()</code>方法</p>
+</li>
+<li class="lvl-3">
+<p>调用是<code>evm.create()</code> 合约创建的真正函数。</p>
+</li>
+</ol>
+<p><code>create()</code>方法主要操作:</p>
+<ol>
+<li class="lvl-3">
+<p>交易执行前的检查</p>
+</li>
+<li class="lvl-3">
+<p>确保当前要创建的地址在世界状态中没有合约存在，如果存在，直接返回；</p>
+</li>
+<li class="lvl-3">
+<p>在<code>StateDB</code>创建一个新的合约账户，设置新账户为<code>nonce</code>为1；</p>
+</li>
+<li class="lvl-3">
+<p>给新合约账户进行转账</p>
+</li>
+<li class="lvl-3">
+<p>创建一个待执行的合约对象，并在解释器执行合约初始化字节码；</p>
+</li>
+<li class="lvl-3">
+<p>处理返回值,在<code>StateDB</code>存储合约的运行时字节码:</p>
+</li>
+</ol>
+<p>分几个部分看看<code>create()</code>方法的具体实现：</p>
+<h2 id="检查1-调用栈深度、用户余额：">检查1-调用栈深度、用户余额：</h2>
+<p>首先，在执行交易之前需要进行检查：</p>
+<ol>
+<li class="lvl-3">
+<p>深度判断</p>
+</li>
+<li class="lvl-3">
+<p>余额是否足够；</p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">   <span class="comment">// Depth check execution. Fail if we&#x27;re trying to execute above the</span></span><br><span class="line"><span class="comment">// limit.</span></span><br><span class="line"><span class="comment">// 执行深度检查，如果超出设定的深度限制  创建失败</span></span><br><span class="line"><span class="keyword">if</span> evm.depth &gt; <span class="type">int</span>(params.CallCreateDepth) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrDepth</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 账户余额不足，创建失败</span></span><br><span class="line"><span class="keyword">if</span> !evm.Context.CanTransfer(evm.StateDB, caller.Address(), value) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrInsufficientBalance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个 if 判断中的 <code>evm.depth</code> 记录者合约的递归调用次数。<br />
+在 solidity 语言中，允许在合约中通过 <code>new</code> 关键字创建新的合约对象，但这种「在合约中创建合约」的递归调用是有限制的，这也是这个 if 判断的意义。</p>
+<h2 id="检查2-是否有相同地址的合约">检查2-是否有相同地址的合约</h2>
+<p>然后，给交易发送者的账户<code>nonce</code>加1（普通转账时，是在外面加1的，即在<code>TransitionDb</code>中），<br />
+接着判断当前要创建的地址在是世界状态中没有合约存在，如果存在直接返回。</p>
+<p>需要注意的点：<br />
+由于用到了账户的 <code>Nonce</code> 值，所以同一份合约代码，每次创建合约时得到的合约地址都是不一样的（因为合约是通过发送交易创建，而每发送一次交易 <code>Nonce</code> 值都会改变）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">nonce := evm.StateDB.GetNonce(caller.Address())</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> nonce+<span class="number">1</span> &lt; nonce &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrNonceUintOverflow</span><br><span class="line">	&#125;</span><br><span class="line">	evm.StateDB.SetNonce(caller.Address(), nonce+<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// We add this to the access list _before_ taking a snapshot. Even if the creation fails,</span></span><br><span class="line">	<span class="comment">// the access-list change should not be rolled back</span></span><br><span class="line">	<span class="keyword">if</span> evm.chainRules.IsBerlin &#123;</span><br><span class="line">		evm.StateDB.AddAddressToAccessList(address)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Ensure there&#x27;s no existing contract already at the designated address</span></span><br><span class="line">	<span class="comment">// 确保指定地址没有已存在的相同合约</span></span><br><span class="line">	contractHash := evm.StateDB.GetCodeHash(address)</span><br><span class="line">	<span class="keyword">if</span> evm.StateDB.GetNonce(address) != <span class="number">0</span> || (contractHash != (common.Hash&#123;&#125;) &amp;&amp; contractHash != emptyCodeHash) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, <span class="number">0</span>, ErrContractAddressCollision</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建新的合约账户：">创建新的合约账户：</h2>
+<p>第三步，如果上面两个检查都没有问题，那么我们就可以创建新的合约账户了。<br />
+先用合约地址在状态数据库中创建一个合约账户，然后给合约账户设置<code>nonce</code>为1。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先对当前StateDB进行快照</span></span><br><span class="line">snapshot := evm.StateDB.Snapshot()</span><br><span class="line"><span class="comment">// 创建新合约并将合约的nonce设置为1</span></span><br><span class="line">evm.StateDB.CreateAccount(address)</span><br><span class="line"><span class="keyword">if</span> evm.ChainConfig().IsEIP158(evm.BlockNumber) &#123;</span><br><span class="line">    evm.StateDB.SetNonce(address, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="给新的合约账户转账：">给新的合约账户转账：</h2>
+<p>第四步是进行转账，将我们创建合约交易时的的以太币数值<code>value</code>转入智能合约账户。<br />
+转账的过程很简单，就是sender的账户减减（- -），合约账户加加（++）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转账操作</span></span><br><span class="line">evm.Context.Transfer(evm.StateDB, caller.Address(), address, value)</span><br></pre></td></tr></table></figure>
+<h2 id="创建合约对象：">创建合约对象：</h2>
+<p>第五步是创建合约<code>Contract</code>对象，并执行。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Initialise a new contract and set the code that is to be used by the EVM.</span></span><br><span class="line"><span class="comment">// The contract is a scoped environment for this execution context only.</span></span><br><span class="line"><span class="comment">// 创建合约</span></span><br><span class="line">contract := NewContract(caller, AccountRef(address), value, gas)</span><br><span class="line"><span class="comment">// 设置合约字节码、包含构造函数部分</span></span><br><span class="line">contract.SetCodeOptionalHash(&amp;address, codeAndHash)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">  <span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureStart(evm, caller.Address(), address, <span class="literal">true</span>, codeAndHash.code, gas, value)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureEnter(typ, caller.Address(), address, codeAndHash.code, gas, value)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start := time.Now()</span><br></pre></td></tr></table></figure>
+<p>使用caller地址 、合约地址、转账额和交易余额传入<code>NewContract()</code>方法。<br />
+然后执行<code>contract.SetCodeOptionalHash()</code>，将合约代码<code>code</code>（包含构造函数部分）设置到合约中：</p>
+<figure class="highlight go"><figcaption><span>core/vm/contract.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// SetCodeOptionalHash can be used to provide code, but it&#x27;s optional to provide hash.</span></span><br><span class="line"><span class="comment">// In case hash is not provided, the jumpdest analysis will not be saved to the parent context</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> SetCodeOptionalHash(addr *common.Address, codeAndHash *codeAndHash) &#123;</span><br><span class="line">	c.Code = codeAndHash.code</span><br><span class="line">	c.CodeHash = codeAndHash.hash</span><br><span class="line">	c.CodeAddr = addr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Contract对象">Contract对象:</h3>
+<p>看看<code>Contract</code>对象的数据结构:</p>
+<p>一个 Contract 对象包含和维护了合约在执行过程中的必要信息，比如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>合约创建者</p>
+</li>
+<li class="lvl-2">
+<p>合约自身地址</p>
+</li>
+<li class="lvl-2">
+<p>合约剩余 gas</p>
+</li>
+<li class="lvl-2">
+<p>合约代码</p>
+</li>
+<li class="lvl-2">
+<p>代码的 jumpdests 记录</p>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Contract represents an ethereum contract in the state database. It contains</span></span><br><span class="line"><span class="comment">// the contract code, calling arguments. Contract implements ContractRef</span></span><br><span class="line"><span class="comment">// 数据库中的以太坊智能合约，包括合约代码和调用参数</span></span><br><span class="line"><span class="keyword">type</span> Contract <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// CallerAddress is the result of the caller which initialised this</span></span><br><span class="line">	<span class="comment">// contract. However when the &quot;call method&quot; is delegated this value</span></span><br><span class="line">	<span class="comment">// needs to be initialised to that of the caller&#x27;s caller.</span></span><br><span class="line">	<span class="comment">// CallerAddress是初始化这个合约的人。 如果是delegate，这个值被设置为调用者的调用者。</span></span><br><span class="line">	CallerAddress common.Address</span><br><span class="line">	caller        ContractRef</span><br><span class="line">	self          ContractRef</span><br><span class="line"></span><br><span class="line">	<span class="comment">// JUMPDEST指令分析的结果</span></span><br><span class="line">	jumpdests <span class="keyword">map</span>[common.Hash]bitvec <span class="comment">// Aggregated result of JUMPDEST analysis.</span></span><br><span class="line">	analysis  bitvec                 <span class="comment">// Locally cached result of JUMPDEST analysis</span></span><br><span class="line">	</span><br><span class="line">	Code     []<span class="type">byte</span>  				<span class="comment">// 合约代码</span></span><br><span class="line">	CodeHash common.Hash 			<span class="comment">//代码的HASH</span></span><br><span class="line">	CodeAddr *common.Address 		<span class="comment">//代码地址 // 合约地址</span></span><br><span class="line">	Input    []<span class="type">byte</span> 				<span class="comment">// 入参</span></span><br><span class="line"></span><br><span class="line">	Gas   <span class="type">uint64</span> 					<span class="comment">// 合约还有多少Gas</span></span><br><span class="line">	value *big.Int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解释器执行合约初始化代码">解释器执行合约初始化代码:</h2>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约的初始化</span></span><br><span class="line">ret, err := evm.interpreter.Run(contract, <span class="literal">nil</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<p><code>run()</code>函数将<code>contract</code>交给了evm解释器，返回<code>interpreter.Run（contract, input, readOnly）</code>的执行结果。<br />
+此时合约对象中存储的字节码是Deployment Bytecode(部署字节码)，包含了:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>用户实际交易调用这个新合约时需要执行的字节码(即运行时字节码)</p>
+</li>
+<li class="lvl-2">
+<p>合约的构造函数中进行初始化处理的代码</p>
+</li>
+</ul>
+<p>至于<code>interpreter</code>如何执行合约，另post文分析。</p>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约代码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in *EVMInterpreter)</span></span> Run(contract *Contract, input []<span class="type">byte</span>, readOnly <span class="type">bool</span>) (ret []<span class="type">byte</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="StateDB存储合约的运行时字节码">StateDB存储合约的运行时字节码:</h2>
+<p>第六步，处理<code>interpreter.Run</code>返回值<br />
+<code>interpreter.Run</code>函数的两个返回值分别是<code>ret(运行时字节码)</code>和<code>err</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>约定合约代码最大长度为24576，检查代码长度不超过24576</p>
+</li>
+<li class="lvl-2">
+<p>如果执行没有报错：</p>
+<ul class="lvl-2">
+<li class="lvl-4">计算本次合约创建消耗的gas，每字节200gas, 扣除gas</li>
+<li class="lvl-4">在StateDB存储合约的<code>Runtime bytecode</code>运行时字节码,</li>
+</ul>
+</li>
+<li class="lvl-2">
+<p>如果报错：</p>
+<ul class="lvl-2">
+<li class="lvl-4">恢复之前的快照</li>
+<li class="lvl-4">如果不是<code>revert</code>指令导致的错误，要扣除所有的gas</li>
+</ul>
+</li>
+</ul>
+<p><code>evm.Create()</code>最后返回 合约代码、合约地址、gas余额和错误</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Check whether the max code size has been exceeded, assign err if the case.</span></span><br><span class="line"><span class="comment">// 检查初始化生成的代码长度是否超过限制,约定合约代码最大长度为24576</span></span><br><span class="line"><span class="comment">// 如果执行没有错且代码长度不超过24576</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; evm.chainRules.IsEIP158 &amp;&amp; <span class="built_in">len</span>(ret) &gt; params.MaxCodeSize &#123;</span><br><span class="line">	err = ErrMaxCodeSizeExceeded</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reject code starting with 0xEF if EIP-3541 is enabled.</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; <span class="built_in">len</span>(ret) &gt;= <span class="number">1</span> &amp;&amp; ret[<span class="number">0</span>] == <span class="number">0xEF</span> &amp;&amp; evm.chainRules.IsLondon &#123;</span><br><span class="line">	err = ErrInvalidCode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// if the contract creation ran successfully and no errors were returned</span></span><br><span class="line"><span class="comment">// calculate the gas required to store the code. If the code could not</span></span><br><span class="line"><span class="comment">// be stored due to not enough gas set an error and let it be handled</span></span><br><span class="line"><span class="comment">// by the error checking condition below.</span></span><br><span class="line"><span class="comment">// 合约创建成功</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="comment">// 计算本次合约创建消耗的gas，每字节200gas</span></span><br><span class="line">	createDataGas := <span class="type">uint64</span>(<span class="built_in">len</span>(ret)) * params.CreateDataGas</span><br><span class="line">	<span class="comment">// 如果交易gas余额足够，则成功部署合约，将合约代码设置到账户储存中</span></span><br><span class="line">	<span class="keyword">if</span> contract.UseGas(createDataGas) &#123;</span><br><span class="line">		evm.StateDB.SetCode(address, ret) <span class="comment">// !!!!!!! 注意点1</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;     <span class="comment">// 否则返回余额不足</span></span><br><span class="line">		<span class="comment">// 当前拥有的Gas不足以存储代码</span></span><br><span class="line">		err = ErrCodeStoreOutOfGas</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// When an error was returned by the EVM or when setting the creation code</span></span><br><span class="line"><span class="comment">// above we revert to the snapshot and consume any gas remaining. Additionally</span></span><br><span class="line"><span class="comment">// when we&#x27;re in homestead this also counts for code storage gas errors.</span></span><br><span class="line"><span class="comment">// 如果代码长度受限或执行错误,合约创建失败，借助上面创建的快照快速回滚</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &amp;&amp; (evm.chainRules.IsHomestead || err != ErrCodeStoreOutOfGas) &#123;</span><br><span class="line">	<span class="comment">// 恢复之前的快照</span></span><br><span class="line">	evm.StateDB.RevertToSnapshot(snapshot)</span><br><span class="line">	<span class="comment">// 如果不是revert指令导致的错误，要扣除所有的gas</span></span><br><span class="line">	<span class="keyword">if</span> err != ErrExecutionReverted &#123;</span><br><span class="line">		contract.UseGas(contract.Gas)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">	<span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureEnd(ret, gas-contract.Gas, time.Since(start), err)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureExit(ret, gas-contract.Gas, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 最后返回合约代码、合约地址、gas余额和错误</span></span><br><span class="line"><span class="keyword">return</span> ret, address, contract.Gas, err</span><br></pre></td></tr></table></figure>
+<h3 id="注意点1：">注意点1：</h3>
+<p>为什么存储的合约代码是合约运行后的返回码，而不是原来交易中的数据（即 <code>Transaction.data.Payload</code>，或者说 <code>EVM.Create</code> 方法的 <code>code</code> 参数）?</p>
+<p>这是因为合约源代码在编译成二进制数据时，<strong>除了合约原有的代码外，编译器还另外插入了一些代码</strong>，以便执行相关的功能。<br />
+对于创建来说，编译器插入了执行合约「构造函数」（即合约对象的 <code>constructor</code> 方法）的代码。<br />
+<strong>因此在将编译器编译后的二进制提交以太坊节点创建合约时，EVM 执行这段二进制代码，实际上主要执行了合约的 <code>constructor</code> 方法</strong>，然后将合约的其它字节码返回，所以才会有这里的 <code>ret</code> 变量<strong>作为合约的真正代码存储到状态数据库中</strong>。</p>
+<p>也就是说，创建合约交易的初始字节码可分成3个部分:</p>
+<ol>
+<li class="lvl-3">
+<p>Deployment Bytecode(部署字节码) ：</p>
+<ul class="lvl-2">
+<li class="lvl-6">执行初始化新合约账户的所有操作</li>
+<li class="lvl-6">包含 <code>Runtime bytecode</code></li>
+<li class="lvl-6">包含 构造函数的字节码</li>
+<li class="lvl-6">并不存储在<code>StateDB</code></li>
+</ul>
+</li>
+<li class="lvl-3">
+<p>Runtime bytecode(运行时字节码)：</p>
+<ul class="lvl-2">
+<li class="lvl-6">合约本身的代码</li>
+<li class="lvl-6">当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</li>
+<li class="lvl-6">存储在<code>StateDB</code></li>
+</ul>
+</li>
+<li class="lvl-3">
+<p>Auxdata</p>
+</li>
+</ol>
+<h3 id="注意点2：">注意点2：</h3>
+<p>值得注意的是，如果代码执行错误是<code>revert</code>错误，则不会收取<code>gas</code>，否则<code>gas</code>会被扣除。</p>
+<p>那么这个<code>revert</code>是什么？<br />
+revert是evm中的一条指令，在我们高级编程语言（solidity）中有<code>require</code>和<code>revert</code>这两个判断。<br />
+如果<code>require</code>和<code>revert</code>判断错误，那么就会返回一个<code>revert</code>指令错误，此时就不会收取<code>gas</code>。<br />
+这也就是为什么solidity中<code>require</code>和<code>revert</code>执行不会扣除gas的原因。<br />
+当然，这个方法是在拜占庭分叉后出现的。</p>
+<h1>Summary:</h1>
+<p>最后，一张图看看智能合约创建的过程：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722155925.png" alt="20220722155925" /></p>
+<p><code>interpreter.Run()</code>返回的是<code>Runtime bytecode(运行时字节码)</code>：当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="http://yangzhe.me/2019/08/12/ethereum-evm/#%E5%88%9B%E5%BB%BA%E5%90%88%E7%BA%A6">以太坊源码解析：evm</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/lj900911/article/details/84924478">以太坊源码解读（19）通过EVM创建智能合约——Create()</a></p>
 </li>
 </ul>
 ]]></content>
@@ -13675,6 +13884,108 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
       </tags>
   </entry>
   <entry>
+    <title>越权半自动化插件的尝试</title>
+    <url>/2019/14249.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>当一个事情变得枯燥时，就该考虑自动化了。</p>
+<p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
+<p>可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。</p>
+<p>我就尝试在<a href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
+<hr />
+<h1>流程:</h1>
+<h2 id="第一步-手工测试找vuln-parameter">第一步:手工测试找vuln_parameter</h2>
+<p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
+<p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
+<h2 id="第二步-以vuln-parameter做路由">第二步:以vuln_parameter做路由</h2>
+<p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
+<h2 id="第三步-确定payload">第三步:确定payload</h2>
+<p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
+<p>确定payload: <code>&#123;&quot;phone&quot;:134xxxxxx&#125;</code></p>
+<h2 id="第四步-篡改request包">第四步:篡改request包</h2>
+<p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
+<h2 id="第五步-发包-权衡判断条件">第五步:发包,权衡判断条件</h2>
+<p>判断我感觉比较麻烦:</p>
+<p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
+<p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>正向特征:</p>
+</li>
+</ul>
+<p>先收集一些请求成功且有返回一定数据的Response包</p>
+<p>例如Response的body里:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;msg&#x27;:&#x27;OK&#x27;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>反向特征:</p>
+</li>
+</ul>
+<p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
+<p>例如Response的body里:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;你没有权限进行此操作&#x27;</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;不可以越权操作&#x27;</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;xxxxx&#x27;</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
+<p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
+<p>比如</p>
+<p>正向的就是 :</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;msg&#x27;</span>] == <span class="string">&#x27;OK&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>反向的就是 :</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;data&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>判断的效果 跟判断条件有很大的关系判断严了,容易漏 判断松了 容易误报那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
+</blockquote>
+<h2 id="大致流程图">大致流程图:</h2>
+<p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt="" /></p>
+<hr />
+<h1>效果图:</h1>
+<p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt="" /></p>
+<p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
+<p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
+<p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
+<hr />
+<h1>总结:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>半自动化流程:</p>
+</li>
+</ul>
+<ol>
+<li class="lvl-3">
+<p>手工测试找<code>vuln_parameter</code></p>
+</li>
+<li class="lvl-3">
+<p>以<code>vuln_parameter</code>做路由</p>
+</li>
+<li class="lvl-3">
+<p>确定payload</p>
+</li>
+<li class="lvl-3">
+<p>篡改request包</p>
+</li>
+<li class="lvl-3">
+<p>发包,权衡判断条件</p>
+</li>
+</ol>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
+</li>
+<li class="lvl-2">
+<p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
+</li>
+<li class="lvl-2">
+<p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>SecurityTools</category>
+      </categories>
+      <tags>
+        <tag>SecurityTools</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>记录-简单的代码离线更新方案</title>
     <url>/2019/35326.html</url>
     <content><![CDATA[<h1>Pre:</h1>
@@ -13808,125 +14119,49 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
       </tags>
   </entry>
   <entry>
-    <title>越权半自动化插件的尝试</title>
-    <url>/2019/14249.html</url>
+    <title>StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()</title>
+    <url>/2022/283.html</url>
     <content><![CDATA[<h1>Pre:</h1>
-<p>当一个事情变得枯燥时，就该考虑自动化了。</p>
-<p>场景：当你渗透测试一个网站时，你发现其中某个页面某个参数存在越权时，你就会想那么其他页面的其他包的这个参数会不会有问题。。。</p>
-<p>可是又要全测一边会觉得累，不测又会觉得漏。那这个时候就可以考虑下自动化，半自动化了。</p>
-<p>我就尝试在<a href="https://github.com/w-digital-scanner/w13scan/tree/master/W13SCAN">w13scan</a>的架构下,编写了一个简单的越权半自动化插件</p>
-<hr />
-<h1>流程:</h1>
-<h2 id="第一步-手工测试找vuln-parameter">第一步:手工测试找vuln_parameter</h2>
-<p>先是手工测试出某个包的某个参数是存在越权漏洞的,也就是这个参数值可能服务器没有做很完备的鉴权。</p>
-<p>比如是<code>phone</code>这个参数,那么以这个作为<code>vuln_key</code>(<code>vuln_parameter</code>)</p>
-<h2 id="第二步-以vuln-parameter做路由">第二步:以vuln_parameter做路由</h2>
-<p>就是含有<code>vuln_parameter</code>的包,都会路由到这个插件里进行处理</p>
-<h2 id="第三步-确定payload">第三步:确定payload</h2>
-<p>比如是<code>phone参数</code>,然后准备另一个用户的手机号码</p>
-<p>确定payload: <code>&#123;&quot;phone&quot;:134xxxxxx&#125;</code></p>
-<h2 id="第四步-篡改request包">第四步:篡改request包</h2>
-<p>以<code>vuln_parameter</code>去定位包中要篡改的位置,然后将准备好的payload的参数值替换上去.</p>
-<h2 id="第五步-发包-权衡判断条件">第五步:发包,权衡判断条件</h2>
-<p>判断我感觉比较麻烦:</p>
-<p>可以通过<code>status_code</code>状态码,Response状态码为200的话可以先保证:<strong>篡改的过程中的请求参数没有出错。</strong></p>
-<p>然后再加上一个<code>And</code>的条件：正向特征、反向特征</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>正向特征:</p>
-</li>
-</ul>
-<p>先收集一些请求成功且有返回一定数据的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;msg&#x27;:&#x27;OK&#x27;, data:&#123;&quot;name&quot;:xxx, &quot;address&quot;:xxx&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>反向特征:</p>
-</li>
-</ul>
-<p>收集一些请求成功但是服务端有鉴权判定为越权的Response包</p>
-<p>例如Response的body里:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;你没有权限进行此操作&#x27;</span>, data:null&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;不可以越权操作&#x27;</span>, data:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;xxxxx&#x27;</span>, data:false&#125;</span><br></pre></td></tr></table></figure>
-<p>从正反两个方面去提取一些特征,作为判断是否有越权漏洞的标志。</p>
-<p>比如</p>
-<p>正向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;msg&#x27;</span>] == <span class="string">&#x27;OK&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>反向的就是 :</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> status_code =<span class="number">200</span> <span class="keyword">and</span> response[<span class="string">&#x27;data&#x27;</span>] <span class="keyword">is</span> <span class="keyword">not</span> null</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;vuln&quot;</span>)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>判断的效果 跟判断条件有很大的关系判断严了,容易漏 判断松了 容易误报那么我觉得比较好的判断原则是: 宁可误报,也不要漏</p>
+<p>在了解合约调用之前，我们需要知道调用合约的本质是什么?</p>
 </blockquote>
-<h2 id="大致流程图">大致流程图:</h2>
-<p><img src="https://i.loli.net/2019/12/30/uQoROD6WfMypPLl.jpg" alt="" /></p>
-<hr />
-<h1>效果图:</h1>
-<p><img src="https://i.loli.net/2019/12/29/16tzTDCNMK47uLl.jpg" alt="" /></p>
-<p>效果不是很理想,一开始以为可以找到更多处地方的越权漏洞,结果只能验证到原来手工能测出来的那个越权点。</p>
-<p>但是好处就是,你确定这个<code>vuln_parameter</code>在其他页面确实是没问题的。</p>
-<p>这个思路是大致ok的,之后再优化下,在别的系统上应该能有比较好的效果。</p>
-<hr />
-<h1>总结:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>半自动化流程:</p>
-</li>
-</ul>
+<p>在我们创建合约的时候，由<code>run</code>函数初始化的智能合约code<code>(Runtime bytecode)(ret)</code>储存在stateDB中。<br />
+也就是说在内存中并没有<code>Contract</code>这个对象，而只是存在智能合约<code>code</code>。</p>
+<blockquote>
+<p>那我们如何调用合约呢？</p>
+</blockquote>
+<p>本质上，调用合约实际上是</p>
 <ol>
 <li class="lvl-3">
-<p>手工测试找<code>vuln_parameter</code></p>
+<p>通过<code>StateDB.GetCode()</code>从合约账户中取出合约代码</p>
 </li>
 <li class="lvl-3">
-<p>以<code>vuln_parameter</code>做路由</p>
+<p><code>NewContract()</code>创建出一个临时的<code>contract</code>对象（如下数据结构）</p>
 </li>
 <li class="lvl-3">
-<p>确定payload</p>
+<p>执行<code>contract</code>对象的<code>SetCallCode()</code>或其他方法，确定智能合约的执行环境</p>
 </li>
 <li class="lvl-3">
-<p>篡改request包</p>
-</li>
-<li class="lvl-3">
-<p>发包,权衡判断条件</p>
+<p>执行<code>interpreter.run()</code>函数，返回执行后的代码</p>
 </li>
 </ol>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>这种情况下是只持有单用户的token,如果有两个用户的token和更多的数据包,判断效果会更好</p>
-</li>
-<li class="lvl-2">
-<p>只适用于平行越权,普通用户a越权查看普通用户b的信息,只能做查的操作,增删改的操作貌似做不到。</p>
-</li>
-<li class="lvl-2">
-<p>每换一个<code>vuln_parameter</code>就要修改一下脚本,可考虑修改的地方作为变量,但是因为<code>w13scan</code>架构的关系,暂时好像不支持插件中含有变量</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>SecurityTools</category>
-      </categories>
-      <tags>
-        <tag>SecurityTools</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</title>
-    <url>/2022/15749.html</url>
-    <content><![CDATA[<h1>Pre:</h1>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220720154820.png" alt="20220720154820" /><br />
-如图所示，在<code>TransitionDb()</code>函数中，执行交易前，会对交易的目的进行判断。</p>
-<figure class="highlight go"><figcaption><span>core/state_transition.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 0地址为创建合约，否则是交易或合约调用</span></span><br><span class="line">contractCreation = msg.To() == <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
-<p>如果交易的接收者为空，则代表此条交易的目的是要创建一条合约，随后调用 <code>evm.Create()</code> 执行相关的功能。<br />
-现在我们就来看看<code>evm.Create()</code>方法是如何实现合约的创建的。</p>
-<h1>创建合约 evm.Create:</h1>
-<p>首先看一看创建一个合约所需要的参数：</p>
-<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Create creates a new contract using code as deployment code.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> Create(caller ContractRef, code []<span class="type">byte</span>, gas <span class="type">uint64</span>, value *big.Int) (ret []<span class="type">byte</span>, contractAddr common.Address, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	contractAddr = crypto.CreateAddress(caller.Address(), evm.StateDB.GetNonce(caller.Address()))</span><br><span class="line">	<span class="keyword">return</span> evm.create(caller, &amp;codeAndHash&#123;code: code&#125;, gas, value, contractAddr, CREATE)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Contract对象的数据结构:</p>
+</blockquote>
+<p>一个 Contract 对象包含和维护了合约在执行过程中的必要信息，比如<code>合约创建者</code>、<code>合约自身地址</code>、<code>合约剩余 gas</code>、<code>合约代码</code>、<code>代码的 jumpdests 记录</code>。</p>
+<figure class="highlight go"><figcaption><span>core/vm/contract.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Contract represents an ethereum contract in the state database. It contains</span></span><br><span class="line"><span class="comment">// the contract code, calling arguments. Contract implements ContractRef</span></span><br><span class="line"><span class="comment">// 数据库中的以太坊智能合约，包括合约代码和调用参数</span></span><br><span class="line"><span class="keyword">type</span> Contract <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// CallerAddress is the result of the caller which initialised this</span></span><br><span class="line">	<span class="comment">// contract. However when the &quot;call method&quot; is delegated this value</span></span><br><span class="line">	<span class="comment">// needs to be initialised to that of the caller&#x27;s caller.</span></span><br><span class="line">	<span class="comment">// CallerAddress是初始化这个合约的人。 如果是delegate，这个值被设置为调用者的调用者。</span></span><br><span class="line">	CallerAddress common.Address</span><br><span class="line">	caller        ContractRef</span><br><span class="line">	self          ContractRef</span><br><span class="line"></span><br><span class="line">	<span class="comment">// JUMPDEST指令分析的结果</span></span><br><span class="line">	jumpdests <span class="keyword">map</span>[common.Hash]bitvec <span class="comment">// Aggregated result of JUMPDEST analysis.</span></span><br><span class="line">	analysis  bitvec                 <span class="comment">// Locally cached result of JUMPDEST analysis</span></span><br><span class="line">	</span><br><span class="line">	Code     []<span class="type">byte</span>  				<span class="comment">// 合约代码</span></span><br><span class="line">	CodeHash common.Hash 			<span class="comment">//代码的HASH</span></span><br><span class="line">	CodeAddr *common.Address 		<span class="comment">//代码地址 // 合约地址</span></span><br><span class="line">	Input    []<span class="type">byte</span> 				<span class="comment">// 入参</span></span><br><span class="line"></span><br><span class="line">	Gas   <span class="type">uint64</span> 					<span class="comment">// 合约还有多少Gas</span></span><br><span class="line">	value *big.Int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>知道了这个过程，我们再来看看 智能合约的调用或普通交易——<code>Call()</code>的具体实现。</p>
+<h1>evm.Call()的参数:</h1>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> Call(caller ContractRef, addr common.Address, input []<span class="type">byte</span>, gas <span class="type">uint64</span>, value *big.Int) (ret []<span class="type">byte</span>, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><code>caller</code>：转出方地址</p>
 </li>
 <li class="lvl-2">
-<p><code>code</code>：代码（input）</p>
+<p><code>addr</code>：转入方地址，如果是调用智能合约，那就是智能合约的地址</p>
+</li>
+<li class="lvl-2">
+<p><code>input</code>：调用函数的参数</p>
 </li>
 <li class="lvl-2">
 <p><code>gas</code>：当前交易的剩余gas</p>
@@ -13935,190 +14170,183 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
 <p><code>value</code>：转账额度</p>
 </li>
 </ul>
-<p><code>Create()</code>方法主要操作:</p>
+<h1>evm.Call()的实现:</h1>
+<p><code>evm.Call()</code>的主要功能是执行一笔交易，具体的步骤如下：</p>
 <ol>
 <li class="lvl-3">
-<p>首先对发送者地址（caller.Address）和账户的nonce进行<code>keccak256</code>计算得到合约地址</p>
+<p>交易执行前的检查：深度判断和余额状况；</p>
 </li>
 <li class="lvl-3">
-<p>然后将合约地址传入<code>create()</code>方法</p>
+<p>判断StateDB是否存在合约地址</p>
 </li>
 <li class="lvl-3">
-<p>调用是<code>evm.create()</code> 合约创建的真正函数。</p>
+<p>进行转账；</p>
+</li>
+<li class="lvl-3">
+<p>创建一个待执行的合约对象，并执行；</p>
+</li>
+<li class="lvl-3">
+<p>处理交易执行的返回值</p>
 </li>
 </ol>
-<p><code>create()</code>方法主要操作:</p>
-<ol>
-<li class="lvl-3">
-<p>交易执行前的检查</p>
-</li>
-<li class="lvl-3">
-<p>确保当前要创建的地址在世界状态中没有合约存在，如果存在，直接返回；</p>
-</li>
-<li class="lvl-3">
-<p>在<code>StateDB</code>创建一个新的合约账户，设置新账户为<code>nonce</code>为1；</p>
-</li>
-<li class="lvl-3">
-<p>给新合约账户进行转账</p>
-</li>
-<li class="lvl-3">
-<p>创建一个待执行的合约对象，并在解释器执行合约初始化字节码；</p>
-</li>
-<li class="lvl-3">
-<p>处理返回值,在<code>StateDB</code>存储合约的运行时字节码:</p>
-</li>
-</ol>
-<p>分几个部分看看<code>create()</code>方法的具体实现：</p>
-<h2 id="检查1-调用栈深度、用户余额：">检查1-调用栈深度、用户余额：</h2>
-<p>首先，在执行交易之前需要进行检查：</p>
-<ol>
-<li class="lvl-3">
-<p>深度判断</p>
-</li>
-<li class="lvl-3">
-<p>余额是否足够；</p>
-</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">   <span class="comment">// Depth check execution. Fail if we&#x27;re trying to execute above the</span></span><br><span class="line"><span class="comment">// limit.</span></span><br><span class="line"><span class="comment">// 执行深度检查，如果超出设定的深度限制  创建失败</span></span><br><span class="line"><span class="keyword">if</span> evm.depth &gt; <span class="type">int</span>(params.CallCreateDepth) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrDepth</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 账户余额不足，创建失败</span></span><br><span class="line"><span class="keyword">if</span> !evm.Context.CanTransfer(evm.StateDB, caller.Address(), value) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrInsufficientBalance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第一个 if 判断中的 <code>evm.depth</code> 记录者合约的递归调用次数。<br />
-在 solidity 语言中，允许在合约中通过 <code>new</code> 关键字创建新的合约对象，但这种「在合约中创建合约」的递归调用是有限制的，这也是这个 if 判断的意义。</p>
-<h2 id="检查2-是否有相同地址的合约">检查2-是否有相同地址的合约</h2>
-<p>然后，给交易发送者的账户<code>nonce</code>加1（普通转账时，是在外面加1的，即在<code>TransitionDb</code>中），<br />
-接着判断当前要创建的地址在是世界状态中没有合约存在，如果存在直接返回。</p>
-<p>需要注意的点：<br />
-由于用到了账户的 <code>Nonce</code> 值，所以同一份合约代码，每次创建合约时得到的合约地址都是不一样的（因为合约是通过发送交易创建，而每发送一次交易 <code>Nonce</code> 值都会改变）。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">nonce := evm.StateDB.GetNonce(caller.Address())</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> nonce+<span class="number">1</span> &lt; nonce &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, gas, ErrNonceUintOverflow</span><br><span class="line">	&#125;</span><br><span class="line">	evm.StateDB.SetNonce(caller.Address(), nonce+<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// We add this to the access list _before_ taking a snapshot. Even if the creation fails,</span></span><br><span class="line">	<span class="comment">// the access-list change should not be rolled back</span></span><br><span class="line">	<span class="keyword">if</span> evm.chainRules.IsBerlin &#123;</span><br><span class="line">		evm.StateDB.AddAddressToAccessList(address)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Ensure there&#x27;s no existing contract already at the designated address</span></span><br><span class="line">	<span class="comment">// 确保指定地址没有已存在的相同合约</span></span><br><span class="line">	contractHash := evm.StateDB.GetCodeHash(address)</span><br><span class="line">	<span class="keyword">if</span> evm.StateDB.GetNonce(address) != <span class="number">0</span> || (contractHash != (common.Hash&#123;&#125;) &amp;&amp; contractHash != emptyCodeHash) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, common.Address&#123;&#125;, <span class="number">0</span>, ErrContractAddressCollision</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="创建新的合约账户：">创建新的合约账户：</h2>
-<p>第三步，如果上面两个检查都没有问题，那么我们就可以创建新的合约账户了。<br />
-先用合约地址在状态数据库中创建一个合约账户，然后给合约账户设置<code>nonce</code>为1。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先对当前StateDB进行快照</span></span><br><span class="line">snapshot := evm.StateDB.Snapshot()</span><br><span class="line"><span class="comment">// 创建新合约并将合约的nonce设置为1</span></span><br><span class="line">evm.StateDB.CreateAccount(address)</span><br><span class="line"><span class="keyword">if</span> evm.ChainConfig().IsEIP158(evm.BlockNumber) &#123;</span><br><span class="line">    evm.StateDB.SetNonce(address, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="给新的合约账户转账：">给新的合约账户转账：</h2>
-<p>第四步是进行转账，将我们创建合约交易时的的以太币数值<code>value</code>转入智能合约账户。<br />
-转账的过程很简单，就是sender的账户减减（- -），合约账户加加（++）。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转账操作</span></span><br><span class="line">evm.Context.Transfer(evm.StateDB, caller.Address(), address, value)</span><br></pre></td></tr></table></figure>
-<h2 id="创建合约对象：">创建合约对象：</h2>
-<p>第五步是创建合约<code>Contract</code>对象，并执行。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Initialise a new contract and set the code that is to be used by the EVM.</span></span><br><span class="line"><span class="comment">// The contract is a scoped environment for this execution context only.</span></span><br><span class="line"><span class="comment">// 创建合约</span></span><br><span class="line">contract := NewContract(caller, AccountRef(address), value, gas)</span><br><span class="line"><span class="comment">// 设置合约字节码、包含构造函数部分</span></span><br><span class="line">contract.SetCodeOptionalHash(&amp;address, codeAndHash)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">  <span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureStart(evm, caller.Address(), address, <span class="literal">true</span>, codeAndHash.code, gas, value)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    evm.Config.Tracer.CaptureEnter(typ, caller.Address(), address, codeAndHash.code, gas, value)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start := time.Now()</span><br></pre></td></tr></table></figure>
-<p>使用caller地址 、合约地址、转账额和交易余额传入<code>NewContract()</code>方法。<br />
-然后执行<code>contract.SetCodeOptionalHash()</code>，将合约代码<code>code</code>（包含构造函数部分）设置到合约中：</p>
-<figure class="highlight go"><figcaption><span>core/vm/contract.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// SetCodeOptionalHash can be used to provide code, but it&#x27;s optional to provide hash.</span></span><br><span class="line"><span class="comment">// In case hash is not provided, the jumpdest analysis will not be saved to the parent context</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> SetCodeOptionalHash(addr *common.Address, codeAndHash *codeAndHash) &#123;</span><br><span class="line">	c.Code = codeAndHash.code</span><br><span class="line">	c.CodeHash = codeAndHash.hash</span><br><span class="line">	c.CodeAddr = addr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Contract对象">Contract对象:</h3>
-<p>看看<code>Contract</code>对象的数据结构:</p>
-<p>一个 Contract 对象包含和维护了合约在执行过程中的必要信息，比如</p>
+<h2 id="交易执行前的检查：">交易执行前的检查：</h2>
+<p>第一步,执行前检查:判断递归层次和合约调用者是否有足够的交易中约定的以太币。</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Fail if we&#x27;re trying to execute above the call depth limit</span></span><br><span class="line"><span class="comment">// 调用深度检查</span></span><br><span class="line"><span class="keyword">if</span> evm.depth &gt; <span class="type">int</span>(params.CallCreateDepth) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, gas, ErrDepth</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Fail if we&#x27;re trying to transfer more than the available balance</span></span><br><span class="line"><span class="comment">// 余额检查,如果不够直接退出</span></span><br><span class="line"><span class="keyword">if</span> value.Sign() != <span class="number">0</span> &amp;&amp; !evm.Context.CanTransfer(evm.StateDB, caller.Address(), value) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, gas, ErrInsufficientBalance</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="判断合约地址是否存在">判断合约地址是否存在:</h2>
+<p>第二步，是判断合约地址是否存在；<br />
+一般情况下，被调用的合约地址应该存在于<code>以太坊状态数据库</code>中，也就是说合约已经创建成功了。否则就返回失败。<br />
+但有一种例外，就是被调用的合约地址是<code>预先定义</code>的情况，此时即使地址不在状态数据库中，也要立即创建一个。</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// StateDB是否存在 合约地址</span></span><br><span class="line"><span class="keyword">if</span> !evm.StateDB.Exist(addr) &#123;</span><br><span class="line">	<span class="keyword">if</span> !isPrecompile &amp;&amp; evm.chainRules.IsEIP158 &amp;&amp; value.Sign() == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// Calling a non existing account, don&#x27;t do anything, but ping the tracer</span></span><br><span class="line">		<span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">			<span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">				evm.Config.Tracer.CaptureStart(evm, caller.Address(), addr, <span class="literal">false</span>, input, gas, value)</span><br><span class="line">				evm.Config.Tracer.CaptureEnd(ret, <span class="number">0</span>, <span class="number">0</span>, <span class="literal">nil</span>)</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				evm.Config.Tracer.CaptureEnter(CALL, caller.Address(), addr, input, gas, value)</span><br><span class="line">				evm.Config.Tracer.CaptureExit(ret, <span class="number">0</span>, <span class="literal">nil</span>)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, gas, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 创建账号</span></span><br><span class="line">	evm.StateDB.CreateAccount(addr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="转账">转账:</h2>
+<p>第三步进行转账。</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转账</span></span><br><span class="line">evm.Context.Transfer(evm.StateDB, caller.Address(), addr, value)</span><br></pre></td></tr></table></figure>
+<h2 id="创建合约对象-并执行">创建合约对象,并执行:</h2>
+<p>第四步 使用当前的信息创建一个待执行的合约对象，并执行。<br />
+其中 <code>StateDB.GetCode</code> 从状态数据库中获取合约的代码，填充到合约对象中。</p>
+<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> isPrecompile &#123;</span><br><span class="line">		ret, gas, err = RunPrecompiledContract(p, input, gas)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// Initialise a new contract and set the code that is to be used by the EVM.</span></span><br><span class="line">		<span class="comment">// The contract is a scoped environment for this execution context only.</span></span><br><span class="line">		<span class="comment">// 初始化新合同并设置EVM要使用的代码。</span></span><br><span class="line">		code := evm.StateDB.GetCode(addr)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(code) == <span class="number">0</span> &#123;</span><br><span class="line">			ret, err = <span class="literal">nil</span>, <span class="literal">nil</span> <span class="comment">// gas is unchanged</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			addrCopy := addr</span><br><span class="line">			<span class="comment">// If the account has no code, we can abort here</span></span><br><span class="line">			<span class="comment">// The depth-check is already done, and precompiles handled above</span></span><br><span class="line">			<span class="comment">// 如果账户没有代码，我们可以在此终止</span></span><br><span class="line">			<span class="comment">// 创建一个待执行的合约对象</span></span><br><span class="line">			contract := NewContract(caller, AccountRef(addrCopy), value, gas)</span><br><span class="line">			contract.SetCallCode(&amp;addrCopy, evm.StateDB.GetCodeHash(addrCopy), code)</span><br><span class="line">			<span class="comment">// 执行</span></span><br><span class="line">			ret, err = evm.interpreter.Run(contract, input, <span class="literal">false</span>)</span><br><span class="line">			gas = contract.Gas</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里与<code>create()</code>不同之处:</p>
+</blockquote>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p>合约创建者</p>
+<p>构建新<code>contract</code>对象的时候，<code>create()</code>调用了<code>SetCodeOptionalHash(&amp;address, codeAndHash)</code>，</p>
 </li>
 <li class="lvl-2">
-<p>合约自身地址</p>
+<p>而这里<code>Call()</code>调用的是<code>SetCallCode(&amp;addr, evm.StateDB.GetCodeHash(addr), evm.StateDB.GetCode(addr))</code>。</p>
 </li>
 <li class="lvl-2">
-<p>合约剩余 gas</p>
+<p><code>create()</code>中构建的contract对象中的Code是来自<code>原始transaction</code>中的<code>Payload</code>，</p>
 </li>
 <li class="lvl-2">
-<p>合约代码</p>
-</li>
-<li class="lvl-2">
-<p>代码的 jumpdests 记录</p>
+<p>而在<code>Call()</code>构建的contract对象中的Code则是<code>create()</code>中初始化智能合约即执行<code>run()</code>之后返回的<code>ret</code>，这两者在结构上是有区别的。</p>
 </li>
 </ul>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Contract represents an ethereum contract in the state database. It contains</span></span><br><span class="line"><span class="comment">// the contract code, calling arguments. Contract implements ContractRef</span></span><br><span class="line"><span class="comment">// 数据库中的以太坊智能合约，包括合约代码和调用参数</span></span><br><span class="line"><span class="keyword">type</span> Contract <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// CallerAddress is the result of the caller which initialised this</span></span><br><span class="line">	<span class="comment">// contract. However when the &quot;call method&quot; is delegated this value</span></span><br><span class="line">	<span class="comment">// needs to be initialised to that of the caller&#x27;s caller.</span></span><br><span class="line">	<span class="comment">// CallerAddress是初始化这个合约的人。 如果是delegate，这个值被设置为调用者的调用者。</span></span><br><span class="line">	CallerAddress common.Address</span><br><span class="line">	caller        ContractRef</span><br><span class="line">	self          ContractRef</span><br><span class="line"></span><br><span class="line">	<span class="comment">// JUMPDEST指令分析的结果</span></span><br><span class="line">	jumpdests <span class="keyword">map</span>[common.Hash]bitvec <span class="comment">// Aggregated result of JUMPDEST analysis.</span></span><br><span class="line">	analysis  bitvec                 <span class="comment">// Locally cached result of JUMPDEST analysis</span></span><br><span class="line">	</span><br><span class="line">	Code     []<span class="type">byte</span>  				<span class="comment">// 合约代码</span></span><br><span class="line">	CodeHash common.Hash 			<span class="comment">//代码的HASH</span></span><br><span class="line">	CodeAddr *common.Address 		<span class="comment">//代码地址 // 合约地址</span></span><br><span class="line">	Input    []<span class="type">byte</span> 				<span class="comment">// 入参</span></span><br><span class="line"></span><br><span class="line">	Gas   <span class="type">uint64</span> 					<span class="comment">// 合约还有多少Gas</span></span><br><span class="line">	value *big.Int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="解释器执行合约初始化代码">解释器执行合约初始化代码:</h2>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约的初始化</span></span><br><span class="line">ret, err := evm.interpreter.Run(contract, <span class="literal">nil</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
-<p><code>run()</code>函数将<code>contract</code>交给了evm解释器，返回<code>interpreter.Run（contract, input, readOnly）</code>的执行结果。<br />
-此时合约对象中存储的字节码是Deployment Bytecode(部署字节码)，包含了:</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>用户实际交易调用这个新合约时需要执行的字节码(即运行时字节码)</p>
-</li>
-<li class="lvl-2">
-<p>合约的构造函数中进行初始化处理的代码</p>
-</li>
-</ul>
-<p>至于<code>interpreter</code>如何执行合约，另post文分析。</p>
-<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行合约代码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in *EVMInterpreter)</span></span> Run(contract *Contract, input []<span class="type">byte</span>, readOnly <span class="type">bool</span>) (ret []<span class="type">byte</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="StateDB存储合约的运行时字节码">StateDB存储合约的运行时字节码:</h2>
-<p>第六步，处理<code>interpreter.Run</code>返回值<br />
-<code>interpreter.Run</code>函数的两个返回值分别是<code>ret(运行时字节码)</code>和<code>err</code></p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>约定合约代码最大长度为24576，检查代码长度不超过24576</p>
-</li>
-<li class="lvl-2">
-<p>如果执行没有报错：</p>
-<ul class="lvl-2">
-<li class="lvl-4">计算本次合约创建消耗的gas，每字节200gas, 扣除gas</li>
-<li class="lvl-4">在StateDB存储合约的<code>Runtime bytecode</code>运行时字节码,</li>
-</ul>
-</li>
-<li class="lvl-2">
-<p>如果报错：</p>
-<ul class="lvl-2">
-<li class="lvl-4">恢复之前的快照</li>
-<li class="lvl-4">如果不是<code>revert</code>指令导致的错误，要扣除所有的gas</li>
-</ul>
-</li>
-</ul>
-<p><code>evm.Create()</code>最后返回 合约代码、合约地址、gas余额和错误</p>
-<figure class="highlight go"><figcaption><span>core/vm/evm.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">// Check whether the max code size has been exceeded, assign err if the case.</span></span><br><span class="line"><span class="comment">// 检查初始化生成的代码长度是否超过限制,约定合约代码最大长度为24576</span></span><br><span class="line"><span class="comment">// 如果执行没有错且代码长度不超过24576</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; evm.chainRules.IsEIP158 &amp;&amp; <span class="built_in">len</span>(ret) &gt; params.MaxCodeSize &#123;</span><br><span class="line">	err = ErrMaxCodeSizeExceeded</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reject code starting with 0xEF if EIP-3541 is enabled.</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &amp;&amp; <span class="built_in">len</span>(ret) &gt;= <span class="number">1</span> &amp;&amp; ret[<span class="number">0</span>] == <span class="number">0xEF</span> &amp;&amp; evm.chainRules.IsLondon &#123;</span><br><span class="line">	err = ErrInvalidCode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// if the contract creation ran successfully and no errors were returned</span></span><br><span class="line"><span class="comment">// calculate the gas required to store the code. If the code could not</span></span><br><span class="line"><span class="comment">// be stored due to not enough gas set an error and let it be handled</span></span><br><span class="line"><span class="comment">// by the error checking condition below.</span></span><br><span class="line"><span class="comment">// 合约创建成功</span></span><br><span class="line"><span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="comment">// 计算本次合约创建消耗的gas，每字节200gas</span></span><br><span class="line">	createDataGas := <span class="type">uint64</span>(<span class="built_in">len</span>(ret)) * params.CreateDataGas</span><br><span class="line">	<span class="comment">// 如果交易gas余额足够，则成功部署合约，将合约代码设置到账户储存中</span></span><br><span class="line">	<span class="keyword">if</span> contract.UseGas(createDataGas) &#123;</span><br><span class="line">		evm.StateDB.SetCode(address, ret) <span class="comment">// !!!!!!! 注意点1</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;     <span class="comment">// 否则返回余额不足</span></span><br><span class="line">		<span class="comment">// 当前拥有的Gas不足以存储代码</span></span><br><span class="line">		err = ErrCodeStoreOutOfGas</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// When an error was returned by the EVM or when setting the creation code</span></span><br><span class="line"><span class="comment">// above we revert to the snapshot and consume any gas remaining. Additionally</span></span><br><span class="line"><span class="comment">// when we&#x27;re in homestead this also counts for code storage gas errors.</span></span><br><span class="line"><span class="comment">// 如果代码长度受限或执行错误,合约创建失败，借助上面创建的快照快速回滚</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &amp;&amp; (evm.chainRules.IsHomestead || err != ErrCodeStoreOutOfGas) &#123;</span><br><span class="line">	<span class="comment">// 恢复之前的快照</span></span><br><span class="line">	evm.StateDB.RevertToSnapshot(snapshot)</span><br><span class="line">	<span class="comment">// 如果不是revert指令导致的错误，要扣除所有的gas</span></span><br><span class="line">	<span class="keyword">if</span> err != ErrExecutionReverted &#123;</span><br><span class="line">		contract.UseGas(contract.Gas)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> evm.Config.Debug &#123;</span><br><span class="line">	<span class="keyword">if</span> evm.depth == <span class="number">0</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureEnd(ret, gas-contract.Gas, time.Since(start), err)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		evm.Config.Tracer.CaptureExit(ret, gas-contract.Gas, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 最后返回合约代码、合约地址、gas余额和错误</span></span><br><span class="line"><span class="keyword">return</span> ret, address, contract.Gas, err</span><br></pre></td></tr></table></figure>
-<h3 id="注意点1：">注意点1：</h3>
-<p>为什么存储的合约代码是合约运行后的返回码，而不是原来交易中的数据（即 <code>Transaction.data.Payload</code>，或者说 <code>EVM.Create</code> 方法的 <code>code</code> 参数）?</p>
-<p>这是因为合约源代码在编译成二进制数据时，<strong>除了合约原有的代码外，编译器还另外插入了一些代码</strong>，以便执行相关的功能。<br />
-对于创建来说，编译器插入了执行合约「构造函数」（即合约对象的 <code>constructor</code> 方法）的代码。<br />
-<strong>因此在将编译器编译后的二进制提交以太坊节点创建合约时，EVM 执行这段二进制代码，实际上主要执行了合约的 <code>constructor</code> 方法</strong>，然后将合约的其它字节码返回，所以才会有这里的 <code>ret</code> 变量<strong>作为合约的真正代码存储到状态数据库中</strong>。</p>
-<p>也就是说，创建合约交易的初始字节码可分成3个部分:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220724114632.png" alt="20220724114632" /></p>
+<blockquote>
+<p>没看到哪里调用合约代码呀？只不过是使用 <code>StateDB.GetCode</code> 获取合约代码，然后使用 <code>input</code> 中的数据作为参数，调用解释器运行合约代码而已哪里有调用合约 public 方法的影子？</p>
+</blockquote>
+<p>这里确实与创建合约时类似，没有「调用」的影子。<br />
+还记得前面我们介绍合约创建时，提到过<code>合约编译器</code>在编译时，会插入一些代码吗？<br />
+在介绍合约创建时，我们只介绍了编译器插入的创建合约的代码，解释器执行这些代码，就可以将合约的真正代码返回。<br />
+类似的，<code>编译器</code>还会插入一些调用合约的代码，只要使用正确的参数执行这些代码，就可以「调用」到我们想调用的合约的 public 方法。</p>
+<p>想要了解这整个机制，我们需要先介绍一下「函数选择器」这个概念。</p>
+<blockquote>
+<p>什么是「函数选择器」?</p>
+</blockquote>
+<p>简单来说，就是合约的 public 方法的声明字符串的 Keccak-256 哈希的前 4 个字节。<br />
+「函数选择器」告诉了以太坊虚拟机我们想要调用合约的哪个方法，它和参数数据一起，被编码到了交易的 <code>data</code> 数据中。</p>
+<blockquote>
+<p>但我们刚才通过对合约调用的分析，并没有发现有涉及到解析「函数选择器」的地方呀？</p>
+</blockquote>
+<p>这是因为 <strong>「函数选择器」和参数的解析功能并不是由以太坊虚拟机的 go 代码码完成的，而是由<code>合约编译器</code>在编译时插入的代码完成了</strong>。</p>
+<h1>合约调用的方法:</h1>
+<p>EVM 对象实现合约的调用，有下面几种方法：</p>
 <ol>
 <li class="lvl-3">
-<p>Deployment Bytecode(部署字节码) ：</p>
-<ul class="lvl-2">
-<li class="lvl-6">执行初始化新合约账户的所有操作</li>
-<li class="lvl-6">包含 <code>Runtime bytecode</code></li>
-<li class="lvl-6">包含 构造函数的字节码</li>
-<li class="lvl-6">并不存储在<code>StateDB</code></li>
-</ul>
+<p>evm.Call()</p>
 </li>
 <li class="lvl-3">
-<p>Runtime bytecode(运行时字节码)：</p>
-<ul class="lvl-2">
-<li class="lvl-6">合约本身的代码</li>
-<li class="lvl-6">当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</li>
-<li class="lvl-6">存储在<code>StateDB</code></li>
-</ul>
+<p>evm.CallCode()</p>
 </li>
 <li class="lvl-3">
-<p>Auxdata</p>
+<p>evm.DelegateCall()</p>
+</li>
+<li class="lvl-3">
+<p>evm.StaticCall()</p>
 </li>
 </ol>
-<h3 id="注意点2：">注意点2：</h3>
-<p>值得注意的是，如果代码执行错误是<code>revert</code>错误，则不会收取<code>gas</code>，否则<code>gas</code>会被扣除。</p>
-<p>那么这个<code>revert</code>是什么？<br />
-revert是evm中的一条指令，在我们高级编程语言（solidity）中有<code>require</code>和<code>revert</code>这两个判断。<br />
-如果<code>require</code>和<code>revert</code>判断错误，那么就会返回一个<code>revert</code>指令错误，此时就不会收取<code>gas</code>。<br />
-这也就是为什么solidity中<code>require</code>和<code>revert</code>执行不会扣除gas的原因。<br />
-当然，这个方法是在拜占庭分叉后出现的。</p>
-<h1>Summary:</h1>
-<p>最后，一张图看看智能合约创建的过程：</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220722155925.png" alt="20220722155925" /></p>
-<p><code>interpreter.Run()</code>返回的是<code>Runtime bytecode(运行时字节码)</code>：当新合约被调用时所执行的所有字节码，不包含需要在部署中用来初始化合约的字节码。</p>
+<p>后面三个的调用方式都是与 <code>evm.Call()</code> 比较产生的差异。</p>
+<h2 id="CallCode-和DelegateCall">CallCode()和DelegateCall():</h2>
+<p>首先需要了解的是，<strong><code>evm.CallCode</code> 和 <code>evm.DelegateCall</code> 的存在是为了实现合约的「库」的特性</strong>。</p>
+<p>我们知道编程语言都有自己的库，比如 go 的标准库，C++ 的 STL 或 boost。<br />
+作为合约的编写语言，solidity 也想有自己的库。<br />
+但与普通语言的实现不同，solidity 写出来的代码要想作为库被调用，<strong>必须和普通合约一样，布署到区块链上取得一个固定的地址，其它合约才能调用这个「库合约」提供的方法。</strong></p>
+<p><strong>但合约又涉及到一些特有的属性，比如<code>合约的调用者</code>、<code>自身地址</code>、<code>自身所拥有的以太币的数量</code>等。</strong></p>
+<p>如果我们直接去调用「库合约」的代码，用到这些属性时必然是「库合约」自己的属性，但这可能不是我们想要的。<br />
+例如，设想一个「库合约」的方法实现了一个这样的操作：从自已账户中给指定账户转一笔钱。<br />
+如果这里的「自己账户」指的是「库合约」的账户，那肯定是不现实的（因为没有人会出钱布署一个有很多以太币的合约，并且让别人把这些币转走）。</p>
+<p>此时 <code>evm.DelegateCall</code> 就派上用场了。<br />
+这个调用方式将「库合约」的调用者，设置成自己的调用者；将「库合约」的地址，设置成自己的地址（但代码还是「库合约」的代码）。<br />
+如此一来，「库合约」的属性，就完全和自己的属性一样了，「库合约」的代码就像是自己的写的代码一样。</p>
+<p>例如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>A 账户调用了 B 合约</p>
+</li>
+<li class="lvl-2">
+<p>而在 B 合约中通过 <code>DelegateCall</code> 调用了 C 合约</p>
+</li>
+<li class="lvl-2">
+<p>那么 C 合约的调用者将被修改成 A</p>
+</li>
+<li class="lvl-2">
+<p>C 合约的地址将被修改成 B 合约的地址。</p>
+</li>
+</ul>
+<p>所以在刚才用来转账的「库合约」的例子中，「自己账户」指的不再是「库合约」的账户了，而是调用「库合约」的账户，转账也就可以按我们想要的方式进行了。</p>
+<p><code>CallCode</code> 与 <code>DelegateCall</code> 类似，不同的是 <code>CallCode</code> 不改变「库合约」的调用者，只是改变「库合约」的合约地址。<br />
+也就是说，如果 A 通过 <code>CallCode</code> 的方式调用 B，那么 B 的调用者是 A，而 B 的账户地址也被改成了 A。</p>
+<p>总结一下就是，<code>CallCode</code> 和 <code>DelegateCall</code> <strong>修改了被调用合约的上下文环境，可以让被调用的合约代码就像自己写的代码一样，从而达到「库合约」的目的</strong>。<br />
+具体来说，<code>DelegateCall</code> 会修改被调用合约的调用者和合约本身的地址，而 <code>CallCode</code> 只会修改被调用合约的本身的地址。</p>
+<p>了解了这两个方法的目的和功能，我们来看看代码中它们是如何实现各自的功能的。<br />
+对于 <code>evm.CallCode</code> 来说，它通过下面展示的几行代码来修改被调用合约的地址：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> CallCode(caller ContractRef, addr common.Address, input []<span class="type">byte</span>, gas <span class="type">uint64</span>, value *big.Int) (ret []<span class="type">byte</span>, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	... </span><br><span class="line">	contract := NewContract(caller, AccountRef(caller.Address()), value, gas) <span class="comment">// !!!</span></span><br><span class="line">	contract.SetCallCode(&amp;addrCopy, evm.StateDB.GetCodeHash(addrCopy), evm.StateDB.GetCode(addrCopy))</span><br><span class="line">	ret, err = evm.interpreter.Run(contract, input, <span class="literal">false</span>)</span><br><span class="line">	gas = contract.Gas</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，在利用现有数据生成一个合约对象时，将合约对象的地址 <code>to</code> 变量设置成调用者，也就是 <code>caller</code> 的地址。<br />
+对于 <code>evm.DelegateCall</code> 来说，它是通过下面几行代码修改被调用合约的调用者和自身地址的：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> DelegateCall(caller ContractRef, addr common.Address, input []<span class="type">byte</span>, gas <span class="type">uint64</span>) (ret []<span class="type">byte</span>, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// to 变量设置为caller 的地址</span></span><br><span class="line">	contract := NewContract(caller, AccountRef(caller.Address()), <span class="literal">nil</span>, gas).AsDelegate()</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> AsDelegate() *Contract &#123;</span><br><span class="line">	<span class="comment">// <span class="doctag">NOTE:</span> caller must, at all times be a contract. It should never happen</span></span><br><span class="line">	<span class="comment">// that caller is something other than a Contract.</span></span><br><span class="line">	parent := c.caller.(*Contract)</span><br><span class="line">	c.CallerAddress = parent.CallerAddress</span><br><span class="line">	c.value = parent.value</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> c</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里首先也是通过将 to 变量设置成调用者，也就是 caller 的地址，达到修改被调用合约的自身地址的目的。<br />
+被调用合约的调用者是通过 <code>Contract.AsDelegate</code> 修改的。<br />
+这个方法里，将合约的调用者地址 <code>CallerAddress</code> 设置成目前调用者的 <code>CallerAddress</code>，也即 当前调用者的调用者的地址（有些绕，仔细看一下就能明白）。</p>
+<h2 id="三种调用方法的比较">三种调用方法的比较:</h2>
+<h3 id="Call">Call():</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">to = AccountRef(addr)</span><br><span class="line">contract := NewContract(caller, to, value, gas)</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 假设有外部账户A，合约账户B和合约账户C</span></span><br><span class="line">A Call B ——&gt; ContractB</span><br><span class="line">CallerAddress: A</span><br><span class="line">Caller:        A</span><br><span class="line">self:          B</span><br><span class="line"> </span><br><span class="line">B Call C ——&gt; ContractC</span><br><span class="line">CallerAddress: B</span><br><span class="line">Caller:        B</span><br><span class="line">self:          C</span><br></pre></td></tr></table></figure>
+<h3 id="CallCode">CallCode():</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">to = AccountRef(caller.Address())</span><br><span class="line">contract := NewContract(caller, to, value, gas)</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 假设有外部账户A，合约账户B和合约账户C</span></span><br><span class="line">A Call B ——&gt; ContractB</span><br><span class="line">CallerAddress: A</span><br><span class="line">Caller:        A</span><br><span class="line">self:          B</span><br><span class="line"> </span><br><span class="line">B Callcode C ——&gt; ContractC</span><br><span class="line">CallerAddress: B</span><br><span class="line">Caller:        B</span><br><span class="line">self:          B</span><br></pre></td></tr></table></figure>
+<h3 id="delegateCall">delegateCall():</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">to = AccountRef(caller.Address())</span><br><span class="line">contract := NewContract(caller, to, <span class="literal">nil</span>, gas).AsDelegate()</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Contract)</span></span> AsDelegate() *Contract &#123;</span><br><span class="line">	parent := c.caller.(*Contract)</span><br><span class="line">	c.CallerAddress = parent.CallerAddress</span><br><span class="line">	c.value = parent.value</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> c</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 假设有外部账户A，合约账户B和合约账户C</span></span><br><span class="line">A Call B ——&gt; ContractB</span><br><span class="line">CallerAddress: A</span><br><span class="line">Caller:        A</span><br><span class="line">self:          B</span><br><span class="line"> </span><br><span class="line">B DelegateCall C ——&gt; ContractC</span><br><span class="line">CallerAddress: A</span><br><span class="line">Caller:        B</span><br><span class="line">self:          B</span><br></pre></td></tr></table></figure>
+<p>从代码上看，这三者的主要区别就是这一点，主要就是在contract对象中的<code>callerAddress</code>、<code>caller</code>和<code>self</code>这三个的值不同。</p>
+<p>如果外部账户A的某个操作通过<code>Call</code>方法调用B合约，而B合约又通过<code>Call</code>方法调用了C合约，那么最后实际上修改的是合约C账户的值；<br />
+如果外部账户A的某个操作通过<code>Call</code>方法调用B合约，而B合约通过<code>CallCode</code>方法调用了C合约，那么B只是调用了C中的函数代码，而最终改变的还是合约B账户的值。</p>
+<p><code>DelegateCall</code>其实跟CallCode方法的目的类似，都是只调用指定地址（合约C）的代码，而操作B的值。<br />
+<strong>只不过它明确了CallerAddress是来自A，而不是B。</strong></p>
+<p>所以这两种方法都可以用来实现动态库：即你调用我的函数和方法改动的都是你自己的数据。</p>
+<h2 id="连环调用">连环调用:</h2>
+<p>我们说过智能合约EVM的递归调用深度为1024，也就是指通过一个合约调用另一个合约，像这样的调用可以递归1024次。</p>
+<p>为什么说是“递归”？因为从一个智能合约调用另一个智能合约，比如通过<code>Call()</code>方法，都要重新构建<code>contract</code>实例，然后执行<code>run()</code>。<br />
+而<code>run()</code>的执行是通过<code>EVMinterpreter.Run()</code>进行的。而在<code>EVMInterpreter</code>结构体中又传入了<code>*EVM</code>的地址，然后执行了<code>evm.depth++</code>。<br />
+<strong>所以实际上每一次调用都是在同一个EVM内进行的。</strong></p>
+<h2 id="StaticCall">StaticCall():</h2>
+<p><code>evm.StaticCall</code> 与 <code>evm.Call</code> 类似，唯一不同的是 <strong><code>StaticCall</code> 不允许执行会修改永久存储的数据的指令</strong>。<br />
+如果执行过程中遇到这样的指令，就会失败。</p>
+<blockquote>
+<p><code>StaticCall</code> 是如何实现拒绝执行会修改永久存储数据的指令的呢？</p>
+</blockquote>
+<p><code>StaticCall</code>调用解释器执行时，会传入<code>readOnly</code>为<code>true</code></p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(evm *EVM)</span></span> StaticCall(caller ContractRef, addr common.Address, input []<span class="type">byte</span>, gas <span class="type">uint64</span>) (ret []<span class="type">byte</span>, leftOverGas <span class="type">uint64</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	contract := NewContract(caller, AccountRef(addrCopy), <span class="built_in">new</span>(big.Int), gas)</span><br><span class="line">	contract.SetCallCode(&amp;addrCopy, evm.StateDB.GetCodeHash(addrCopy), evm.StateDB.GetCode(addrCopy))</span><br><span class="line">	<span class="comment">// run 函数的最后一个参数 readOnly 为 true</span></span><br><span class="line">	ret, err = evm.interpreter.Run(contract, input, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在解释器的 <code>EVMInterpreter.Run</code> 方法中,会记录<code>readOnly</code>参数</p>
+<figure class="highlight go"><figcaption><span>core/vm/interpreter.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(in *EVMInterpreter)</span></span> Run(contract *Contract, input []<span class="type">byte</span>, readOnly <span class="type">bool</span>) (ret []<span class="type">byte</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Make sure the readOnly is only set if we aren&#x27;t in readOnly yet.</span></span><br><span class="line">	<span class="comment">// This also makes sure that the readOnly flag isn&#x27;t removed for child calls.</span></span><br><span class="line">	<span class="comment">// 将readOnly设置为true</span></span><br><span class="line">	<span class="keyword">if</span> readOnly &amp;&amp; !in.readOnly &#123;</span><br><span class="line">		in.readOnly = <span class="literal">true</span></span><br><span class="line">		<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; in.readOnly = <span class="literal">false</span> &#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解释器的执行过程中：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>根据<code>pc</code>取指令</p>
+</li>
+<li class="lvl-2">
+<p>根据指令从<code>JumpTable</code>中获得操作码</p>
+</li>
+<li class="lvl-2">
+<p>在<code>instructions.go</code>中，找到执行操作码的具体实现函数，对堆栈进行操作</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220724225445.png" alt="20220724225445" /></p>
+<p>在部分操作码(<code>opSstore</code>、<code>opCreate</code>、<code>opCreate2</code>、<code>opCall</code>、<code>opSelfdestruct</code>)对应的实现函数中，会对<code>readOnly</code>参数进行检查</p>
+<figure class="highlight go"><figcaption><span>core/vm/instructions.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">opSstore</span><span class="params">(pc *<span class="type">uint64</span>, interpreter *EVMInterpreter, scope *ScopeContext)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> interpreter.readOnly &#123;   <span class="comment">// 检查只读</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, ErrWriteProtection</span><br><span class="line">	&#125;</span><br><span class="line">	loc := scope.Stack.pop()</span><br><span class="line">	val := scope.Stack.pop()</span><br><span class="line">	interpreter.evm.StateDB.SetState(scope.Contract.Address(),</span><br><span class="line">		loc.Bytes32(), val.Bytes32())</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><a href="https://github.com/chaors/Ethereum_read">go-ethereum-read：以太坊源码注释</a></p>
+<p><a href="https://blog.csdn.net/lj900911/article/details/84929280">以太坊源码解读（20）通过EVM执行转账或合约调用——Call（）</a></p>
 </li>
 <li class="lvl-2">
-<p><a href="https://github.com/jerrychan807/go-ethereum/blob/master/core/vm/evm.go">https://github.com/jerrychan807/go-ethereum/blob/master/core/vm/evm.go</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://willzhuang.github.io/2019/03/20/evm%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">https://willzhuang.github.io/2019/03/20/evm之源码分析/</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="http://yangzhe.me/2019/08/12/ethereum-evm/#%E5%88%9B%E5%BB%BA-evm">http://yangzhe.me/2019/08/12/ethereum-evm/#创建-evm</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.md">https://github.com/Billy1900/Ethereum-tutorial/blob/master/core-vm源码分析.md</a></p>
-</li>
-<li class="lvl-2">
-<p><a href="https://blog.csdn.net/lj900911/article/details/84888688">以太坊源码解读（18）以太坊交易的执行基本流程——将交易递交给EVM</a></p>
+<p><a href="http://yangzhe.me/2019/08/12/ethereum-evm/#%E8%B0%83%E7%94%A8%E5%90%88%E7%BA%A6">http://yangzhe.me/2019/08/12/ethereum-evm/#调用合约</a></p>
 </li>
 </ul>
 ]]></content>
