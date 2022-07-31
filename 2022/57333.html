@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: Go Blockchain Tutorial Part 2: Proof of Work 学习记录 共识机制: 我们常说区块链是一个分布式系统，系统中每个节点都有机会储存数据信息构造一个区块然后追加到区块链尾部。 这里就存在一个问题，  那就是当区块链系统中有多个节点都想将自己的区块追加到区块链时，我们该怎么办？  我们将这些等待添加的区块统称为候选区块，显然我们不能对候选区块全盘照收，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/57333.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: Go Blockchain Tutorial Part 2: Proof of Work 学习记录 共识机制: 我们常说区块链是一个分布式系统，系统中每个节点都有机会储存数据信息构造一个区块然后追加到区块链尾部。 这里就存在一个问题，  那就是当区块链系统中有多个节点都想将自己的区块追加到区块链时，我们该怎么办？  我们将这些等待添加的区块统称为候选区块，显然我们不能对候选区块全盘照收，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-31T04:00:34.000Z">
+<meta property="article:modified_time" content="2022-07-31T12:47:07.672Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="StudyRecord">
+<meta property="article:tag" content="BlockChain">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/57333.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/57333.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-07-31 12:00:34 / Modified: 20:47:07" itemprop="dateCreated datePublished" datetime="2022-07-31T12:00:34+08:00">2022-07-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p><a target="_blank" rel="noopener" href="https://www.krad.top/goblockchain02/">Go Blockchain Tutorial Part 2: Proof of Work</a> 学习记录</p>
+<h1>共识机制:</h1>
+<p>我们常说区块链是一个分布式系统，<strong>系统中每个节点都有机会储存数据信息构造一个区块然后追加到区块链尾部</strong>。<br />
+这里就存在一个问题，</p>
+<blockquote>
+<p>那就是当区块链系统中有多个节点都想将自己的区块追加到区块链时，我们该怎么办？</p>
+</blockquote>
+<p>我们将这些等待添加的区块统称为<code>候选区块</code>，显然我们不能对<code>候选区块</code>全盘照收，否则区块链就不再是一条链而是不同分叉成区块树。</p>
+<blockquote>
+<p>那么我们如何确定一种方法来从<code>候选区块</code>中选择一个加入到区块链中了？</p>
+</blockquote>
+<p>这里就需要用到区块链的<code>共识机制</code>，后文将以比特币使用的最经典<code>PoW共识机制</code>进行讲解。</p>
+<p>共识机制说的通俗明白一点就是要在相对公平的条件下让想要添加区块进区块链的节点内卷，通过<code>竞争</code>选择出一个大家公认的节点添加它的区块进入区块链。<br />
+整个共识机制被分为两部分，首先是<code>竞争</code>，然后是<code>共识</code>。</p>
+<p>中本聪在比特币中设计了如下的一个Game来实现竞争：每个节点去寻找一个随机值（也就是<code>nonce</code>），将这个随机值作为候选区块的头部信息属性之一，要求候选区块对自身信息（注意这里是包含了<code>nonce</code>的）进行哈希后表示为数值要小于一个难度目标值（也就是Target），最先寻找到<code>nonce</code>的节点即为卷王，可以将自己的候选区块发布并添加到区块链尾部。<br />
+这个Game设计的非常巧妙</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>首先每个节点要寻找到的<code>nonce</code>只对自己<code>候选区块</code>有效，防止了其它节点同学抄答案</p>
+</li>
+<li class="lvl-2">
+<p>其次，<strong>nonce的寻找是完全随机的没有技巧</strong>，寻找到<code>nonce</code>的时间与目标难度值与节点本身计算性能有关，但不妨碍性能较差的节点也有机会获胜；</p>
+</li>
+<li class="lvl-2">
+<p>最后寻找<code>nonce</code>可能耗费大量时间与资源，但是验证卷王是否真的找到了nonce却非常却能够很快完成并几乎不需要耗费资源，这个寻找到的nonce可以说就是卷王真的是卷王的证据。</p>
+</li>
+</ul>
+<p>现在我们就来实现这个Game。<br />
+Find Nonce Game~</p>
+<h2 id="代码实现：">代码实现：</h2>
+<figure class="highlight go"><figcaption><span>proofofwork.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> blockchain</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;bytes&quot;</span></span><br><span class="line">	<span class="string">&quot;crypto/sha256&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">	<span class="string">&quot;math/big&quot;</span></span><br><span class="line">	<span class="string">&quot;my-blockchain/constcoe&quot;</span></span><br><span class="line">	<span class="string">&quot;my-blockchain/utils&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回目标难度值的函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> GetTarget() []<span class="type">byte</span> &#123;</span><br><span class="line">	target := big.NewInt(<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// Lsh函数就是向左移位，移的越多目标难度值越大，</span></span><br><span class="line">	<span class="comment">// 哈希取值落在的空间就更多, 就越容易找到符合条件的nonce。</span></span><br><span class="line">	target.Lsh(target, <span class="type">uint</span>(<span class="number">256</span>-constcoe.Difficulty))</span><br><span class="line">	<span class="keyword">return</span> target.Bytes()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每次我们输入一个nonce对应的区块的哈希值都会改变</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> GetBase4Nonce(nonce <span class="type">int64</span>) []<span class="type">byte</span> &#123;</span><br><span class="line">	data := bytes.Join([][]<span class="type">byte</span>&#123;</span><br><span class="line">		utils.ToHexInt(b.Timestamp),</span><br><span class="line">		b.PrevHash,</span><br><span class="line">		utils.ToHexInt(<span class="type">int64</span>(nonce)),</span><br><span class="line">		b.Target,</span><br><span class="line">		b.Data,</span><br><span class="line">	&#125;, []<span class="type">byte</span>&#123;&#125;,</span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> FindNonce() <span class="type">int64</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> intHash big.Int</span><br><span class="line">	<span class="keyword">var</span> intTarget big.Int</span><br><span class="line">	<span class="keyword">var</span> hash [<span class="number">32</span>]<span class="type">byte</span></span><br><span class="line">	<span class="keyword">var</span> nonce <span class="type">int64</span></span><br><span class="line">	nonce = <span class="number">0</span></span><br><span class="line">	intTarget.SetBytes(b.Target)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> nonce &lt; math.MaxInt64 &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;=======================\n&quot;</span>)</span><br><span class="line">		fmt.Println(<span class="string">&quot;Start Find the Right Nonce&quot;</span>)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;nonce: %d\n&quot;</span>, nonce)</span><br><span class="line">		data := b.GetBase4Nonce(nonce)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;data: %x\n&quot;</span>, data)</span><br><span class="line">		hash = sha256.Sum256(data)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;hash: %x\n&quot;</span>, hash)</span><br><span class="line">		intHash.SetBytes(hash[:])</span><br><span class="line">		fmt.Printf(<span class="string">&quot;intHash: %x\n&quot;</span>, &amp;intHash)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;intTarget: %x\n&quot;</span>, &amp;intTarget)</span><br><span class="line">		<span class="comment">// Cmp compares x and y and returns:</span></span><br><span class="line">		<span class="comment">//   -1 if x &lt;  y</span></span><br><span class="line">		<span class="comment">//    0 if x == y</span></span><br><span class="line">		<span class="comment">//   +1 if x &gt;  y</span></span><br><span class="line">		<span class="keyword">if</span> intHash.Cmp(&amp;intTarget) == <span class="number">-1</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">// 每次失败nonce就加1</span></span><br><span class="line">			<span class="comment">// 直到由当前nonce得到的区块哈希转化为数值 小于 目标难度值为止。</span></span><br><span class="line">			nonce++</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nonce</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> ValidatePow() <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> intHash big.Int</span><br><span class="line">	<span class="keyword">var</span> intTarget big.Int</span><br><span class="line">	<span class="keyword">var</span> hash [<span class="number">32</span>]<span class="type">byte</span></span><br><span class="line">	intTarget.SetBytes(b.Target)</span><br><span class="line">	data := b.GetBase4Nonce(b.Nonce) <span class="comment">// 由当前nonce得到的区块哈希</span></span><br><span class="line">	hash = sha256.Sum256(data)</span><br><span class="line">	intHash.SetBytes(hash[:])</span><br><span class="line">	<span class="keyword">if</span> intHash.Cmp(&amp;intTarget) == <span class="number">-1</span> &#123; <span class="comment">// 区块哈希转化为数值小于目标难度值</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试不同难度值">测试不同难度值:</h2>
+<p>尝试将全局变量<code>Difficulty</code>改大来增加难度值，然后观察一下各个区块的<code>nonce</code>、<code>timestamp</code>的变化。</p>
+<p>Difficulty = 12</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">符合条件 intHash &lt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 3483</span><br><span class="line"><span class="built_in">hash</span>:      000dc411eb3f27a11d820658c7a465357aaa92ff662448b8cd0ae561829877ac</span><br><span class="line">intHash:   dc411eb3f27a11d820658c7a465357aaa92ff662448b8cd0ae561829877ac</span><br><span class="line">intTarget: 10000000000000000000000000000000000000000000000000000000000000</span><br><span class="line"></span><br><span class="line">不符条件 intHash &gt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 3482</span><br><span class="line"><span class="built_in">hash</span>:      86916242d284f85cd3355af5b81a704f6e52b9fb69271ab5d5ff78fab894ce66</span><br><span class="line">intHash:   86916242d284f85cd3355af5b81a704f6e52b9fb69271ab5d5ff78fab894ce66</span><br><span class="line">intTarget: 10000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>Difficulty = 15</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">符合条件 intHash &lt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 33547</span><br><span class="line"><span class="built_in">hash</span>:      00017e89620ddef6de217ed066611b7aad51668c15f1df021cb51d4a2b9832d0</span><br><span class="line">intHash:   17e89620ddef6de217ed066611b7aad51668c15f1df021cb51d4a2b9832d0</span><br><span class="line">intTarget: 2000000000000000000000000000000000000000000000000000000000000</span><br><span class="line"></span><br><span class="line">不符条件 intHash &gt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 33546</span><br><span class="line"><span class="built_in">hash</span>:      4fd58060f8f54d4b9e98bab58f449b26f7297bc278ae946fce9ec0a15e4aa0cb</span><br><span class="line">intHash:   4fd58060f8f54d4b9e98bab58f449b26f7297bc278ae946fce9ec0a15e4aa0cb</span><br><span class="line">intTarget: 2000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>统计结果如下：难度值越高，<code>intTarget</code>长度越短，找出符合条件的<code>nonce</code>的尝试次数越多。</p>
+<table>
+<thead>
+<tr>
+<th>难度值</th>
+<th>Hash ByteLength</th>
+<th>intTarget值</th>
+<th>intTarget ByteLength</th>
+<th>尝试次数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12</td>
+<td>64</td>
+<td>10000000000000000000000000000000000000000000000000000000000000</td>
+<td>62</td>
+<td>3483</td>
+</tr>
+<tr>
+<td>15</td>
+<td>64</td>
+<td>2000000000000000000000000000000000000000000000000000000000000</td>
+<td>61</td>
+<td>33547</td>
+</tr>
+<tr>
+<td>30</td>
+<td>64</td>
+<td>400000000000000000000000000000000000000000000000000000000</td>
+<td>57</td>
+<td>未测</td>
+</tr>
+</tbody>
+</table>
+<h1>参考一：简化的工作量证明算法</h1>
+<p>参考一下<a target="_blank" rel="noopener" href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch10.md">《MasteringBitcoin》</a>里的简化的工作量证明算法。</p>
+<p>挖矿的目标是找到一个随机数的值<code>nonce</code>，使区块头的哈希值小于难度目标<code>target</code>。<br />
+在找到合适的随机值前，挖矿节点可能需要尝试数十亿，或数万亿次。</p>
+<p>简单地说，挖矿是重复散列区块头的过程，不断更改参数，直到生成的哈希值与特定目标相匹配。<br />
+散列函数的结果不能预先确定，也不能创建产生特定哈希值的模式。<br />
+散列函数的这种特性意味着产生匹配特定目标的散列结果的唯一方法是反复尝试，随机修改输入，直到偶然出现所需的结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># Proof-of-Work 算法示例</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    long        <span class="comment"># Python 2</span></span><br><span class="line">    xrange</span><br><span class="line"><span class="keyword">except</span> NameError:</span><br><span class="line">    long = <span class="built_in">int</span>  <span class="comment"># Python 3</span></span><br><span class="line">    xrange = <span class="built_in">range</span></span><br><span class="line"></span><br><span class="line">max_nonce = <span class="number">2</span> ** <span class="number">32</span>  <span class="comment"># 40亿</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">proof_of_work</span>(<span class="params">header, difficulty_bits</span>):</span><br><span class="line">    <span class="comment"># 计算难度目标</span></span><br><span class="line">    target = <span class="number">2</span> ** (<span class="number">256</span> - difficulty_bits)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> nonce <span class="keyword">in</span> xrange(max_nonce):</span><br><span class="line">        hash_result = hashlib.sha256(<span class="built_in">str</span>(header) + <span class="built_in">str</span>(nonce)).hexdigest()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查是否是目标值以下的有效结果</span></span><br><span class="line">        <span class="keyword">if</span> long(hash_result, <span class="number">16</span>) &lt; target:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Success with nonce %d&quot;</span> % nonce)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Hash is %s&quot;</span> % hash_result)</span><br><span class="line">            <span class="keyword">return</span> (hash_result, nonce)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Failed after %d (max_nonce) tries&quot;</span> % nonce)</span><br><span class="line">    <span class="keyword">return</span> nonce</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    nonce = <span class="number">0</span></span><br><span class="line">    hash_result = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 难度从0到31位</span></span><br><span class="line">    <span class="keyword">for</span> difficulty_bits <span class="keyword">in</span> xrange(<span class="number">32</span>):</span><br><span class="line">        difficulty = <span class="number">2</span> ** difficulty_bits</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Difficulty: %ld (%d bits)&quot;</span> % (difficulty, difficulty_bits))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Starting search...&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 当前时间</span></span><br><span class="line">        start_time = time.time()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 创建一个包含前一个块的散列的新块</span></span><br><span class="line">        <span class="comment"># 我们伪造一个交易块 —— 只是一个字符串。</span></span><br><span class="line">        new_block = <span class="string">&#x27;test block with transactions&#x27;</span> + hash_result</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 为新块找到一个有效的nonce</span></span><br><span class="line">        (hash_result, nonce) = proof_of_work(new_block, difficulty_bits)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 记录需要多长时间才能找到结果</span></span><br><span class="line">        end_time = time.time()</span><br><span class="line"></span><br><span class="line">        elapsed_time = end_time - start_time</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Elapsed Time: %.4f seconds&quot;</span> % elapsed_time)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> elapsed_time &gt; <span class="number">0</span>:</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 估计每秒的散列计算次数</span></span><br><span class="line">            hash_power = <span class="built_in">float</span>(long(nonce) / elapsed_time)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Hashing Power: %ld hashes per second&quot;</span> % hash_power)</span><br></pre></td></tr></table></figure>
+<p>nonce自增,会不断去计算出符合条件的hash值，类似暴力破解</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hash_result is 1f3fe9dcf01e80b10e2adb650ac8fa0d843566b67f1109e9db6017bbde6d6651</span><br><span class="line">hash_result is 5fdceb40e2c82558588a67c55f2c074f68a5e5d9d18db20aef6adc930f4220ce</span><br><span class="line">hash_result is c59e7922f6e6701898c4392fa1ac5bc351bb0c16dae0d8793beab5bac9de688c</span><br><span class="line">hash_result is a7717e95f3d912771573ca305aabaa983081642edb1f55fc55d30eae1e2edfac</span><br><span class="line">hash_result is efafc1b283dc674b288c7afcfa58cb36927e067f7bc23f5c4de361531ecd55ee</span><br><span class="line">hash_result is b7663a2c3e43f68478670fb7e60fec7330c6c457f648b03bf4bb451f21a4e8db</span><br><span class="line">hash_result is 014bbc2e4bc516ab57543a053f0e320021410e6f2e1791ca01bebd914f3bfecf</span><br><span class="line">hash_result is 6dd4ab421f060e6f4b968964e7d2ea85825c2138e73719f574a7edc00b705078</span><br><span class="line">hash_result is 7cadff34a0d0fc0a5fd0e12eaed399be025d90eae75968bc67c19b6e70a34697</span><br></pre></td></tr></table></figure>
+<p>长度的判断条件则是将hash值前面的0去掉。换言之，难度目标影响了 符合条件的hash值的前置零的个数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查是否是目标值以下的有效结果</span></span><br><span class="line"><span class="keyword">if</span> long(hash_result, <span class="number">16</span>) &lt; target:</span><br><span class="line"><span class="comment"># 示例:     00000006dc70d218bafb37c31f3166e49b1b0d28f3fea500431ecb22e954c99e </span></span><br><span class="line"><span class="comment">#           =》</span></span><br><span class="line"><span class="comment">#          6dc70d218bafb37c31f3166e49b1b0d28f3fea500431ecb22e954c99e</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line">============================</span><br><span class="line">Difficulty: 2097152 (21 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 687438</span><br><span class="line">Hash is   000003a6eeee97491a9183e4c57458172edb6f9466377bf44afbd74e410f6eef</span><br><span class="line">target is 55213970774324510299478046898216203619608871777363092441300193790394368</span><br><span class="line">Elapsed Time: 1.3613 seconds</span><br><span class="line">Hashing Power: 504976 hashes per second</span><br><span class="line">============================</span><br><span class="line">Difficulty: 4194304 (22 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 1759164</span><br><span class="line">Hash is   0000008bb8f0e731f0496b8e530da984e85fb3cd2bd81882fe8ba3610b6cefc3</span><br><span class="line">target is 27606985387162255149739023449108101809804435888681546220650096895197184</span><br><span class="line">Elapsed Time: 3.5224 seconds</span><br><span class="line">Hashing Power: 499417 hashes per second</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">============================</span><br><span class="line">Difficulty: 268435456 (28 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 139905000</span><br><span class="line">Hash is   0000000e4da88b53f70b2c5fc142500f0633e6407a4793462c54e6e704a687f3</span><br><span class="line">target is 431359146674410236714672241392314090778194310760649159697657763987456</span><br><span class="line">Elapsed Time: 289.7721 seconds</span><br><span class="line">Hashing Power: 482810 hashes per second</span><br></pre></td></tr></table></figure>
+<p>从输出结果来看，难度越大，<code>target</code>越短，符合条件的hash值的前置零的个数 需要得越多</p>
+<table>
+<thead>
+<tr>
+<th>Difficulty</th>
+<th>正确hash的前置0个数</th>
+<th>耗费时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21</td>
+<td>5</td>
+<td>1.3613 seconds</td>
+</tr>
+<tr>
+<td>22</td>
+<td>6</td>
+<td>3.5224 seconds</td>
+</tr>
+<tr>
+<td>28</td>
+<td>7</td>
+<td>289.7721 seconds</td>
+</tr>
+</tbody>
+</table>
+<p>继续看书中的例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line"></span><br><span class="line">Difficulty: 67108864 (26 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 84561291</span><br><span class="line">Hash is 0000001f0ea21e676b6dde5ad429b9d131a9f2b000802ab2f169cbca22b1e21a</span><br><span class="line">Elapsed Time: 665.0949 seconds</span><br><span class="line">Hashing Power: 127141 hashes per second</span><br></pre></td></tr></table></figure>
+<p>可以看出，随着难度位一位一位地增加，查找正确结果的时间会加倍增长。<br />
+如果考虑整个256bit数字空间，每次要求多一个0，就把哈希查找空间缩减了一半。<br />
+在什么的输出中，为寻找一个随机数使得哈希值开头的26位值为0，一共尝试了8千多万次。<br />
+即使笔记本电脑每秒可以达120,000多次哈希计算，找到结果依然需要10分钟。</p>
+<p>在写这本书的时候，比特币网络要寻找区块头信息哈希值小于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000029AB9000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>可以看出，这个难度目标开头的0多了很多。这意味着可接受的哈希值范围大幅缩减，因而找到正确的哈希值更加困难。<br />
+网络平均每秒要花费超过1.8个zeta次哈希（千亿个哈希）才能发现下一个区块。<br />
+这似乎是一项不可能完成的任务，但幸运的是，网络每秒有3exa次哈希（EH/sec）的处理能力，平均10分钟左右就能找到一个区块。</p>
+<h1>参考二:</h1>
+<h2 id="何谓工作量证明">何谓工作量证明:</h2>
+<p>网路上的节点可以简单地透过工作量证明，快速验证彼此是否拥有记帐权。就像是我们求学时期所发的毕业证书，大学四年熬夜苦读、凿壁偷光就是为了获得那张毕业证书，求职时，面试官透过那张毕业证书，快速验证你大学的成果。<br />
+上述例子中，你的毕业证书就是你的「工作量证明」。</p>
+<h2 id="以比特币为例介绍PoW">以比特币为例介绍PoW:</h2>
+<p>每10~15分钟比特币网路上全体矿工会互相竞争，运用大量的运算能力去解一道复杂的数学题的答案，这个答案是一个<code>随机数</code>，可以想像题目大概长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hash｛（前一个区块的Hash 值）,（当前区块的交易资讯）,（随机数）｝＝当前区块的Hash 值</span><br></pre></td></tr></table></figure>
+<p>矿工必须找出一串数字，代入上述公式，让当前区块的Hash 值开头为18 个0 ，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000001583447dd74c13c09280a9218827244089adadaba8c8c9</span><br></pre></td></tr></table></figure>
+<p>解答的过程没有轨迹可循，矿工只能不断代入<code>随机数</code>，透过暴力的解法找出答案。</p>
+<h2 id="挖矿难度">挖矿难度:</h2>
+<p>最先解开的人就能获得下一个区块的记帐权并获得比特币作为奖励。<br />
+比特币固定10~15 分钟出块一次，但是如果节点越来越多、全网算力增加，会缩短算出答案的时间。<br />
+因此，比特币协议每2016 个区块会调整一次挖矿难度，大约两个礼拜调整一次。<br />
+挖矿难度提高时，就必须找出有更多个0 的当前区块Hash 值，例如从原先的18 个0 增加到19 个0，难度降低时则相反。</p>
+<h2 id="算力低的矿机没机会得到记帐权？">算力低的矿机没机会得到记帐权？</h2>
+<p>必须强调的是，挖矿的过程其实像是掷一颗20 面的骰子，谁先骰到&lt; 2 的数字谁就能获得计帐权.<br />
+换句话说，矿机的硬体运算能力再强大，也只能提高获得计帐权的机率（骰骰子手速比较快），算力差的矿工不代表没有机会。</p>
+<p>很多人都认为，如果以后超级电脑普及，工作量证明不就没用了吗？<br />
+其实工作量证明数学题的难度相当高，因此取得记帐权的机会就像抽奖一样，即便某人拥有超级电脑，也只能够提高机率。<br />
+这就像在湖里丢一枚硬币，让一万个人去找这枚硬币，就算你是奥运游泳选手，也未必能第一个找到这枚硬币，只能提高找到的机率。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.krad.top/goblockchain02/">Go Blockchain Tutorial Part 2: Proof of Work</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://know.zombit.info/pow/">工作量證明 PoW (Proof of Work)－算力挖礦</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch10.md">《MasteringBitcoin》</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/xitu/gold-miner/blob/master/TODO/proof-of-work-vs-proof-of-stake.md">工作量证明 vs 权益证明：基本挖矿指南</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/15749.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/283.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/283.html" rel="prev" title="StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()">
+      <i class="fa fa-chevron-left"></i> StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">共识机制:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">代码实现：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%8D%E5%90%8C%E9%9A%BE%E5%BA%A6%E5%80%BC"><span class="nav-number">2.2.</span> <span class="nav-text">测试不同难度值:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">参考一：简化的工作量证明算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">参考二:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%95%E8%B0%93%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8E"><span class="nav-number">4.1.</span> <span class="nav-text">何谓工作量证明:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E6%AF%94%E7%89%B9%E5%B8%81%E4%B8%BA%E4%BE%8B%E4%BB%8B%E7%BB%8DPoW"><span class="nav-number">4.2.</span> <span class="nav-text">以比特币为例介绍PoW:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%96%E7%9F%BF%E9%9A%BE%E5%BA%A6"><span class="nav-number">4.3.</span> <span class="nav-text">挖矿难度:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E5%8A%9B%E4%BD%8E%E7%9A%84%E7%9F%BF%E6%9C%BA%E6%B2%A1%E6%9C%BA%E4%BC%9A%E5%BE%97%E5%88%B0%E8%AE%B0%E5%B8%90%E6%9D%83%EF%BC%9F"><span class="nav-number">4.4.</span> <span class="nav-text">算力低的矿机没机会得到记帐权？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">595k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -7250,6 +7250,11 @@ Solidity optimizes for storage efficiency by packing two smaller data types into
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在hardhat网络</span></span><br><span class="line">yarn hardhat deploy</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">部署在配置文件对应的测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet deploy</span><br></pre></td></tr></table></figure>
 <h2 id="测试：">测试：</h2>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script,hardhat环境</span></span><br><span class="line">yarn hardhat test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试整个<span class="built_in">test</span>文件夹里的script,指定测试网</span></span><br><span class="line">yarn hardhat --network bsc_testnet test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">测试单个script</span></span><br><span class="line">yarn hardhat --network bsc_testnet test test/transfer.ts</span><br></pre></td></tr></table></figure>
+<h2 id="fork主网">fork主网:</h2>
+<p><a href="https://chainlist.org/chain/56">chainlist</a>里找一个rpc链接<br />
+hardhat.config.ts加上配置</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="attr">networks</span>: &#123;</span><br><span class="line">        <span class="attr">hardhat</span>: &#123;</span><br><span class="line">            <span class="attr">mining</span>: &#123;</span><br><span class="line">                <span class="attr">auto</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="attr">interval</span>: <span class="number">1000</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">forking</span>: &#123;</span><br><span class="line">            <span class="attr">url</span>: <span class="string">&quot;https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3&quot;</span>,</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这个命令会将当前最新的一个区块数据 fork 到本地，也就是说现在本地 node 链中存在的就是这个区块的数据。</span></span><br><span class="line">npx hardhat node --fork https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3 </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">也可以指定区块号进行 fork</span></span><br><span class="line">npx hardhat node --fork https://bsc-mainnet.nodereal.io/v1/64a9df0874fb4a93b9d0a3849de012d3 --fork-block-number 19906400</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">单元测试在本地 node 中执行，需要指定网络localhost</span></span><br><span class="line">yarn hardhat --network localhost test test/PancakeSyrupPoolStrategy.test.ts</span><br></pre></td></tr></table></figure>
 <h2 id="验证合约源码：">验证合约源码：</h2>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">example:合约源代码、部署网络、合约的地址</span></span><br><span class="line">yarn hardhat verify --contract contracts/JToken.sol:JToken --network bsc_testnet 0x582cA468bcE2a68D1147D5411814256E52590103</span><br></pre></td></tr></table></figure>
 <h1>Summary:</h1>
@@ -7283,6 +7288,9 @@ Solidity optimizes for storage efficiency by packing two smaller data types into
 </li>
 <li class="lvl-2">
 <p><a href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://mirror.xyz/xyyme.eth/Z2qjTJJtaQHcwLc-9yHOGpXbeE7RHGdm5EafGjq7qhw">Hardhat fork 简明使用教程</a></p>
 </li>
 </ul>
 ]]></content>
@@ -8691,6 +8699,7 @@ EVM 对象内部主要依赖三个对象：</p>
       <tags>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
       </tags>
   </entry>
   <entry>
@@ -8824,6 +8833,7 @@ EVM 对象内部主要依赖三个对象：</p>
       <tags>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
       </tags>
   </entry>
   <entry>
@@ -8955,6 +8965,7 @@ EVM 对象内部主要依赖三个对象：</p>
       <tags>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
       </tags>
   </entry>
   <entry>
@@ -9164,6 +9175,7 @@ revert是evm中的一条指令，在我们高级编程语言（solidity）中有
       <tags>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
       </tags>
   </entry>
   <entry>
@@ -14356,6 +14368,179 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
       <tags>
         <tag>SmartContract</tag>
         <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork</title>
+    <url>/2022/57333.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p><a href="https://www.krad.top/goblockchain02/">Go Blockchain Tutorial Part 2: Proof of Work</a> 学习记录</p>
+<h1>共识机制:</h1>
+<p>我们常说区块链是一个分布式系统，<strong>系统中每个节点都有机会储存数据信息构造一个区块然后追加到区块链尾部</strong>。<br />
+这里就存在一个问题，</p>
+<blockquote>
+<p>那就是当区块链系统中有多个节点都想将自己的区块追加到区块链时，我们该怎么办？</p>
+</blockquote>
+<p>我们将这些等待添加的区块统称为<code>候选区块</code>，显然我们不能对<code>候选区块</code>全盘照收，否则区块链就不再是一条链而是不同分叉成区块树。</p>
+<blockquote>
+<p>那么我们如何确定一种方法来从<code>候选区块</code>中选择一个加入到区块链中了？</p>
+</blockquote>
+<p>这里就需要用到区块链的<code>共识机制</code>，后文将以比特币使用的最经典<code>PoW共识机制</code>进行讲解。</p>
+<p>共识机制说的通俗明白一点就是要在相对公平的条件下让想要添加区块进区块链的节点内卷，通过<code>竞争</code>选择出一个大家公认的节点添加它的区块进入区块链。<br />
+整个共识机制被分为两部分，首先是<code>竞争</code>，然后是<code>共识</code>。</p>
+<p>中本聪在比特币中设计了如下的一个Game来实现竞争：每个节点去寻找一个随机值（也就是<code>nonce</code>），将这个随机值作为候选区块的头部信息属性之一，要求候选区块对自身信息（注意这里是包含了<code>nonce</code>的）进行哈希后表示为数值要小于一个难度目标值（也就是Target），最先寻找到<code>nonce</code>的节点即为卷王，可以将自己的候选区块发布并添加到区块链尾部。<br />
+这个Game设计的非常巧妙</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>首先每个节点要寻找到的<code>nonce</code>只对自己<code>候选区块</code>有效，防止了其它节点同学抄答案</p>
+</li>
+<li class="lvl-2">
+<p>其次，<strong>nonce的寻找是完全随机的没有技巧</strong>，寻找到<code>nonce</code>的时间与目标难度值与节点本身计算性能有关，但不妨碍性能较差的节点也有机会获胜；</p>
+</li>
+<li class="lvl-2">
+<p>最后寻找<code>nonce</code>可能耗费大量时间与资源，但是验证卷王是否真的找到了nonce却非常却能够很快完成并几乎不需要耗费资源，这个寻找到的nonce可以说就是卷王真的是卷王的证据。</p>
+</li>
+</ul>
+<p>现在我们就来实现这个Game。<br />
+Find Nonce Game~</p>
+<h2 id="代码实现：">代码实现：</h2>
+<figure class="highlight go"><figcaption><span>proofofwork.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> blockchain</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;bytes&quot;</span></span><br><span class="line">	<span class="string">&quot;crypto/sha256&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">	<span class="string">&quot;math/big&quot;</span></span><br><span class="line">	<span class="string">&quot;my-blockchain/constcoe&quot;</span></span><br><span class="line">	<span class="string">&quot;my-blockchain/utils&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回目标难度值的函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> GetTarget() []<span class="type">byte</span> &#123;</span><br><span class="line">	target := big.NewInt(<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// Lsh函数就是向左移位，移的越多目标难度值越大，</span></span><br><span class="line">	<span class="comment">// 哈希取值落在的空间就更多, 就越容易找到符合条件的nonce。</span></span><br><span class="line">	target.Lsh(target, <span class="type">uint</span>(<span class="number">256</span>-constcoe.Difficulty))</span><br><span class="line">	<span class="keyword">return</span> target.Bytes()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每次我们输入一个nonce对应的区块的哈希值都会改变</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> GetBase4Nonce(nonce <span class="type">int64</span>) []<span class="type">byte</span> &#123;</span><br><span class="line">	data := bytes.Join([][]<span class="type">byte</span>&#123;</span><br><span class="line">		utils.ToHexInt(b.Timestamp),</span><br><span class="line">		b.PrevHash,</span><br><span class="line">		utils.ToHexInt(<span class="type">int64</span>(nonce)),</span><br><span class="line">		b.Target,</span><br><span class="line">		b.Data,</span><br><span class="line">	&#125;, []<span class="type">byte</span>&#123;&#125;,</span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> FindNonce() <span class="type">int64</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> intHash big.Int</span><br><span class="line">	<span class="keyword">var</span> intTarget big.Int</span><br><span class="line">	<span class="keyword">var</span> hash [<span class="number">32</span>]<span class="type">byte</span></span><br><span class="line">	<span class="keyword">var</span> nonce <span class="type">int64</span></span><br><span class="line">	nonce = <span class="number">0</span></span><br><span class="line">	intTarget.SetBytes(b.Target)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> nonce &lt; math.MaxInt64 &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;=======================\n&quot;</span>)</span><br><span class="line">		fmt.Println(<span class="string">&quot;Start Find the Right Nonce&quot;</span>)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;nonce: %d\n&quot;</span>, nonce)</span><br><span class="line">		data := b.GetBase4Nonce(nonce)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;data: %x\n&quot;</span>, data)</span><br><span class="line">		hash = sha256.Sum256(data)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;hash: %x\n&quot;</span>, hash)</span><br><span class="line">		intHash.SetBytes(hash[:])</span><br><span class="line">		fmt.Printf(<span class="string">&quot;intHash: %x\n&quot;</span>, &amp;intHash)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;intTarget: %x\n&quot;</span>, &amp;intTarget)</span><br><span class="line">		<span class="comment">// Cmp compares x and y and returns:</span></span><br><span class="line">		<span class="comment">//   -1 if x &lt;  y</span></span><br><span class="line">		<span class="comment">//    0 if x == y</span></span><br><span class="line">		<span class="comment">//   +1 if x &gt;  y</span></span><br><span class="line">		<span class="keyword">if</span> intHash.Cmp(&amp;intTarget) == <span class="number">-1</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">// 每次失败nonce就加1</span></span><br><span class="line">			<span class="comment">// 直到由当前nonce得到的区块哈希转化为数值 小于 目标难度值为止。</span></span><br><span class="line">			nonce++</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> nonce</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Block)</span></span> ValidatePow() <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> intHash big.Int</span><br><span class="line">	<span class="keyword">var</span> intTarget big.Int</span><br><span class="line">	<span class="keyword">var</span> hash [<span class="number">32</span>]<span class="type">byte</span></span><br><span class="line">	intTarget.SetBytes(b.Target)</span><br><span class="line">	data := b.GetBase4Nonce(b.Nonce) <span class="comment">// 由当前nonce得到的区块哈希</span></span><br><span class="line">	hash = sha256.Sum256(data)</span><br><span class="line">	intHash.SetBytes(hash[:])</span><br><span class="line">	<span class="keyword">if</span> intHash.Cmp(&amp;intTarget) == <span class="number">-1</span> &#123; <span class="comment">// 区块哈希转化为数值小于目标难度值</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试不同难度值">测试不同难度值:</h2>
+<p>尝试将全局变量<code>Difficulty</code>改大来增加难度值，然后观察一下各个区块的<code>nonce</code>、<code>timestamp</code>的变化。</p>
+<p>Difficulty = 12</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">符合条件 intHash &lt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 3483</span><br><span class="line"><span class="built_in">hash</span>:      000dc411eb3f27a11d820658c7a465357aaa92ff662448b8cd0ae561829877ac</span><br><span class="line">intHash:   dc411eb3f27a11d820658c7a465357aaa92ff662448b8cd0ae561829877ac</span><br><span class="line">intTarget: 10000000000000000000000000000000000000000000000000000000000000</span><br><span class="line"></span><br><span class="line">不符条件 intHash &gt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 3482</span><br><span class="line"><span class="built_in">hash</span>:      86916242d284f85cd3355af5b81a704f6e52b9fb69271ab5d5ff78fab894ce66</span><br><span class="line">intHash:   86916242d284f85cd3355af5b81a704f6e52b9fb69271ab5d5ff78fab894ce66</span><br><span class="line">intTarget: 10000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>Difficulty = 15</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">符合条件 intHash &lt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 33547</span><br><span class="line"><span class="built_in">hash</span>:      00017e89620ddef6de217ed066611b7aad51668c15f1df021cb51d4a2b9832d0</span><br><span class="line">intHash:   17e89620ddef6de217ed066611b7aad51668c15f1df021cb51d4a2b9832d0</span><br><span class="line">intTarget: 2000000000000000000000000000000000000000000000000000000000000</span><br><span class="line"></span><br><span class="line">不符条件 intHash &gt; intTarget：</span><br><span class="line"></span><br><span class="line">Start Find the Right Nonce</span><br><span class="line">nonce: 33546</span><br><span class="line"><span class="built_in">hash</span>:      4fd58060f8f54d4b9e98bab58f449b26f7297bc278ae946fce9ec0a15e4aa0cb</span><br><span class="line">intHash:   4fd58060f8f54d4b9e98bab58f449b26f7297bc278ae946fce9ec0a15e4aa0cb</span><br><span class="line">intTarget: 2000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>统计结果如下：难度值越高，<code>intTarget</code>长度越短，找出符合条件的<code>nonce</code>的尝试次数越多。</p>
+<table>
+<thead>
+<tr>
+<th>难度值</th>
+<th>Hash ByteLength</th>
+<th>intTarget值</th>
+<th>intTarget ByteLength</th>
+<th>尝试次数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12</td>
+<td>64</td>
+<td>10000000000000000000000000000000000000000000000000000000000000</td>
+<td>62</td>
+<td>3483</td>
+</tr>
+<tr>
+<td>15</td>
+<td>64</td>
+<td>2000000000000000000000000000000000000000000000000000000000000</td>
+<td>61</td>
+<td>33547</td>
+</tr>
+<tr>
+<td>30</td>
+<td>64</td>
+<td>400000000000000000000000000000000000000000000000000000000</td>
+<td>57</td>
+<td>未测</td>
+</tr>
+</tbody>
+</table>
+<h1>参考一：简化的工作量证明算法</h1>
+<p>参考一下<a href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch10.md">《MasteringBitcoin》</a>里的简化的工作量证明算法。</p>
+<p>挖矿的目标是找到一个随机数的值<code>nonce</code>，使区块头的哈希值小于难度目标<code>target</code>。<br />
+在找到合适的随机值前，挖矿节点可能需要尝试数十亿，或数万亿次。</p>
+<p>简单地说，挖矿是重复散列区块头的过程，不断更改参数，直到生成的哈希值与特定目标相匹配。<br />
+散列函数的结果不能预先确定，也不能创建产生特定哈希值的模式。<br />
+散列函数的这种特性意味着产生匹配特定目标的散列结果的唯一方法是反复尝试，随机修改输入，直到偶然出现所需的结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># Proof-of-Work 算法示例</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    long        <span class="comment"># Python 2</span></span><br><span class="line">    xrange</span><br><span class="line"><span class="keyword">except</span> NameError:</span><br><span class="line">    long = <span class="built_in">int</span>  <span class="comment"># Python 3</span></span><br><span class="line">    xrange = <span class="built_in">range</span></span><br><span class="line"></span><br><span class="line">max_nonce = <span class="number">2</span> ** <span class="number">32</span>  <span class="comment"># 40亿</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">proof_of_work</span>(<span class="params">header, difficulty_bits</span>):</span><br><span class="line">    <span class="comment"># 计算难度目标</span></span><br><span class="line">    target = <span class="number">2</span> ** (<span class="number">256</span> - difficulty_bits)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> nonce <span class="keyword">in</span> xrange(max_nonce):</span><br><span class="line">        hash_result = hashlib.sha256(<span class="built_in">str</span>(header) + <span class="built_in">str</span>(nonce)).hexdigest()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查是否是目标值以下的有效结果</span></span><br><span class="line">        <span class="keyword">if</span> long(hash_result, <span class="number">16</span>) &lt; target:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Success with nonce %d&quot;</span> % nonce)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Hash is %s&quot;</span> % hash_result)</span><br><span class="line">            <span class="keyword">return</span> (hash_result, nonce)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Failed after %d (max_nonce) tries&quot;</span> % nonce)</span><br><span class="line">    <span class="keyword">return</span> nonce</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    nonce = <span class="number">0</span></span><br><span class="line">    hash_result = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 难度从0到31位</span></span><br><span class="line">    <span class="keyword">for</span> difficulty_bits <span class="keyword">in</span> xrange(<span class="number">32</span>):</span><br><span class="line">        difficulty = <span class="number">2</span> ** difficulty_bits</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Difficulty: %ld (%d bits)&quot;</span> % (difficulty, difficulty_bits))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Starting search...&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 当前时间</span></span><br><span class="line">        start_time = time.time()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 创建一个包含前一个块的散列的新块</span></span><br><span class="line">        <span class="comment"># 我们伪造一个交易块 —— 只是一个字符串。</span></span><br><span class="line">        new_block = <span class="string">&#x27;test block with transactions&#x27;</span> + hash_result</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 为新块找到一个有效的nonce</span></span><br><span class="line">        (hash_result, nonce) = proof_of_work(new_block, difficulty_bits)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 记录需要多长时间才能找到结果</span></span><br><span class="line">        end_time = time.time()</span><br><span class="line"></span><br><span class="line">        elapsed_time = end_time - start_time</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Elapsed Time: %.4f seconds&quot;</span> % elapsed_time)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> elapsed_time &gt; <span class="number">0</span>:</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 估计每秒的散列计算次数</span></span><br><span class="line">            hash_power = <span class="built_in">float</span>(long(nonce) / elapsed_time)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Hashing Power: %ld hashes per second&quot;</span> % hash_power)</span><br></pre></td></tr></table></figure>
+<p>nonce自增,会不断去计算出符合条件的hash值，类似暴力破解</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hash_result is 1f3fe9dcf01e80b10e2adb650ac8fa0d843566b67f1109e9db6017bbde6d6651</span><br><span class="line">hash_result is 5fdceb40e2c82558588a67c55f2c074f68a5e5d9d18db20aef6adc930f4220ce</span><br><span class="line">hash_result is c59e7922f6e6701898c4392fa1ac5bc351bb0c16dae0d8793beab5bac9de688c</span><br><span class="line">hash_result is a7717e95f3d912771573ca305aabaa983081642edb1f55fc55d30eae1e2edfac</span><br><span class="line">hash_result is efafc1b283dc674b288c7afcfa58cb36927e067f7bc23f5c4de361531ecd55ee</span><br><span class="line">hash_result is b7663a2c3e43f68478670fb7e60fec7330c6c457f648b03bf4bb451f21a4e8db</span><br><span class="line">hash_result is 014bbc2e4bc516ab57543a053f0e320021410e6f2e1791ca01bebd914f3bfecf</span><br><span class="line">hash_result is 6dd4ab421f060e6f4b968964e7d2ea85825c2138e73719f574a7edc00b705078</span><br><span class="line">hash_result is 7cadff34a0d0fc0a5fd0e12eaed399be025d90eae75968bc67c19b6e70a34697</span><br></pre></td></tr></table></figure>
+<p>长度的判断条件则是将hash值前面的0去掉。换言之，难度目标影响了 符合条件的hash值的前置零的个数。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 检查是否是目标值以下的有效结果</span></span><br><span class="line"><span class="keyword">if</span> long(hash_result, <span class="number">16</span>) &lt; target:</span><br><span class="line"><span class="comment"># 示例:     00000006dc70d218bafb37c31f3166e49b1b0d28f3fea500431ecb22e954c99e </span></span><br><span class="line"><span class="comment">#           =》</span></span><br><span class="line"><span class="comment">#          6dc70d218bafb37c31f3166e49b1b0d28f3fea500431ecb22e954c99e</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line">============================</span><br><span class="line">Difficulty: 2097152 (21 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 687438</span><br><span class="line">Hash is   000003a6eeee97491a9183e4c57458172edb6f9466377bf44afbd74e410f6eef</span><br><span class="line">target is 55213970774324510299478046898216203619608871777363092441300193790394368</span><br><span class="line">Elapsed Time: 1.3613 seconds</span><br><span class="line">Hashing Power: 504976 hashes per second</span><br><span class="line">============================</span><br><span class="line">Difficulty: 4194304 (22 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 1759164</span><br><span class="line">Hash is   0000008bb8f0e731f0496b8e530da984e85fb3cd2bd81882fe8ba3610b6cefc3</span><br><span class="line">target is 27606985387162255149739023449108101809804435888681546220650096895197184</span><br><span class="line">Elapsed Time: 3.5224 seconds</span><br><span class="line">Hashing Power: 499417 hashes per second</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">============================</span><br><span class="line">Difficulty: 268435456 (28 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 139905000</span><br><span class="line">Hash is   0000000e4da88b53f70b2c5fc142500f0633e6407a4793462c54e6e704a687f3</span><br><span class="line">target is 431359146674410236714672241392314090778194310760649159697657763987456</span><br><span class="line">Elapsed Time: 289.7721 seconds</span><br><span class="line">Hashing Power: 482810 hashes per second</span><br></pre></td></tr></table></figure>
+<p>从输出结果来看，难度越大，<code>target</code>越短，符合条件的hash值的前置零的个数 需要得越多</p>
+<table>
+<thead>
+<tr>
+<th>Difficulty</th>
+<th>正确hash的前置0个数</th>
+<th>耗费时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21</td>
+<td>5</td>
+<td>1.3613 seconds</td>
+</tr>
+<tr>
+<td>22</td>
+<td>6</td>
+<td>3.5224 seconds</td>
+</tr>
+<tr>
+<td>28</td>
+<td>7</td>
+<td>289.7721 seconds</td>
+</tr>
+</tbody>
+</table>
+<p>继续看书中的例子：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[...]</span><br><span class="line"></span><br><span class="line">Difficulty: 67108864 (26 bits)</span><br><span class="line">Starting search...</span><br><span class="line">Success with nonce 84561291</span><br><span class="line">Hash is 0000001f0ea21e676b6dde5ad429b9d131a9f2b000802ab2f169cbca22b1e21a</span><br><span class="line">Elapsed Time: 665.0949 seconds</span><br><span class="line">Hashing Power: 127141 hashes per second</span><br></pre></td></tr></table></figure>
+<p>可以看出，随着难度位一位一位地增加，查找正确结果的时间会加倍增长。<br />
+如果考虑整个256bit数字空间，每次要求多一个0，就把哈希查找空间缩减了一半。<br />
+在什么的输出中，为寻找一个随机数使得哈希值开头的26位值为0，一共尝试了8千多万次。<br />
+即使笔记本电脑每秒可以达120,000多次哈希计算，找到结果依然需要10分钟。</p>
+<p>在写这本书的时候，比特币网络要寻找区块头信息哈希值小于</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0000000000000000029AB9000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>可以看出，这个难度目标开头的0多了很多。这意味着可接受的哈希值范围大幅缩减，因而找到正确的哈希值更加困难。<br />
+网络平均每秒要花费超过1.8个zeta次哈希（千亿个哈希）才能发现下一个区块。<br />
+这似乎是一项不可能完成的任务，但幸运的是，网络每秒有3exa次哈希（EH/sec）的处理能力，平均10分钟左右就能找到一个区块。</p>
+<h1>参考二:</h1>
+<h2 id="何谓工作量证明">何谓工作量证明:</h2>
+<p>网路上的节点可以简单地透过工作量证明，快速验证彼此是否拥有记帐权。就像是我们求学时期所发的毕业证书，大学四年熬夜苦读、凿壁偷光就是为了获得那张毕业证书，求职时，面试官透过那张毕业证书，快速验证你大学的成果。<br />
+上述例子中，你的毕业证书就是你的「工作量证明」。</p>
+<h2 id="以比特币为例介绍PoW">以比特币为例介绍PoW:</h2>
+<p>每10~15分钟比特币网路上全体矿工会互相竞争，运用大量的运算能力去解一道复杂的数学题的答案，这个答案是一个<code>随机数</code>，可以想像题目大概长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Hash｛（前一个区块的Hash 值）,（当前区块的交易资讯）,（随机数）｝＝当前区块的Hash 值</span><br></pre></td></tr></table></figure>
+<p>矿工必须找出一串数字，代入上述公式，让当前区块的Hash 值开头为18 个0 ，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0000000000000000001583447dd74c13c09280a9218827244089adadaba8c8c9</span><br></pre></td></tr></table></figure>
+<p>解答的过程没有轨迹可循，矿工只能不断代入<code>随机数</code>，透过暴力的解法找出答案。</p>
+<h2 id="挖矿难度">挖矿难度:</h2>
+<p>最先解开的人就能获得下一个区块的记帐权并获得比特币作为奖励。<br />
+比特币固定10~15 分钟出块一次，但是如果节点越来越多、全网算力增加，会缩短算出答案的时间。<br />
+因此，比特币协议每2016 个区块会调整一次挖矿难度，大约两个礼拜调整一次。<br />
+挖矿难度提高时，就必须找出有更多个0 的当前区块Hash 值，例如从原先的18 个0 增加到19 个0，难度降低时则相反。</p>
+<h2 id="算力低的矿机没机会得到记帐权？">算力低的矿机没机会得到记帐权？</h2>
+<p>必须强调的是，挖矿的过程其实像是掷一颗20 面的骰子，谁先骰到&lt; 2 的数字谁就能获得计帐权.<br />
+换句话说，矿机的硬体运算能力再强大，也只能提高获得计帐权的机率（骰骰子手速比较快），算力差的矿工不代表没有机会。</p>
+<p>很多人都认为，如果以后超级电脑普及，工作量证明不就没用了吗？<br />
+其实工作量证明数学题的难度相当高，因此取得记帐权的机会就像抽奖一样，即便某人拥有超级电脑，也只能够提高机率。<br />
+这就像在湖里丢一枚硬币，让一万个人去找这枚硬币，就算你是奥运游泳选手，也未必能第一个找到这枚硬币，只能提高找到的机率。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.krad.top/goblockchain02/">Go Blockchain Tutorial Part 2: Proof of Work</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://know.zombit.info/pow/">工作量證明 PoW (Proof of Work)－算力挖礦</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch10.md">《MasteringBitcoin》</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/xitu/gold-miner/blob/master/TODO/proof-of-work-vs-proof-of-stake.md">工作量证明 vs 权益证明：基本挖矿指南</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>StudyRecord</tag>
+        <tag>BlockChain</tag>
       </tags>
   </entry>
 </search>
