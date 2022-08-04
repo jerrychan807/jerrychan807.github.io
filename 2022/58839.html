@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 实现效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。 geth安装 把智能链 BNB Smart Chain的代码git clone下来 执行make all进行源码构建 1234# 进入geth所在目录&#x2F;Users&#x2F;chanjerry&#x2F;Documents&#x2F;GitHub&#x2F;blockchain&#x2F;bsc-node&#x2F;bsc&#x2F;build&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-BNBSmartChain私有链初步搭建">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/58839.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 实现效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。 geth安装 把智能链 BNB Smart Chain的代码git clone下来 执行make all进行源码构建 1234# 进入geth所在目录&#x2F;Users&#x2F;chanjerry&#x2F;Documents&#x2F;GitHub&#x2F;blockchain&#x2F;bsc-node&#x2F;bsc&#x2F;build&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220804102657.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165545.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165559.png">
+<meta property="article:published_time" content="2022-08-04T04:00:34.000Z">
+<meta property="article:modified_time" content="2022-08-04T04:03:43.882Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="StudyRecord">
+<meta property="article:tag" content="BlockChain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220804102657.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/58839.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-BNBSmartChain私有链初步搭建 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/58839.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-BNBSmartChain私有链初步搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-04 12:00:34 / Modified: 12:03:43" itemprop="dateCreated datePublished" datetime="2022-08-04T12:00:34+08:00">2022-08-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>实现效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。</p>
+<h1>geth安装</h1>
+<p>把智能链 <a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc">BNB Smart Chain</a>的代码<code>git clone</code>下来<br />
+执行<code>make all</code>进行源码构建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入geth所在目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/bsc-node/bsc/build/bin</span><br><span class="line"><span class="comment"># 看看geth能否正常运行</span></span><br><span class="line">./geth --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+<p>至此，geth客户端就能够正常使用了</p>
+<h1>创建创世区块的json配置文件：</h1>
+<h2 id="Bsc主网的json配置文件">Bsc主网的json配置文件:</h2>
+<p>先参考一下bsc主网的json配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载主网配置压缩包</span></span><br><span class="line">wget   $(curl -s https://api.github.com/repos/bnb-chain/bsc/releases/latest |grep browser_ |grep mainnet |<span class="built_in">cut</span> -d\&quot; -f4)</span><br><span class="line"><span class="comment"># 解压</span></span><br><span class="line">unzip mainnet.zip</span><br><span class="line"><span class="comment"># 打开genesis.json</span></span><br><span class="line">vim genesis.json</span><br></pre></td></tr></table></figure>
+<p><code>genesis.json</code>文件用于配置生成以太坊私链网络的创世区块，当我们需要去创建一个创世区块时，我们可以通过修改<code>genesis.json</code>文件内的初始参数将这些数据写入创世区块。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220804102657.png" alt="20220804102657" /></p>
+<p>参考<a target="_blank" rel="noopener" href="https://icode.best/i/93356646037965">以太坊私链搭建(二)——genesis.json字段解读</a></p>
+<blockquote>
+<p>alloc: 预定义的钱包列表，可以通过该字段预先在指定钱包地址内预存一定数量得原生代币。这是以太坊预售期间所执行得特定功能。</p>
+</blockquote>
+<p>bsc主网在创世区块里会创建一系列的系统合约。<br />
+参考:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-genesis-contract/blob/master/contracts/BSCValidatorSet.sol">创始区块的系统合约github</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/learn/system-contract">Build-in System Contract</a></p>
+</li>
+</ul>
+<p>系统合约列表：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>0xffffFFFfFFffffffffffffffFfFFFfffFFFfFFfE</code></p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001000</code> BSCValidatorSet 管理验证者节点地址列表(查询or更新)，处理来自信标链的数据包</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001001</code> SlashIndicator</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001002</code> SystemReward  中继者维护系统合约的激励机制。他们将从系统奖励合约中获得奖励</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001003</code> TendermintLightClient</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001004</code> TokenHub 跨链代币转移</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001005</code> RelayerIncentivize</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001006</code> RelayerHub 管理 bsc-relayer 的权限。想要运行 bsc-relayer 的人必须调用合约来存入一些 BNB 以获得授权。</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001007</code> GovHub 治理合约，处理来自 BC 的治理包</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000001008</code> TokenManager 在两条链上绑定和解除绑定代币</p>
+</li>
+<li class="lvl-2">
+<p><code>0x0000000000000000000000000000000000002000</code> CrossChain 跨链包预处理，通过 emit 事件发送跨链包到 BC。包预处理包括序列验证和默克尔证明验证</p>
+</li>
+<li class="lvl-2">
+<p><code>b005741528b86F5952469d80A8614591E3c5B632</code> 初始地址1 余额500000000000000000000Wei/500Ether</p>
+</li>
+<li class="lvl-2">
+<p><code>446AA6E0DC65690403dF3F127750da1322941F3e</code> 初始地址2 余额500Ether</p>
+</li>
+</ul>
+<h2 id="自定义创世区块的json配置文件">自定义创世区块的json配置文件:</h2>
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-genesis-contract/blob/master/contracts/BSCValidatorSet.sol">创始区块的系统合约github</a>的readme文件。</p>
+<p>how to generate genesis file.</p>
+<ol>
+<li class="lvl-3">
+<p>Edit <code>init_holders.js</code> file to alloc the initial BNB holder. 初始 BNB 持有者</p>
+</li>
+<li class="lvl-3">
+<p>Edit <code>validators.js</code> file to alloc the initial validator set. 初始化验证者列表</p>
+</li>
+<li class="lvl-3">
+<p>Edit <code>generate-validatorset.js</code> file to change fromChainId and toChainId,</p>
+</li>
+<li class="lvl-3">
+<p>Edit <code>generate-tokenhub.js</code> file to change refundRelayReward, minimumRelayFee and maxGasForCallingBEP20.</p>
+</li>
+<li class="lvl-3">
+<p>Edit <code>generate-tendermintlightclient.js</code> file to change chainID and initConsensusStateBytes.</p>
+</li>
+<li class="lvl-3">
+<p>run <code>node generate-genesis.js</code> will generate genesis.json</p>
+</li>
+</ol>
+<h2 id="solc替代solcjs">solc替代solcjs:</h2>
+<p>参考：<a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/25681/solc-bin-runtime-not-a-command">Solc “bin-runtime” not a command?</a><br />
+<code>generate-genesis.js</code>里面做的主要工作是 使用solc编译合约，正则匹配提取solc编译合约后的<code>Binary of the runtime part</code>，应该是用户实际交易调用这个新合约时需要执行的字节码(即运行时字节码)</p>
+<p>初次运行<code>node generate-genesis.js</code>命令时会报错，把输出报错的代码的注释去掉</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls.<span class="property">stderr</span>.<span class="title function_">on</span>(<span class="string">&quot;data&quot;</span>, <span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`stderr: <span class="subst">$&#123;data&#125;</span>`</span>) <span class="comment">// 去掉注释</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>报错会提示你的solc没有<code>bin-runtime</code>这个参数命令，<br />
+npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f472573e3048">Ubuntu20.04+solc+solc-select安装/使用记录</a><br />
+选择装<code>solc-select</code>，<code>solc-select</code>是一个基于python的轻量化solc版本管理工具。</p>
+<p>安装方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install solc-select</span><br></pre></td></tr></table></figure>
+<p>使用方法如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装所有可用版本的solc，也可以指定版本</span></span><br><span class="line">solc-select install</span><br><span class="line">solc-select install [版本号]</span><br><span class="line"><span class="comment"># 切换环境变量中的solc版本</span></span><br><span class="line">solc-select use [版本号]</span><br></pre></td></tr></table></figure>
+<p><code>solc</code>重装以后，主要先修改这两个文件</p>
+<ol>
+<li class="lvl-3">
+<p>Edit <code>init_holders.js</code> file to alloc the initial BNB holder. 初始 BNB 持有者</p>
+</li>
+<li class="lvl-3">
+<p>Edit <code>validators.js</code> file to alloc the initial validator set. 初始化验证者列表</p>
+</li>
+</ol>
+<p><code>init_holders.js</code>可不改，修改<code>validators.js</code>的地址为我们自己的钱包地址(矿工钱包)，这样我们的地址就在初始化验证者列表里面，可以通过验证，挖矿打包出块了。<br />
+运行命令<code>node generate-genesis.js</code>，生成我们自定义的创始区块配置文件<code>genesis.json</code>。<br />
+如果不在初始化验证者列表里加入我们的矿工钱包地址，会出现报错信息:<code>unauthorized validator</code>无效的验证者，无法正常打包出块。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; miner.start(1)</span><br><span class="line">INFO [08-03|15:46:30.837] Transaction pool price threshold updated price=1,000,000,000</span><br><span class="line">null</span><br><span class="line">&gt; INFO [08-03|15:46:30.839] Stored checkpoint snapshot to disk       number=0 <span class="built_in">hash</span>=66f7da..3b9e65</span><br><span class="line">ERROR[08-03|15:46:30.840] init contract failed </span><br><span class="line">ERROR[08-03|15:46:30.840] slash validator failed                   block <span class="built_in">hash</span>=f7d1f8..3b0582 address=0x9fB29AAc15b9A4B7F17c3385939b007540f4d791</span><br><span class="line">INFO [08-03|15:46:30.840] Commit new mining work                   number=1 sealhash=b8fc50..fefd87 uncles=0 txs=0 gas=0 elapsed=2.135ms</span><br><span class="line">WARN [08-03|15:46:30.840] Block sealing failed                     err=<span class="string">&quot;unauthorized validator&quot;</span></span><br></pre></td></tr></table></figure>
+<h1>运行节点：</h1>
+<p>参考文档<a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/local">本地 BNB 智能链网络</a></p>
+<h2 id="创建节点文件夹">创建节点文件夹:</h2>
+<p>创建两个空文件夹来放节点的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node1</span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node2</span><br></pre></td></tr></table></figure>
+<h2 id="初始化以太坊节点">初始化以太坊节点:</h2>
+<p>通过创始区块json配置文件，来初始化以太坊节点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./geth --datadir /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node1 init /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/genesis.json</span><br></pre></td></tr></table></figure>
+<h2 id="启动以太坊节点">启动以太坊节点:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./geth --datadir /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node1 --networkid 714 console</span><br></pre></td></tr></table></figure>
+<h2 id="初始化另一个以太坊节点">初始化另一个以太坊节点:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./geth --datadir /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node2 init /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/genesis.json</span><br></pre></td></tr></table></figure>
+<h2 id="启动第二个以太坊节点">启动第二个以太坊节点:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./geth --datadir /Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node2 --port 30304 --nodiscover --networkid 714 console</span><br></pre></td></tr></table></figure>
+<h2 id="导入钱包地址">导入钱包地址:</h2>
+<p>通过私钥导入两个钱包地址：1.初始持币者钱包 2.矿工钱包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在geth console里,通过私钥导入钱包</span></span><br><span class="line">web3.personal.importRawKey(<span class="string">&quot;私钥&quot;</span>, <span class="string">&quot;123456(密码)&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>导入成功，可查看已有账户:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; eth.accounts</span><br><span class="line"></span><br><span class="line">[<span class="string">&quot;0x67970d4988a31fbc379add2be5c529bf015bb032&quot;</span>, <span class="string">&quot;0xabe904f6a2661f36c8abd3c5dbaeff2c8214cac7&quot;</span>, <span class="string">&quot;0x9fb29aac15b9a4b7f17c3385939b007540f4d791&quot;</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="开始挖矿">开始挖矿:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./geth console --port <span class="string">&quot;30304&quot;</span> --cache 18000 --datadir  <span class="string">&quot;/Users/chanjerry/Documents/GitHub/blockchain/bsc-node/private_network/node2&quot;</span> --mine  --miner.threads=4  --miner.etherbase=0xABe904f6A2661F36C8ABD3c5DBAEFF2C8214cAC7 --allow-insecure-unlock --unlock 0xABe904f6A2661F36C8ABD3c5DBAEFF2C8214cAC7 --http --http.corsdomain * </span><br></pre></td></tr></table></figure>
+<p>查看区块数是否增长:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; eth.blockNumber</span><br><span class="line"></span><br><span class="line">5866</span><br></pre></td></tr></table></figure>
+<h2 id="将一个节点连接到另一个节点">将一个节点连接到另一个节点:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在一个 geth 控制台中：</span></span><br><span class="line">admin.nodeInfo.enode</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在另一个控制台中：</span></span><br><span class="line">admin.addPeer( &lt;the enode value from the first console&gt; )</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这一步我没连接好，后面只用到了第二个节点就能正常打包出块，用户间能正常转账。</p>
+</blockquote>
+<h1>用户间转账:</h1>
+<h2 id="geth里转账">geth里转账:</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># geth console里运行转账命令</span></span><br><span class="line">eth.sendTransaction(&#123;from: <span class="string">&quot;0x9fb29aac15b9a4b7f17c3385939b007540f4d791&quot;</span>, to: <span class="string">&quot;0xABe904f6A2661F36C8ABD3c5DBAEFF2C8214cAC7&quot;</span>, value: web3.toWei(10, <span class="string">&quot;ether&quot;</span>)&#125;)</span><br></pre></td></tr></table></figure>
+<p>输出信息:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INFO [08-03|16:45:43.009] Submitted transaction                    hash=0xab6a5a39a3381048f58fd53fec3b757fbdb62d9a256e548266b7cf2253021fb0 from=0x9fB29AAc15b9A4B7F17c3385939b007540f4d791 nonce=2 recipient=0xABe904f6A2661F36C8ABD3c5DBAEFF2C8214cAC7 value=10,000,000,000,000,000,000</span><br><span class="line">&quot;0xab6a5a39a3381048f58fd53fec3b757fbdb62d9a256e548266b7cf2253021fb0&quot;</span><br></pre></td></tr></table></figure>
+<p>查看tx信息:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eth.getTransaction(<span class="string">&#x27;0xab6a5a39a3381048f58fd53fec3b757fbdb62d9a256e548266b7cf2253021fb0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  blockHash: &quot;0x5c93aa965f19bdd1840a11832a82f5380d0d8354adfc2c1ae2ce39b0711d68fb&quot;,</span><br><span class="line">  blockNumber: 411,</span><br><span class="line">  from: &quot;0x9fb29aac15b9a4b7f17c3385939b007540f4d791&quot;,</span><br><span class="line">  gas: 21000,</span><br><span class="line">  gasPrice: 1000000000,</span><br><span class="line">  hash: &quot;0xab6a5a39a3381048f58fd53fec3b757fbdb62d9a256e548266b7cf2253021fb0&quot;,</span><br><span class="line">  input: &quot;0x&quot;,</span><br><span class="line">  nonce: 2,</span><br><span class="line">  r: &quot;0xdaffdbafe1a4014796af9b8f39369421b9b3480f43a8edd038b1f25bad98a1a5&quot;,</span><br><span class="line">  s: &quot;0x679648136c1703aec1c43b4e29cdf1f1ea6e01453eda5581c93536386b01ec3f&quot;,</span><br><span class="line">  to: &quot;0xabe904f6a2661f36c8abd3c5dbaeff2c8214cac7&quot;,</span><br><span class="line">  transactionIndex: 0,</span><br><span class="line">  type: &quot;0x0&quot;,</span><br><span class="line">  v: &quot;0x5b8&quot;,</span><br><span class="line">  value: 10000000000000000000</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>转账成功</p>
+<h2 id="metamask里转账">metamask里转账:</h2>
+<p>或者用小狐狸钱包连接本地节点，然后进行转账:<br />
+配置好<code>chain id</code>信息:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165545.png" alt="20220803165545" /><br />
+能够转账成功:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165559.png" alt="20220803165559" /></p>
+<blockquote>
+<p>矿工暂时未能获得挖矿奖励，接下来要继续探索一下</p>
+</blockquote>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/8684/error-no-key-for-given-address-or-file-when-unlocking-coinbase-account">Error “no key for given address or file” when unlocking coinbase account</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/books/geth/part2/miner/start.html">以太坊技术与实现</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.ai2news.com/blog/1590690/">geth 命令行使用 中文翻译</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/learn/consensus/#bscvalidatorset-contract">Bnb链文档</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/local">Local BNB Smart Chain Network</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/15749.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/283.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/57333.html" rel="prev" title="StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork">
+      <i class="fa fa-chevron-left"></i> StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">geth安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">创建创世区块的json配置文件：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bsc%E4%B8%BB%E7%BD%91%E7%9A%84json%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">Bsc主网的json配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%9B%E4%B8%96%E5%8C%BA%E5%9D%97%E7%9A%84json%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">自定义创世区块的json配置文件:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#solc%E6%9B%BF%E4%BB%A3solcjs"><span class="nav-number">3.3.</span> <span class="nav-text">solc替代solcjs:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">运行节点：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">4.1.</span> <span class="nav-text">创建节点文件夹:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text">初始化以太坊节点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9"><span class="nav-number">4.3.</span> <span class="nav-text">启动以太坊节点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8F%A6%E4%B8%80%E4%B8%AA%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9"><span class="nav-number">4.4.</span> <span class="nav-text">初始化另一个以太坊节点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%BA%8C%E4%B8%AA%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9"><span class="nav-number">4.5.</span> <span class="nav-text">启动第二个以太坊节点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E9%92%B1%E5%8C%85%E5%9C%B0%E5%9D%80"><span class="nav-number">4.6.</span> <span class="nav-text">导入钱包地址:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E6%8C%96%E7%9F%BF"><span class="nav-number">4.7.</span> <span class="nav-text">开始挖矿:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%E8%BF%9E%E6%8E%A5%E5%88%B0%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="nav-number">4.8.</span> <span class="nav-text">将一个节点连接到另一个节点:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">用户间转账:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#geth%E9%87%8C%E8%BD%AC%E8%B4%A6"><span class="nav-number">5.1.</span> <span class="nav-text">geth里转账:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metamask%E9%87%8C%E8%BD%AC%E8%B4%A6"><span class="nav-number">5.2.</span> <span class="nav-text">metamask里转账:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">602k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:07</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
