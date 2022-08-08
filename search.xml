@@ -14544,10 +14544,10 @@ Find Nonce Game~</p>
       </tags>
   </entry>
   <entry>
-    <title>StudyRecord-BNBSmartChain私有链初步搭建</title>
-    <url>/2022/58839.html</url>
+    <title>DevRecord-BNBSmartChain私有链初步搭建</title>
+    <url>/2022/44900.html</url>
     <content><![CDATA[<h1>Pre:</h1>
-<p>实现效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。</p>
+<p>预期效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。</p>
 <h1>geth安装</h1>
 <p>把智能链 <a href="https://github.com/bnb-chain/bsc">BNB Smart Chain</a>的代码<code>git clone</code>下来<br />
 执行<code>make all</code>进行源码构建</p>
@@ -14730,11 +14730,157 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
 </ul>
 ]]></content>
       <categories>
-        <category>StudyRecord</category>
+        <category>DevRecord</category>
       </categories>
       <tags>
-        <tag>StudyRecord</tag>
         <tag>BlockChain</tag>
+        <tag>DevRecord</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DevRecord-BlockScout区块链浏览器初步搭建</title>
+    <url>/2022/13133.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>预期效果:配置rpc，先用公开测试网的rpc，能够在区块链浏览器应用中看到数据后，再切成私有链的rpc，能看到自己模拟的交易记录。</p>
+<h1>简介:</h1>
+<p><code>BlockScout</code>是一个Elixir应用程序，允许用户搜索交易，查看账户和余额，并验证Ethereum上的智能合约，包括分叉和侧链。<br />
+<code>BlockScout</code>为用户提供了一个全面的、易于使用的界面，以查看、确认和检查EVM（Ethereum虚拟机）区块链上的交易。BlockScout目前承载着POA网络、xDai Chain、Ethereum Classic、Sokol &amp; Kovan测试网以及许多其他测试网、私有链和侧链。</p>
+<h1>部署安装:</h1>
+<p>主要参考<a href="https://www.cnblogs.com/dahuige/p/15524428.html">Centos7下安装BlockScout</a>，辅助参考<a href="https://mhxw.life/2021-10-05-blockscout-deployment-guide/">BlockScout 开源浏览器安装部署指南</a></p>
+<blockquote>
+<p>遇到报错则通过google解决😈😈😈</p>
+</blockquote>
+<p>这次用的源码编译的部署方式，挺费时的，下次试试docker。</p>
+<h2 id="需要的依赖：">需要的依赖：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808150135.png" alt="20220808150135" /></p>
+<h2 id="定义环境变量">定义环境变量</h2>
+<p>以下是部署客户端时不可或缺的环境变量</p>
+<table>
+<thead>
+<tr>
+<th>环境变量</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLOCKSCOUT_VERSION</td>
+<td>unknown</td>
+</tr>
+<tr>
+<td>COIN</td>
+<td>POA</td>
+</tr>
+<tr>
+<td>DB_HOST</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DB_PASSWORD</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DB_PORT</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DB_USERNAME</td>
+<td>-</td>
+</tr>
+<tr>
+<td>ETHEREUM_JSONRPC_HTTP_URL</td>
+<td><a href="http://localhost:8545">http://localhost:8545</a></td>
+</tr>
+<tr>
+<td>ETHEREUM_JSONRPC_TRACE_URL</td>
+<td><a href="http://localhost:8545">http://localhost:8545</a></td>
+</tr>
+<tr>
+<td>ETHEREUM_JSONRPC_WS_URL</td>
+<td>ws://localhost:8546</td>
+</tr>
+<tr>
+<td>ETHEREUM_JSONRPC_VARIANT</td>
+<td>parity</td>
+</tr>
+<tr>
+<td>HEART_BEAT_TIMEOUT</td>
+<td>30</td>
+</tr>
+<tr>
+<td>HEART_COMMAND</td>
+<td>sudo systemctl restart explorer.service</td>
+</tr>
+<tr>
+<td>LOGO</td>
+<td>/images/blockscout_logo.svg</td>
+</tr>
+<tr>
+<td>NETWORK</td>
+<td>POA Network</td>
+</tr>
+<tr>
+<td>SUBNETWORK</td>
+<td>Sokol Testnet</td>
+</tr>
+<tr>
+<td>NETWORK_ICON</td>
+<td>_test_network_icon.html</td>
+</tr>
+<tr>
+<td>LINK_TO_OTHER_EXPLORERS</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 自定义环境变量</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+<h2 id="部署测试效果">部署测试效果:</h2>
+<p>Question List:</p>
+<ol>
+<li class="lvl-3">
+<p>用的rpc<code>https://rpc.ankr.com/eth_ropsten</code>,不支持某些数据的获取，导致数据显示不全。问题不大，基本的流程是跑通了。</p>
+</li>
+<li class="lvl-3">
+<p>测试server的硬件配件太差了，VMware的centos7 配置过低，等换更好的硬件后再进行后续测试。</p>
+</li>
+</ol>
+<p>telnet一下4000端口，能通之后，再打开<code>http://192.168.2.160:4000/</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808144339.png" alt="20220808144339" /></p>
+<h1>Others:</h1>
+<h2 id="Centos7设置代理">Centos7设置代理:</h2>
+<p>临时设置（重连后失效）在命令行中直接输入下列命令即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> http_proxy=http://192.168.2.135:7890/</span><br><span class="line"><span class="built_in">export</span> https_proxy=https://192.168.2.135:7890/</span><br></pre></td></tr></table></figure>
+<p><a href="https://blog.csdn.net/weixin_41831919/article/details/108111208">linux的centOS下如何删除代理</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> -n http_proxy</span><br><span class="line"><span class="built_in">export</span> -n https_proxy</span><br><span class="line"><span class="built_in">export</span> -n no_proxy</span><br></pre></td></tr></table></figure>
+<h2 id="webpack报错">webpack报错:</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory</span><br><span class="line">致命错误：达到堆限制分配失败-JavaScript堆内存不足</span><br></pre></td></tr></table></figure>
+<p>解决办法:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全局安装  </span></span><br><span class="line">npm install -g increase-memory-limit</span><br><span class="line"><span class="comment"># 项目执行</span></span><br><span class="line">increase-memory-limit</span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://mhxw.life/2021-10-05-blockscout-deployment-guide/">BlockScout 开源浏览器安装部署指南</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.cnblogs.com/dahuige/p/15524428.html">Centos7下安装BlockScout</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://docs.blockscout.com/for-developers/information-and-settings/requirements">https://docs.blockscout.com/for-developers/information-and-settings/requirements</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/blockscout/blockscout">https://github.com/blockscout/blockscout</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://chainlist.org/zh">Chainlist 是 EVM 网络的列表</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>BlockChain</tag>
+        <tag>DevRecord</tag>
       </tags>
   </entry>
 </search>
