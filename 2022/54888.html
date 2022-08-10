@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: What is Unspent Transaction Output (UTXO)?，学习记录。   区块链是一种数字化、去中心化的分布式账本。   区块链利用 P2P（点对点）网络，网络上的参与者被称为节点。   账本中存储有关交易的数据。   它是一个由区块组成的链，其中最显着的特征是区块以密码学的方式链接在一起。    以密码学的方式链接在一起:   除了第一个块（称为创世块）之外">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-What_is_Unspent_Transaction_Output_UTXO">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/54888.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: What is Unspent Transaction Output (UTXO)?，学习记录。   区块链是一种数字化、去中心化的分布式账本。   区块链利用 P2P（点对点）网络，网络上的参与者被称为节点。   账本中存储有关交易的数据。   它是一个由区块组成的链，其中最显着的特征是区块以密码学的方式链接在一起。    以密码学的方式链接在一起:   除了第一个块（称为创世块）之外">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809164409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172651.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172743.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172837.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172902.png">
+<meta property="article:published_time" content="2022-08-09T08:36:34.000Z">
+<meta property="article:modified_time" content="2022-08-10T02:42:00.612Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809164409.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/54888.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-What_is_Unspent_Transaction_Output_UTXO | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/54888.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-What_is_Unspent_Transaction_Output_UTXO
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-08-09 16:36:34" itemprop="dateCreated datePublished" datetime="2022-08-09T16:36:34+08:00">2022-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-08-10 10:42:00" itemprop="dateModified" datetime="2022-08-10T10:42:00+08:00">2022-08-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/what-is-unspent-transaction-output-utxo/">What is Unspent Transaction Output (UTXO)?</a>，学习记录。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>区块链是一种数字化、去中心化的分布式账本。</p>
+</li>
+<li class="lvl-2">
+<p>区块链利用 P2P（点对点）网络，网络上的参与者被称为节点。</p>
+</li>
+<li class="lvl-2">
+<p>账本中存储有关交易的数据。</p>
+</li>
+<li class="lvl-2">
+<p>它是一个由区块组成的链，其中最显着的特征是<strong>区块以密码学的方式链接在一起</strong>。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809164409.png" alt="20220809164409" /></p>
+<h1>以密码学的方式链接在一起:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>除了第一个块（称为创世块）之外，区块链中的每个块都包含一个称为前一个哈希的字段。它是链中前一个块的哈希。这使得区块链非常安全。</p>
+</li>
+<li class="lvl-2">
+<p>如果攻击者试图改变一个区块的数据，该区块的哈希值将会改变，如前所述，下一个区块将持有当前区块的哈希值，如果哈希值改变，则链将被破坏。或者，攻击者必须从那时起再次挖掘所有块。这是 51% 攻击的可能性。</p>
+</li>
+</ul>
+<h1>什么是块？</h1>
+<p>区块链中的块存储着交易信息。<br />
+例如比特币，区块每 10 分钟添加到区块链中，根据目标哈希的复杂性，这可能会随着挖掘新块的时间而变化。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>当矿工成功开采区块时，它会被添加到区块链中。</p>
+</li>
+<li class="lvl-2">
+<p>当区块被添加到链上时，区块内所有交易的状态都会从未确认变为已确认。</p>
+</li>
+<li class="lvl-2">
+<p>例如比特币，可以存储在一个块内的交易数量不是固定的，但是块的最大大小设置为大约 1 MB，块大小可以略小于1 MB。</p>
+</li>
+<li class="lvl-2">
+<p>空块是有效的，这意味着可以挖掘空块并将其添加到链中。</p>
+</li>
+</ul>
+<h1>交易:</h1>
+<p>分解交易中存在的不同结构：</p>
+<ol>
+<li class="lvl-3">
+<p>交易版本号：它是指定网络交易类型的版本号。通过交易编号，节点可以确定用于验证该特定交易的规则集。</p>
+</li>
+<li class="lvl-3">
+<p>输出：交易输出由密码锁和时间组成。</p>
+</li>
+<li class="lvl-3">
+<p>输入：交易输入由指针和解锁密钥组成。指针指向前一个交易输出。解锁密钥用于解锁输入指向的先前输出。每次输出被输入解锁时，它都会在区块链数据库中标记为已用。</p>
+</li>
+<li class="lvl-3">
+<p>锁定时间：它指定交易是可以立即包含在区块链中还是在某个指定时间后包含在区块链中。</p>
+</li>
+</ol>
+<p>UTXO is all those outputs that are yet to be unlocked by an input.<br />
+<strong>UTXO 是所有尚未被输入解锁的输出。</strong></p>
+<p>一旦一个输出被解锁，它们就会从循环供应中移除。新的输出取而代之。<br />
+因此，未锁定输出的总和将始终等于新创建的输出的值的总和。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png" alt="20220809172014" /></p>
+<h1>什么是UTXO?</h1>
+<p>在比特币中，交易一直存在，直到它被执行：另一笔交易消费掉其UTXO。<br />
+<strong>UTXO 代表未使用的交易输出</strong></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>它是某人在执行交易后剩余的数字货币数量。</p>
+</li>
+<li class="lvl-2">
+<p>交易完成后，未使用的输出将作为输入存回数据库，稍后可用于另一笔交易。</p>
+</li>
+</ul>
+<h1>UTXO 是如何创建的？</h1>
+<p><code>UTXO</code> 是通过使用现有的 UTXO 创建的。<br />
+每笔比特币交易都由输入和输出组成。<br />
+输入消耗一个现有的<code>UTXO</code>，而输出创建一个新的 <code>UTXO</code>。</p>
+<h1>UTXO 模型</h1>
+<p>它基于由block组成的一个个交易。<br />
+UTXO 模型是许多加密货币通用的设计，最引人注目的是比特币。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>使用 UTXO 模型的加密货币不使用账户或余额。相反，UTXO 就像实物现金一样在用户之间转移。</p>
+</li>
+<li class="lvl-2">
+<p>UTXO 模型中的每个事务都可以将系统转换到一个新状态，但是每个事务都转换到一个新状态是不可行的。</p>
+</li>
+<li class="lvl-2">
+<p>网络参与者必须与当前状态保持同步。</p>
+</li>
+</ul>
+<h1>举个栗子:</h1>
+<ol>
+<li class="lvl-3">
+<p>假设从交易中收到以下比特币。这些交易中的每一个都是一个 UTXO。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172651.png" alt="20220809172651" /></p>
+<ol start="2">
+<li class="lvl-3">
+<p>现在我想买一辆 <code>0.5 BTC</code> 的车。</p>
+</li>
+<li class="lvl-3">
+<p>为了转移<code>0.5 BTC</code>，需要选择一笔或多笔交易作为输入。</p>
+</li>
+<li class="lvl-3">
+<p>这就是为什么比特币交易不同于银行，在银行的情况下，一个人会输入 <code>0.5 BTC</code> 的金额，按下转账，它会转到卖方，但比特币的情况并非如此，这里需要选择<strong>一个或多个UTXO作为输入</strong>。</p>
+</li>
+<li class="lvl-3">
+<p>对于加密货币，您的账户中不存在金额。</p>
+</li>
+<li class="lvl-3">
+<p>让我们选择 Sarah 的 <code>0.7 BTC</code> 作为购买汽车的输入。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172743.png" alt="20220809172743" /></p>
+<ol start="7">
+<li class="lvl-3">
+<p>在UTXO的情况下，输入的金额不能闲置，不能说剩下的<code>0.2 BTC</code>什么都不做。</p>
+</li>
+<li class="lvl-3">
+<p>剩余的 <code>0.2 BTC</code>，必须以下列 3 种方式之一使用-</p>
+</li>
+</ol>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>就像我们在上图中所做的那样，将剩余的金额发送回您的帐户。</p>
+</li>
+<li class="lvl-2">
+<p>使用剩余金额作为交易费用。请记住，应该有一些交易费用，否则没有矿工将您的交易添加到阻止，并且它将保持未确认状态。</p>
+</li>
+<li class="lvl-2">
+<p>将剩余金额发送给其他人。</p>
+</li>
+</ul>
+<ol start="9">
+<li class="lvl-3">
+<p><code>0.5 BTC</code> 已发送至卖家但未添加任何费用，交易未确认，72 小时后退回 <code>0.7 BTC</code>。</p>
+</li>
+<li class="lvl-4">
+<p>所以为了给卖家汇款，让我们把这 <code>0.2 BTC</code> 作为这笔交易的费用。</p>
+</li>
+<li class="lvl-4">
+<p>提供交易手续费，无需提及，如果您没有将剩余金额发送给任何人，则视为交易手续费。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172837.png" alt="20220809172837" /></p>
+<ol start="12">
+<li class="lvl-4">
+<p>现在已经添加了交易费用，矿工将这笔交易包含在区块中，随后获得了 0.2 BTC 作为交易费用。</p>
+</li>
+<li class="lvl-4">
+<p>让我们再看看我们原来的 UTXO。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172902.png" alt="20220809172902" /></p>
+<ol start="14">
+<li class="lvl-4">
+<p>Sarah 的 UTXO 已经不存在了，UTXO 只存在到没有从它那里完成另一笔交易，但现在它已经用于另一笔交易，即购买汽车。</p>
+</li>
+<li class="lvl-4">
+<p>交易存储在一个区块内，也是改变区块哈希的四个因素之一。这意味着如果矿工选择不同的交易保持其他 4 个因素相同，则哈希将不同。</p>
+</li>
+<li class="lvl-4">
+<p>决定区块哈希的因素</p>
+</li>
+</ol>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>时间戳</p>
+</li>
+<li class="lvl-2">
+<p>区块号：是当前区块在链中的序号。</p>
+</li>
+<li class="lvl-2">
+<p>数据：存储在区块上的交易。</p>
+</li>
+<li class="lvl-2">
+<p>随机数</p>
+</li>
+</ul>
+<ol start="17">
+<li class="lvl-4">
+<p>如果这四个因素中的任何一个发生了变化，则哈希完全改变，这是由于雪崩效应。</p>
+</li>
+</ol>
+<h1>UTXO集合</h1>
+<p>区块链中存在的总 UTXO 代表一个集合，并且由每个比特币节点不断维护。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>每个交易都使用该集合中的元素并创建添加到该集合中的新元素。</p>
+</li>
+<li class="lvl-2">
+<p>因此，该集合代表特定加密货币系统中的所有硬币。</p>
+</li>
+<li class="lvl-2">
+<p>每次在区块链中接受新块时，都会更新 UTXO 集合。</p>
+</li>
+<li class="lvl-2">
+<p>网络中的每个比特币节点都将在其本地存储中设置 UTXO 的精确副本。</p>
+</li>
+<li class="lvl-2">
+<p>可以对完整的 UTXO 集合求和，以计算给定时间点加密货币的总供应量。</p>
+</li>
+<li class="lvl-2">
+<p>在有效的区块链交易的情况下，只有未使用的输出可用于资助进一步的交易。</p>
+</li>
+<li class="lvl-2">
+<p>只有未使用的输出可以用于进一步交易的条件是防止双重支出和欺诈的必要条件。</p>
+</li>
+</ul>
+<h1>UTXO 模型的重要性</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>与语言无关的智能合约</code>：基于 UTXO 的智能合约独立于语言，允许 UTXO 开发独特的共识机制。</p>
+</li>
+<li class="lvl-2">
+<p><code>支持去中心化交易所和原子交换</code>： UTXO 模型可以支持原子交换，因此无需第三方参与即可实现点对点加密交易。UTXO 的原子交换功能为用户钱包之间的直接加密货币交易提供了更好的便利。</p>
+</li>
+<li class="lvl-2">
+<p><code>可扩展性优势</code>：设施或并行事务处理减少了区块链网络上的计算负载。</p>
+</li>
+<li class="lvl-2">
+<p><code>隐私和安全</code>：每笔 UTXO 交易都使用新地址，因此无法跟踪交易。</p>
+</li>
+<li class="lvl-2">
+<p><code>防止双重支出</code>：一个 UTXO 只能使用一次，这是区块链技术运行的基础，保证货币不会被多次使用。</p>
+</li>
+<li class="lvl-2">
+<p><code>更灵活</code>：它提供比法定货币更大的灵活性。</p>
+</li>
+<li class="lvl-2">
+<p><code>简单并行化</code>：它允许智能合约中更简单的交易并行化。</p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/what-is-unspent-transaction-output-utxo/">What is Unspent Transaction Output (UTXO)?</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/18978.html" rel="bookmark">StudyRecord-Solidity异常处理</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/24724.html" rel="prev" title="StudyRecord-UTXO与账户余额模型(一)">
+      <i class="fa fa-chevron-left"></i> StudyRecord-UTXO与账户余额模型(一)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/8887.html" rel="next" title="StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage">
+      StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">以密码学的方式链接在一起:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">什么是块？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">交易:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">什么是UTXO?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">UTXO 是如何创建的？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">UTXO 模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">举个栗子:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">9.</span> <span class="nav-text">UTXO集合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">10.</span> <span class="nav-text">UTXO 模型的重要性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">11.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">624k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:27</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: Go Blockchain Tutorial Part 4: Read,Store and Manage 学习记录 交易信息池： 我们知道区块链中每个区块可以存放复数个交易信息，而不是每生成一个交易信息就创建一个区块加入区块链。 对于一个区块链节点而言，它会将自己生成的交易信息与从其它节点收集的交易信息存储于一个交易信息池Transaction Pool中。 当存储的交易信息数量达到一阈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/8887.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: Go Blockchain Tutorial Part 4: Read,Store and Manage 学习记录 交易信息池： 我们知道区块链中每个区块可以存放复数个交易信息，而不是每生成一个交易信息就创建一个区块加入区块链。 对于一个区块链节点而言，它会将自己生成的交易信息与从其它节点收集的交易信息存储于一个交易信息池Transaction Pool中。 当存储的交易信息数量达到一阈">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110220.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111411.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111452.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111535.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111716.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111756.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810103306.png">
+<meta property="article:published_time" content="2022-08-10T04:00:34.000Z">
+<meta property="article:modified_time" content="2022-08-10T04:00:55.506Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="StudyRecord">
+<meta property="article:tag" content="BlockChain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/8887.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/8887.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-08-10 12:00:34 / Modified: 12:00:55" itemprop="dateCreated datePublished" datetime="2022-08-10T12:00:34+08:00">2022-08-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>8.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p><a target="_blank" rel="noopener" href="https://www.krad.top/goblockchain04/">Go Blockchain Tutorial Part 4: Read,Store and Manage</a> 学习记录</p>
+<h1>交易信息池：</h1>
+<p>我们知道区块链中每个区块可以存放复数个交易信息，而不是每生成一个交易信息就创建一个区块加入区块链。</p>
+<p>对于一个区块链节点而言，它会将自己生成的交易信息与从其它节点收集的交易信息存储于一个<code>交易信息池Transaction Pool</code>中。<br />
+当存储的交易信息数量达到一阈值或者等待时间超过一阈值就会将交易池中的交易信息打包为候选区块参与PoW共识机制，这一过程称为<code>挖矿mine</code>，是节点争取将自己的候选区块加入到区块链中的过程。</p>
+<h1>系统调试:</h1>
+<p>现在我们先创建一个区块链，这个区块链的创建者是你自己。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main createblockchain -address Jerry</span><br><span class="line">Genesis Created</span><br><span class="line">Finished creating blockchain, and the owner is:  Jerry</span><br></pre></td></tr></table></figure>
+<p>然后我们可以使用balance命令查询你自己的余额，并使用blockchaininfo命令打印区块链。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main balance -address Jerry</span><br><span class="line">Address:Jerry, Balance:1000 </span><br><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main blockchaininfo</span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line">Timestamp:1659666065</span><br><span class="line">Previous <span class="built_in">hash</span>:4a657272792069732066617421</span><br><span class="line">Transactions:[0xc0055cc050]</span><br><span class="line"><span class="built_in">hash</span>:fe809dd8173e5309e260a9196c9ebbffae383f7f128dd05b405e725a126911d0</span><br><span class="line">Pow: <span class="literal">true</span></span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<p>测试一下send命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main send -from Jerry -to Tom -amount 100</span><br><span class="line">Success!</span><br><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main balance -address Jerry</span><br><span class="line">Address:Jerry, Balance:1000 </span><br><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main balance -address Tom</span><br><span class="line">Address:Tom, Balance:0 </span><br></pre></td></tr></table></figure>
+<p>由Jerry转账100给Tom这个交易信息创建成功，但是我们查询Jerry的余额发现没有变动，这是因为成功创建的交易信息还保存在交易信息池中，没有被添加进区块链里。我们需要使用<code>mine</code>命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main mine</span><br><span class="line">Finish Mining</span><br><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main balance -address Jerry</span><br><span class="line">Address:Jerry, Balance:100 </span><br><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main balance -address Tom</span><br><span class="line">Address:Tom, Balance:100 </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>??? 余额不对,待会Debug</p>
+</blockquote>
+<p>此时打印区块链会得到两个区块。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">MacBook-Pro:my-blockchain chanjerry$ ./main blockchaininfo</span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line">Timestamp:1659666447</span><br><span class="line">Previous <span class="built_in">hash</span>:fe809dd8173e5309e260a9196c9ebbffae383f7f128dd05b405e725a126911d0</span><br><span class="line">Transactions:[0xc00007a1e0]</span><br><span class="line"><span class="built_in">hash</span>:acc3f1de20d319ebf008eb975b6ec427338e2e036f9c0083e2b9c602192a61d9</span><br><span class="line">Pow: <span class="literal">true</span></span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line">Timestamp:1659666065</span><br><span class="line">Previous <span class="built_in">hash</span>:4a657272792069732066617421</span><br><span class="line">Transactions:[0xc00007a230]</span><br><span class="line"><span class="built_in">hash</span>:fe809dd8173e5309e260a9196c9ebbffae383f7f128dd05b405e725a126911d0</span><br><span class="line">Pow: <span class="literal">true</span></span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<p>为了更加方便测试，我们可以创建一个脚本文件</p>
+<figure class="highlight bash"><figcaption><span>mac脚本</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Hello World !&quot;</span></span><br><span class="line"><span class="comment"># 删除tmp目录</span></span><br><span class="line"><span class="comment"># avoid删除错东西，先手动删除就好</span></span><br><span class="line">./main createblockchain -address Jerry</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==blockchaininfo===&quot;</span></span><br><span class="line">./main blockchaininfo</span><br><span class="line">./main balance -address Jerry</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==send -from Jerry -to Tom -amount 100==&quot;</span></span><br><span class="line">./main send -from Jerry -to Tom -amount 100</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==mine===&quot;</span></span><br><span class="line">./main mine</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==balance -address Tom===&quot;</span></span><br><span class="line">./main balance -address Tom</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==blockchaininfo===&quot;</span></span><br><span class="line">./main blockchaininfo</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;==balance -address Jerry===&quot;</span></span><br><span class="line">./main balance -address Jerry</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main balance -address Tom</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main send -from Jerry -to Gia -amount 100</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main send -from Tom -to Gia -amount 30</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main mine</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line"><span class="comment">#./main blockchaininfo</span></span><br><span class="line">./main balance -address Jerry</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main balance -address Tom</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br><span class="line">./main balance -address Gia</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;=====================================&quot;</span></span><br></pre></td></tr></table></figure>
+<h1>理解UTXO:</h1>
+<h2 id="什么是UTXO">什么是UTXO?</h2>
+<blockquote>
+<p>在比特币社区内，有一种这样的说法：<strong>其实并没有比特币，有的只是UTXO</strong>。还有一种说法是：<strong>如果理解了UTXO，你就理解了比特币。</strong></p>
+</blockquote>
+<p>UTXO is all those outputs that are yet to be unlocked by an input.<br />
+<strong>UTXO 是所有尚未被输入解锁的输出。</strong></p>
+<p>一旦一个输出被解锁，它们就会从循环供应中移除。新的输出取而代之。<br />
+因此，未锁定输出的总和将始终等于新创建的输出的值的总和。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png" alt="20220809172014" /></p>
+<p><strong>UTXO 代表未使用的交易输出:</strong></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>它是某人在执行交易后剩余的数字货币数量。</p>
+</li>
+<li class="lvl-2">
+<p>交易完成后，未使用的<code>输出</code>将作为<code>输入</code>存回数据库，稍后可用于另一笔交易。</p>
+</li>
+</ul>
+<p>直接看一笔bitcoin的<a target="_blank" rel="noopener" href="https://www.blockchain.com/btc/tx/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2">真实交易记录</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png" alt="20220810110030" /></p>
+<h2 id="UTXO是如何创建的？">UTXO是如何创建的？</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>UTXO</code> 是通过使用现有的 UTXO 创建的.输入消耗一个现有的<code>UTXO</code>,而输出创建一个新的 <code>UTXO</code>。</p>
+</li>
+<li class="lvl-2">
+<p>每笔比特币交易都由输入和输出组成</p>
+</li>
+<li class="lvl-2">
+<p><code>交易Tx</code>形成了一条链，最近交易的<code>输入</code>对应以前交易的<code>输出</code>。UserA用密钥签名解锁了之前交易的输出，从而向比特币网络证明她拥有这笔钱。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110220.png" alt="交易链中一笔交易输出就是另一笔交易的输入" /></p>
+<p>交易链中一笔交易<code>输出</code>就是另一笔交易的<code>输入</code></p>
+<h2 id="UTXO模型：">UTXO模型：</h2>
+<p>它基于由block组成的一个个交易。<br />
+UTXO 模型是许多加密货币通用的设计，最引人注目的是比特币。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>使用 UTXO 模型的加密货币不使用账户或余额。相反，UTXO 就像实物现金一样在用户之间转移。</p>
+</li>
+<li class="lvl-2">
+<p>UTXO 核心设计思路是：<strong>它记录交易事件，而不记录最终状态</strong></p>
+</li>
+<li class="lvl-2">
+<p>UTXO 模型中的每个事务都可以将系统转换到一个新状态，但是每个事务都转换到一个新状态是不可行的。</p>
+</li>
+<li class="lvl-2">
+<p>网络参与者必须与当前状态保持同步</p>
+</li>
+</ul>
+<h1>比特币交易：</h1>
+<p>简单来说，一笔交易就是告知全网：比特币的持有者已授权把它转帐给其他人。而新持有者可以通过产生另一笔交易，转账给另外的人，依此类推形成一条所有权的链。</p>
+<h2 id="交易输入输出：">交易输入输出：</h2>
+<p>交易就像复式记账法账簿中的行。<br />
+简单来说,每一笔交易包含一个或多个输入,就像比特币账户的借方.这笔交易的另一面，有一个或多个“输出”,就像比特币账户的贷方。<br />
+这些输入和输出的总额(借方和贷方)不需要相等。<br />
+相反，当输出加起来略少于输入数量时,两者的差额就代表了一笔隐含的“矿工费”,这笔矿工费由成功打包交易到区块链账簿的矿工收取。<br />
+如下图描述的是一笔比特币交易作为账簿中的一个条目。</p>
+<p>交易也包含了每一笔被转账的比特币（输入）的所有权证明，它以所有者的数字签名形式存在，并可以被任何人独立验证。<br />
+在比特币术语中，“消费”指的是签名一笔交易：将以前交易的比特币转账给比特币地址所标识的新所有者。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111411.png" alt="20220810111411" /><br />
+交易就像复式记账</p>
+<h2 id="交易链：">交易链：</h2>
+<p>Alice支付Bob咖啡时使用一笔之前的交易作为输入。<br />
+在以前的章节中，Alice从她朋友Joe那里用现金换了点比特币.那笔交易创建了被Alice的密钥锁定的比特币。在她支付Bob咖啡店的新交易中使用了之前的交易作为<code>输入</code>,<code>输出</code>是支付咖啡的金额和多余部分的找零.</p>
+<p><strong>交易形成了一条链，最近交易的输入对应以前交易的输出.</strong><br />
+Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比特币网络证明她拥有这笔钱。<br />
+她将买咖啡的这笔支付到Bob的地址上，明确指明要求是Bob签名才能消费这笔钱，否则就“阻止”那笔输出。<br />
+这就实现了在Alice和Bob之间价值转移。</p>
+<p>下图展示了从Joe到Alice再到Bob的交易链:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111452.png" alt="20220810111452" /><br />
+<strong>交易链中一笔交易输出就是另一笔交易的输入</strong></p>
+<h2 id="找零">找零:</h2>
+<p>许多比特币交易都会包括新所有者的地址（买方地址）和当前所有者的地址（称为找零地址）的输出。<br />
+<strong>这是因为交易输入，就像纸币那样能够不能被再分割。</strong></p>
+<p>如果您在商店购买了5美元的商品，但是使用20美元的美金来支付商品，会收到15美元的找零。相同的概念适用于比特币交易输入。<br />
+如果您购买了一个价格为5比特币的商品，但是你的输入中只有20比特币这一项，那么您需要产生两个输出：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>一个5个比特币的输出发送给店主</p>
+</li>
+<li class="lvl-2">
+<p>另一个15比特币的输出返回自己作为找零(减去任何适用的交易费用)</p>
+</li>
+</ul>
+<p>重要的是，出于隐私的原因，找零地址不必与输入时提供的地址相同，通常是所有者钱包中的新地址。</p>
+<p>不同的钱包可以在合并所有输入，用来匹配自己的付款金额时使用不同的策略。<br />
+它们可能会聚合许多小输入，或者使用等于或大于所需付款的输入。<br />
+除非钱包中的输入，刚好汇总起来与所需付款（加上交易费用）完全相等，否则钱包一定会产生一些找零。</p>
+<p><strong>这与人们如何处理现金非常相似.如果你总是用钱包中的最大面额支付时,那么钱包中的零钱就会越来越多.如果你只使用零钱，整钱就会越来越多.</strong><br />
+人们总是无意识地在这两个极端之间找到平衡，而比特币钱包开发商也力图实现这种平衡。</p>
+<p>总的来讲，<strong>交易是将钱从交易输入移至输出。</strong><br />
+输入通常是前一笔交易的输出的引用，表示价值从何而来。<br />
+交易输出将约定金额发送到新的所有者的比特币地址，并将找零输出返回原来所有者的地址。一笔交易的输出可以被当做另一笔新交易的输入，这样随着钱从一个地址被移动到另一个地址，就形成了一条所有权链.</p>
+<h2 id="常见的交易形式：">常见的交易形式：</h2>
+<h3 id="简单支付-找零">简单支付/找零:</h3>
+<p>最常见的交易形式是从一个地址到另一个地址的简单支付，还包含给支付者的“找零”。<br />
+这类交易有一个输入和两个输出，如图所示:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111535.png" alt="20220810111535" /></p>
+<h3 id="归集资金">归集资金:</h3>
+<p>另一种常见的交易形式是归集多个输入到一个输出的模式。<br />
+这相当于现实生活中将很多硬币和纸币零钱兑换为一个大额面钞。像这样的交易由钱包应用产生，来整理在支付过程收到的许多小额的找零。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111716.png" alt="20220810111716" /></p>
+<h3 id="分散资金">分散资金:</h3>
+<p>最后，另一种在比特币账簿中常见的交易形式是将一个输入分配给多个输出，即多个接收者的交易。<br />
+这类交易有时被商业机构用作分配资金，例如给多个雇员发工资的情形。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111756.png" alt="20220810111756" /></p>
+<h1>开始Debug:</h1>
+<p>前面在系统调试的时候，出现Bug: jerry一开始余额为1000，转账给Tom 100之后，Jerry自己的余额变成了100。<br />
+通过Debug,搞清楚以下问题：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>查询余额的流程是什么？</p>
+</li>
+<li class="lvl-2">
+<p>交易的数据的内容?</p>
+</li>
+<li class="lvl-2">
+<p>如何去构造一个交易？</p>
+</li>
+</ul>
+<p>查询余额函数调用流程：FindUTXOs函数 -》FindUnspentTransactions函数-》未花费的数加起来就是余额。</p>
+<h2 id="交易的内容">交易的内容:</h2>
+<p>交易的数据结构如下:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Transaction <span class="keyword">struct</span> &#123;</span><br><span class="line">	ID      []<span class="type">byte</span></span><br><span class="line">	Inputs  []TxInput  <span class="comment">// 标记支持我们本次转账的前置的交易信息的TxOutput</span></span><br><span class="line">	Outputs []TxOutput <span class="comment">// 记录我们本次转账的amount和Reciever</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重点在于两个数组: <code>Inputs</code>和<code>Outputs</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> TxOutput <span class="keyword">struct</span> &#123;</span><br><span class="line">	Value     <span class="type">int</span>    <span class="comment">// 转出的资产值</span></span><br><span class="line">	ToAddress []<span class="type">byte</span> <span class="comment">// 资产的接收者的地址</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> TxInput <span class="keyword">struct</span> &#123;</span><br><span class="line">	TxID        []<span class="type">byte</span> <span class="comment">// 指明支持本次交易的前置交易信息</span></span><br><span class="line">	OutIdx      <span class="type">int</span>    <span class="comment">// 具体指明是前置交易信息中的第几个Output</span></span><br><span class="line">	FromAddress []<span class="type">byte</span> <span class="comment">// 资产转出者的地址</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创始区块开始,相当于0地址直接转给<code>Jerry</code>，会创建第一个Tx,我们看看第一个tx里面的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tx.ID:This is the Base Transaction!                                  </span><br><span class="line">=======遍历tx.Inputs数组===========================                    </span><br><span class="line">指明支持本次交易的前置交易信息 input.TxID:</span><br><span class="line">资产转出者的地址 input.FromAddress:                                  </span><br><span class="line">具体指明是前置交易信息中的第几个Output input.OutIdx:-1                </span><br><span class="line">=======遍历tx.Outputs数组==========</span><br><span class="line">转出的资产值 output.Value:1000          </span><br><span class="line">资产的接收者的地址 output.ToAddress:Jerry    </span><br><span class="line">=================                               </span><br><span class="line"><span class="built_in">hash</span>:de1a4d1e5cfd9bc6442cacc565309e42fc65767fd86d355ae23fd51139511448               </span><br><span class="line">Pow: <span class="literal">true</span>    </span><br></pre></td></tr></table></figure>
+<p>第二个区块,<code>Jerry</code>转账100给<code>Tom</code>,tx里面的内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Previous <span class="built_in">hash</span>:de1a4d1e5cfd9bc6442cacc565309e42fc65767fd86d355ae23fd51139511448     </span><br><span class="line">Transactions:[0xc00007a140]                     </span><br><span class="line">=======遍历tx.Inputs数组==========                                        </span><br><span class="line">指明支持本次交易的前置交易信息 input.TxID:This is the Base Transaction!     </span><br><span class="line">资产转出者的地址 input.FromAddress:Jerry              </span><br><span class="line">具体指明是前置交易信息中的第几个Output input.OutIdx:0                                       </span><br><span class="line">=======遍历tx.Outputs数组==========                                       </span><br><span class="line">转出的资产值 output.Value:100                     </span><br><span class="line">资产的接收者的地址 output.ToAddress:Tom               </span><br><span class="line">=================         </span><br><span class="line">转出的资产值 output.Value:900                        </span><br><span class="line">资产的接收者的地址 output.ToAddress:Jerry              </span><br><span class="line">=================                              </span><br><span class="line"><span class="built_in">hash</span>:5b4f1b2a52f1ae62368c5472e932ae85e3b6bedb451ace8fa6436c858d8e3359</span><br><span class="line">Pow: <span class="literal">true</span>   </span><br></pre></td></tr></table></figure>
+<p>第三个区块,<code>Tom</code>转账30给<code>Gia</code>,tx里面的内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Timestamp:1660028211                  </span><br><span class="line">Previous <span class="built_in">hash</span>:5b4f1b2a52f1ae62368c5472e932ae85e3b6bedb451ace8fa6436c858d8e3359               </span><br><span class="line">Transactions:[0xc00007a190]                   </span><br><span class="line">tx.ID:       </span><br><span class="line">=======遍历tx.Inputs数组==========                                         </span><br><span class="line">指明支持本次交易的前置交易信息 input.TxID:                               </span><br><span class="line">资产转出者的地址 input.FromAddress:Tom                                     </span><br><span class="line">具体指明是前置交易信息中的第几个Output input.OutIdx:0     </span><br><span class="line">=======遍历tx.Outputs数组==========                                             </span><br><span class="line">转出的资产值 output.Value:30                         </span><br><span class="line">资产的接收者的地址 output.ToAddress:Gia                </span><br><span class="line">=================                        </span><br><span class="line">转出的资产值 output.Value:70                          </span><br><span class="line">资产的接收者的地址 output.ToAddress:Tom        </span><br><span class="line">=================                       </span><br><span class="line"><span class="built_in">hash</span>:dc72eea25324af0be865d25b8c2289ec7da1a4600f69776a1ac608160d773c6a</span><br><span class="line">Pow: <span class="literal">true</span>         </span><br></pre></td></tr></table></figure>
+<p>测试所做的操作：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Block1: 创世区块 分配1000给Jerry</p>
+</li>
+<li class="lvl-2">
+<p>Block2: Jerry转账100给Tom</p>
+</li>
+<li class="lvl-2">
+<p>Block3: Tom转账30给Gia</p>
+</li>
+<li class="lvl-2">
+<p>Block4: Jerry转账50给Gia</p>
+</li>
+<li class="lvl-2">
+<p>Block5: Gia转账5给Jane</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810103306.png" alt="20220810103306" /></p>
+<p>例如Jerry转账50给Gia时,创建的交易：</p>
+<ol>
+<li class="lvl-3">
+<p>指定一个之前的Output作为Inputs: 指向之前的交易<code>Tx2</code>,先找到Jerry的未花费交易为900(同样是Jerry的余额)</p>
+</li>
+<li class="lvl-3">
+<p>产生两个输出：</p>
+<ul class="lvl-2">
+<li class="lvl-6">50块的输出发送给Gia</li>
+<li class="lvl-6">另一个850的输出返回自己作为找零</li>
+</ul>
+</li>
+</ol>
+<h2 id="查询余额原理">查询余额原理:</h2>
+<p>查询某地址余额:<br />
+从当前区块直到创世区块，开始扫描每一笔交易，如果：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>遇到某笔交易的某个<code>Output</code>是钱包管理的地址之一，则钱包余额增加；</p>
+</li>
+<li class="lvl-2">
+<p>遇到某笔交易的某个<code>Input</code>是钱包管理的地址之一，则钱包余额减少。</p>
+</li>
+</ul>
+<p>钱包的当前余额总是钱包地址关联的所有UTXO金额之和。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/74050135">什么是UTXO</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch02.md"></a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1207298049439968/1207298275932480">UTXO模型</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/15749.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM创建智能合约-Create()</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/283.html" rel="bookmark">StudyRecord-以太坊源码分析-通过EVM执行转账或合约调用-Call()</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/54888.html" rel="prev" title="StudyRecord-What_is_Unspent_Transaction_Output_UTXO">
+      <i class="fa fa-chevron-left"></i> StudyRecord-What_is_Unspent_Transaction_Output_UTXO
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">交易信息池：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">系统调试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">理解UTXO:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFUTXO"><span class="nav-number">4.1.</span> <span class="nav-text">什么是UTXO?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%98%AF%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%9A%84%EF%BC%9F"><span class="nav-number">4.2.</span> <span class="nav-text">UTXO是如何创建的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">UTXO模型：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">比特币交易：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">交易输入输出：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E9%93%BE%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">交易链：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E9%9B%B6"><span class="nav-number">5.3.</span> <span class="nav-text">找零:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BA%A4%E6%98%93%E5%BD%A2%E5%BC%8F%EF%BC%9A"><span class="nav-number">5.4.</span> <span class="nav-text">常见的交易形式：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%94%AF%E4%BB%98-%E6%89%BE%E9%9B%B6"><span class="nav-number">5.4.1.</span> <span class="nav-text">简单支付&#x2F;找零:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E9%9B%86%E8%B5%84%E9%87%91"><span class="nav-number">5.4.2.</span> <span class="nav-text">归集资金:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%95%A3%E8%B5%84%E9%87%91"><span class="nav-number">5.4.3.</span> <span class="nav-text">分散资金:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">开始Debug:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">6.1.</span> <span class="nav-text">交易的内容:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BD%99%E9%A2%9D%E5%8E%9F%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">查询余额原理:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">624k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:27</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
