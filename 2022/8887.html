@@ -29,7 +29,6 @@
 <meta property="og:site_name" content="Trash Bin">
 <meta property="og:description" content="Pre: Go Blockchain Tutorial Part 4: Read,Store and Manage 学习记录 交易信息池： 我们知道区块链中每个区块可以存放复数个交易信息，而不是每生成一个交易信息就创建一个区块加入区块链。 对于一个区块链节点而言，它会将自己生成的交易信息与从其它节点收集的交易信息存储于一个交易信息池Transaction Pool中。 当存储的交易信息数量达到一阈">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110220.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111411.png">
@@ -38,13 +37,14 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111716.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111756.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810103306.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809140957.png">
 <meta property="article:published_time" content="2022-08-10T04:00:34.000Z">
-<meta property="article:modified_time" content="2022-08-10T04:00:55.506Z">
+<meta property="article:modified_time" content="2022-08-10T06:44:58.706Z">
 <meta property="article:author" content="Foolisheddy">
 <meta property="article:tag" content="StudyRecord">
 <meta property="article:tag" content="BlockChain">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png">
 
 <link rel="canonical" href="https://jerrychan807.github.io/2022/8887.html">
 
@@ -216,7 +216,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-08-10 12:00:34 / Modified: 12:00:55" itemprop="dateCreated datePublished" datetime="2022-08-10T12:00:34+08:00">2022-08-10</time>
+              <time title="Created: 2022-08-10 12:00:34 / Modified: 14:44:58" itemprop="dateCreated datePublished" datetime="2022-08-10T12:00:34+08:00">2022-08-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -287,12 +287,10 @@
 <blockquote>
 <p>在比特币社区内，有一种这样的说法：<strong>其实并没有比特币，有的只是UTXO</strong>。还有一种说法是：<strong>如果理解了UTXO，你就理解了比特币。</strong></p>
 </blockquote>
-<p>UTXO is all those outputs that are yet to be unlocked by an input.<br />
-<strong>UTXO 是所有尚未被输入解锁的输出。</strong></p>
-<p>一旦一个输出被解锁，它们就会从循环供应中移除。新的输出取而代之。<br />
-因此，未锁定输出的总和将始终等于新创建的输出的值的总和。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809172014.png" alt="20220809172014" /></p>
-<p><strong>UTXO 代表未使用的交易输出:</strong></p>
+<p>全称为 <code>Unspent Transaction output</code><br />
+UTXO is all those outputs that are yet to be unlocked by an input.<br />
+<strong>UTXO 是所有尚未被输入解锁的输出.</strong><br />
+<strong>UTXO 代表未被使用的交易输出:</strong></p>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p>它是某人在执行交易后剩余的数字货币数量。</p>
@@ -301,56 +299,54 @@
 <p>交易完成后，未使用的<code>输出</code>将作为<code>输入</code>存回数据库，稍后可用于另一笔交易。</p>
 </li>
 </ul>
-<p>直接看一笔bitcoin的<a target="_blank" rel="noopener" href="https://www.blockchain.com/btc/tx/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2">真实交易记录</a>:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png" alt="20220810110030" /></p>
 <h2 id="UTXO是如何创建的？">UTXO是如何创建的？</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><code>UTXO</code> 是通过使用现有的 UTXO 创建的.输入消耗一个现有的<code>UTXO</code>,而输出创建一个新的 <code>UTXO</code>。</p>
+<p><code>UTXO</code> 是通过使用现有的 UTXO 创建的.<code>输入</code>消耗一个现有的<code>UTXO</code>,而<code>输出</code>创建一个新的 <code>UTXO</code>。</p>
 </li>
 <li class="lvl-2">
-<p>每笔比特币交易都由输入和输出组成</p>
-</li>
-<li class="lvl-2">
-<p><code>交易Tx</code>形成了一条链，最近交易的<code>输入</code>对应以前交易的<code>输出</code>。UserA用密钥签名解锁了之前交易的输出，从而向比特币网络证明她拥有这笔钱。</p>
+<p>每笔比特币交易都由<code>输入</code>和<code>输</code>出组成</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110220.png" alt="交易链中一笔交易输出就是另一笔交易的输入" /></p>
-<p>交易链中一笔交易<code>输出</code>就是另一笔交易的<code>输入</code></p>
+<p>例如直接看一笔bitcoin的<a target="_blank" rel="noopener" href="https://www.blockchain.com/btc/tx/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2">真实交易记录</a>，可以看到交易的<code>输入</code>和<code>输出</code>部分：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110030.png" alt="20220810110030" /></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>交易Tx</code>形成了一条链，最近交易的<code>输入</code>对应以前交易的<code>输出</code></p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810110220.png" alt="交易链中一笔交易输出就是另一笔交易的输入" /><br />
+交易链中一笔交易<code>输出</code>就是另一笔交易的<code>输入</code></p>
 <h2 id="UTXO模型：">UTXO模型：</h2>
 <p>它基于由block组成的一个个交易。<br />
 UTXO 模型是许多加密货币通用的设计，最引人注目的是比特币。</p>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p>使用 UTXO 模型的加密货币不使用账户或余额。相反，UTXO 就像实物现金一样在用户之间转移。</p>
+<p>使用 UTXO 模型的加密货币不使用<code>账户</code>或<code>余额</code>。相反，UTXO 就像实物现金一样在用户之间转移。</p>
 </li>
 <li class="lvl-2">
-<p>UTXO 核心设计思路是：<strong>它记录交易事件，而不记录最终状态</strong></p>
-</li>
-<li class="lvl-2">
-<p>UTXO 模型中的每个事务都可以将系统转换到一个新状态，但是每个事务都转换到一个新状态是不可行的。</p>
-</li>
-<li class="lvl-2">
-<p>网络参与者必须与当前状态保持同步</p>
+<p>UTXO 核心设计思路是：<code>它记录交易事件，而不记录最终状态</code></p>
 </li>
 </ul>
 <h1>比特币交易：</h1>
 <p>简单来说，一笔交易就是告知全网：比特币的持有者已授权把它转帐给其他人。而新持有者可以通过产生另一笔交易，转账给另外的人，依此类推形成一条所有权的链。</p>
 <h2 id="交易输入输出：">交易输入输出：</h2>
 <p>交易就像复式记账法账簿中的行。<br />
-简单来说,每一笔交易包含一个或多个输入,就像比特币账户的借方.这笔交易的另一面，有一个或多个“输出”,就像比特币账户的贷方。<br />
-这些输入和输出的总额(借方和贷方)不需要相等。<br />
-相反，当输出加起来略少于输入数量时,两者的差额就代表了一笔隐含的“矿工费”,这笔矿工费由成功打包交易到区块链账簿的矿工收取。<br />
-如下图描述的是一笔比特币交易作为账簿中的一个条目。</p>
-<p>交易也包含了每一笔被转账的比特币（输入）的所有权证明，它以所有者的数字签名形式存在，并可以被任何人独立验证。<br />
+简单来说,每一笔交易包含一个或多个输入,就像比特币账户的借方.<br />
+这笔交易的另一面，有一个或多个“输出”,就像比特币账户的贷方。<br />
+这些输入和输出的总额(借方和贷方)不需要相等。</p>
+<p>相反，当输出加起来略少于输入数量时,两者的差额就代表了一笔隐含的“矿工费”,这笔矿工费由成功打包交易到区块链账簿的矿工收取。</p>
+<p>如下图描述的是一笔比特币交易作为账簿中的一个条目。</p>
+<p>交易也包含了每一笔被转账的比特币（输入）的<code>所有权证明</code>，它以所有者的数字签名形式存在，并可以被任何人独立验证。<br />
 在比特币术语中，“消费”指的是签名一笔交易：将以前交易的比特币转账给比特币地址所标识的新所有者。</p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810111411.png" alt="20220810111411" /><br />
-交易就像复式记账</p>
+<strong>交易就像复式记账</strong></p>
 <h2 id="交易链：">交易链：</h2>
 <p>Alice支付Bob咖啡时使用一笔之前的交易作为输入。<br />
-在以前的章节中，Alice从她朋友Joe那里用现金换了点比特币.那笔交易创建了被Alice的密钥锁定的比特币。在她支付Bob咖啡店的新交易中使用了之前的交易作为<code>输入</code>,<code>输出</code>是支付咖啡的金额和多余部分的找零.</p>
-<p><strong>交易形成了一条链，最近交易的输入对应以前交易的输出.</strong><br />
-Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比特币网络证明她拥有这笔钱。<br />
+在以前的章节中，Alice从她朋友Joe那里用现金换了点比特币.那笔交易创建了被Alice的密钥锁定的比特币。<br />
+在她支付Bob咖啡店的新交易中使用了之前的交易作为<code>输入</code>,<code>输出</code>是支付咖啡的金额和多余部分的找零.</p>
+<p><strong>交易形成了一条链，最近交易的输入对应以前交易的输出.</strong></p>
+<p>Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比特币网络证明她拥有这笔钱。<br />
 她将买咖啡的这笔支付到Bob的地址上，明确指明要求是Bob签名才能消费这笔钱，否则就“阻止”那笔输出。<br />
 这就实现了在Alice和Bob之间价值转移。</p>
 <p>下图展示了从Joe到Alice再到Bob的交易链:<br />
@@ -375,9 +371,10 @@ Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比�
 除非钱包中的输入，刚好汇总起来与所需付款（加上交易费用）完全相等，否则钱包一定会产生一些找零。</p>
 <p><strong>这与人们如何处理现金非常相似.如果你总是用钱包中的最大面额支付时,那么钱包中的零钱就会越来越多.如果你只使用零钱，整钱就会越来越多.</strong><br />
 人们总是无意识地在这两个极端之间找到平衡，而比特币钱包开发商也力图实现这种平衡。</p>
-<p>总的来讲，<strong>交易是将钱从交易输入移至输出。</strong><br />
-输入通常是前一笔交易的输出的引用，表示价值从何而来。<br />
-交易输出将约定金额发送到新的所有者的比特币地址，并将找零输出返回原来所有者的地址。一笔交易的输出可以被当做另一笔新交易的输入，这样随着钱从一个地址被移动到另一个地址，就形成了一条所有权链.</p>
+<p>总的来讲，<strong>交易是将钱从交易输入移至输出。</strong></p>
+<p><code>输入</code>通常是前一笔交易的输出的引用，表示价值从何而来。<br />
+交易输出将约定金额发送到新的所有者的比特币地址，并将找零输出返回原来所有者的地址。<br />
+一笔交易的输出可以被当做另一笔新交易的输入，这样随着钱从一个地址被移动到另一个地址，就形成了一条所有权链.</p>
 <h2 id="常见的交易形式：">常见的交易形式：</h2>
 <h3 id="简单支付-找零">简单支付/找零:</h3>
 <p>最常见的交易形式是从一个地址到另一个地址的简单支付，还包含给支付者的“找零”。<br />
@@ -396,17 +393,16 @@ Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比�
 通过Debug,搞清楚以下问题：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p>查询余额的流程是什么？</p>
-</li>
-<li class="lvl-2">
-<p>交易的数据的内容?</p>
-</li>
-<li class="lvl-2">
 <p>如何去构造一个交易？</p>
 </li>
+<li class="lvl-2">
+<p>交易数据的内容具体有什么?</p>
+</li>
+<li class="lvl-2">
+<p>查询余额的流程是什么？</p>
+</li>
 </ul>
-<p>查询余额函数调用流程：FindUTXOs函数 -》FindUnspentTransactions函数-》未花费的数加起来就是余额。</p>
-<h2 id="交易的内容">交易的内容:</h2>
+<h2 id="交易数据的内容">交易数据的内容:</h2>
 <p>交易的数据结构如下:</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Transaction <span class="keyword">struct</span> &#123;</span><br><span class="line">	ID      []<span class="type">byte</span></span><br><span class="line">	Inputs  []TxInput  <span class="comment">// 标记支持我们本次转账的前置的交易信息的TxOutput</span></span><br><span class="line">	Outputs []TxOutput <span class="comment">// 记录我们本次转账的amount和Reciever</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>重点在于两个数组: <code>Inputs</code>和<code>Outputs</code></p>
@@ -435,17 +431,21 @@ Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比�
 <p>Block5: Gia转账5给Jane</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810103306.png" alt="20220810103306" /></p>
-<p>例如Jerry转账50给Gia时,创建的交易：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220810103306.png" alt="20220810103306" /><br />
+例如Jerry转账50给Gia时,创建的交易：</p>
 <ol>
 <li class="lvl-3">
-<p>指定一个之前的Output作为Inputs: 指向之前的交易<code>Tx2</code>,先找到Jerry的未花费交易为900(同样是Jerry的余额)</p>
+<p>Inputs: 指定一个之前的Output作为Inputs:</p>
+<ul class="lvl-2">
+<li class="lvl-6">指向之前的交易<code>Tx2</code></li>
+<li class="lvl-6">找到Jerry的未花费交易输出为900(同样是Jerry的余额)</li>
+</ul>
 </li>
 <li class="lvl-3">
-<p>产生两个输出：</p>
+<p>Outputs: 产生两个输出</p>
 <ul class="lvl-2">
-<li class="lvl-6">50块的输出发送给Gia</li>
-<li class="lvl-6">另一个850的输出返回自己作为找零</li>
+<li class="lvl-6">Output1： 50块的输出发送给Gia</li>
+<li class="lvl-6">Output2： 另一个850的输出返回给自己作为找零</li>
 </ul>
 </li>
 </ol>
@@ -460,17 +460,22 @@ Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比�
 <p>遇到某笔交易的某个<code>Input</code>是钱包管理的地址之一，则钱包余额减少。</p>
 </li>
 </ul>
-<p>钱包的当前余额总是钱包地址关联的所有UTXO金额之和。</p>
+<p>钱包的当前余额总是钱包地址关联的所有UTXO金额之和。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220809140957.png" alt="20220809140957" /><br />
+上图中所有<code>绿色的交易输出</code>才是 UTXO，<code>红色的交易输出</code>已经被当前『账户』使用了，所以在计算当前账户的余额时只会考虑绿色的交易输出，也就是 UTXO。</p>
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/74050135">什么是UTXO</a></p>
 </li>
 <li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch02.md"></a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tianmingyun/MasterBitcoin2CN/blob/master/ch02.md">第2章 比特币工作原理</a></p>
 </li>
 <li class="lvl-2">
 <p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1207298049439968/1207298275932480">UTXO模型</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.krad.top/goblockchain04/">Go Blockchain Tutorial Part 4: Read,Store and Manage</a></p>
 </li>
 </ul>
 
@@ -581,7 +586,7 @@ Alice用密钥签名解锁了之前交易的<code>输出</code>，从而向比�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">交易信息池：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">系统调试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">理解UTXO:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFUTXO"><span class="nav-number">4.1.</span> <span class="nav-text">什么是UTXO?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%98%AF%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%9A%84%EF%BC%9F"><span class="nav-number">4.2.</span> <span class="nav-text">UTXO是如何创建的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">UTXO模型：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">比特币交易：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">交易输入输出：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E9%93%BE%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">交易链：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E9%9B%B6"><span class="nav-number">5.3.</span> <span class="nav-text">找零:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BA%A4%E6%98%93%E5%BD%A2%E5%BC%8F%EF%BC%9A"><span class="nav-number">5.4.</span> <span class="nav-text">常见的交易形式：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%94%AF%E4%BB%98-%E6%89%BE%E9%9B%B6"><span class="nav-number">5.4.1.</span> <span class="nav-text">简单支付&#x2F;找零:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E9%9B%86%E8%B5%84%E9%87%91"><span class="nav-number">5.4.2.</span> <span class="nav-text">归集资金:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%95%A3%E8%B5%84%E9%87%91"><span class="nav-number">5.4.3.</span> <span class="nav-text">分散资金:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">开始Debug:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">6.1.</span> <span class="nav-text">交易的内容:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BD%99%E9%A2%9D%E5%8E%9F%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">查询余额原理:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">交易信息池：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">系统调试:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">理解UTXO:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFUTXO"><span class="nav-number">4.1.</span> <span class="nav-text">什么是UTXO?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%98%AF%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%9A%84%EF%BC%9F"><span class="nav-number">4.2.</span> <span class="nav-text">UTXO是如何创建的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTXO%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">UTXO模型：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">比特币交易：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">交易输入输出：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E9%93%BE%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">交易链：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E9%9B%B6"><span class="nav-number">5.3.</span> <span class="nav-text">找零:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BA%A4%E6%98%93%E5%BD%A2%E5%BC%8F%EF%BC%9A"><span class="nav-number">5.4.</span> <span class="nav-text">常见的交易形式：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%94%AF%E4%BB%98-%E6%89%BE%E9%9B%B6"><span class="nav-number">5.4.1.</span> <span class="nav-text">简单支付&#x2F;找零:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E9%9B%86%E8%B5%84%E9%87%91"><span class="nav-number">5.4.2.</span> <span class="nav-text">归集资金:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%95%A3%E8%B5%84%E9%87%91"><span class="nav-number">5.4.3.</span> <span class="nav-text">分散资金:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">开始Debug:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E6%95%B0%E6%8D%AE%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">6.1.</span> <span class="nav-text">交易数据的内容:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BD%99%E9%A2%9D%E5%8E%9F%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">查询余额原理:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
