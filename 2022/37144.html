@@ -22,42 +22,29 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="漏洞复现 未开启debug模式, 1234567url: http:&#x2F;&#x2F;tp1-11:8888&#x2F;public&#x2F;index.php?s&#x3D;captchapost:_method&#x3D;__construct&amp;filter[]&#x3D;system&amp;method&#x3D;get&amp;get[]&#x3D;whoami  漏洞分析: 定位关键代码:  第525行: 读取了配置文件的var_method,  并赋值">
+  <meta name="description" content="Pre: 活动说明 简言之，先跑全节点然后8.15前填表，如果被选中为验证者参与激励测试网就可以获得2000sui代币奖励。 Sui公链介绍: 可参考视频:Sui—前facebook团队和顶级机构创建的新一代区块链公链【Vic TALK 第263期】 奖励规则:   激励测试网团队目标是 4 轮，每一轮成功参与的验证者都可以获得 2000 枚，所以总共不只是 2000 枚。   而且验证者只是激励">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析">
-<meta property="og:url" content="https://jerrychan807.github.io/2019/14782.html">
+<meta property="og:title" content="DevRecord-Sui节点搭建和验证节点申请">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/37144.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="漏洞复现 未开启debug模式, 1234567url: http:&#x2F;&#x2F;tp1-11:8888&#x2F;public&#x2F;index.php?s&#x3D;captchapost:_method&#x3D;__construct&amp;filter[]&#x3D;system&amp;method&#x3D;get&amp;get[]&#x3D;whoami  漏洞分析: 定位关键代码:  第525行: 读取了配置文件的var_method,  并赋值">
+<meta property="og:description" content="Pre: 活动说明 简言之，先跑全节点然后8.15前填表，如果被选中为验证者参与激励测试网就可以获得2000sui代币奖励。 Sui公链介绍: 可参考视频:Sui—前facebook团队和顶级机构创建的新一代区块链公链【Vic TALK 第263期】 奖励规则:   激励测试网团队目标是 4 轮，每一轮成功参与的验证者都可以获得 2000 枚，所以总共不只是 2000 枚。   而且验证者只是激励">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d70444143.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7055332e.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d705c5a02.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d7068e01a.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d707cf7fd.jpg">
-<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d70872afc.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg">
-<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg">
-<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg">
-<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg">
-<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg">
-<meta property="article:published_time" content="2019-01-14T14:36:34.000Z">
-<meta property="article:modified_time" content="2022-06-14T02:59:44.507Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813152542.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806134128.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813111147.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813153409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806164432.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806163609.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813110832.png">
+<meta property="article:published_time" content="2022-08-13T04:00:34.000Z">
+<meta property="article:modified_time" content="2022-08-13T07:58:25.015Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="VulnAnalysis">
+<meta property="article:tag" content="BlockChain">
+<meta property="article:tag" content="DevRecord">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813152542.png">
 
-<link rel="canonical" href="https://jerrychan807.github.io/2019/14782.html">
+<link rel="canonical" href="https://jerrychan807.github.io/2022/37144.html">
 
 
 <script id="page-configurations">
@@ -70,7 +57,7 @@
   };
 </script>
 
-  <title>ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析 | Trash Bin</title>
+  <title>DevRecord-Sui节点搭建和验证节点申请 | Trash Bin</title>
   
 
 
@@ -203,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2019/14782.html">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/37144.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
@@ -216,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析
+          DevRecord-Sui节点搭建和验证节点申请
         </h1>
 
         <div class="post-meta">
@@ -225,23 +212,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2019-01-14 22:36:34" itemprop="dateCreated datePublished" datetime="2019-01-14T22:36:34+08:00">2019-01-14</time>
+              <time title="Created: 2022-08-13 12:00:34 / Modified: 15:58:25" itemprop="dateCreated datePublished" datetime="2022-08-13T12:00:34+08:00">2022-08-13</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-06-14 10:59:44" itemprop="dateModified" datetime="2022-06-14T10:59:44+08:00">2022-06-14</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/VulnAnalysis/" itemprop="url" rel="index"><span itemprop="name">VulnAnalysis</span></a>
+                  <a href="/categories/DevRecord/" itemprop="url" rel="index"><span itemprop="name">DevRecord</span></a>
                 </span>
             </span>
 
@@ -258,7 +239,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>802</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -277,109 +258,128 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1>漏洞复现</h1>
-<p>未开启debug模式,</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">url: </span><br><span class="line"></span><br><span class="line">http://tp1-11:8888/public/index.php?s=captcha</span><br><span class="line"></span><br><span class="line">post:</span><br><span class="line"></span><br><span class="line">_method=__construct&amp;filter[]=system&amp;method=get&amp;get[]=whoami</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7015713b.jpg" alt="" /></p>
-<h1>漏洞分析:</h1>
-<p>定位关键代码:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d702b349b.jpg" alt="" /></p>
-<p>第525行: 读取了配置文件的<code>var_method</code>,</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7034882d.jpg" alt="" /></p>
-<p>并赋值</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">$this</span>-&gt;method = _method</span><br></pre></td></tr></table></figure>
-<p>第526行:</p>
-<p>引用了外部变量$POST</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d703bcc3f.jpg" alt="" /></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">$this</span>-&gt;&#123;<span class="variable language_">$this</span>-&gt;method&#125;(<span class="variable">$_POST</span>);  </span><br></pre></td></tr></table></figure>
-<p>执行结果:</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70444143.jpg" alt="" /></p>
-<p>将Request类的method覆盖了,这个时候将调用Request类构造函数<code>__construct</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7055332e.jpg" alt="" /></p>
-<p>构造函数引入了外部变量,准备创建一个新实例</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d705c5a02.jpg" alt="" /></p>
-<p>这个实例的属性</p>
+        <h1>Pre:</h1>
+<p><a target="_blank" rel="noopener" href="https://sui.io/resources-sui/validator-registration-open/?utm_source=social&amp;utm_medium=social&amp;utm_campaign=registervalidator">活动说明</a><br />
+简言之，先跑全节点然后8.15前填表，如果被选中为验证者参与激励测试网就可以获得2000sui代币奖励。</p>
+<h1>Sui公链介绍:</h1>
+<p>可参考视频:<a target="_blank" rel="noopener" href="https://youtu.be/bTiyATYCU20">Sui—前facebook团队和顶级机构创建的新一代区块链公链【Vic TALK 第263期】</a></p>
+<h1>奖励规则:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><code>$method</code>被设置成了<code>get</code></p>
+<p>激励测试网团队目标是 4 轮，每一轮成功参与的验证者都可以获得 2000 枚，所以总共不只是 2000 枚。</p>
 </li>
 <li class="lvl-2">
-<p><code>$get</code>方法的请求参数被设置成了一个array,值为<code>whoami</code></p>
+<p>而且验证者只是激励网的其中一个任务而已，还有其他任务没公布呢，后面会公布其他任务，目前先开放了验证者报名入口</p>
 </li>
 <li class="lvl-2">
-<p>全局过滤规则<code>$filter</code>被设置成了一个array,值为<code>system</code></p>
+<p>总量100亿，参与测试给2000个，锁仓1年</p>
 </li>
 </ul>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d7068e01a.jpg" alt="" /></p>
-<p>这个时候实例的初始化完成了。</p>
-<p>跳回到了<code>Route.php</code>检测URL路由的函数<code>check()</code>,这个时候的<code>method</code>值为<code>get</code></p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d707cf7fd.jpg" alt="" /></p>
-<p>经过一连串检测之后,</p>
-<p><code>App.php</code>run()函数对请求执行调用分发</p>
-<p><img src="https://i.loli.net/2019/04/25/5cc1d70872afc.jpg" alt="" /></p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qen6irnj311v0da46r.jpg" alt="" /></p>
-<p>继续跟进，</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qhscv91j312u0lugyx.jpg" alt="" /></p>
-<p>调用栈:</p>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qk80k5kj309c05a0uh.jpg" alt="" /></p>
+<p>现在是第一轮奖励，要求的就是：</p>
+<ol>
+<li class="lvl-3">
+<p>运行Sui节点</p>
+</li>
+<li class="lvl-3">
+<p>填表申请成为验证者，审核通过再说(听天由命了…)</p>
+</li>
+</ol>
+<h2 id="成为验证者常见问题">成为验证者常见问题:</h2>
+<p>申请验证者才可以参加测试网</p>
+<ol>
+<li class="lvl-3">
+<p>是否必须有公司才能成为验证者？  如果没有公司的话，可以填 individual</p>
+</li>
+<li class="lvl-3">
+<p>激励测试网有多少名额可用？  没有固定数量名额</p>
+</li>
+<li class="lvl-3">
+<p>如果我的 Coinlist 账户被封了怎么办？  我们将只能通过 CoinList 分发奖励，但我们已要求他们明确说明来自俄罗斯和中国的用户如何访问此流程。</p>
+</li>
+<li class="lvl-3">
+<p>Devnet 节点必须强制更新到最新版本？    是的</p>
+</li>
+<li class="lvl-3">
+<p>将有几波激励测试网？  目标是 4 波</p>
+</li>
+<li class="lvl-3">
+<p>对于 KYC，我可以编辑我的电子邮件以使用 Coinlist 电子邮件吗？  如果你被选中，我们会要求你使用现有的 Coinlist 账户（如果你有的话）</p>
+</li>
+<li class="lvl-3">
+<p>我可以用新电子邮件重新填写申请表格吗？  可以</p>
+</li>
+<li class="lvl-3">
+<p>如果我需要通过 KYC，我可以更改我的电子邮件地址吗？因为我用于 KYC 的电子邮件和我用于填写表单的电子邮件不同？  是的，你可以使用一个不同的电子邮件来处理 KYC 问题。</p>
+</li>
+<li class="lvl-3">
+<p>填写表格的截止日期是什么时候？  我们将在 8 月 15 日关闭申请。</p>
+</li>
+<li class="lvl-4">
+<p>那些运行节点但没有发送 IP 到 discord 频道 node-ip-application的成员怎么办？  您必须在表格上提供 IP</p>
+</li>
+<li class="lvl-4">
+<p>我在频道中共享了 2 个 IP 地址。我应该在表格上提交哪一个？  你想让我们检查的那个</p>
+</li>
+<li class="lvl-4">
+<p>有多少人会被选中？  暂时没有限制</p>
+</li>
+</ol>
+<blockquote>
+<p>简单了解完规则后,现在我们先要运行Sui节点.</p>
+</blockquote>
+<h1>Vps选购:</h1>
+<p>官方推荐配置要求：<code>m5.2xlarge (8vCPU, 32GB RAM) + 128GB SSD</code></p>
+<h2 id="hetzner">hetzner:</h2>
+<p>信息收集了一波后，这家vps提供商<a target="_blank" rel="noopener" href="https://www.hetzner.com/">hetzner</a>性价比比较高。<br />
+<a target="_blank" rel="noopener" href="https://www.hetzner.com/dedicated-rootserver/matrix-ax">套餐页面</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813152542.png" alt="20220813152542" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806134128.png" alt="20220806134128" /><br />
+实名认证后，就可以购买服务器了。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813111147.png" alt="20220813111147" /><br />
+14天试用期，不用先付钱，后来看到<code>contabo</code>的套餐更便宜，就把这个删了。</p>
+<h2 id="contabo">contabo:</h2>
+<p><a target="_blank" rel="noopener" href="https://contabo.com/en/">contabo</a><br />
+套餐页面：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813153409.png" alt="20220813153409" /><br />
+选配下来后，大约23、24$每个月(PayPal支付)。</p>
+<h1>运行全节点:</h1>
+<h2 id="源码构建">源码构建:</h2>
+<p>参考<a target="_blank" rel="noopener" href="https://medium.com/coinmonks/tutorial-how-to-install-a-full-node-on-the-sui-network-of-mysten-labs-for-beginners-devnet-e482aa30537a">Tutorial — How to install a Full node on the SUI network of Mysten Labs for beginners — DEVNET</a><br />
+其实挺简单的：就是装依赖、拉Sui节点代码、设置好配置文件、编译运行节点即可。<br />
+最后再升级一下，不然会有很多报错。参考<a target="_blank" rel="noopener" href="https://docs.sui.io/build/fullnode?utm_source=blog&amp;utm_medium=website&amp;utm_campaign=registrvalidators#built-from-source">官方文档</a>进行升级<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806164432.png" alt="20220806164432" /></p>
+<h2 id="检测节点状态">检测节点状态:</h2>
+<p>然后再在这个网站检查一下节点状态 <a target="_blank" rel="noopener" href="https://node.sui.zvalid.com/">https://node.sui.zvalid.com/</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806163609.png" alt="20220806163609" /></p>
+<blockquote>
+<p>至此，如果检测正常，那么全节点就运行起来了。</p>
+</blockquote>
+<h2 id="docker构建">docker构建:</h2>
+<p>没试这种方式，需要敲的命令比较少，请参考:</p>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><code>param()</code>获取当前请求的参数</p>
+<p><a target="_blank" rel="noopener" href="https://mirror.xyz/0x2ba8f8db6c26fB36F14F9a8c32158e201632d677/zajDQ7XDUTdFIzklZs7TG0Aw-OfQ76z6FzUzRGKjalo">如何0基础学会搭建Sui 开发网全节点 | 节点教程</a></p>
 </li>
 <li class="lvl-2">
-<p><code>method()</code>当前的请求类型</p>
-</li>
-<li class="lvl-2">
-<p><code>server()</code>获取server参数</p>
-</li>
-<li class="lvl-2">
-<p><code>input()</code>获取变量 支持过滤和默认值</p>
-</li>
-<li class="lvl-2">
-<p><code>getFilter()</code>获取过滤方法</p>
+<p><a target="_blank" rel="noopener" href="https://www.theblockbeats.info/news/31505">新公链Sui测试网明牌奖励，手把手教你搭建节点</a></p>
 </li>
 </ul>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qnb07thj30jj06uju4.jpg" alt="" /></p>
-<p>这个时候我们之前创建的请求实例的<code>filter</code>方法为<code>system</code></p>
-<p>继续</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7qur7jtvj309e01vgma.jpg" alt="" /></p>
+<h1>填写申请表:</h1>
+<p>填写申请表: <a target="_blank" rel="noopener" href="https://airtable.com/shr3phh3FCZYhZUDF">https://airtable.com/shr3phh3FCZYhZUDF</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813110832.png" alt="20220813110832" /></p>
+<blockquote>
+<p>至此，第一轮奖励活动，我们要做的工作就做完了，接下来就是等审核，听天由命。。。</p>
+</blockquote>
+<h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><code>param()</code>获取当前请求的参数</p>
-</li>
-</ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7qvuht18j30s00con3k.jpg" alt="" /></p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>get()</code>设置获取GET参数</p>
-</li>
-</ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fz7qwkd5yrj30ot08l428.jpg" alt="" /></p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r0j1jbdj309d01vaar.jpg" alt="" /></p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>input()</code>获取变量 支持过滤和默认值</p>
-</li>
-</ul>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fz7r1w473pj30in0m4gsh.jpg" alt="" /></p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><code>array_walk_recursive()</code></p>
+<p><a target="_blank" rel="noopener" href="https://docs.sui.io/build/fullnode?utm_source=blog&amp;utm_medium=website&amp;utm_campaign=registrvalidators">Run a Sui Fullnode</a></p>
 </li>
 <li class="lvl-2">
-<p><code>filterValue</code>递归过滤给定的值<br />
-<img src="https://ws2.sinaimg.cn/large/006tNc79gy1fz7r3rql44j30o70ewwl1.jpg" alt="" /></p>
-</li>
-</ul>
-<p>执行结果:</p>
-<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fz7r53bec4j31080f40zt.jpg" alt="" /></p>
-<h1>refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3845">ThinkPHP 5.0.0~5.0.23 RCE 漏洞分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cheshirex.com/7171.html">Hetzner德国芬兰高配物理服务器购买流程</a></p>
 </li>
 <li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u012903789/article/details/82433160">php://input</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/coinmonks/tutorial-how-to-install-a-full-node-on-the-sui-network-of-mysten-labs-for-beginners-devnet-e482aa30537a">Tutorial — How to install a Full node on the SUI network of Mysten Labs for beginners — DEVNET</a></p>
 </li>
 </ul>
 
@@ -392,20 +392,27 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/62100.html" rel="bookmark">BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析</a></div>
+      <div class="popular-posts-title"><a href="/2022/44900.html" rel="bookmark">DevRecord-BNBSmartChain私有链初步搭建</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2018/59330.html" rel="bookmark">BlueCMS-v1.6-sp1-admin-tpl_manage.php-本地文件包含漏洞分析</a></div>
+      <div class="popular-posts-title"><a href="/2022/13133.html" rel="bookmark">DevRecord-BlockScout区块链浏览器初步搭建</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2019/1900.html" rel="bookmark">Metinfo 6.x存储型XSS(CVE-2018-20486) 漏洞分析</a></div>
+      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/VulnAnalysis/" rel="tag"># VulnAnalysis</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
+              <a href="/tags/DevRecord/" rel="tag"># DevRecord</a>
           </div>
 
         
@@ -414,13 +421,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/860.html" rel="prev" title="子域名搜集">
-      <i class="fa fa-chevron-left"></i> 子域名搜集
+    <a href="/2022/8887.html" rel="prev" title="StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage">
+      <i class="fa fa-chevron-left"></i> StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/4287.html" rel="next" title="获取masscan的扫描进度">
-      获取masscan的扫描进度 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -486,7 +490,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Sui公链介绍:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">奖励规则:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E4%B8%BA%E9%AA%8C%E8%AF%81%E8%80%85%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">成为验证者常见问题:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Vps选购:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hetzner"><span class="nav-number">4.1.</span> <span class="nav-text">hetzner:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#contabo"><span class="nav-number">4.2.</span> <span class="nav-text">contabo:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">运行全节点:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA"><span class="nav-number">5.1.</span> <span class="nav-text">源码构建:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="nav-number">5.2.</span> <span class="nav-text">检测节点状态:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E6%9E%84%E5%BB%BA"><span class="nav-number">5.3.</span> <span class="nav-text">docker构建:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">填写申请表:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

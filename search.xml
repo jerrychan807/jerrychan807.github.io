@@ -14548,9 +14548,14 @@ Find Nonce Game~</p>
     <url>/2022/44900.html</url>
     <content><![CDATA[<h1>Pre:</h1>
 <p>预期效果:在本地私有网络搭建起Bsc全节点，并且验证者节点在白名单内，可以正常打包出块，用户之间可以正常转账。</p>
+<h1>依赖环境:</h1>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装基础工具</span></span><br><span class="line">yum update -y &amp;&amp; yum install git bzip2 gcc-c++ ntp epel-release nodejs -y</span><br></pre></td></tr></table></figure>
+<h2 id="安装go">安装go:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Centos7安装方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载文件,国内</span></span><br><span class="line">wget https://golang.google.cn/dl/go1.19.linux-amd64.tar.gz</span><br><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar -zxf go1.19.linux-amd64.tar.gz -C /usr/local</span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="comment"># 末尾添加以下配置</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#golang env config</span></span><br><span class="line"><span class="built_in">export</span> GO111MODULE=on</span><br><span class="line"><span class="built_in">export</span> GOROOT=/usr/local/go </span><br><span class="line"><span class="built_in">export</span> GOPATH=/home/gopath</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$GOROOT</span>/bin:<span class="variable">$GOPATH</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换到/home目录</span></span><br><span class="line"><span class="built_in">cd</span> /home</span><br><span class="line"><span class="comment"># 创建gopath文件夹，后面开发和编译过程中用go get安装第三方包会用到</span></span><br><span class="line"><span class="built_in">mkdir</span> gopath</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使变量配置生效</span></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 并查看golang的版本</span></span><br><span class="line">go version</span><br><span class="line"></span><br><span class="line"><span class="comment"># GO设置代理环境变量，再拉去golang.org的时候就不需要墙了。</span></span><br><span class="line">go <span class="built_in">env</span> -w GOPROXY=https://goproxy.cn,direct</span><br></pre></td></tr></table></figure>
 <h1>geth安装</h1>
-<p>把智能链 <a href="https://github.com/bnb-chain/bsc">BNB Smart Chain</a>的代码<code>git clone</code>下来<br />
-执行<code>make all</code>进行源码构建</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 把智能链 [BNB Smart Chain](https://github.com/bnb-chain/bsc)的代码`git clone`下来 </span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/bnb-chain/bsc.git</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># git设置代理</span></span><br><span class="line">git config --global http.proxy http://192.168.2.135:7890</span><br><span class="line">git config --global https.proxy http://192.168.2.135:7890</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 进入bsc项目文件夹，进行源码构建</span></span><br><span class="line">make all</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 进入geth所在目录</span></span><br><span class="line">/Users/chanjerry/Documents/GitHub/blockchain/bsc-node/bsc/build/bin</span><br><span class="line"><span class="comment"># 看看geth能否正常运行</span></span><br><span class="line">./geth --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
 <p>至此，geth客户端就能够正常使用了</p>
 <h1>创建创世区块的json配置文件：</h1>
@@ -14727,6 +14732,9 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
 <li class="lvl-2">
 <p><a href="https://docs.bnbchain.org/docs/local">Local BNB Smart Chain Network</a></p>
 </li>
+<li class="lvl-2">
+<p><a href="https://www.jianshu.com/p/35a161738d83">centos 7 安装golang</a></p>
+</li>
 </ul>
 ]]></content>
       <categories>
@@ -14845,7 +14853,8 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
 </li>
 </ol>
 <p>telnet一下4000端口，能通之后，再打开<code>http://192.168.2.160:4000/</code></p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808144339.png" alt="20220808144339" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173627.png" alt="20220811173627" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173613.png" alt="20220811173613" /></p>
 <h1>Others:</h1>
 <h2 id="Centos7设置代理">Centos7设置代理:</h2>
 <p>临时设置（重连后失效）在命令行中直接输入下列命令即可</p>
@@ -15460,6 +15469,142 @@ UTXO 模型是许多加密货币通用的设计，最引人注目的是比特币
       <tags>
         <tag>StudyRecord</tag>
         <tag>BlockChain</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DevRecord-Sui节点搭建和验证节点申请</title>
+    <url>/2022/37144.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p><a href="https://sui.io/resources-sui/validator-registration-open/?utm_source=social&amp;utm_medium=social&amp;utm_campaign=registervalidator">活动说明</a><br />
+简言之，先跑全节点然后8.15前填表，如果被选中为验证者参与激励测试网就可以获得2000sui代币奖励。</p>
+<h1>Sui公链介绍:</h1>
+<p>可参考视频:<a href="https://youtu.be/bTiyATYCU20">Sui—前facebook团队和顶级机构创建的新一代区块链公链【Vic TALK 第263期】</a></p>
+<h1>奖励规则:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>激励测试网团队目标是 4 轮，每一轮成功参与的验证者都可以获得 2000 枚，所以总共不只是 2000 枚。</p>
+</li>
+<li class="lvl-2">
+<p>而且验证者只是激励网的其中一个任务而已，还有其他任务没公布呢，后面会公布其他任务，目前先开放了验证者报名入口</p>
+</li>
+<li class="lvl-2">
+<p>总量100亿，参与测试给2000个，锁仓1年</p>
+</li>
+</ul>
+<p>现在是第一轮奖励，要求的就是：</p>
+<ol>
+<li class="lvl-3">
+<p>运行Sui节点</p>
+</li>
+<li class="lvl-3">
+<p>填表申请成为验证者，审核通过再说(听天由命了…)</p>
+</li>
+</ol>
+<h2 id="成为验证者常见问题">成为验证者常见问题:</h2>
+<p>申请验证者才可以参加测试网</p>
+<ol>
+<li class="lvl-3">
+<p>是否必须有公司才能成为验证者？  如果没有公司的话，可以填 individual</p>
+</li>
+<li class="lvl-3">
+<p>激励测试网有多少名额可用？  没有固定数量名额</p>
+</li>
+<li class="lvl-3">
+<p>如果我的 Coinlist 账户被封了怎么办？  我们将只能通过 CoinList 分发奖励，但我们已要求他们明确说明来自俄罗斯和中国的用户如何访问此流程。</p>
+</li>
+<li class="lvl-3">
+<p>Devnet 节点必须强制更新到最新版本？    是的</p>
+</li>
+<li class="lvl-3">
+<p>将有几波激励测试网？  目标是 4 波</p>
+</li>
+<li class="lvl-3">
+<p>对于 KYC，我可以编辑我的电子邮件以使用 Coinlist 电子邮件吗？  如果你被选中，我们会要求你使用现有的 Coinlist 账户（如果你有的话）</p>
+</li>
+<li class="lvl-3">
+<p>我可以用新电子邮件重新填写申请表格吗？  可以</p>
+</li>
+<li class="lvl-3">
+<p>如果我需要通过 KYC，我可以更改我的电子邮件地址吗？因为我用于 KYC 的电子邮件和我用于填写表单的电子邮件不同？  是的，你可以使用一个不同的电子邮件来处理 KYC 问题。</p>
+</li>
+<li class="lvl-3">
+<p>填写表格的截止日期是什么时候？  我们将在 8 月 15 日关闭申请。</p>
+</li>
+<li class="lvl-4">
+<p>那些运行节点但没有发送 IP 到 discord 频道 node-ip-application的成员怎么办？  您必须在表格上提供 IP</p>
+</li>
+<li class="lvl-4">
+<p>我在频道中共享了 2 个 IP 地址。我应该在表格上提交哪一个？  你想让我们检查的那个</p>
+</li>
+<li class="lvl-4">
+<p>有多少人会被选中？  暂时没有限制</p>
+</li>
+</ol>
+<blockquote>
+<p>简单了解完规则后,现在我们先要运行Sui节点.</p>
+</blockquote>
+<h1>Vps选购:</h1>
+<p>官方推荐配置要求：<code>m5.2xlarge (8vCPU, 32GB RAM) + 128GB SSD</code></p>
+<h2 id="hetzner">hetzner:</h2>
+<p>信息收集了一波后，这家vps提供商<a href="https://www.hetzner.com/">hetzner</a>性价比比较高。<br />
+<a href="https://www.hetzner.com/dedicated-rootserver/matrix-ax">套餐页面</a>:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813152542.png" alt="20220813152542" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806134128.png" alt="20220806134128" /><br />
+实名认证后，就可以购买服务器了。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813111147.png" alt="20220813111147" /><br />
+14天试用期，不用先付钱，后来看到<code>contabo</code>的套餐更便宜，就把这个删了。</p>
+<h2 id="contabo">contabo:</h2>
+<p><a href="https://contabo.com/en/">contabo</a><br />
+套餐页面：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813153409.png" alt="20220813153409" /><br />
+选配下来后，大约23、24$每个月(PayPal支付)。</p>
+<h1>运行全节点:</h1>
+<h2 id="源码构建">源码构建:</h2>
+<p>参考<a href="https://medium.com/coinmonks/tutorial-how-to-install-a-full-node-on-the-sui-network-of-mysten-labs-for-beginners-devnet-e482aa30537a">Tutorial — How to install a Full node on the SUI network of Mysten Labs for beginners — DEVNET</a><br />
+其实挺简单的：就是装依赖、拉Sui节点代码、设置好配置文件、编译运行节点即可。<br />
+最后再升级一下，不然会有很多报错。参考<a href="https://docs.sui.io/build/fullnode?utm_source=blog&amp;utm_medium=website&amp;utm_campaign=registrvalidators#built-from-source">官方文档</a>进行升级<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806164432.png" alt="20220806164432" /></p>
+<h2 id="检测节点状态">检测节点状态:</h2>
+<p>然后再在这个网站检查一下节点状态 <a href="https://node.sui.zvalid.com/">https://node.sui.zvalid.com/</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220806163609.png" alt="20220806163609" /></p>
+<blockquote>
+<p>至此，如果检测正常，那么全节点就运行起来了。</p>
+</blockquote>
+<h2 id="docker构建">docker构建:</h2>
+<p>没试这种方式，需要敲的命令比较少，请参考:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://mirror.xyz/0x2ba8f8db6c26fB36F14F9a8c32158e201632d677/zajDQ7XDUTdFIzklZs7TG0Aw-OfQ76z6FzUzRGKjalo">如何0基础学会搭建Sui 开发网全节点 | 节点教程</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.theblockbeats.info/news/31505">新公链Sui测试网明牌奖励，手把手教你搭建节点</a></p>
+</li>
+</ul>
+<h1>填写申请表:</h1>
+<p>填写申请表: <a href="https://airtable.com/shr3phh3FCZYhZUDF">https://airtable.com/shr3phh3FCZYhZUDF</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220813110832.png" alt="20220813110832" /></p>
+<blockquote>
+<p>至此，第一轮奖励活动，我们要做的工作就做完了，接下来就是等审核，听天由命。。。</p>
+</blockquote>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://docs.sui.io/build/fullnode?utm_source=blog&amp;utm_medium=website&amp;utm_campaign=registrvalidators">Run a Sui Fullnode</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.cheshirex.com/7171.html">Hetzner德国芬兰高配物理服务器购买流程</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://medium.com/coinmonks/tutorial-how-to-install-a-full-node-on-the-sui-network-of-mysten-labs-for-beginners-devnet-e482aa30537a">Tutorial — How to install a Full node on the SUI network of Mysten Labs for beginners — DEVNET</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>BlockChain</tag>
+        <tag>DevRecord</tag>
       </tags>
   </entry>
 </search>
