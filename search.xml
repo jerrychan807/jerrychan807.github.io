@@ -15629,4 +15629,206 @@ UTXO 模型是许多加密货币通用的设计，最引人注目的是比特币
         <tag>Golang</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录</title>
+    <url>/2022/20047.html</url>
+    <content><![CDATA[<h1>引言:</h1>
+<p>需求:</p>
+<ol>
+<li class="lvl-3">
+<p>持仓cake成本较高,现在不想割掉，利用糖浆池白嫖，加快回本周期。<br />
+原来的<code>Stake Cake Earn Cake</code>糖浆池更新后，增加了锁仓期，不太喜欢。<br />
+<code>PancakeSwap</code>周期性会上新币，糖浆池挖矿会有bonus期,头几天可以有不错的收益。</p>
+</li>
+<li class="lvl-3">
+<p>后期计划开发个Bot,在链下自动化将cake投入apr最高的糖浆池中,定期执行挖提卖策略.</p>
+</li>
+<li class="lvl-3">
+<p>后期计划开发理财机枪池dapp,此部分可作为链下策略逻辑,feed给SmartContract。</p>
+</li>
+<li class="lvl-3">
+<p>practice go language</p>
+</li>
+</ol>
+<blockquote>
+<p>先手工测测收益如何?</p>
+</blockquote>
+<h1>简单实测:</h1>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">2022/08/05 07:56:08 stake 100Cake 372.59$</span><br><span class="line">2022/08/07 09:57:00 新糖浆池挖提卖 4.57$</span><br></pre></td></tr></table></figure>
+<p>1000cake的话,头2天可以白嫖45.7u,大约11个cake,几顿猪脚饭钱</p>
+<blockquote>
+<p>收益会比<code>Stake Cake Earn Cake</code>糖浆池强,还不用锁仓</p>
+</blockquote>
+<h1>Bot功能简介:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Github源码: <a href="https://github.com/jerrychan807/cake-syrup-pools-lover">https://github.com/jerrychan807/cake-syrup-pools-lover</a></p>
+</li>
+<li class="lvl-2">
+<p>TgBot链接: <a href="https://t.me/J_bsc_bot">https://t.me/J_bsc_bot</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220821163249.png" alt="20220821163249" /></p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/subscribe_syrup_pool <span class="comment"># 订阅糖浆池信息通知</span></span><br><span class="line">/subscribe_result  <span class="comment"># 查询糖浆池信息订阅是否成功</span></span><br><span class="line">/syrup_pools <span class="comment"># 查询最新糖浆池信息,10分钟更新一次数据</span></span><br></pre></td></tr></table></figure>
+<h2 id="订阅糖浆池信息通知">订阅糖浆池信息通知:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220821163845.png" alt="20220821163845" /><br />
+订阅后,如果上了<code>PancakeSwap</code>上了新的糖浆池,会推送消息给你的Tg.<br />
+新池越早冲,收益越高.</p>
+<h2 id="查询最新糖浆池信息">查询最新糖浆池信息:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220821163652.png" alt="20220821163652" /><br />
+其中我认为比较有用的信息则是,会计算出 每100cake 每日/周/月/年对应的usd收益<br />
+类似该工具网站<a href="https://bsctools.xyz/pancakeswap/pools/">bsctools</a>:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220821164116.png" alt="20220821164116" /></p>
+<h1>程序流程:</h1>
+<ol>
+<li class="lvl-3">
+<p>获取pancake github上的<a href="https://raw.githubusercontent.com/pancakeswap/pancake-frontend/develop/src/config/constants/pools.tsx">糖浆池配置列表</a></p>
+</li>
+<li class="lvl-3">
+<p>解析糖浆池配置列表,获取SyrupPool数组</p>
+</li>
+<li class="lvl-3">
+<p>生成此次糖浆池配置信息的MD5哈希值</p>
+</li>
+<li class="lvl-3">
+<p>比较与上次的md5,判断有无新池</p>
+</li>
+<li class="lvl-3">
+<p>填充糖浆池detail信息,如计算出<code>每日/周/月/年对应的usd收益</code>等</p>
+</li>
+<li class="lvl-3">
+<p>更新数据库里的糖浆池信息</p>
+</li>
+<li class="lvl-3">
+<p>如果出现新池,推送给订阅的tg用户</p>
+</li>
+</ol>
+<blockquote>
+<p>下面记录一下,一些模块的实现方法和实际开发过程中遇到的一些问题</p>
+</blockquote>
+<h1>一些功能的具体实现:</h1>
+<h2 id="获取糖浆池列表信息">获取糖浆池列表信息:</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 获取到的是GitHub返回的html页面</span></span><br><span class="line">https://github.com/pancakeswap/pancake-frontend/blob/develop/src/config/constants/pools.tsx</span><br><span class="line"><span class="comment"># 源文件,要用这个url</span></span><br><span class="line">https://raw.githubusercontent.com/pancakeswap/pancake-frontend/develop/src/config/constants/pools.tsx</span><br></pre></td></tr></table></figure>
+<p>需要获取的数据:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220817095033.png" alt="20220817095033" /></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">sousId</span>: <span class="number">291</span>,    <span class="comment">// 应该是糖浆池id</span></span><br><span class="line">   <span class="attr">stakingToken</span>: serializedTokens.<span class="property">cake</span>,  <span class="comment">// 这个是统一的,质押用的token都用的是cake</span></span><br><span class="line">   <span class="attr">earningToken</span>: serializedTokens.<span class="property">pstake</span>, <span class="comment">// 挖出的XToken项目方代币</span></span><br><span class="line">   <span class="attr">contractAddress</span>: &#123;</span><br><span class="line">     <span class="number">56</span>: <span class="string">&#x27;0x56D6955Ba6404647191DD7A5D65A5c9Fe43905e1&#x27;</span>, <span class="comment">// bsc上的合约地址</span></span><br><span class="line">     <span class="number">97</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">   &#125;,</span><br><span class="line">   <span class="attr">poolCategory</span>: <span class="title class_">PoolCategory</span>.<span class="property">CORE</span>, </span><br><span class="line">   <span class="attr">tokenPerBlock</span>: <span class="string">&#x27;1.1574&#x27;</span>, <span class="comment">// 每区块奖励的XToken数量</span></span><br><span class="line">   <span class="attr">version</span>: <span class="number">3</span>,</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure>
+<p>思路1:<br />
+使用<a href="https://github.com/dop251/goja">goja</a>里的JavaScript 虚拟机直接解析js/ts文件,直接获取到需要的变量值.<br />
+但可能是不支持<code>tsx</code>文件的解析,使用<code>goja</code>库解析时会报错.<br />
+example: <a href="https://www.ohyee.cc/post/note_go_js">在 Go 中运行 JS 代码</a></p>
+<p>思路2:<br />
+将原数据填充成标准的json格式,然后<code>json-&gt; go struct</code></p>
+<p>思路3:<br />
+任何文本处理都可以使用正则匹配来解决,最后还是采取这种古老的方法.</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220817093337.png" alt="20220817093337" /></p>
+<h2 id="监测pools-tsx变更">监测pools.tsx变更:</h2>
+<p>思路1:<br />
+订阅commit事件,第一时间可以知道上新的糖浆池了<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220817095512.png" alt="20220817095512" /><br />
+思路2:<br />
+定时获取,md5比较</p>
+<h2 id="查询Token价格">查询Token价格:</h2>
+<p>思路1:通过pancake的api获取到价格<br />
+优缺点:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>优点: 方便</p>
+</li>
+<li class="lvl-2">
+<p>缺点: 中心化api可能会挂,虽然几率较小,这不好说</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">https://api.pancakeswap.info/api/v2/tokens/0x734548a9e43d2D564600b1B2ed5bE9C2b911c6aB</span><br><span class="line">Or</span><br><span class="line">https://bsctools.xyz/pancakeswap/api/price.php</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220821165255.png" alt="20220821165255" /><br />
+思路2:自己通过查询合约计算出来<br />
+参考<a href="https://gist.github.com/Linch1/ede03999f483f2b1d5fcac9e8b312f2c">Retrive the price of any bsc token from it’s address without using external service like poocoin/dextools</a>,计算方法如下：</p>
+<ol>
+<li class="lvl-3">
+<p>计算BNB价格usd,调用<code>PancakeSwap</code>的<code>Router</code>合约的<code>getAmountsOut</code>方法,看一个<code>BNB</code>可以获得多少<code>USDT</code></p>
+</li>
+<li class="lvl-3">
+<p>同理,继续调用<code>getAmountsOut</code>方法，看一个<code>shitToken</code>可以获得多少<code>BNB</code></p>
+</li>
+<li class="lvl-3">
+<p>已知BNB的美元价格,<code>shitToken</code>和<code>BNB</code>的比例关系,就可以计算出<code>shitToken</code>的美元价格了</p>
+</li>
+</ol>
+<p>优缺点:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>优点: 可作为备用方法、更通用一些,可迁移到如以太坊的uniswap上</p>
+</li>
+<li class="lvl-2">
+<p>缺点: 步骤较麻烦一些</p>
+</li>
+</ul>
+<blockquote>
+<p>以上两种方法,我都实现了,实际暂用的是第一种方法</p>
+</blockquote>
+<h2 id="计算ROI投资回报率">计算ROI投资回报率:</h2>
+<p><code>每日/周/月/年对应的usd收益</code>计算思路:</p>
+<ol>
+<li class="lvl-3">
+<p><code>一天下来BSC约出多少个区块？</code><br />
+一天24<em>60</em>60=86400秒, 除以3 等于 28800 块，一天可以出28800块</p>
+</li>
+<li class="lvl-3">
+<p><code>糖浆池一天产出的奖励代币值多少u?</code><br />
+<code>每区块奖励代币数量 X 代币价格 X 一天区块数</code><br />
+例子：rewardPerBlock每区块奖励 4.34(Ether),每区块共可以挖出4.34个PEEL<br />
+PEEL单价是0.1582美元，每区块可以产出0.686588美元<br />
+一天可以产出多少U?   一天区块数*每区块的u产出=19773.7344美元</p>
+</li>
+<li class="lvl-3">
+<p><code>你质押的cake占池子总cake的比例是多少?</code><br />
+总cake:9485879 ,你质押的100个cake<br />
+比例： 100/100+9485879 = ≈ 0.00001054<br />
+比例 * 一天产出总u = 0.20845223 U</p>
+</li>
+</ol>
+<p>总结一下，<code>每日的usd收益</code>计算公式为: <code>每区块奖励代币数量 X 代币价格 X 一天区块数 X 你质押占池子的比例</code></p>
+<h2 id="生成GoAbi文件">生成GoAbi文件:</h2>
+<p>然后将<code>interface</code>智能合约编译为<code>JSON ABI</code>，并使用<code>abigen</code>从<code>ABI</code>创建Go包。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">solc --abi erc20.sol</span><br><span class="line">abigen --abi=erc20_sol_ERC20.abi --pkg=token --out=erc20.go</span><br><span class="line">abigen --abi=erc20_sol_ERC20.abi --pkg=erc20 --out=erc20.go</span><br><span class="line"><span class="comment"># 基于json</span></span><br><span class="line">abigen --abi=pancakeRouter.json --pkg=pancakeRouter --<span class="built_in">type</span>=pancakeRouter --out=pancakeRouter.go</span><br></pre></td></tr></table></figure>
+<p>基于json的话，就方便一些，不用自己再<code>solc</code>编译，直接从区块链浏览器copy abi的json数据下来，再生成go文件。</p>
+<h1>Inspire:</h1>
+<ol>
+<li class="lvl-3">
+<p>监测新糖浆池信息,质押u借出cake,冲新池白嫖bonus奖励,挖提卖成u,bonus期结束,归还cake</p>
+</li>
+<li class="lvl-3">
+<p>Base Binance交易所的稳定币APR 10%,尝试自己能否开发出接近的理财工具/策略(低风险,较好的收益)</p>
+</li>
+</ol>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.ohyee.cc/post/note_go_js">在 Go 中运行 JS 代码</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://goethereumbook.org/zh/smart-contract-read-erc20/">查询ERC20代币智能合约</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://goethereumbook.org/zh/">用Go来做以太坊开发</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/qq_41661056/article/details/124195284">安装abigen，以太坊合约转go代码及调用合约</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.jianshu.com/p/081d97f57995">Golang注释规范</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="http://www.wjhsh.net/K-artorias-p-8873365.html">golang string转json的一些坑</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/qq_42057154/article/details/123739565">Badger简单使用</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Project</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
 </search>
