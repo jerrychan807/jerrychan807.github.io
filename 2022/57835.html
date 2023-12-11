@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍: Technical Ratings是一种技术分析工具，它结合了几种技术指标的评级，使交易者和投资者更容易找到有利可图的交易。 URL：https:&#x2F;&#x2F;www.tradingview.com&#x2F;symbols&#x2F;BTCUSDT&#x2F;technicals&#x2F;   通过几个技术指标，来分析出买卖信号，具体的计算方法可见网页。 大致有以下指标：   MACD   RSI   移动平均线   布林带   等等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DevRecord-TradingView技术分析指标API">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/57835.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="介绍: Technical Ratings是一种技术分析工具，它结合了几种技术指标的评级，使交易者和投资者更容易找到有利可图的交易。 URL：https:&#x2F;&#x2F;www.tradingview.com&#x2F;symbols&#x2F;BTCUSDT&#x2F;technicals&#x2F;   通过几个技术指标，来分析出买卖信号，具体的计算方法可见网页。 大致有以下指标：   MACD   RSI   移动平均线   布林带   等等">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213162900.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213162917.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213163254.png">
+<meta property="article:published_time" content="2022-12-13T04:00:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.070Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="DevRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213162900.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/57835.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DevRecord-TradingView技术分析指标API | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/57835.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DevRecord-TradingView技术分析指标API
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-12-13 12:00:34" itemprop="dateCreated datePublished" datetime="2022-12-13T12:00:34+08:00">2022-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevRecord/" itemprop="url" rel="index"><span itemprop="name">DevRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>8.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>介绍:</h1>
+<p>Technical Ratings是一种技术分析工具，它结合了几种技术指标的评级，使交易者和投资者更容易找到有利可图的交易。<br />
+URL：<a target="_blank" rel="noopener" href="https://www.tradingview.com/symbols/BTCUSDT/technicals/">https://www.tradingview.com/symbols/BTCUSDT/technicals/</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213162900.png" alt="20221213162900" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213162917.png" alt="20221213162917" /><br />
+通过几个技术指标，来分析出买卖信号，具体的计算方法可见<a target="_blank" rel="noopener" href="https://www.tradingview.com/support/solutions/43000614331/">网页</a>。<br />
+大致有以下指标：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>MACD</p>
+</li>
+<li class="lvl-2">
+<p>RSI</p>
+</li>
+<li class="lvl-2">
+<p>移动平均线</p>
+</li>
+<li class="lvl-2">
+<p>布林带</p>
+</li>
+<li class="lvl-2">
+<p>等等</p>
+</li>
+</ul>
+<h1>相关github仓库:</h1>
+<h2 id="python版本：">python版本：</h2>
+<p>仓库地址:<a target="_blank" rel="noopener" href="https://github.com/brian-the-dev/python-tradingview-ta">python-tradingview-ta</a><br />
+演示界面:<a target="_blank" rel="noopener" href="https://tradingview.brianthe.dev/">TradingView-TA Demo</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221213163254.png" alt="20221213163254" /><br />
+示例代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tradingview_ta <span class="keyword">import</span> TA_Handler, Interval, Exchange</span><br><span class="line"></span><br><span class="line">tesla = TA_Handler(</span><br><span class="line">    symbol=<span class="string">&quot;BTCUSDT&quot;</span>,</span><br><span class="line">    screener=<span class="string">&quot;CRYPTO&quot;</span>,</span><br><span class="line">    exchange=<span class="string">&quot;BINANCE&quot;</span>,</span><br><span class="line">    interval=Interval.INTERVAL_1_HOUR,</span><br><span class="line">    <span class="comment"># proxies=&#123;&#x27;http&#x27;: &#x27;http://example.com:8080&#x27;&#125; # Uncomment to enable proxy (replace the URL).</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(tesla.get_analysis().summary)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Example output: &#123;&quot;RECOMMENDATION&quot;: &quot;BUY&quot;, &quot;BUY&quot;: 8, &quot;NEUTRAL&quot;: 6, &quot;SELL&quot;: 3&#125;</span></span><br><span class="line"></span><br><span class="line">res = tesla.get_indicators()</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+<p>输出的结果:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;RECOMMENDATION&#x27;</span>: <span class="string">&#x27;BUY&#x27;</span>, <span class="string">&#x27;BUY&#x27;</span>: 10, <span class="string">&#x27;SELL&#x27;</span>: 6, <span class="string">&#x27;NEUTRAL&#x27;</span>: 10&#125;</span><br><span class="line">&#123;<span class="string">&#x27;Recommend.Other&#x27;</span>: 0, <span class="string">&#x27;Recommend.All&#x27;</span>: 0.13333333, <span class="string">&#x27;Recommend.MA&#x27;</span>: 0.26666667, <span class="string">&#x27;RSI&#x27;</span>: 50.48192749, <span class="string">&#x27;RSI[1]&#x27;</span>: 58.39674711, <span class="string">&#x27;Stoch.K&#x27;</span>: 61.87618536, <span class="string">&#x27;Stoch.D&#x27;</span>: 68.87650451, <span class="string">&#x27;Stoch.K[1]&#x27;</span>: 72.05141966, <span class="string">&#x27;Stoch.D[1]&#x27;</span>: 71.27973346, <span class="string">&#x27;CCI20&#x27;</span>: 16.16247248, <span class="string">&#x27;CCI20[1]&#x27;</span>: 65.48078005, <span class="string">&#x27;ADX&#x27;</span>: 28.61095394, <span class="string">&#x27;ADX+DI&#x27;</span>: 25.27158154, <span class="string">&#x27;ADX-DI&#x27;</span>: 20.48667952, <span class="string">&#x27;ADX+DI[1]&#x27;</span>: 27.92566556, <span class="string">&#x27;ADX-DI[1]&#x27;</span>: 14.19797254, <span class="string">&#x27;AO&#x27;</span>: 114.26505882, <span class="string">&#x27;AO[1]&#x27;</span>: 118.24585294, <span class="string">&#x27;Mom&#x27;</span>: -72.33, <span class="string">&#x27;Mom[1]&#x27;</span>: 28.37, <span class="string">&#x27;MACD.macd&#x27;</span>: 31.12953057, <span class="string">&#x27;MACD.signal&#x27;</span>: 27.97914839, <span class="string">&#x27;Rec.Stoch.RSI&#x27;</span>: 0, <span class="string">&#x27;Stoch.RSI.K&#x27;</span>: 38.74649592, <span class="string">&#x27;Rec.WR&#x27;</span>: 0, <span class="string">&#x27;W.R&#x27;</span>: -58.48706151, <span class="string">&#x27;Rec.BBPower&#x27;</span>: 0, <span class="string">&#x27;BBPower&#x27;</span>: -20.57747939, <span class="string">&#x27;Rec.UO&#x27;</span>: 0, <span class="string">&#x27;UO&#x27;</span>: 47.95794838, <span class="string">&#x27;close&#x27;</span>: 17103.34, <span class="string">&#x27;EMA5&#x27;</span>: 17142.2328455, <span class="string">&#x27;SMA5&#x27;</span>: 17152.532, <span class="string">&#x27;EMA10&#x27;</span>: 17138.1040694, <span class="string">&#x27;SMA10&#x27;</span>: 17158.701, <span class="string">&#x27;EMA20&#x27;</span>: 17110.96833468, <span class="string">&#x27;SMA20&#x27;</span>: 17096.297, <span class="string">&#x27;EMA30&#x27;</span>: 17097.41772984, <span class="string">&#x27;SMA30&#x27;</span>: 17045.36033333, <span class="string">&#x27;EMA50&#x27;</span>: 17091.82731247, <span class="string">&#x27;SMA50&#x27;</span>: 17080.842, <span class="string">&#x27;EMA100&#x27;</span>: 17085.73943901, <span class="string">&#x27;SMA100&#x27;</span>: 17123.7011, <span class="string">&#x27;EMA200&#x27;</span>: 17045.31878646, <span class="string">&#x27;SMA200&#x27;</span>: 17065.14255, <span class="string">&#x27;Rec.Ichimoku&#x27;</span>: 0, <span class="string">&#x27;Ichimoku.BLine&#x27;</span>: 17072.69, <span class="string">&#x27;Rec.VWMA&#x27;</span>: 1, <span class="string">&#x27;VWMA&#x27;</span>: 17091.35386908, <span class="string">&#x27;Rec.HullMA9&#x27;</span>: -1, <span class="string">&#x27;HullMA9&#x27;</span>: 17150.65207407, <span class="string">&#x27;Pivot.M.Classic.S3&#x27;</span>: 15571.87, <span class="string">&#x27;Pivot.M.Classic.S2&#x27;</span>: 16317.29, <span class="string">&#x27;Pivot.M.Classic.S1&#x27;</span>: 16701.17, <span class="string">&#x27;Pivot.M.Classic.Middle&#x27;</span>: 17062.71, <span class="string">&#x27;Pivot.M.Classic.R1&#x27;</span>: 17446.59, <span class="string">&#x27;Pivot.M.Classic.R2&#x27;</span>: 17808.13, <span class="string">&#x27;Pivot.M.Classic.R3&#x27;</span>: 18553.55, <span class="string">&#x27;Pivot.M.Fibonacci.S3&#x27;</span>: 16317.29, <span class="string">&#x27;Pivot.M.Fibonacci.S2&#x27;</span>: 16602.04044, <span class="string">&#x27;Pivot.M.Fibonacci.S1&#x27;</span>: 16777.95956, <span class="string">&#x27;Pivot.M.Fibonacci.Middle&#x27;</span>: 17062.71, <span class="string">&#x27;Pivot.M.Fibonacci.R1&#x27;</span>: 17347.46044, <span class="string">&#x27;Pivot.M.Fibonacci.R2&#x27;</span>: 17523.37956, <span class="string">&#x27;Pivot.M.Fibonacci.R3&#x27;</span>: 17808.13, <span class="string">&#x27;Pivot.M.Camarilla.S3&#x27;</span>: 16880.0595, <span class="string">&#x27;Pivot.M.Camarilla.S2&#x27;</span>: 16948.38966667, <span class="string">&#x27;Pivot.M.Camarilla.S1&#x27;</span>: 17016.71983333, <span class="string">&#x27;Pivot.M.Camarilla.Middle&#x27;</span>: 17062.71, <span class="string">&#x27;Pivot.M.Camarilla.R1&#x27;</span>: 17153.38016667, <span class="string">&#x27;Pivot.M.Camarilla.R2&#x27;</span>: 17221.71033333, <span class="string">&#x27;Pivot.M.Camarilla.R3&#x27;</span>: 17290.0405, <span class="string">&#x27;Pivot.M.Woodie.S3&#x27;</span>: 15966.92, <span class="string">&#x27;Pivot.M.Woodie.S2&#x27;</span>: 16322.875, <span class="string">&#x27;Pivot.M.Woodie.S1&#x27;</span>: 16712.34, <span class="string">&#x27;Pivot.M.Woodie.Middle&#x27;</span>: 17068.295, <span class="string">&#x27;Pivot.M.Woodie.R1&#x27;</span>: 17457.76, <span class="string">&#x27;Pivot.M.Woodie.R2&#x27;</span>: 17813.715, <span class="string">&#x27;Pivot.M.Woodie.R3&#x27;</span>: 18203.18, <span class="string">&#x27;Pivot.M.Demark.S1&#x27;</span>: 16509.23, <span class="string">&#x27;Pivot.M.Demark.Middle&#x27;</span>: 16966.74, <span class="string">&#x27;Pivot.M.Demark.R1&#x27;</span>: 17254.65, <span class="string">&#x27;open&#x27;</span>: 17151.56, <span class="string">&#x27;P.SAR&#x27;</span>: 17241.89, <span class="string">&#x27;BB.lower&#x27;</span>: 16938.43248872, <span class="string">&#x27;BB.upper&#x27;</span>: 17254.16151128, <span class="string">&#x27;AO[2]&#x27;</span>: 115.21276471, <span class="string">&#x27;volume&#x27;</span>: 7491.87152, <span class="string">&#x27;change&#x27;</span>: -0.28114061, <span class="string">&#x27;low&#x27;</span>: 17083.08, <span class="string">&#x27;high&#x27;</span>: 17155.15&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="go版本：">go版本：</h2>
+<p>仓库地址:<a target="_blank" rel="noopener" href="https://github.com/dematron/go-tvscanner">go-tvscanner</a><br />
+参考该仓库,知道怎么构造出post的数据包:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&quot;symbols&quot;</span>:&#123;<span class="string">&quot;tickers&quot;</span>:[<span class="string">&quot;BINANCE:BTCUSDT&quot;</span>],<span class="string">&quot;query&quot;</span>:&#123;<span class="string">&quot;types&quot;</span>:[]&#125;&#125;,<span class="string">&quot;columns&quot;</span>:[<span class="string">&quot;Recommend.Other|120&quot;</span>,<span class="string">&quot;Recommend.All|120&quot;</span>,<span class="string">&quot;Recommend.MA|120&quot;</span>,<span class="string">&quot;RSI|120&quot;</span>,<span class="string">&quot;RSI[1]|120&quot;</span>,<span class="string">&quot;Stoch.K|120&quot;</span>,<span class="string">&quot;Stoch.D|120&quot;</span>,<span class="string">&quot;Stoch.K[1]|120&quot;</span>,<span class="string">&quot;Stoch.D[1]|120&quot;</span>,<span class="string">&quot;CCI20|120&quot;</span>,<span class="string">&quot;CCI20[1]|120&quot;</span>,<span class="string">&quot;ADX|120&quot;</span>,<span class="string">&quot;ADX+DI|120&quot;</span>,<span class="string">&quot;ADX-DI|120&quot;</span>,<span class="string">&quot;ADX+DI[1]|120&quot;</span>,<span class="string">&quot;ADX-DI[1]|120&quot;</span>,<span class="string">&quot;AO|120&quot;</span>,<span class="string">&quot;AO[1]|120&quot;</span>,<span class="string">&quot;AO[2]|120&quot;</span>,<span class="string">&quot;Mom|120&quot;</span>,<span class="string">&quot;Mom[1]|120&quot;</span>,<span class="string">&quot;MACD.macd|120&quot;</span>,<span class="string">&quot;MACD.signal|120&quot;</span>,<span class="string">&quot;Rec.Stoch.RSI|120&quot;</span>,<span class="string">&quot;Stoch.RSI.K|120&quot;</span>,<span class="string">&quot;Rec.WR|120&quot;</span>,<span class="string">&quot;W.R|120&quot;</span>,<span class="string">&quot;Rec.BBPower|120&quot;</span>,<span class="string">&quot;BBPower|120&quot;</span>,<span class="string">&quot;Rec.UO|120&quot;</span>,<span class="string">&quot;UO|120&quot;</span>,<span class="string">&quot;EMA10|120&quot;</span>,<span class="string">&quot;close|120&quot;</span>,<span class="string">&quot;SMA10|120&quot;</span>,<span class="string">&quot;EMA20|120&quot;</span>,<span class="string">&quot;SMA20|120&quot;</span>,<span class="string">&quot;EMA30|120&quot;</span>,<span class="string">&quot;SMA30|120&quot;</span>,<span class="string">&quot;EMA50|120&quot;</span>,<span class="string">&quot;SMA50|120&quot;</span>,<span class="string">&quot;EMA100|120&quot;</span>,<span class="string">&quot;SMA100|120&quot;</span>,<span class="string">&quot;EMA200|120&quot;</span>,<span class="string">&quot;SMA200|120&quot;</span>,<span class="string">&quot;Rec.Ichimoku|120&quot;</span>,<span class="string">&quot;Ichimoku.BLine|120&quot;</span>,<span class="string">&quot;Rec.VWMA|120&quot;</span>,<span class="string">&quot;VWMA|120&quot;</span>,<span class="string">&quot;Rec.HullMA9|120&quot;</span>,<span class="string">&quot;HullMA9|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.S3|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.S2|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.S1|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.Middle|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.R1|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.R2|120&quot;</span>,<span class="string">&quot;Pivot.M.Classic.R3|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.S3|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.S2|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.S1|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.Middle|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.R1|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.R2|120&quot;</span>,<span class="string">&quot;Pivot.M.Fibonacci.R3|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.S3|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.S2|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.S1|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.Middle|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.R1|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.R2|120&quot;</span>,<span class="string">&quot;Pivot.M.Camarilla.R3|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.S3|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.S2|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.S1|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.Middle|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.R1|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.R2|120&quot;</span>,<span class="string">&quot;Pivot.M.Woodie.R3|120&quot;</span>,<span class="string">&quot;Pivot.M.Demark.S1|120&quot;</span>,<span class="string">&quot;Pivot.M.Demark.Middle|120&quot;</span>,<span class="string">&quot;Pivot.M.Demark.R1|120&quot;</span>]&#125;</span><br></pre></td></tr></table></figure>
+<p>API返回的结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;TotalCount:<span class="number">1</span> Data:[&#123;S:BINANCE:BTCUSDT D:[<span class="number">0</span> <span class="number">0.46666667</span> <span class="number">0.93333333</span> <span class="number">63.51210379</span> <span class="number">59.16581691</span> <span class="number">69.6146242</span> <span class="number">68.77283822</span> <span class="number">66.12746449</span> <span class="number">69.58510338</span> <span class="number">74.54963546</span> <span class="number">57.42929389</span> <span class="number">26.81879053</span> <span class="number">26.58069963</span> <span class="number">17.69170375</span> <span class="number">24.38588284</span> <span class="number">19.30006705</span> <span class="number">120.68555882</span> <span class="number">118.20594118</span> -<span class="number">16.13</span> <span class="number">2.18</span> <span class="number">36.17025233</span> <span class="number">31.34725473</span> <span class="number">0</span> <span class="number">35.82221959</span> <span class="number">0</span> -<span class="number">24.16629056</span> <span class="number">0</span> <span class="number">77.60112301</span> <span class="number">0</span> <span class="number">55.57177607</span> <span class="number">17193.7</span> <span class="number">17172.53237578</span> <span class="number">17171.406</span> <span class="number">17159.0189826</span> <span class="number">17163.489</span> <span class="number">17127.90662836</span> <span class="number">17120.4805</span> <span class="number">17110.9071456</span> <span class="number">17065.16733333</span> <span class="number">17100.63520803</span> <span class="number">17082.0938</span> <span class="number">17090.49811186</span> <span class="number">17123.4215</span> <span class="number">17048.52958648</span> <span class="number">17064.7978</span> <span class="number">0</span> <span class="number">17072.69</span> <span class="number">1</span> <span class="number">17123.32935619</span> <span class="number">1</span> <span class="number">17171.53274074</span> <span class="number">17160.14</span> <span class="number">17235.4847</span> <span class="number">16981.06765146</span> <span class="number">17259.89334854</span> <span class="number">116.08352941</span> <span class="number">4857.7718</span> <span class="number">0.19545272</span> <span class="number">17155.5</span> <span class="number">17219.79</span>]&#125;]&#125; </span><br></pre></td></tr></table></figure>
+<p>结合python版本的代码，帮助我们格式化返回的结果。最终可以获取到我想要的数据，布林带的上下界</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/jerrychan807/go-indicator/lib&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Starting&quot;</span>)</span><br><span class="line"></span><br><span class="line">	jsonRes := lib.GetTradingViewResponse(<span class="string">&quot;crypto&quot;</span>, <span class="string">&quot;BINANCE&quot;</span>, <span class="string">&quot;BTCUSDT&quot;</span>, <span class="string">&quot;1h&quot;</span>)</span><br><span class="line">	analysisData := lib.ParseJsonData(jsonRes)</span><br><span class="line">	fmt.Println(<span class="string">&quot;analysisData: &quot;</span>, analysisData.BBupper)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Starting</span><br><span class="line">[*] response received 200</span><br><span class="line">[*] Api Json Data After handled: &#123;TotalCount:1 Data:[&#123;S:BINANCE:BTCUSDT D:[0.09090909 0.51212121 0.93333333 75.13228221 79.06565064 75.35647864 71.29840367 72.41126789 69.70505278 247.61844762 223.43410325 31.2990747 41.11855836 11.56486817 46.14259608 12.97791221 180.26205882 144.58582353 242.02 217.99 67.76216208 41.61843449 0 68.96940857 0 -23.55070738 0 407.69688095 0 60.72962433 17401.12 17300.75491719 17261.166 17237.86511799 17211.103 17174.10055491 17151.328 17143.76058678 17088.59366667 17121.24005569 17091.2652 17101.19327718 17127.5939 17054.34432142 17066.7484 0 17210.305 1 17169.71417103 1 17341.78392593 17427.82 17088.5372 16934.27480361 17368.38119639 118.20594118 8550.17222 -0.15320333 17357.74 17477.06]&#125;]&#125; </span><br><span class="line">BBupper:  17368.38119639</span><br><span class="line">BBlower:  16934.27480361</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/59484.html" rel="bookmark">Doc-币安智能链WhitePaper</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24924.html" rel="bookmark">Doc-SolidityByExample_1_Basics</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/23566.html" rel="bookmark">OpenZeppelin-代码库QuickView</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/DevRecord/" rel="tag"># DevRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/1085.html" rel="prev" title="StudyRecord-Solidity_personal_sign">
+      <i class="fa fa-chevron-left"></i> StudyRecord-Solidity_personal_sign
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/16021.html" rel="next" title="StudyRecord-使用OpenZeppelin编写可升级的智能合约">
+      StudyRecord-使用OpenZeppelin编写可升级的智能合约 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">介绍:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">相关github仓库:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python%E7%89%88%E6%9C%AC%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">python版本：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go%E7%89%88%E6%9C%AC%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">go版本：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

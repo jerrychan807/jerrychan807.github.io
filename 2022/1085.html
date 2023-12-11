@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="数字签名算法: 以太坊使用的数字签名算法叫双椭圆曲线数字签名算法（ECDSA），基于双椭圆曲线“私钥-公钥”对的数字签名算法。它主要起到了三个作用：  身份认证：证明签名方是私钥的持有人 不可否认：发送方不能否认发送过这个消息 完整性：消息在传输过程中无法被修改  流程:   签名即正向算法（消息 + 私钥 + 随机数）&#x3D; 签名，其中消息是公开的，私钥是隐私的，经过ECDSA正向算法可得到签名，即">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-Solidity_personal_sign">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/1085.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="数字签名算法: 以太坊使用的数字签名算法叫双椭圆曲线数字签名算法（ECDSA），基于双椭圆曲线“私钥-公钥”对的数字签名算法。它主要起到了三个作用：  身份认证：证明签名方是私钥的持有人 不可否认：发送方不能否认发送过这个消息 完整性：消息在传输过程中无法被修改  流程:   签名即正向算法（消息 + 私钥 + 随机数）&#x3D; 签名，其中消息是公开的，私钥是隐私的，经过ECDSA正向算法可得到签名，即">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221116112417.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221122181424.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221123143209.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221123143228.png">
+<meta property="article:published_time" content="2022-11-22T04:00:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.078Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="StudyRecord">
+<meta property="article:tag" content="SmartContract">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221116112417.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/1085.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-Solidity_personal_sign | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/1085.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-Solidity_personal_sign
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-22 12:00:34" itemprop="dateCreated datePublished" datetime="2022-11-22T12:00:34+08:00">2022-11-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>数字签名算法:</h1>
+<p>以太坊使用的数字签名算法叫双椭圆曲线数字签名算法（ECDSA），基于双椭圆曲线“私钥-公钥”对的数字签名算法。它主要起到了三个作用：</p>
+<ul class="lvl-0">
+<li class="lvl-2"><code>身份认证</code>：证明签名方是私钥的持有人</li>
+<li class="lvl-2"><code>不可否认</code>：发送方不能否认发送过这个消息</li>
+<li class="lvl-2"><code>完整性</code>：消息在传输过程中无法被修改</li>
+</ul>
+<h2 id="流程-2">流程:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>签名即<code>正向算法（消息 + 私钥 + 随机数）= 签名</code>，其中消息是公开的，私钥是隐私的，经过ECDSA正向算法可得到<code>签名，即r、s、v</code></p>
+</li>
+<li class="lvl-2">
+<p>验证即<code>反向算法（消息 + 签名）= 公钥</code>，其中消息是公开的，签名是公开的，经过ECDSA反向算法可得到公钥，然后对比已公开的公钥</p>
+</li>
+</ul>
+<h2 id="签名交易">签名交易:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221116112417.png" alt="20221116112417" /></p>
+<h2 id="签名的类型">签名的类型:</h2>
+<p><code>eth_sign</code> 是用来签署任意数据。这使得它是最强大的，最简单的（只是签署数据），但也是最危险的。<br />
+这里的问题是，你可以让用户签署一个数据，而这个实际上是交易数据。想象一下，你让用户登录到你的服务，但你让他们签署的数据实际上是一个交易，如 “发送5个ETH给攻击者”。<br />
+交易毕竟只是由字节组成，人们很可能不会检查他们所签署的这串字符的实际含义。看似无害的签名，却成了窃取资金的攻击。所以一般不鼓励直接使用<code>eth_sign</code>。</p>
+<p><code>personal_sign</code> 后来加入来解决这个问题。该方法在任何签名数据前加上<code>&quot;\x19Ethereum Signed Message:\n&quot;</code>，这意味着如果有人要签署交易数据，添加的前缀字符串会使其成为无效交易。</p>
+<p>对于更复杂的用例，特别是在智能合约中使用时，EIP-712标准被创建。EIP-712标准随着时间的推移而有所改变，但目前MetaMask支持的最后一个版本是<code>signTypedData_v4</code>。或者你可以使用一个特定的库，如eip-712。</p>
+<p>EIP-712解决的主要问题是确保用户清楚地知道他们在签署什么，为哪个合约地址和网络签署，而且每个签名最多只能使用一次。简而言之，这是通过签署所有需要的配置数据（地址、chain id、版本、数据类型）的哈希值+实际数据本身来实现的。ERC20-Permit 是一个关于如何使用signTypedData_v4的好例子。</p>
+<h2 id="实例">实例:</h2>
+<p>新地址刚登录opensea时，就会弹出签名。下图是小狐狸（metamask）钱包进行签名时弹出的窗口，它可以证明你拥有私钥的同时不需要对外公布私钥。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221122181424.png" alt="20221122181424" /></p>
+<h1>创建签名:</h1>
+<h2 id="打包信息">打包信息:</h2>
+<p>在以太坊的ECDSA标准中，被签名的消息是一组数据的<code>keccak256哈希</code>，为<code>bytes32类型</code>。</p>
+<p>我们可以把任何想要签名的内容利用<code>abi.encodePacked()</code>函数打包，然后用<code>keccak256()</code>计算哈希，作为消息。<br />
+我们例子中的<code>消息</code>由string类型变量得出：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// solidity</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getSingleMessageHash</span>(<span class="params">string memory _message</span>) public pure returns (bytes32)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">keccak256</span>(abi.<span class="title function_">encodePacked</span>(_message));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 测试脚本</span></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Verify sign&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  it.<span class="title function_">only</span>(<span class="string">&quot;generate sign&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123;<span class="title class_">Verify</span>, users, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">setup</span>();</span><br><span class="line">      <span class="keyword">const</span> message = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">      <span class="comment">// 调用智能合约打包信息</span></span><br><span class="line">      <span class="keyword">let</span> result = <span class="keyword">await</span> <span class="title class_">Verify</span>.<span class="title function_">getSingleMessageHash</span>(message);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;messageHash: &quot;</span> + result);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试脚本输出结果</span></span><br><span class="line">messageHash: 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>打包信息 = <code>abi.encodePacked()</code>打包 + <code>keccak256()</code>计算哈希</p>
+</blockquote>
+<h2 id="计算以太坊签名消息">计算以太坊签名消息:</h2>
+<p><code>消息</code>可以是能被执行的交易，也可以是其他任何形式。<br />
+为了避免用户误签了恶意交易，<a target="_blank" rel="noopener" href="https://github.com/ethereum/go-ethereum/pull/2940">ethereum PR2940</a>提倡在消息前加上<code>&quot;\x19Ethereum Signed Message:\n32&quot;</code>字符，并再做一次<code>keccak256哈希</code>，作为以太坊签名消息。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// solidity</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">toEthSignedMessageHash</span>(<span class="params">bytes32 hash</span>) public pure returns (bytes32) &#123;</span><br><span class="line">    <span class="comment">// 哈希的长度为32</span></span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">keccak256</span>(abi.<span class="title function_">encodePacked</span>(<span class="string">&quot;\x19Ethereum Signed Message:\n32&quot;</span>, hash));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试脚本输出结果</span></span><br><span class="line">sig: 0x456e9aea5e197a1f1af7a3e85a3212fa4049a3ba34c2289b4c860fc0b0c64ef3</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>对消息签名 = 签名hash+固定字符串后<code>abi.encodePacked()</code>打包 + <code>keccak256()</code>计算哈希</p>
+</blockquote>
+<h2 id="钱包进行签名">钱包进行签名:</h2>
+<p>日常操作中，大部分用户都是通过这种方式进行签名。</p>
+<p>在获取到需要签名的消息之后，我们需要使用metamask钱包进行签名。<br />
+metamask的<code>personal_sign</code>方法会自动把消息转换为以太坊签名消息，然后发起签名。</p>
+<p>所以我们只需要输入消息和签名者钱包account即可。<br />
+需要注意的是输入的签名者钱包account需要和metamask当前连接的account一致才能使用。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Account #18: 0xdD2FD4581271e230360230F9337D5c0430Bf44C0 (10000 ETH)</span></span><br><span class="line"><span class="comment"># Private Key: 0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0</span></span><br><span class="line">ethereum.enable()</span><br><span class="line">account = <span class="string">&quot;0xdD2FD4581271e230360230F9337D5c0430Bf44C0&quot;</span></span><br><span class="line"><span class="built_in">hash</span> = <span class="string">&quot;0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8&quot;</span></span><br><span class="line">ethereum.request(&#123;method: <span class="string">&quot;personal_sign&quot;</span>, params: [account, <span class="built_in">hash</span>]&#125;)</span><br></pre></td></tr></table></figure>
+<p>在控制台进行输入：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221123143209.png" alt="20221123143209" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221123143228.png" alt="20221123143228" /><br />
+在返回的结果中（<code>Promise的PromiseResult</code>）可以看到创建好的签名。不同账户有不同的私钥，创建的签名值也不同。利用上面私钥创建的签名如下所示：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x606a2bb1fa3459b622a37b54a88b051ad8d3e0c266373ca3d9a9da3c1b05e0dd4c5c647d72762cb65628ee377a3b9fb1ac09f157d5ae2150c07258117e8a24ae1c</span><br></pre></td></tr></table></figure>
+<h2 id="利用ethersjs签名">利用ethersjs签名:</h2>
+<p>测试代码地址: <a target="_blank" rel="noopener" href="https://github.com/jerrychan807/my-awesome-solidity/blob/main/easy_sign/contracts/Verify.sol">https://github.com/jerrychan807/my-awesome-solidity/blob/main/easy_sign/contracts/Verify.sol</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hardhat测试脚本</span></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Verify sign&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 生成签名</span></span><br><span class="line">  it.<span class="title function_">only</span>(<span class="string">&quot;generate sign&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123;<span class="title class_">Verify</span>, users, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">setup</span>();</span><br><span class="line">      <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="property">providers</span>.<span class="title class_">JsonRpcProvider</span>(<span class="string">&quot;http://localhost:8545&quot;</span>);</span><br><span class="line">      <span class="keyword">let</span> privateKey = <span class="string">&#x27;0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0&#x27;</span>;</span><br><span class="line">      <span class="keyword">let</span> wallet = <span class="keyword">new</span> ethers.<span class="title class_">Wallet</span>(privateKey);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> message = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;message: &quot;</span> + message);</span><br><span class="line">      <span class="comment">// 打包签名</span></span><br><span class="line">      <span class="keyword">const</span> messageHash = ethers.<span class="property">utils</span>.<span class="title function_">solidityKeccak256</span>([<span class="string">&quot;string&quot;</span>], [message]);</span><br><span class="line">      <span class="keyword">const</span> messageHashByte = ethers.<span class="property">utils</span>.<span class="title function_">arrayify</span>(messageHash);</span><br><span class="line">      <span class="comment">// 消息进行签名</span></span><br><span class="line">      <span class="keyword">let</span> signature = <span class="keyword">await</span> wallet.<span class="title function_">signMessage</span>(messageHashByte);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;signature: &quot;</span> + signature);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>测试结果如下,与Metamask的消息生成的签名一致。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">message: hello</span><br><span class="line">signature: 0x606a2bb1fa3459b622a37b54a88b051ad8d3e0c266373ca3d9a9da3c1b05e0dd4c5c647d72762cb65628ee377a3b9fb1ac09f157d5ae2150c07258117e8a24ae1c</span><br></pre></td></tr></table></figure>
+<h1>验证签名:</h1>
+<p>为了验证签名，验证者需要拥有:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>消息</p>
+</li>
+<li class="lvl-2">
+<p>签名</p>
+</li>
+<li class="lvl-2">
+<p>签名使用的公钥。</p>
+</li>
+</ul>
+<p>我们能验证签名的原因是只有私钥的持有者才能够针对交易生成这样的签名，而别人不能。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// solidity</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">verify</span>(<span class="params">address _signer, string memory _message, uint8 _v, bytes32 _r, bytes32 _s</span>) public pure returns (bool) &#123;</span><br><span class="line">    bytes32 msgHash = <span class="title function_">keccak256</span>(abi.<span class="title function_">encodePacked</span>(_message));</span><br><span class="line">    bytes32 msgDigest = <span class="title function_">keccak256</span>(abi.<span class="title function_">encodePacked</span>(<span class="string">&quot;\x19Ethereum Signed Message:\n32&quot;</span>, msgHash));</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">ecrecover</span>(msgDigest, _v, _r, _s) == _signer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>签名中包含<code>r, s, v</code>三个值的信息,通过签名、消息恢复出 签名者的地址。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hardhat测试脚本</span></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Verify sign&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 生成签名</span></span><br><span class="line">  it.<span class="title function_">only</span>(<span class="string">&quot;generate sign&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123;<span class="title class_">Verify</span>, users, tokenOwner&#125; = <span class="keyword">await</span> <span class="title function_">setup</span>();</span><br><span class="line">      <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="property">providers</span>.<span class="title class_">JsonRpcProvider</span>(<span class="string">&quot;http://localhost:8545&quot;</span>);</span><br><span class="line">      <span class="keyword">let</span> privateKey = <span class="string">&#x27;0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0&#x27;</span>;</span><br><span class="line">      <span class="keyword">let</span> wallet = <span class="keyword">new</span> ethers.<span class="title class_">Wallet</span>(privateKey);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> message = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;message: &quot;</span> + message);</span><br><span class="line">      <span class="comment">// 打包签名</span></span><br><span class="line">      <span class="keyword">const</span> messageHash = ethers.<span class="property">utils</span>.<span class="title function_">solidityKeccak256</span>([<span class="string">&quot;string&quot;</span>], [message]);</span><br><span class="line">      <span class="keyword">const</span> messageHashByte = ethers.<span class="property">utils</span>.<span class="title function_">arrayify</span>(messageHash);</span><br><span class="line">      <span class="comment">// 消息进行签名</span></span><br><span class="line">      <span class="keyword">let</span> signature = <span class="keyword">await</span> wallet.<span class="title function_">signMessage</span>(messageHashByte);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;signature: &quot;</span> + signature);</span><br><span class="line">      <span class="keyword">let</span> sig = ethers.<span class="property">utils</span>.<span class="title function_">splitSignature</span>(signature);</span><br><span class="line">      <span class="comment">// 调用智能合约验证签名</span></span><br><span class="line">      <span class="keyword">let</span> result = <span class="keyword">await</span> <span class="title class_">Verify</span>.<span class="title function_">verify</span>(wallet.<span class="property">address</span>, message, sig.<span class="property">v</span>, sig.<span class="property">r</span>, sig.<span class="property">s</span>);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(result);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>测试结果:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">message: hello</span><br><span class="line">signature: 0x606a2bb1fa3459b622a37b54a88b051ad8d3e0c266373ca3d9a9da3c1b05e0dd4c5c647d72762cb65628ee377a3b9fb1ac09f157d5ae2150c07258117e8a24ae1c</span><br><span class="line"><span class="comment"># 验证通过</span></span><br><span class="line"><span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wanghui-garcia/p/9642492.html">为什么签名前要加&quot;\x19Ethereum Signed Message:\n&quot;</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://soliditydeveloper.com/ecrecover">What is ecrecover in Solidity?</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/37_Signature/readme.md#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D">WTF Solidity极简入门: 37. 数字签名 Signature</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/2701">Solidity中的ecrecover的应用</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2023/20767.html" rel="bookmark">StudyRecord-ERC1155协议</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/64479.html" rel="bookmark">StudyRecord-Hardhat框架初步使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/32598.html" rel="bookmark">StudyRecord-OpenSea制作NFT初步使用</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/58092.html" rel="prev" title="StudyRecord-使用EIP-712签名进行委托和投票">
+      <i class="fa fa-chevron-left"></i> StudyRecord-使用EIP-712签名进行委托和投票
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/57835.html" rel="next" title="DevRecord-TradingView技术分析指标API">
+      DevRecord-TradingView技术分析指标API <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">数字签名算法:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B-2"><span class="nav-number">1.1.</span> <span class="nav-text">流程:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E4%BA%A4%E6%98%93"><span class="nav-number">1.2.</span> <span class="nav-text">签名交易:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">签名的类型:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">实例:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">创建签名:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">打包信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%AD%BE%E5%90%8D%E6%B6%88%E6%81%AF"><span class="nav-number">2.2.</span> <span class="nav-text">计算以太坊签名消息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%B1%E5%8C%85%E8%BF%9B%E8%A1%8C%E7%AD%BE%E5%90%8D"><span class="nav-number">2.3.</span> <span class="nav-text">钱包进行签名:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8ethersjs%E7%AD%BE%E5%90%8D"><span class="nav-number">2.4.</span> <span class="nav-text">利用ethersjs签名:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">验证签名:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

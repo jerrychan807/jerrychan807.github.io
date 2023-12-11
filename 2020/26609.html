@@ -269,7 +269,7 @@
 <p>上网查下资料整理下思路。</p>
 <hr />
 <h1>越权漏洞</h1>
-<h2 id="简介-3">简介:</h2>
+<h2 id="简介-5">简介:</h2>
 <p>定义: 增、删、改、查，缺乏权限鉴定或者鉴定不严</p>
 <h2 id="分类">分类:</h2>
 <ul class="lvl-0">
@@ -484,7 +484,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">越权漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-3"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">分类:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">2.3.</span> <span class="nav-text">案例:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%97%9B%E7%82%B9"><span class="nav-number">2.4.</span> <span class="nav-text">越权漏洞的痛点:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">工具的设计思路:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%89%88"><span class="nav-number">3.1.</span> <span class="nav-text">第一版:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%89%88"><span class="nav-number">3.2.</span> <span class="nav-text">第二版:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">参考别人的思路:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ele"><span class="nav-number">4.1.</span> <span class="nav-text">ele:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E8%AE%BE%E8%AE%A11-Request%E9%87%8D%E6%94%BE"><span class="nav-number">4.1.1.</span> <span class="nav-text">思路设计1:Request重放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E8%AE%BE%E8%AE%A12-Response%E6%AF%94%E5%AF%B9"><span class="nav-number">4.1.2.</span> <span class="nav-text">思路设计2:Response比对</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%80%9Ascr"><span class="nav-number">4.2.</span> <span class="nav-text">中通scr:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">构思:另一种更好的方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">其他问题:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">6.1.</span> <span class="nav-text">增删改查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E6%95%B0%E6%8D%AE"><span class="nav-number">6.2.</span> <span class="nav-text">没有数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">越权漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-5"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">分类:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">2.3.</span> <span class="nav-text">案例:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%97%9B%E7%82%B9"><span class="nav-number">2.4.</span> <span class="nav-text">越权漏洞的痛点:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">工具的设计思路:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%89%88"><span class="nav-number">3.1.</span> <span class="nav-text">第一版:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%89%88"><span class="nav-number">3.2.</span> <span class="nav-text">第二版:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">参考别人的思路:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ele"><span class="nav-number">4.1.</span> <span class="nav-text">ele:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E8%AE%BE%E8%AE%A11-Request%E9%87%8D%E6%94%BE"><span class="nav-number">4.1.1.</span> <span class="nav-text">思路设计1:Request重放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E8%AE%BE%E8%AE%A12-Response%E6%AF%94%E5%AF%B9"><span class="nav-number">4.1.2.</span> <span class="nav-text">思路设计2:Response比对</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%80%9Ascr"><span class="nav-number">4.2.</span> <span class="nav-text">中通scr:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">构思:另一种更好的方案:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">其他问题:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">6.1.</span> <span class="nav-text">增删改查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E6%95%B0%E6%8D%AE"><span class="nav-number">6.2.</span> <span class="nav-text">没有数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -500,7 +500,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -546,7 +546,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -555,12 +555,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">652k</span>
+    <span title="Symbols count total">860k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">9:52</span>
+    <span title="Reading time total">13:01</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

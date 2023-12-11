@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="引言: 还是围绕验证者管理模块进行,上次完成了添加新的验证者,这次围绕验证者的奖励进行验证&#x2F;学习&#x2F;测试。 目的:   验证者能够查询自己的收入   验证者能够获取到自己的挖矿收益   BC权益质押: 参考白皮书,可知币安链在在BC上完成了BSC的权益质押逻辑：   质押代币是 BNB，这是因为它是两个区块链上的原生代币。   在BC上记录BSC的权益质押和委托行为。   BSC 验证人集由它的权益">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-Bsc详解-验证节点奖励测试">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/24344.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="引言: 还是围绕验证者管理模块进行,上次完成了添加新的验证者,这次围绕验证者的奖励进行验证&#x2F;学习&#x2F;测试。 目的:   验证者能够查询自己的收入   验证者能够获取到自己的挖矿收益   BC权益质押: 参考白皮书,可知币安链在在BC上完成了BSC的权益质押逻辑：   质押代币是 BNB，这是因为它是两个区块链上的原生代币。   在BC上记录BSC的权益质押和委托行为。   BSC 验证人集由它的权益">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022163607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022165525.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022165732.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221020180049.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022162856.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022190745.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022180111.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022180203.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011172802.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011173016.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011173049.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221012152342.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221020180049.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221012152433.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022143413.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221021184410.png">
+<meta property="article:published_time" content="2022-10-22T03:36:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.076Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022163607.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/24344.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-Bsc详解-验证节点奖励测试 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/24344.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-Bsc详解-验证节点奖励测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-10-22 11:36:34" itemprop="dateCreated datePublished" datetime="2022-10-22T11:36:34+08:00">2022-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>17 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>引言:</h1>
+<p>还是围绕验证者管理模块进行,上次完成了添加新的验证者,这次围绕验证者的奖励进行验证/学习/测试。</p>
+<p>目的:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>验证者能够查询自己的收入</p>
+</li>
+<li class="lvl-2">
+<p>验证者能够获取到自己的挖矿收益</p>
+</li>
+</ul>
+<h1>BC权益质押:</h1>
+<p>参考白皮书,可知币安链在在BC上完成了BSC的<code>权益质押逻辑</code>：</p>
+<ol>
+<li class="lvl-3">
+<p>质押代币是 BNB，这是因为它是两个区块链上的原生代币。</p>
+</li>
+<li class="lvl-3">
+<p>在BC上记录BSC的权益质押和委托行为。</p>
+</li>
+<li class="lvl-3">
+<p>BSC 验证人集由它的权益质押和委托逻辑来决定，在BC上构建一个BSC的权益质押模块，并通过跨链通信在每天UTC 00:00:00 由BC传送到 BSC 。</p>
+</li>
+<li class="lvl-3">
+<p>BC上的奖励分配发生在每天UTC 00:00时刻。</p>
+</li>
+</ol>
+<h2 id="奖励-2">奖励:</h2>
+<p>验证人集更新和奖励分配都发生在每天的UTC 00:00 。这是为了节省频繁更新和区块奖励分配的成本。频繁分配奖励的代价可能是巨大的，因为<code>区块奖励是在BSC上收取的，并在BC上分发给BSC验证人和委托人</code>。（请注意，BC出块奖励仅分发给BC验证人。）</p>
+<p>为了确保分配是公平的，这里引入了一种延后分配的算法：</p>
+<ol>
+<li class="lvl-3">
+<p>区块奖励不会立即发送给验证人，而是计算并积累在智能合约中；</p>
+</li>
+<li class="lvl-3">
+<p>当BSC收到验证人集更新消息时，它将触发跨链转账，将奖励转账给验证人的托管地址。 托管地址是由系统控制，因此在向委派者承诺的分配完成之前，奖金是不能用的。</p>
+</li>
+<li class="lvl-3">
+<p>为了使同步更简单，并分配时间以防出现罚没，第T天的奖励将在第T + 2 天分配。 在委托人收到奖励后，剩下的收益将被转移到验证人自己的奖励地址。</p>
+</li>
+</ol>
+<h1>奖励分配流程:</h1>
+<h2 id="主网Tx例子">主网Tx例子:</h2>
+<p>缩小block区间,在bscan上获取一个tx,其中<code>Transaction Receipt Event Logs</code>里有与<code>BSCValidatorSet.sol</code>(<code>0x0000000000000000000000000000000000001000</code>)的交互记录,通过这个<a target="_blank" rel="noopener" href="https://dashboard.tenderly.co/tx/bsc/0x474b38f8531aff6775d9f1cb90afcc63566bbd8c5f04f45ce5681406226b80aa">tx</a>在tenderly查看,方便自己理解系统合约间的内部调用关系。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022163607.png" alt="20221022163607" /><br />
+<code>CrossChain.sol</code>——&gt; <code>BSCValidatorSet.sol</code>——&gt;<code>TokenHub.sol</code></p>
+<h2 id="tx-BSCValidatorSet-sol">tx-&gt; BSCValidatorSet.sol:</h2>
+<blockquote>
+<p>区块奖励不会立即发送给验证人，而是计算并积累在智能合约中；</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022165525.png" alt="20221022165525" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022165732.png" alt="20221022165732" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221020180049.png" alt="20221020180049" /><br />
+验证者的奖励/收益来源于区块内的交易手续费(gas fee),奖励会先累计在<code>BSCValidatorSet.sol</code>合约中。</p>
+<h2 id="bsc-relayer-BSC">bsc-relayer-&gt;BSC:</h2>
+<p>流程图:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022162856.png" alt="20221022162856" /></p>
+<p>每天0点时,<code>bsc-relayer</code>会将区块头和跨链包数据同步到BSC上。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>bsc-relayer</code>调用<code>CrossChain.sol</code>(<code>0x0000000000000000000000000000000000002000</code>)跨链合约</p>
+</li>
+<li class="lvl-2">
+<p>再内部调用<code>BSCValidatorSet.sol</code>(<code>0x0000000000000000000000000000000000001000</code>)的<code>updateValidatorSet</code>函数</p>
+</li>
+<li class="lvl-2">
+<p>再内部调用<code>TokenHub.sol</code>(<code>0x0000000000000000000000000000000000001004</code>)的<code>batchTransferOutBNB</code>函数</p>
+</li>
+<li class="lvl-2">
+<p>再内部调用<code>CrossChain.sol</code>(<code>0x0000000000000000000000000000000000002000</code>)跨链合约的<code>sendSynPackage</code>函数</p>
+</li>
+</ul>
+<h3 id="BSCValidatorSet-sol">BSCValidatorSet.sol:</h3>
+<p>BSC收到验证人集更新消息,BSCValidatorSet合约中<code>updateValidatorSet</code>函数中会执行以下的步骤:</p>
+<p>step 0: force all maintaining validators to exit <code>Temporary Maintenance</code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<ol>
+<li class="lvl-5">validators exit maintenance 验证者退出维护状态</li>
+</ol>
+</li>
+<li class="lvl-2">
+<ol start="2">
+<li class="lvl-5">clear all maintainInfo  清除所有维护信息</li>
+</ol>
+</li>
+<li class="lvl-2">
+<ol start="3">
+<li class="lvl-5">get unjailed validators from validatorSet 从验证者集合中获取未被监禁的验证者</li>
+</ol>
+</li>
+</ul>
+<p>step1：do calculate distribution, do not make it as an internal function for saving gas. 计算分配<br />
+验证者的收入 &gt; 0.1bnb, 则进行跨链转账，小于则进行直接转账</p>
+<p>step2：执行跨链转账:<br />
+将跨链转账总额转到<code>TokenHub.sol</code>合约中，调用<code>batchTransferOutBNB</code>函数,会传几个参数:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>crossTotal： 跨链转账总额,总共多少BNB 见主网tx例子:大概2000个BNB左右</p>
+</li>
+<li class="lvl-2">
+<p>crossAddrs数组: 验证者的BBCFeeAddress,BC收款地址</p>
+</li>
+<li class="lvl-2">
+<p>crossAmounts数组：验证者的收入</p>
+</li>
+<li class="lvl-2">
+<p>crossRefundAddrs数组: 也是验证者的BBCFeeAddress,BC收款地址</p>
+</li>
+</ul>
+<p>step3：执行直接转账: 收入少的话则,直接转账: 将验证者的收入转到验证者的收款地址中<br />
+step4: do dusk transfer  应该是把合约里剩余的零钱转走<br />
+step5: do update validator set state 更新验证者集合状态<br />
+step6: clean slash contract  清空惩罚slash合约状态</p>
+<h3 id="TokenHub-sol">TokenHub.sol:</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">batchTransferOutBNB</span>(<span class="params">address[] calldata recipientAddrs, uint256[] calldata amounts, address[] calldata refundAddrs, uint64 expireTime</span>) external override onlyInit payable returns (bool) &#123;</span><br><span class="line">	<span class="comment">// 数组长度必须相等</span></span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// 精度损失检查</span></span><br><span class="line">	...</span><br><span class="line">	rewardForRelayer = msg.<span class="property">value</span>.<span class="title function_">sub</span>(totalAmount);</span><br><span class="line">	<span class="comment">// 构造同步包 代币转出同步包</span></span><br><span class="line">	<span class="title class_">TransferOutSynPackage</span> memory transOutSynPkg = <span class="title class_">TransferOutSynPackage</span>(&#123;</span><br><span class="line">	bep2TokenSymbol : <span class="title class_">BEP2</span>_TOKEN_SYMBOL_FOR_BNB,</span><br><span class="line">	contractAddr : <span class="title function_">address</span>(<span class="number">0x00</span>), <span class="comment">// 销毁地址</span></span><br><span class="line">	amounts : convertedAmounts, <span class="comment">// 转出数量</span></span><br><span class="line">	recipients : recipientAddrs, <span class="comment">// 转出地址</span></span><br><span class="line">	refundAddrs : refundAddrs, <span class="comment">// 退款地址</span></span><br><span class="line">	expireTime : expireTime <span class="comment">// 过期时间</span></span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="comment">// 调用CrossChain合约的sendSynPackage</span></span><br><span class="line">	<span class="title class_">ICrossChain</span>(<span class="variable constant_">CROSS_CHAIN_CONTRACT_ADDR</span>).<span class="title function_">sendSynPackage</span>(<span class="variable constant_">TRANSFER_OUT_CHANNELID</span>, <span class="title function_">encodeTransferOutSynPackage</span>(transOutSynPkg), rewardForRelayer.<span class="title function_">div</span>(<span class="variable constant_">TEN_DECIMALS</span>));</span><br><span class="line">	emit <span class="title function_">transferOutSuccess</span>(<span class="title function_">address</span>(<span class="number">0x0</span>), msg.<span class="property">sender</span>, totalAmount, rewardForRelayer);</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要是先进行各种值的检验、构造同步包、调用<code>CrossChain</code>合约的<code>sendSynPackage</code>函数发送同步包</p>
+<h2 id="oracle-relayer-BC">oracle-relayer -&gt; BC:</h2>
+<h3 id="oracle-relayer">oracle-relayer:</h3>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022190745.png" alt="20221022190745" /><br />
+作用: 拉取 BSC 的跨链数据包，并针对 BC 的预言（prophecy）进行声明（claim）；</p>
+<h4 id="介绍-2">介绍:</h4>
+<p>BC上的oracle模块是与 gov类似的通用模块，用于处理预言和声明。</p>
+<p>预言意味着验证者希望就某些事情达成共识，例如跨链转移。<br />
+声明由验证者提出，声明的内容是跨链转移。</p>
+<blockquote>
+<p>validator在哪提出声明（claim）?</p>
+</blockquote>
+<p>当大多数验证者（如 70%）在预言上声明相同的东西时，获胜的声明将被执行。因为 oracle 模块是一个普通模块，其他依赖于 oracle 模块的模块将注册声明类型和相关的钩子检查和处理宣称。<br />
+每个声明类型都有一个序列，oracle 模块应该按序列处理预言和声明。当一个预言执行成功时，声明类型的序列将加一。</p>
+<h4 id="Oracle模块流程">Oracle模块流程:</h4>
+<ol>
+<li class="lvl-3">
+<p>Oracle 模块从验证者接收到声明消息，如果序列不是当前序列，则声明消息将被拒绝。</p>
+</li>
+<li class="lvl-3">
+<p>如果序列有效，则声明类型的钩子将检查声明消息，如果声明消息无效，则返回</p>
+</li>
+<li class="lvl-3">
+<p>如果声明消息有效并且是第一个声明，则将创建相关的预言。如果声明消息不是第一个声明，则将其添加到已存在的预言中。</p>
+</li>
+<li class="lvl-3">
+<p>如果声明相同内容的验证者的权力达到 70% 之类的阈值，则预言将被标记为成功，钩子将执行获胜的声明。并且索赔类型的顺序将增加。</p>
+</li>
+<li class="lvl-3">
+<p>如果验证者没有机会达成共识，则预言将被标记为失败，预言将被删除，验证者应重新开始。</p>
+</li>
+</ol>
+<blockquote>
+<p>BC上是如何创建预言?</p>
+</blockquote>
+<h4 id="Oracle-relayer源码">Oracle-relayer源码:</h4>
+<p><code>oracle-relayer</code>中主要两个文件是</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>oracle-relayer\observer\observer.go</code></p>
+</li>
+<li class="lvl-2">
+<p><code>oracle-relayer\relayer\relayer.go</code></p>
+</li>
+</ul>
+<h4 id="observer观察者">observer观察者:</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observer/observer.go</span><br></pre></td></tr></table></figure>
+<p>主要做的工作就是 同步bsc区块/跨链包的数据</p>
+<ol>
+<li class="lvl-3">
+<p>逐个区块高度读取BSC上的区块数据</p>
+</li>
+<li class="lvl-3">
+<p>将区块数据、区块内的跨链包数据存储在数据库中</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2022-10-19 00:19:10 INFO Fetch fetch block, height=130180</span><br><span class="line">2022-10-19 00:19:10 INFO Fetch fetch block, height=130181</span><br><span class="line">2022-10-19 00:19:10 INFO Fetch fetch block, height=130182</span><br><span class="line">2022-10-19 00:19:10 INFO Fetch fetch block, height=130183</span><br><span class="line">2022-10-19 00:19:10 INFO Fetch fetch block, height=130184</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022180111.png" alt="20221022180111" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022180203.png" alt="20221022180203" /></p>
+<h4 id="relayer中继器">relayer中继器:</h4>
+<p>主要的作用就是，按序发送发送跨链数据包到BC链，对预言进行声明</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发送跨链数据包到BC链</span></span><br><span class="line"><span class="comment">// 处理跨链数据包的具体函数,主要逻辑</span></span><br><span class="line"><span class="comment">// process relays the next batch of packages to Binance Chain</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Relayer)</span></span> process(chainId <span class="type">uint16</span>) <span class="type">error</span> &#123;</span><br><span class="line">	<span class="comment">// 连接BC,获取当前序列号</span></span><br><span class="line">	sequence, err := r.BBCExecutor.GetCurrentSequence(chainId)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		util.Logger.Errorf(<span class="string">&quot;get current sequence error: chainId=%d, err=%s&quot;</span>,</span><br><span class="line">			chainId, err.Error())</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	util.Logger.Infof(<span class="string">&quot;current sequence, chain_id=%d, seq=%d&quot;</span>, chainId, sequence)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 从数据库中查出 所有需要声明的跨链包交易,这些交易都是bsc中继器调用Crosschain合约的交易</span></span><br><span class="line">	<span class="comment">// 这些交易都是 被确认过的交易</span></span><br><span class="line">	claimLogs := <span class="built_in">make</span>([]*model.CrossChainPackageLog, <span class="number">0</span>)</span><br><span class="line">	err = r.DB.Where(<span class="string">&quot;oracle_sequence = ? and chain_id = ? and status = ?&quot;</span>,</span><br><span class="line">		sequence, chainId, model.PackageStatusConfirmed).Order(<span class="string">&quot;tx_index asc&quot;</span>).Find(&amp;claimLogs).Error</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		util.Logger.Errorf(<span class="string">&quot;query claim log error: err=%s&quot;</span>, err.Error())</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;[*] claimLogs: %v\n&quot;</span>, claimLogs)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;[*] len claimLogs: %d\n&quot;</span>, <span class="built_in">len</span>(claimLogs))</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(claimLogs) == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;no packages found&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 查询预言值</span></span><br><span class="line">	prophecy, err := r.BBCExecutor.GetProphecy(chainId, sequence)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;[*] prophecy: %v\n&quot;</span>, prophecy)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		util.Logger.Errorf(<span class="string">&quot;get prophecy error: err=%s&quot;</span>, err.Error())</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 验证者地址</span></span><br><span class="line">	validatorAddress := r.BBCExecutor.GetAddress()</span><br><span class="line">	fmt.Printf(<span class="string">&quot;[*] validatorAddress: %s\n&quot;</span>, validatorAddress)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 检查预言值是否已经被声明</span></span><br><span class="line">	<span class="keyword">if</span> prophecy != <span class="literal">nil</span> &amp;&amp; prophecy.ValidatorClaims != <span class="literal">nil</span> &amp;&amp; prophecy.ValidatorClaims[validatorAddress.String()] != <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;already claimed&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	packages := <span class="built_in">make</span>(msg.Packages, <span class="number">0</span>, <span class="built_in">len</span>(claimLogs))</span><br><span class="line">	<span class="comment">// 跨链交易记录 构造成 数据包</span></span><br><span class="line">	<span class="keyword">for</span> _, claimLog := <span class="keyword">range</span> claimLogs &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;[*] claimLog: %v\n&quot;</span>, claimLog)</span><br><span class="line">		payload, err := hex.DecodeString(claimLog.PayLoad)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;decode payload error, payload=%s&quot;</span>, claimLog.PayLoad)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		pack := msg.Package&#123;</span><br><span class="line">			ChannelId: types.IbcChannelID(claimLog.ChannelId),</span><br><span class="line">			Sequence:  claimLog.PackageSequence,</span><br><span class="line">			Payload:   payload,</span><br><span class="line">		&#125;</span><br><span class="line">		packages = <span class="built_in">append</span>(packages, pack)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	encodedPackages, err := rlp.EncodeToBytes(packages)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;encode packages error, err=%s&quot;</span>, err.Error())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	util.Logger.Infof(<span class="string">&quot;claim, chain_id=%d, seq=%d, payload=%s&quot;</span>,</span><br><span class="line">		chainId, sequence, hex.EncodeToString(encodedPackages))</span><br><span class="line">	<span class="comment">// 处理声明</span></span><br><span class="line">	<span class="comment">//tmpChainId := uint16(715)</span></span><br><span class="line">	txHash, err := r.BBCExecutor.Claim(chainId, <span class="type">uint64</span>(sequence), encodedPackages)</span><br><span class="line">	<span class="comment">//txHash, err := r.BBCExecutor.Claim(tmpChainId, uint64(sequence), encodedPackages)</span></span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		util.Logger.Errorf(<span class="string">&quot;claim error: err=%s&quot;</span>, err.Error())</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 更新数据库中的跨链包记录, 将状态改为已声明</span></span><br><span class="line">	err = r.DB.Model(model.CrossChainPackageLog&#123;&#125;).Where(<span class="string">&quot;oracle_sequence = ? and chain_id = ?&quot;</span>, sequence, chainId).Update(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">		<span class="string">&quot;status&quot;</span>:        model.PackageStatusClaimed,</span><br><span class="line">		<span class="string">&quot;claim_tx_hash&quot;</span>: txHash,</span><br><span class="line">		<span class="string">&quot;update_time&quot;</span>:   time.Now().Unix(),</span><br><span class="line">	&#125;).Error</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		util.Logger.Errorf(<span class="string">&quot;update CrossChainPackageLog error, err=%s&quot;</span>, err.Error())</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>完整测试/验证步骤:</h1>
+<h2 id="模拟多个验证者">模拟多个验证者:</h2>
+<p>先模拟BSC上正常的情况:<br />
+有2个验证者节点,两个节点要在区块链浏览器上能看到,块要由他们轮流出</p>
+<p>浏览器查看出块情况:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011172802.png" alt="20221011172802" /><br />
+目前是轮流出块的状态</p>
+<h2 id="模拟交易">模拟交易:</h2>
+<p>在<code>BSCValidatorSet</code>合约中，查看验证者的收入:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011173016.png" alt="20221011173016" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221011173049.png" alt="20221011173049" /><br />
+验证者的收入来自gasfee,多次转账并提高gasPrice,使得矿工的收入大于<code>0.1BNB</code>,这样才满足跨链转账的前提。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># geth中以高gas price进行转账</span></span><br><span class="line">eth.sendTransaction(&#123;from: <span class="string">&quot;0x9FC0c18d285C66dD993B8fF43C2560481A2D8d04&quot;</span>, to: <span class="string">&quot;0xC1b025e7406461E06185dE04253267C61E3990F6&quot;</span>, value: web3.toWei(1, <span class="string">&quot;ether&quot;</span>), gasPrice: web3.toWei(20000, <span class="string">&quot;gwei&quot;</span>)&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="添加验证者">添加验证者:</h2>
+<p>先在BC上添加2个验证者,等<code>bsc-relayer</code>中继器将新的验证者集合同步到BSC上。<br />
+此时会触发<code>BSCValidatorSet</code>合约中奖励发放的逻辑，接下来看执行<code>TOKEN_HUB</code>合约里的<code>batchTransferOutBNB</code>函数交易是否正常、跨链转账是否能够正常进行。</p>
+<p>bsc-relayer停了再运行后，发的同步跨链包的<code>sequence</code>不对，序列号没有按顺序且过大</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sequence not in order</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>中继器发跨链包的sequence是怎么获取的？</p>
+</blockquote>
+<p>中继器不断的<code>BatchRelayCrossChainPackages</code>后,<code>sequence</code>补齐了新增的验证者地址，同步成功：<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221012152342.png" alt="20221012152342" /></p>
+<h2 id="查询BSCValidatorSet合约">查询BSCValidatorSet合约:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221020180049.png" alt="20221020180049" /><br />
+原本验证者集合合约里还有一些BNB,现在应该是执行到跨链转账的阶段了<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221012152433.png" alt="20221012152433" /><br />
+<a target="_blank" rel="noopener" href="http://192.168.2.25:4000/tx/0x9e3da868071d68bb94b817001a1801a837c820bf688b6b305232124dc9a4e01f">本地tx</a><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221022143413.png" alt="20221022143413" /></p>
+<h2 id="启动oracle-relayer">启动oracle-relayer:</h2>
+<p>现在是要将BSC上获取的挖矿奖励,跨链到BC上,需要使用到<code>oracle-relayer</code>进行同步<br />
+拉取 BSC 的跨链数据包，并针对 BC 的预言（prophecy）进行声明（claim）；</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动命令</span></span><br><span class="line">./build/relayer --bbc-network 1 --config-type <span class="built_in">local</span> --config-path config/config.json</span><br></pre></td></tr></table></figure>
+<h3 id="报错1-环境设置不当">报错1: 环境设置不当</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2022-10-17 00:22:11 ERROR process claim error: err=&#123;<span class="string">&quot;codespace&quot;</span>:1,<span class="string">&quot;code&quot;</span>:7,<span class="string">&quot;abci_code&quot;</span>:65543,<span class="string">&quot;message&quot;</span>:<span class="string">&quot;tbnb1fvpct0j9qt76skhgj362t8dll0ycztm2u2f0xu&quot;</span>&#125;</span><br><span class="line">2022-10-17 00:22:12 INFO Fetch fetch block, height=90353</span><br><span class="line">2022-10-17 00:22:12 ERROR Fetch fetch block error, err=get block info error, height=90353, err=not found</span><br><span class="line">2022-10-17 00:22:12 INFO process current sequence, chain_id=714, <span class="built_in">seq</span>=0</span><br><span class="line">2022-10-17 00:22:12 INFO process claim, chain_id=714, <span class="built_in">seq</span>=0, payload=f8c5f8c30380b8bf000000000000000000000000000000000000000000000000000000000000061a80f89ca0424e420000000000000000000000000000000000000000000000000000000000940000000000000000000000000000000000000000ca840bd696208410a79319ea9439de103a1bf89743829e1fb94261133a4d3719869461e25456b50d2ff65b48be75d0d435279d3f9e21ea9439de103a1bf89743829e1fb94261133a4d3719869461e25456b50d2ff65b48be75d0d435279d3f9e2184634660e5</span><br><span class="line">2022-10-17 00:22:12 ERROR process claim error: err=&#123;<span class="string">&quot;codespace&quot;</span>:1,<span class="string">&quot;code&quot;</span>:7,<span class="string">&quot;abci_code&quot;</span>:65543,<span class="string">&quot;message&quot;</span>:<span class="string">&quot;tbnb1fvpct0j9qt76skhgj362t8dll0ycztm2u2f0xu&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>设置为生产环境，bc链的地址前缀才为<code>bnb</code>、测试环境的地址前缀为<code>tbnb</code></p>
+<h3 id="报错2-交易验签失败">报错2: 交易验签失败</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2022-10-19 01:04:47 INFO process claim, chain_id=714, seq=0, payload=f8c5f8c30380b8bf000000000000000000000000000000000000000000000000000000000000061a80f89ca0424e420000000000000000000000000000000000000000000000000000000000940000000000000000000000000000000000000000ca840bd696208410a79319ea9439de103a1bf89743829e1fb94261133a4d3719869461e25456b50d2ff65b48be75d0d435279d3f9e21ea9439de103a1bf89743829e1fb94261133a4d3719869461e25456b50d2ff65b48be75d0d435279d3f9e2184634660e5</span><br><span class="line">2022-10-19 01:04:47 ERROR process claim error: err=claim error, code=65540, log=&#123;&quot;codespace&quot;:1,&quot;code&quot;:4,&quot;abci_code&quot;:65540,&quot;message&quot;:&quot;signature verification failed&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p><code>signature verification failed</code>签名验证失败</p>
+<p>auth模块中的<code>AnteHandler</code>会提前对消息进行验证<br />
+refs:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/jerrychan807/bnc-cosmos-sdk/blob/master/docs/sdk/core/app2.md">https://github.com/jerrychan807/bnc-cosmos-sdk/blob/master/docs/sdk/core/app2.md</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/jerrychan807/bnc-cosmos-sdk/blob/master/SECURITY.md">SECURITY.md</a> 有提到Tx 签名验证（x/auth/ante.go 中的代码）</p>
+</li>
+</ul>
+<figure class="highlight go"><figcaption><span>node\common\tx\ante.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// verify the signature and increment the sequence.</span></span><br><span class="line"><span class="comment">// 验证签名并增加序列号</span></span><br><span class="line"><span class="comment">// if the account doesn&#x27;t have a pubkey, set it.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">processSig</span><span class="params">(txHash <span class="type">string</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	sig auth.StdSignature, pubKey crypto.PubKey, signBytes []<span class="type">byte</span>)</span></span> (</span><br><span class="line">	res sdk.Result) &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> sigCache.getSig(txHash) &#123;</span><br><span class="line">		log.Debug(<span class="string">&quot;Tx hits sig cache&quot;</span>, <span class="string">&quot;txHash&quot;</span>, txHash)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check sig.</span></span><br><span class="line">	<span class="comment">// pubKey.VerifyBytes(signBytes, sig.Signature) 用PubKey对签名进行验证</span></span><br><span class="line">	<span class="keyword">if</span> !pubKey.VerifyBytes(signBytes, sig.Signature) &#123;</span><br><span class="line">		<span class="keyword">return</span> sdk.ErrUnauthorized(<span class="string">&quot;signature verification failed&quot;</span>).Result()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	sigCache.addSig(txHash)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改BC的node源码，增加一些print，方便debug。在<code>processSig</code>函数中验证不通过,提示签名验证失败</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">D[2022-10-20|03:37:18.115] Scheduled <span class="built_in">timeout</span>                            module=consensus dur=993.499345ms height=4396 round=0 step=RoundStepNewHeight</span><br><span class="line">I[2022-10-20|03:37:18.378] ABCIQuery                                    module=rpc path=/store/sc/key data=F102CA00 result=<span class="string">&quot;key:\&quot;\\361\\002\\312\\000\&quot; height:4394 &quot;</span></span><br><span class="line">I[2022-10-20|03:37:18.378] WSJSONRPC                                    module=rpc-server protocol=websocket remote=192.168.2.24:54078 method=abci_query</span><br><span class="line">I[2022-10-20|03:37:18.386] ABCIQuery                                    module=rpc path=/store/oracle/key data=3731343A303A30 result=<span class="string">&quot;key:\&quot;714:0:0\&quot; height:4394 &quot;</span></span><br><span class="line">I[2022-10-20|03:37:18.386] WSJSONRPC                                    module=rpc-server protocol=websocket remote=192.168.2.24:54078 method=abci_query</span><br><span class="line">I[2022-10-20|03:37:18.392] ABCIQuery                                    module=rpc path=/account/bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq data= result=<span class="string">&quot;value:\&quot;K\\334L&#x27;\\nP\\n\\024&gt;\\227Q(-\\343\\325k\\3753\\244,\\003\\005\\261\\322]\\016\\304\\261\\022\\014\\n\\003BNB\\020\\200\\334\\341\\251\\2427\\032&amp;\\353Z\\351\\207!\\003v\\321\\027\\037\\3414y\\211\\2225\\037\\304+\\3328\\351\\220\\\&quot;\\346\\211p\\021&#125;\\223?@x\\300\\337\\032\\315\\234 \\002(\\001\&quot; &quot;</span></span><br><span class="line">I[2022-10-20|03:37:18.392] WSJSONRPC                                    module=rpc-server protocol=websocket remote=192.168.2.24:54078 method=abci_query</span><br><span class="line">I[2022-10-20|03:37:18.393] Rejected bad transaction                     module=mempool tx=398EFE3CBE0BCCEDA5D9A74B7F627AA4639339604AE5119C04CD7362E7180EE4 res=<span class="string">&quot;&amp;&#123;CheckTx:code:65540 log:\&quot;&#123;\\\&quot;codespace\\\&quot;:1,\\\&quot;code\\\&quot;:4,\\\&quot;abci_code\\\&quot;:65540,\\\&quot;message\\\&quot;:\\\&quot;signature verification failed\\\&quot;&#125;\&quot; events:&lt;&gt; &#125;&quot;</span> err=null</span><br><span class="line">I[2022-10-20|03:37:18.394] WSJSONRPC                                    module=rpc-server protocol=websocket remote=192.168.2.24:54078 method=broadcast_tx_commit</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/tendermint/go-crypto/blob/master/pub_key.go">https://github.com/tendermint/go-crypto/blob/master/pub_key.go</a></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pubKey PubKeyEd25519)</span></span> VerifyBytes(msg []<span class="type">byte</span>, sig_ Signature) <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="comment">// make sure we use the same algorithm to sign</span></span><br><span class="line">	sig, ok := sig_.(SignatureEd25519)</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	pubKeyBytes := [<span class="number">32</span>]<span class="type">byte</span>(pubKey)</span><br><span class="line">	sigBytes := [<span class="number">64</span>]<span class="type">byte</span>(sig)</span><br><span class="line">	<span class="keyword">return</span> ed25519.Verify(&amp;pubKeyBytes, msg, &amp;sigBytes)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/tendermint/ed25519/blob/master/ed25519.go">https://github.com/tendermint/ed25519/blob/master/ed25519.go</a></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Verify returns true iff sig is a valid signature of message by publicKey.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Verify</span><span class="params">(publicKey *[PublicKeySize]<span class="type">byte</span>, message []<span class="type">byte</span>, sig *[SignatureSize]<span class="type">byte</span>)</span></span> <span class="type">bool</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>验证sig 是否由公钥生成有效的消息签名</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sig, err := privKey.Sign(msg)</span><br></pre></td></tr></table></figure>
+<p>sig是用私钥对msg进行签名</p>
+<blockquote>
+<p>多次尝试后，没debug成功，先注释掉对应代码，跳过验签部分。</p>
+</blockquote>
+<h3 id="注释掉验签代码块">注释掉验签代码块:</h3>
+<p>注释掉签名验证部分的函数,编译新的node,运行<code>oracle-relayer</code>,会报新的错误:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2022-10-21 02:01:32 ERROR process claim error: err=claim error, code=721903, <span class="built_in">log</span>=&#123;<span class="string">&quot;codespace&quot;</span>:11,<span class="string">&quot;code&quot;</span>:1007,<span class="string">&quot;abci_code&quot;</span>:721903,<span class="string">&quot;message&quot;</span>:<span class="string">&quot;claim must be made by actively bonded validator&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>报错提示：验证者必须是活跃状态的，换成BC初始账户，继续运行<code>oracle-relayer</code><br />
+出现新的报错:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">process package failed, channel=3, sequence=0, error=ERROR:</span><br><span class="line">Codespace: 1</span><br><span class="line">Code: 10</span><br><span class="line">Message: <span class="string">&quot; &lt; 400000BNB&quot;</span></span><br><span class="line">module=oracle </span><br></pre></td></tr></table></figure>
+<p>定位到</p>
+<figure class="highlight go"><figcaption><span>bnc-cosmos-sdk\x\oracle\handler.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扣除手续费</span></span><br><span class="line">	_, _, sdkErr := oracleKeeper.BkKeeper.SubtractCoins(ctx, sdk.PegAccount, fee)</span><br></pre></td></tr></table></figure>
+<p>应该是会从托管账户里扣除手续费</p>
+<figure class="highlight go"><figcaption><span>bnc-cosmos-sdk\types\cross_chain.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	<span class="comment">// bnb prefix address:  bnb1v8vkkymvhe2sf7gd2092ujc6hweta38xadu2pj</span></span><br><span class="line">	<span class="comment">// tbnb prefix address: tbnb1v8vkkymvhe2sf7gd2092ujc6hweta38xnc4wpr</span></span><br><span class="line">	PegAccount = AccAddress(crypto.AddressHash([]<span class="type">byte</span>(<span class="string">&quot;BinanceChainPegAccount&quot;</span>)))</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>找到托管账户地址，给托管账户充值BNB:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bnbcli send --chain-id=715 --from=bnb1macd49chays0zqak9xedjzcxupkv4s87s7w5ze --amount=<span class="string">&quot;8000000000000:BNB&quot;</span> --to=bnb1v8vkkymvhe2sf7gd2092ujc6hweta38xadu2pj --sequence=4</span><br></pre></td></tr></table></figure>
+<h2 id="成功声明预言值">成功声明预言值:</h2>
+<p>再次运行<code>oracle-relayer</code>,这次claim 成功了。。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2022-10-21 03:40:03 INFO process current sequence, chain_id=714, <span class="built_in">seq</span>=1</span><br><span class="line">2022-10-21 03:40:03 INFO Fetch fetch block, height=27541</span><br><span class="line">[*] claimLogs: [0xc00127f220]</span><br><span class="line">[*] len claimLogs: 1</span><br><span class="line">[*] prophecy: &lt;nil&gt;</span><br><span class="line">[*] validatorAddress: bva1macd49chays0zqak9xedjzcxupkv4s87sz0yua</span><br><span class="line">[*] claimLog: &amp;&#123;2 714 1 0 11 000000000000000000000000000000000000000000000000000000000000000000e094c1b025e7406461e06185de04253267c61e3990f68204348202ca8463512988 0 1 0x7ed1aecbe7e2290acdd11f054e27eb511a27ae71e9ca5d648d9d24869ab33263 0x93f73ad8e3228c20ad34899f20e6d2c35b653e7e42510f282e2b5a86747589bb  1076 15 1666320721 1666320721&#125;</span><br><span class="line">2022-10-21 03:40:03 INFO process claim, chain_id=714, <span class="built_in">seq</span>=1, payload=f848f8460b80b842000000000000000000000000000000000000000000000000000000000000000000e094c1b025e7406461e06185de04253267c61e3990f68204348202ca8463512988</span><br><span class="line">2022-10-21 03:40:04 INFO Claim claim success, tx_hash=57D765A0D15825577434B29B6195D56DA147E188A4978FABF8AF27409529E444</span><br><span class="line">2022-10-21 03:40:04 INFO process current sequence, chain_id=714, <span class="built_in">seq</span>=1</span><br><span class="line">2022-10-21 03:40:04 INFO Fetch fetch block, height=27645</span><br><span class="line">[*] claimLogs: []</span><br><span class="line">[*] len claimLogs: 0</span><br></pre></td></tr></table></figure>
+<p>声明成功,数据库状态修改为 已声明，值为2</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221021184410.png" alt="20221021184410" /></p>
+<h2 id="检查验证者的余额">检查验证者的余额:</h2>
+<p>未执行oracle-relayer之前</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># bnbcli account bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq --trust-node</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;bnbchain/Account&quot;</span>,<span class="string">&quot;value&quot;</span>:&#123;<span class="string">&quot;base&quot;</span>:&#123;<span class="string">&quot;address&quot;</span>:<span class="string">&quot;bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq&quot;</span>,<span class="string">&quot;coins&quot;</span>:[&#123;<span class="string">&quot;denom&quot;</span>:<span class="string">&quot;BNB&quot;</span>,<span class="string">&quot;amount&quot;</span>:<span class="string">&quot;1902906976744&quot;</span>&#125;],<span class="string">&quot;public_key&quot;</span>:&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;tendermint/PubKeySecp256k1&quot;</span>,<span class="string">&quot;value&quot;</span>:<span class="string">&quot;A3bRFx/hNHmJkjUfxCvaOOmQIuaJcBF9kz9AeMDfGs2c&quot;</span>&#125;,<span class="string">&quot;account_number&quot;</span>:<span class="string">&quot;2&quot;</span>,<span class="string">&quot;sequence&quot;</span>:<span class="string">&quot;1&quot;</span>&#125;,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;frozen&quot;</span>:null,<span class="string">&quot;locked&quot;</span>:null,<span class="string">&quot;flags&quot;</span>:<span class="string">&quot;0&quot;</span>&#125;&#125;</span><br><span class="line">[root@localhost ~]<span class="comment"># bnbcli account bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv --trust-node</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;bnbchain/Account&quot;</span>,<span class="string">&quot;value&quot;</span>:&#123;<span class="string">&quot;base&quot;</span>:&#123;<span class="string">&quot;address&quot;</span>:<span class="string">&quot;bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv&quot;</span>,<span class="string">&quot;coins&quot;</span>:[&#123;<span class="string">&quot;denom&quot;</span>:<span class="string">&quot;BNB&quot;</span>,<span class="string">&quot;amount&quot;</span>:<span class="string">&quot;3803093023256&quot;</span>&#125;],<span class="string">&quot;public_key&quot;</span>:&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;tendermint/PubKeySecp256k1&quot;</span>,<span class="string">&quot;value&quot;</span>:<span class="string">&quot;ApAG3Q9tZFtGw4vYvn72Q14QJHWxVg6uw3R/dKbMVTle&quot;</span>&#125;,<span class="string">&quot;account_number&quot;</span>:<span class="string">&quot;3&quot;</span>,<span class="string">&quot;sequence&quot;</span>:<span class="string">&quot;1&quot;</span>&#125;,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;frozen&quot;</span>:null,<span class="string">&quot;locked&quot;</span>:null,<span class="string">&quot;flags&quot;</span>:<span class="string">&quot;0&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># bnbcli account bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq --trust-node</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;bnbchain/Account&quot;</span>,<span class="string">&quot;value&quot;</span>:&#123;<span class="string">&quot;base&quot;</span>:&#123;<span class="string">&quot;address&quot;</span>:<span class="string">&quot;bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq&quot;</span>,<span class="string">&quot;coins&quot;</span>:[&#123;<span class="string">&quot;denom&quot;</span>:<span class="string">&quot;BNB&quot;</span>,<span class="string">&quot;amount&quot;</span>:<span class="string">&quot;1902906976744&quot;</span>&#125;],<span class="string">&quot;public_key&quot;</span>:&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;tendermint/PubKeySecp256k1&quot;</span>,<span class="string">&quot;value&quot;</span>:<span class="string">&quot;A3bRFx/hNHmJkjUfxCvaOOmQIuaJcBF9kz9AeMDfGs2c&quot;</span>&#125;,<span class="string">&quot;account_number&quot;</span>:<span class="string">&quot;2&quot;</span>,<span class="string">&quot;sequence&quot;</span>:<span class="string">&quot;1&quot;</span>&#125;,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;frozen&quot;</span>:null,<span class="string">&quot;locked&quot;</span>:null,<span class="string">&quot;flags&quot;</span>:<span class="string">&quot;0&quot;</span>&#125;&#125;</span><br><span class="line">[root@localhost ~]<span class="comment"># bnbcli account bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv --trust-node</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;bnbchain/Account&quot;</span>,<span class="string">&quot;value&quot;</span>:&#123;<span class="string">&quot;base&quot;</span>:&#123;<span class="string">&quot;address&quot;</span>:<span class="string">&quot;bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv&quot;</span>,<span class="string">&quot;coins&quot;</span>:[&#123;<span class="string">&quot;denom&quot;</span>:<span class="string">&quot;BNB&quot;</span>,<span class="string">&quot;amount&quot;</span>:<span class="string">&quot;3803115052627&quot;</span>&#125;],<span class="string">&quot;public_key&quot;</span>:&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;tendermint/PubKeySecp256k1&quot;</span>,<span class="string">&quot;value&quot;</span>:<span class="string">&quot;ApAG3Q9tZFtGw4vYvn72Q14QJHWxVg6uw3R/dKbMVTle&quot;</span>&#125;,<span class="string">&quot;account_number&quot;</span>:<span class="string">&quot;3&quot;</span>,<span class="string">&quot;sequence&quot;</span>:<span class="string">&quot;1&quot;</span>&#125;,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;frozen&quot;</span>:null,<span class="string">&quot;locked&quot;</span>:null,<span class="string">&quot;flags&quot;</span>:<span class="string">&quot;0&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>账户2余额由<code>38030.93023256</code>变为<code>38031.15052627</code>,余额增加了,bnb奖励应该是跨链成功了。</p>
+<h1>小结:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>每个validator都要运行oracle-relayer</p>
+</li>
+<li class="lvl-2">
+<p>应该是每个validator都要运行beaconchain</p>
+</li>
+<li class="lvl-2">
+<p>anteHandler验证签名处还没搞定</p>
+</li>
+<li class="lvl-2">
+<p><code>bnc-cosmos-sdk\x\oracle\handler.go</code>里处理声明后,在BC上奖励分配的代码还没厘清楚</p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/Sifchain/peggy">https://github.com/Sifchain/peggy</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/Sifchain/peggy/blob/develop/docs/cosmos-to-ethereum.md">https://github.com/Sifchain/peggy/blob/develop/docs/cosmos-to-ethereum.md</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://devpost.com/software/peggy">https://devpost.com/software/peggy</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/learn/oracle-module/">Cross-chain: Oracle on Binance Chain</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/23566.html" rel="bookmark">OpenZeppelin-代码库QuickView</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/60348.html" rel="bookmark">Project-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/26865.html" rel="prev" title="StudyRecord-Bsc详解-bsc_relayer同步跨链数据包">
+      <i class="fa fa-chevron-left"></i> StudyRecord-Bsc详解-bsc_relayer同步跨链数据包
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/51988.html" rel="next" title="Notes-止损">
+      Notes-止损 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">引言:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">BC权益质押:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A5%96%E5%8A%B1-2"><span class="nav-number">2.1.</span> <span class="nav-text">奖励:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">奖励分配流程:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E7%BD%91Tx%E4%BE%8B%E5%AD%90"><span class="nav-number">3.1.</span> <span class="nav-text">主网Tx例子:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tx-BSCValidatorSet-sol"><span class="nav-number">3.2.</span> <span class="nav-text">tx-&gt; BSCValidatorSet.sol:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bsc-relayer-BSC"><span class="nav-number">3.3.</span> <span class="nav-text">bsc-relayer-&gt;BSC:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BSCValidatorSet-sol"><span class="nav-number">3.3.1.</span> <span class="nav-text">BSCValidatorSet.sol:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TokenHub-sol"><span class="nav-number">3.3.2.</span> <span class="nav-text">TokenHub.sol:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#oracle-relayer-BC"><span class="nav-number">3.4.</span> <span class="nav-text">oracle-relayer -&gt; BC:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#oracle-relayer"><span class="nav-number">3.4.1.</span> <span class="nav-text">oracle-relayer:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">介绍:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Oracle%E6%A8%A1%E5%9D%97%E6%B5%81%E7%A8%8B"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">Oracle模块流程:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Oracle-relayer%E6%BA%90%E7%A0%81"><span class="nav-number">3.4.1.3.</span> <span class="nav-text">Oracle-relayer源码:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observer%E8%A7%82%E5%AF%9F%E8%80%85"><span class="nav-number">3.4.1.4.</span> <span class="nav-text">observer观察者:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#relayer%E4%B8%AD%E7%BB%A7%E5%99%A8"><span class="nav-number">3.4.1.5.</span> <span class="nav-text">relayer中继器:</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">完整测试&#x2F;验证步骤:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%A4%9A%E4%B8%AA%E9%AA%8C%E8%AF%81%E8%80%85"><span class="nav-number">4.1.</span> <span class="nav-text">模拟多个验证者:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%BA%A4%E6%98%93"><span class="nav-number">4.2.</span> <span class="nav-text">模拟交易:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%AA%8C%E8%AF%81%E8%80%85"><span class="nav-number">4.3.</span> <span class="nav-text">添加验证者:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2BSCValidatorSet%E5%90%88%E7%BA%A6"><span class="nav-number">4.4.</span> <span class="nav-text">查询BSCValidatorSet合约:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8oracle-relayer"><span class="nav-number">4.5.</span> <span class="nav-text">启动oracle-relayer:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%991-%E7%8E%AF%E5%A2%83%E8%AE%BE%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="nav-number">4.5.1.</span> <span class="nav-text">报错1: 环境设置不当</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%992-%E4%BA%A4%E6%98%93%E9%AA%8C%E7%AD%BE%E5%A4%B1%E8%B4%A5"><span class="nav-number">4.5.2.</span> <span class="nav-text">报错2: 交易验签失败</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A%E6%8E%89%E9%AA%8C%E7%AD%BE%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">4.5.3.</span> <span class="nav-text">注释掉验签代码块:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%8A%9F%E5%A3%B0%E6%98%8E%E9%A2%84%E8%A8%80%E5%80%BC"><span class="nav-number">4.6.</span> <span class="nav-text">成功声明预言值:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E9%AA%8C%E8%AF%81%E8%80%85%E7%9A%84%E4%BD%99%E9%A2%9D"><span class="nav-number">4.7.</span> <span class="nav-text">检查验证者的余额:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

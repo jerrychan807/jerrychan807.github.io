@@ -30,13 +30,14 @@
 <meta property="og:description" content="Pre: 预期效果:配置rpc，先用公开测试网的rpc，能够在区块链浏览器应用中看到数据后，再切成私有链的rpc，能看到自己模拟的交易记录。 简介: BlockScout是一个Elixir应用程序，允许用户搜索交易，查看账户和余额，并验证Ethereum上的智能合约，包括分叉和侧链。 BlockScout为用户提供了一个全面的、易于使用的界面，以查看、确认和检查EVM（Ethereum虚拟机）区块">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808150135.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220829113433.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173627.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173613.png">
 <meta property="article:published_time" content="2022-08-08T04:00:34.000Z">
-<meta property="article:modified_time" content="2022-08-11T09:36:40.918Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.070Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="BlockChain">
 <meta property="article:tag" content="DevRecord">
+<meta property="article:tag" content="BlockChain">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808150135.png">
 
@@ -216,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-11 17:36:40" itemprop="dateModified" datetime="2022-08-11T17:36:40+08:00">2022-08-11</time>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -241,14 +242,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.7k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+              <span>3 mins.</span>
             </span>
 
         </div>
@@ -273,6 +274,17 @@
 <p>这次用的源码编译的部署方式，挺费时的，下次试试docker。</p>
 <h2 id="需要的依赖：">需要的依赖：</h2>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220808150135.png" alt="20220808150135" /></p>
+<h3 id="安装新版node">安装新版node:</h3>
+<p>安装教程里安装的<code>node</code>版本过低,编译时会报如下错,需要装较新版本的<code>node</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HookWebpackError: Only file and data URLs are supported by the default ESM loader</span><br></pre></td></tr></table></figure>
+<p>升级node,直接重装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://nodejs.org/dist/v16.6.0/node-v16.6.0-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="升级erlang">升级erlang:</h3>
+<p>添加以下存储库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://packages.erlang-solutions.com/erlang-solutions-1.0-1.noarch.rpm</span><br><span class="line">$ rpm -Uvh erlang-solutions-1.0-1.noarch.rpm</span><br><span class="line"><span class="comment"># 使用以下命令更新存储库列表：</span></span><br><span class="line"></span><br><span class="line">$ yum update</span><br><span class="line"><span class="comment"># 使用以下命令安装erlang</span></span><br><span class="line">$ yum install erlang</span><br></pre></td></tr></table></figure>
+<h3 id="升级elixir">升级elixir:</h3>
+<p><code>https://github.com/elixir-lang/elixir/releases/download/v1.13.1/Precompiled.zip</code><br />
+也是重新安装</p>
 <h2 id="定义环境变量">定义环境变量</h2>
 <p>以下是部署客户端时不可或缺的环境变量</p>
 <table>
@@ -354,6 +366,12 @@
 </tbody>
 </table>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自定义环境变量</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+<h3 id="修改全局变量debug-traceTransaction">修改全局变量debug_traceTransaction:</h3>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220829113433.png" alt="20220829113433" /><br />
+浏览器程序会非常频繁的请求rpc节点的<code>debug_traceTransaction</code>方法,一般的rpc节点不支持该路径的api,会报很多错，修改全局变量降低请求频率。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在/etc/profile加入变量</span></span><br><span class="line"><span class="built_in">export</span> ETHEREUM_JSONRPC_DEBUG_TRACE_TRANSACTION_TIMEOUT=<span class="string">&quot;600s&quot;</span></span><br></pre></td></tr></table></figure>
+<p>然后需要重新编译,才能生效.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/blockscout/blockscout/pull/5505">Manage debug_traceTransaction JSON RPC method timeout #5505</a></p>
 <h2 id="部署测试效果">部署测试效果:</h2>
 <p>Question List:</p>
 <ol>
@@ -368,15 +386,23 @@
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173627.png" alt="20220811173627" /></p>
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220811173613.png" alt="20220811173613" /></p>
 <h1>Others:</h1>
-<h2 id="Centos7设置代理">Centos7设置代理:</h2>
-<p>临时设置（重连后失效）在命令行中直接输入下列命令即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> http_proxy=http://192.168.2.135:7890/</span><br><span class="line"><span class="built_in">export</span> https_proxy=https://192.168.2.135:7890/</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41831919/article/details/108111208">linux的centOS下如何删除代理</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> -n http_proxy</span><br><span class="line"><span class="built_in">export</span> -n https_proxy</span><br><span class="line"><span class="built_in">export</span> -n no_proxy</span><br></pre></td></tr></table></figure>
+<h2 id="缺少txpool-content接口">缺少txpool_content接口:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 报错</span></span><br><span class="line">2022-09-15T01:43:03.220 application=indexer fetcher=pending_transaction [error] %&#123;code: -32601, message: <span class="string">&quot;the method txpool_content does not exist/is not available&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># geth启动项添加</span></span><br><span class="line">--http --http.addr 0.0.0.0 --http.api <span class="string">&quot;eth,net,web3,debug,txpool&quot;</span> --http.corsdomain <span class="string">&#x27;*&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="系统读取文件限制">系统读取文件限制:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 报错</span></span><br><span class="line">ENOSPC: System <span class="built_in">limit</span> <span class="keyword">for</span> number of file watchers reached</span><br></pre></td></tr></table></figure>
+<p>解决办法:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w fs.inotify.max_user_watches=100000</span><br><span class="line"><span class="comment"># 新增文件</span></span><br><span class="line">vim /etc/sysctl.d/10-user-watches.conf</span><br><span class="line">fs.inotify.max_user_watches = 100000</span><br></pre></td></tr></table></figure>
+<p>Refs: <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53930305/nodemon-error-system-limit-for-number-of-file-watchers-reached">Nodemon Error: System limit for number of file watchers reached</a></p>
 <h2 id="webpack报错">webpack报错:</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory</span><br><span class="line">致命错误：达到堆限制分配失败-JavaScript堆内存不足</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FATAL ERROR: Reached heap <span class="built_in">limit</span> Allocation failed - JavaScript heap out of memory</span><br><span class="line">致命错误：达到堆限制分配失败-JavaScript堆内存不足</span><br></pre></td></tr></table></figure>
 <p>解决办法:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局安装  </span></span><br><span class="line">npm install -g increase-memory-limit</span><br><span class="line"><span class="comment"># 项目执行</span></span><br><span class="line">increase-memory-limit</span><br></pre></td></tr></table></figure>
+<h2 id="Centos7设置代理">Centos7设置代理:</h2>
+<p>临时设置（重连后失效）在命令行中直接输入下列命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> http_proxy=http://192.168.2.50:7890/</span><br><span class="line"><span class="built_in">export</span> https_proxy=https://192.168.2.50:7890/</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41831919/article/details/108111208">linux的centOS下如何删除代理</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> -n http_proxy</span><br><span class="line"><span class="built_in">export</span> -n https_proxy</span><br><span class="line"><span class="built_in">export</span> -n no_proxy</span><br></pre></td></tr></table></figure>
 <h1>Refs:</h1>
 <ul class="lvl-0">
 <li class="lvl-2">
@@ -393,6 +419,9 @@
 </li>
 <li class="lvl-2">
 <p><a target="_blank" rel="noopener" href="https://chainlist.org/zh">Chainlist 是 EVM 网络的列表</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sunny05296/article/details/108458541">Centos7安装PostgreSQL 12.4 + postgis安装</a></p>
 </li>
 </ul>
 
@@ -411,21 +440,21 @@
       <div class="popular-posts-title"><a href="/2022/37144.html" rel="bookmark">DevRecord-Sui节点搭建和验证节点申请</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+      <div class="popular-posts-title"><a href="/2022/11477.html" rel="bookmark">DevRecord-部署vue前端到Vervel上</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+      <div class="popular-posts-title"><a href="/2022/57835.html" rel="bookmark">DevRecord-TradingView技术分析指标API</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
+      <div class="popular-posts-title"><a href="/2022/57333.html" rel="bookmark">StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
               <a href="/tags/DevRecord/" rel="tag"># DevRecord</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
           </div>
 
         
@@ -510,7 +539,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">部署安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E7%9A%84%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">需要的依赖：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.</span> <span class="nav-text">定义环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C"><span class="nav-number">3.3.</span> <span class="nav-text">部署测试效果:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Others:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Centos7%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">Centos7设置代理:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack%E6%8A%A5%E9%94%99"><span class="nav-number">4.2.</span> <span class="nav-text">webpack报错:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">部署安装:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E7%9A%84%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">需要的依赖：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88node"><span class="nav-number">3.1.1.</span> <span class="nav-text">安装新版node:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7erlang"><span class="nav-number">3.1.2.</span> <span class="nav-text">升级erlang:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7elixir"><span class="nav-number">3.1.3.</span> <span class="nav-text">升级elixir:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.</span> <span class="nav-text">定义环境变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8Fdebug-traceTransaction"><span class="nav-number">3.2.1.</span> <span class="nav-text">修改全局变量debug_traceTransaction:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C"><span class="nav-number">3.3.</span> <span class="nav-text">部署测试效果:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Others:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E5%B0%91txpool-content%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.1.</span> <span class="nav-text">缺少txpool_content接口:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E9%99%90%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">系统读取文件限制:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack%E6%8A%A5%E9%94%99"><span class="nav-number">4.3.</span> <span class="nav-text">webpack报错:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Centos7%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-number">4.4.</span> <span class="nav-text">Centos7设置代理:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -526,7 +555,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -572,7 +601,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -581,12 +610,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">652k</span>
+    <span title="Symbols count total">860k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">9:52</span>
+    <span title="Reading time total">13:01</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

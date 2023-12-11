@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 测试代码:https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;my-awesome-solidity&#x2F;tree&#x2F;main&#x2F;learn_upgrade 可升级的智能合约如何运作?  此图解释了可升级智能合约的工作原理。具体来说，这是透明代理模式。另一种是 UUPS 代理模式（通用可升级代理标准）。 可升级智能合约由3个合约组成：   代理合约：用户与之交互的智能合约。它将保留数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-使用OpenZeppelin编写可升级的智能合约">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/16021.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 测试代码:https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;my-awesome-solidity&#x2F;tree&#x2F;main&#x2F;learn_upgrade 可升级的智能合约如何运作?  此图解释了可升级智能合约的工作原理。具体来说，这是透明代理模式。另一种是 UUPS 代理模式（通用可升级代理标准）。 可升级智能合约由3个合约组成：   代理合约：用户与之交互的智能合约。它将保留数">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219181349.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219185251.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219190609.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219191534.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219192320.png">
+<meta property="article:published_time" content="2022-12-19T04:00:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.079Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="StudyRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219181349.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/16021.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-使用OpenZeppelin编写可升级的智能合约 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/16021.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-使用OpenZeppelin编写可升级的智能合约
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-12-19 12:00:34" itemprop="dateCreated datePublished" datetime="2022-12-19T12:00:34+08:00">2022-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>8.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>测试代码:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/my-awesome-solidity/tree/main/learn_upgrade">https://github.com/jerrychan807/my-awesome-solidity/tree/main/learn_upgrade</a></p>
+<h1>可升级的智能合约如何运作?</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219181349.png" alt="20221219181349" /><br />
+此图解释了可升级智能合约的工作原理。具体来说，这是透明代理模式。另一种是 UUPS 代理模式（通用可升级代理标准）。</p>
+<p>可升级智能合约由3个合约组成：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>代理合约</code>：用户与之交互的智能合约。它将保留数据/状态，这意味着数据存储在该代理合约帐户的上下文中。这是一个EIP1967标准代理合约。</p>
+</li>
+<li class="lvl-2">
+<p><code>执行合约</code>：智能合约提供功能和执行逻辑。请注意，数据也在本合同中定义。这是你需要去构建的智能合约。</p>
+</li>
+<li class="lvl-2">
+<p><code>ProxyAdmin合约</code>: 关联代理合约和执行合约。</p>
+</li>
+</ul>
+<h1>如何部署代理?如何升级代理?</h1>
+<p>当我们第一次使用 Hardhat的 OpenZeppelin Upgrades 插件部署可升级合约时，我们部署了三个合约：</p>
+<ol>
+<li class="lvl-3">
+<p>部署 “Implementation contract”</p>
+</li>
+<li class="lvl-3">
+<p>部署 “ProxyAdmin contract”</p>
+</li>
+<li class="lvl-3">
+<p>部署 “Proxy contract”</p>
+</li>
+</ol>
+<p><code>当用户调用代理合约时，调用被委托给实现合约（delegate call）。</code></p>
+<p>升级合约时，我们做的是：</p>
+<ol>
+<li class="lvl-3">
+<p>部署一个新的执行合约</p>
+</li>
+<li class="lvl-3">
+<p>升级ProxyAdmin合约,对代理的所有调用重定向到新的执行合同</p>
+</li>
+</ol>
+<h1>使用插件:</h1>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加插件</span></span><br><span class="line">yarn add @openzeppelin/hardhat-upgrades</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编辑hardhat.config.ts以使用升级插件</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;@openzeppelin/hardhat-upgrades&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>将使用插件里的三个函数:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">deployProxy</span>()</span><br><span class="line"><span class="title function_">upgradeProxy</span>()</span><br><span class="line"><span class="title function_">prepareUpgrade</span>()</span><br></pre></td></tr></table></figure>
+<h1>初始合约V1:</h1>
+<h2 id="合约">合约:</h2>
+<p>普通合约和可升级合约的最大区别在于可升级合同没有<code>constructor()</code>.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// contracts/Box.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Box</span> &#123;</span><br><span class="line">    uint256 private value;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Emitted when the stored value changes</span></span><br><span class="line">    event <span class="title class_">ValueChanged</span>(uint256 newValue);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Stores a new value in the contract</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">store</span>(<span class="params">uint256 newValue</span>) public &#123;</span><br><span class="line">        value = newValue;</span><br><span class="line">        emit <span class="title class_">ValueChanged</span>(newValue);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reads the last stored value</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">retrieve</span>(<span class="params"></span>) public view returns (uint256) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>省略测试脚本</p>
+</blockquote>
+<h2 id="部署脚本-2">部署脚本:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// scripts/1.deploy_box.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span></span><br><span class="line"><span class="keyword">import</span> &#123; upgrades &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">Box</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;Box&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Deploying Box...&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> box = <span class="keyword">await</span> upgrades.<span class="title function_">deployProxy</span>(<span class="title class_">Box</span>,[<span class="number">42</span>], &#123; <span class="attr">initializer</span>: <span class="string">&#x27;store&#x27;</span> &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(box.<span class="property">address</span>,<span class="string">&quot; box(proxy) address&quot;</span>)</span><br><span class="line">  <span class="comment">// console.log(await upgrades.erc1967.getImplementationAddress(box.address),&quot; getImplementationAddress&quot;)</span></span><br><span class="line">  <span class="comment">// console.log(await upgrades.erc1967.getAdminAddress(box.address),&quot; getAdminAddress&quot;)    </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>().<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">error</span>(error)</span><br><span class="line">  process.<span class="property">exitCode</span> = <span class="number">1</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ol>
+<li class="lvl-3">
+<p>要部署可升级的合约，我们使用<code>upgrades.deployProxy()</code></p>
+</li>
+<li class="lvl-3">
+<p>调用<code>initializer</code>来指定函数，并对初始值赋值</p>
+</li>
+</ol>
+<h2 id="部署到goerli测试网">部署到goerli测试网:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署</span></span><br><span class="line">yarn hardhat run deploy/1.deploy_box.ts --network goerli</span><br><span class="line"><span class="comment"># 验证源码</span></span><br><span class="line">yarn hardhat verify --contract contracts/Box.sol:Box --network goerli 0x480Da334985e4443977AD71ebC0E35A4B24BDeb4</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> yarn hardhat run deploy/1.deploy_box.ts --network goerli</span><br><span class="line">yarn run v1.22.18</span><br><span class="line">$ /jcoin/github/my-awesome-solidity/learn_upgrade/node_modules/.bin/hardhat run deploy/1.deploy_box.ts --network goerli</span><br><span class="line">Deploying Box...</span><br><span class="line">0x3Dfbe4b70669A9b2A044AE1d6cCe3B39270B8242  box(proxy) address</span><br><span class="line">Error: Contract at 0x3Dfbe4b70669A9b2A044AE1d6cCe3B39270B8242 doesn<span class="string">&#x27;t look like an ERC 1967 proxy with a logic contract address</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Done in 10.55s.</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这一步有点奇怪,一直会报这个错,但试了一次，是能成功部署3个合约上去。后续有空debug一下。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219185251.png" alt="20221219185251" /></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Box合约: 0x480Da334985e4443977AD71ebC0E35A4B24BDeb4</span><br><span class="line">ProxyAdmin合约: 0x6128464E9C4020CE2B07867e927e09fb39ca85D2</span><br><span class="line">TransparentUpgradeableProxy合约: 0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad</span><br></pre></td></tr></table></figure>
+<h2 id="Debug结果">Debug结果:</h2>
+<p>部署脚本里可以把以下两行注释掉,就不会报错。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// console.log(await upgrades.erc1967.getImplementationAddress(box.address),&quot; getImplementationAddress&quot;)</span></span><br><span class="line"><span class="comment">// console.log(await upgrades.erc1967.getAdminAddress(box.address),&quot; getAdminAddress&quot;)    </span></span><br></pre></td></tr></table></figure>
+<p>部署只需要这一行代码即可。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> box = <span class="keyword">await</span> upgrades.<span class="title function_">deployProxy</span>(<span class="title class_">Box</span>, [<span class="number">42</span>], &#123;<span class="attr">initializer</span>: <span class="string">&#x27;store&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>把<code>artifacts</code>,<code>cache</code>,<code>.openzeppelin</code>缓存文件删除后,插件才会重新部署三个新合约，否则只会部署一个新的<code>TransparentUpgradeableProxy合约</code>，而复用之前的<code>Box合约</code>和<code>ProxyAdmin合约</code>。</p>
+<h2 id="Hardhat控制台测试合约">Hardhat控制台测试合约:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat console --network goerli</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">address = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line">box = <span class="keyword">await</span> ethers.<span class="title function_">getContractAt</span>(<span class="string">&quot;Box&quot;</span>, address)</span><br><span class="line"><span class="keyword">await</span> box.<span class="title function_">retrieve</span>()</span><br><span class="line"><span class="comment">//BigNumber &#123; value: &quot;42&quot; &#125;</span></span><br></pre></td></tr></table></figure>
+<h1>升级合约到V2:</h1>
+<h2 id="合约-2">合约:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// contracts/BoxV2.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./Box.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">BoxV2</span> is <span class="title class_">Box</span>&#123;</span><br><span class="line">    <span class="comment">// Increments the stored value by 1</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">increment</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        <span class="title function_">store</span>(<span class="title function_">retrieve</span>()+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>省略测试脚本</p>
+</blockquote>
+<h2 id="升级脚本">升级脚本:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// scripts/2.upgradeV2.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; upgrades &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> proxyAddress = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(proxyAddress,<span class="string">&quot; original Box(proxy) address&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">BoxV2</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;BoxV2&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;upgrade to BoxV2...&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> boxV2 = <span class="keyword">await</span> upgrades.<span class="title function_">upgradeProxy</span>(proxyAddress, <span class="title class_">BoxV2</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(boxV2.<span class="property">address</span>,<span class="string">&quot; BoxV2 address(should be the same)&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> upgrades.<span class="property">erc1967</span>.<span class="title function_">getImplementationAddress</span>(boxV2.<span class="property">address</span>),<span class="string">&quot; getImplementationAddress&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> upgrades.<span class="property">erc1967</span>.<span class="title function_">getAdminAddress</span>(boxV2.<span class="property">address</span>), <span class="string">&quot; getAdminAddress&quot;</span>)    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>().<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">error</span>(error)</span><br><span class="line">  process.<span class="property">exitCode</span> = <span class="number">1</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过该脚本,我们把Box合约升级到BoxV2</p>
+<ol>
+<li class="lvl-3">
+<p>部署一个新的合约BoxV2</p>
+</li>
+<li class="lvl-3">
+<p>并在 ProxyAdmin 中链接到一个新的执行合约</p>
+</li>
+</ol>
+<h2 id="部署到goerli测试网-2">部署到goerli测试网:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署</span></span><br><span class="line">yarn hardhat run deploy/2.upgradeV2.ts --network goerli</span><br><span class="line"><span class="comment"># 验证源码</span></span><br><span class="line">yarn hardhat verify --contract contracts/BoxV2.sol:BoxV2 --network goerli 0xD57dA84ef78a7674b3CC74F9a70D325B8132bCB1</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219190609.png" alt="20221219190609" /></p>
+<h2 id="Hardhat控制台测试合约-2">Hardhat控制台测试合约:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat console --network goerli</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">address = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line">boxv2 = <span class="keyword">await</span> ethers.<span class="title function_">getContractAt</span>(<span class="string">&quot;BoxV2&quot;</span>, address)</span><br><span class="line"><span class="keyword">await</span> boxv2.<span class="title function_">retrieve</span>()</span><br><span class="line"><span class="comment">//BigNumber &#123; value: &quot;42&quot; &#125;</span></span><br><span class="line"><span class="keyword">await</span> boxv2.<span class="title function_">increment</span>()</span><br><span class="line"><span class="keyword">await</span> boxv2.<span class="title function_">retrieve</span>()</span><br><span class="line"><span class="comment">//BigNumber &#123; value: &quot;43&quot; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>交互的合约地址没变,但更新新合约后,多了一个<code>increment()</code>函数</p>
+<h1>升级合约到V3:</h1>
+<h2 id="合约-3">合约:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// contracts/BoxV3.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./BoxV2.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">BoxV3</span> is <span class="title class_">BoxV2</span>&#123;</span><br><span class="line">    string public name;</span><br><span class="line"></span><br><span class="line">    event <span class="title class_">NameChanged</span>(string name);</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setName</span>(<span class="params">string memory _name</span>) public &#123;</span><br><span class="line">        name = _name;</span><br><span class="line">        emit <span class="title class_">NameChanged</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>略过测试</p>
+</blockquote>
+<h2 id="升级脚本-2">升级脚本:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// scripts/3.upgradeV3.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; upgrades &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> proxyAddress = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(proxyAddress,<span class="string">&quot; original Box(proxy) address&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">BoxV3</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;BoxV3&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;upgrade to BoxV3...&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> boxV3 = <span class="keyword">await</span> upgrades.<span class="title function_">upgradeProxy</span>(proxyAddress, <span class="title class_">BoxV3</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(boxV3.<span class="property">address</span>,<span class="string">&quot; BoxV3 address(should be the same)&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> upgrades.<span class="property">erc1967</span>.<span class="title function_">getImplementationAddress</span>(boxV3.<span class="property">address</span>),<span class="string">&quot; getImplementationAddress&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> upgrades.<span class="property">erc1967</span>.<span class="title function_">getAdminAddress</span>(boxV3.<span class="property">address</span>), <span class="string">&quot; getAdminAddress&quot;</span>)    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>().<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">error</span>(error)</span><br><span class="line">  process.<span class="property">exitCode</span> = <span class="number">1</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="部署到goerli测试网-3">部署到goerli测试网:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署</span></span><br><span class="line">yarn hardhat run deploy/3.upgradeV3.ts --network goerli</span><br><span class="line"><span class="comment"># 验证源码</span></span><br><span class="line">yarn hardhat verify --contract contracts/BoxV3.sol:BoxV3 --network goerli 0xf638135eD0D5cD11a5C5c2D0c46ab7367e362BFd </span><br></pre></td></tr></table></figure>
+<h2 id="Hardhat控制台测试合约-3">Hardhat控制台测试合约:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat console --network goerli</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">address = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line">boxv3 = <span class="keyword">await</span> ethers.<span class="title function_">getContractAt</span>(<span class="string">&quot;BoxV3&quot;</span>, address)</span><br><span class="line"><span class="keyword">await</span> boxv3.<span class="title function_">retrieve</span>()</span><br><span class="line"><span class="comment">//BigNumber &#123; value: &quot;42&quot; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> boxv3.<span class="title function_">setName</span>(<span class="string">&quot;mybox&quot;</span>)</span><br><span class="line"><span class="comment">// tx response</span></span><br><span class="line"><span class="keyword">await</span> boxv3.<span class="title function_">name</span>()</span><br><span class="line"><span class="comment">//&#x27;mybox&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219191534.png" alt="20221219191534" /></p>
+<h1>升级合约到V4:</h1>
+<h2 id="合约-4">合约:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// contracts/BoxV4.sol</span></span><br><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./BoxV2.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">BoxV4</span> is <span class="title class_">BoxV2</span>&#123;</span><br><span class="line">    string private name;</span><br><span class="line"></span><br><span class="line">    event <span class="title class_">NameChanged</span>(string name);</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setName</span>(<span class="params">string memory _name</span>) public &#123;</span><br><span class="line">        name = _name;</span><br><span class="line">        emit <span class="title class_">NameChanged</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">function</span> <span class="title function_">getName</span>(<span class="params"></span>) public view <span class="title function_">returns</span>(<span class="params">string memory</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">string</span>(abi.<span class="title function_">encodePacked</span>(<span class="string">&quot;Name: &quot;</span>,name));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="升级脚本-3">升级脚本:</h2>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// scripts/4.prepareV4.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; upgrades &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> proxyAddress = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(proxyAddress,<span class="string">&quot; original Box(proxy) address&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">BoxV4</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;BoxV4&quot;</span>)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Preparing upgrade to BoxV4...&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> boxV4Address = <span class="keyword">await</span> upgrades.<span class="title function_">prepareUpgrade</span>(proxyAddress, <span class="title class_">BoxV4</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(boxV4Address, <span class="string">&quot; BoxV4 implementation contract address&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>().<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">error</span>(error)</span><br><span class="line">  process.<span class="property">exitCode</span> = <span class="number">1</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>调用时<code>upgrades.upgradeProxy()</code>，完成两项工作：</p>
+<ol>
+<li class="lvl-3">
+<p>部署了一个执行合约</p>
+</li>
+<li class="lvl-3">
+<p>调用 ProxyAdmin合约的upgrade()来链接 Proxy 和执行合约。</p>
+</li>
+</ol>
+<p>我们此处调用的<code>upgrades.prepareUpgrade()</code>时只完成第一项，第二项留给开发者手动完成。</p>
+<h2 id="部署到goerli测试网-4">部署到goerli测试网:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 部署</span></span><br><span class="line">yarn hardhat run deploy/4.prepareV4.ts --network goerli</span><br><span class="line"><span class="comment"># 验证源码</span></span><br><span class="line">yarn hardhat verify --contract contracts/BoxV4.sol:BoxV4 --network goerli 0xd37950f48eb44fba46b9c722d6c8dc4739c61232 </span><br></pre></td></tr></table></figure>
+<p>手动在ProxyAdmin合约上执行upgrade动作。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20221219192320.png" alt="20221219192320" /></p>
+<h2 id="Hardhat控制台测试合约-4">Hardhat控制台测试合约:</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat console --network goerli</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">address = <span class="string">&#x27;0xfA86bf3B1aFC147276b4a21fDe03fc59F63c60ad&#x27;</span></span><br><span class="line">box = <span class="keyword">await</span> ethers.<span class="title function_">getContractAt</span>(<span class="string">&quot;BoxV4&quot;</span>, address)</span><br><span class="line"><span class="keyword">await</span> box.<span class="title function_">getName</span>()</span><br><span class="line"><span class="comment">//&#x27;Name: mynewbox&#x27;</span></span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://dev.to/yakult/tutorial-write-upgradeable-smart-contract-proxy-contract-with-openzeppelin-1916">Web3 教程：使用 OpenZeppelin 编写可升级的智能合约（代理）</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://forum.openzeppelin.com/t/openzeppelin-upgrades-step-by-step-tutorial-for-hardhat/3580">OpenZeppelin Upgrades: Step by Step Tutorial for Hardhat</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2023/20767.html" rel="bookmark">StudyRecord-ERC1155协议</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/57333.html" rel="bookmark">StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/8887.html" rel="bookmark">StudyRecord-GoBlockchain_Tutorial_Part4_Read_Store_and_Manage</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/37691.html" rel="bookmark">StudyRecord-Cosmos官方NameService域名解析应用教程</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/57835.html" rel="prev" title="DevRecord-TradingView技术分析指标API">
+      <i class="fa fa-chevron-left"></i> DevRecord-TradingView技术分析指标API
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/20767.html" rel="next" title="StudyRecord-ERC1155协议">
+      StudyRecord-ERC1155协议 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">可升级的智能合约如何运作?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">如何部署代理?如何升级代理?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">使用插件:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">初始合约V1:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6"><span class="nav-number">5.1.</span> <span class="nav-text">合约:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC-2"><span class="nav-number">5.2.</span> <span class="nav-text">部署脚本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0goerli%E6%B5%8B%E8%AF%95%E7%BD%91"><span class="nav-number">5.3.</span> <span class="nav-text">部署到goerli测试网:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Debug%E7%BB%93%E6%9E%9C"><span class="nav-number">5.4.</span> <span class="nav-text">Debug结果:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardhat%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%B5%8B%E8%AF%95%E5%90%88%E7%BA%A6"><span class="nav-number">5.5.</span> <span class="nav-text">Hardhat控制台测试合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">升级合约到V2:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6-2"><span class="nav-number">6.1.</span> <span class="nav-text">合约:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E8%84%9A%E6%9C%AC"><span class="nav-number">6.2.</span> <span class="nav-text">升级脚本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0goerli%E6%B5%8B%E8%AF%95%E7%BD%91-2"><span class="nav-number">6.3.</span> <span class="nav-text">部署到goerli测试网:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardhat%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%B5%8B%E8%AF%95%E5%90%88%E7%BA%A6-2"><span class="nav-number">6.4.</span> <span class="nav-text">Hardhat控制台测试合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">升级合约到V3:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6-3"><span class="nav-number">7.1.</span> <span class="nav-text">合约:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E8%84%9A%E6%9C%AC-2"><span class="nav-number">7.2.</span> <span class="nav-text">升级脚本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0goerli%E6%B5%8B%E8%AF%95%E7%BD%91-3"><span class="nav-number">7.3.</span> <span class="nav-text">部署到goerli测试网:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardhat%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%B5%8B%E8%AF%95%E5%90%88%E7%BA%A6-3"><span class="nav-number">7.4.</span> <span class="nav-text">Hardhat控制台测试合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">升级合约到V4:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6-4"><span class="nav-number">8.1.</span> <span class="nav-text">合约:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E8%84%9A%E6%9C%AC-3"><span class="nav-number">8.2.</span> <span class="nav-text">升级脚本:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0goerli%E6%B5%8B%E8%AF%95%E7%BD%91-4"><span class="nav-number">8.3.</span> <span class="nav-text">部署到goerli测试网:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardhat%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%B5%8B%E8%AF%95%E5%90%88%E7%BA%A6-4"><span class="nav-number">8.4.</span> <span class="nav-text">Hardhat控制台测试合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">9.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

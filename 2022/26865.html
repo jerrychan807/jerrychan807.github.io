@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="引言:  bsc_relayer跨链同步主要涉及两个系统合约，分别为  TendermintLightClient.sol: 同步区块头的操作时会调用到 CrossChain.sol: 同步跨链数据包的操作会调用到   上篇blog我们搞定了同步区块头的问题，本篇继续解决同步跨链数据包的问题。 目的：   本地搭建起BSC和BC两条链   启动bsc_relayer,能成功与两条链建立连接   在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-Bsc详解-bsc_relayer同步跨链数据包">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/26865.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="引言:  bsc_relayer跨链同步主要涉及两个系统合约，分别为  TendermintLightClient.sol: 同步区块头的操作时会调用到 CrossChain.sol: 同步跨链数据包的操作会调用到   上篇blog我们搞定了同步区块头的问题，本篇继续解决同步跨链数据包的问题。 目的：   本地搭建起BSC和BC两条链   启动bsc_relayer,能成功与两条链建立连接   在">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926164613.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172659.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172805.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172818.png">
+<meta property="article:published_time" content="2022-09-26T03:36:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.075Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926164613.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/26865.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-Bsc详解-bsc_relayer同步跨链数据包 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/26865.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-Bsc详解-bsc_relayer同步跨链数据包
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-26 11:36:34" itemprop="dateCreated datePublished" datetime="2022-09-26T11:36:34+08:00">2022-09-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>引言:</h1>
+<blockquote>
+<p><code>bsc_relayer</code>跨链同步主要涉及两个系统合约，分别为</p>
+<ul class="lvl-1">
+<li class="lvl-2"><code>TendermintLightClient.sol</code>: 同步区块头的操作时会调用到</li>
+<li class="lvl-2"><code>CrossChain.sol</code>: 同步跨链数据包的操作会调用到</li>
+</ul>
+</blockquote>
+<p>上篇blog我们搞定了<code>同步区块头</code>的问题，本篇继续解决<code>同步跨链数据包</code>的问题。<br />
+目的：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>本地搭建起BSC和BC两条链</p>
+</li>
+<li class="lvl-2">
+<p>启动bsc_relayer,能成功与两条链建立连接</p>
+</li>
+<li class="lvl-2">
+<p>在BC上创建新的验证者</p>
+</li>
+<li class="lvl-2">
+<p>bsc_relayer要能同步数据成功,在BSC对应合约<code>BSCValidatorSet</code>里,能查询到新增的验证者</p>
+</li>
+</ul>
+<h1>BC权益质押管理:</h1>
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/whitepaper/blob/master/%E5%B8%81%E5%AE%89%E6%99%BA%E8%83%BD%E9%93%BE.md">币安智能链白皮书</a>，可知<strong>BSC的权益质押模块是在BC上实现的，再通过跨链的方式,将质押等信息同步回BSC上</strong></p>
+<blockquote>
+<p>理想情况下，这样的权益质押和奖励发放逻辑应该包含在区块链中，并在产生新区块时自动执行。与币安链一样采用Tendermint共识库的Cosmos Hub就是这样工作的。</p>
+<p>自设计之日起，BC就一直在准备启用PoS。另一方面，BSC想要尽可能地与以太坊保持兼容，在其上直接实现PoSA是一个巨大的挑战和压力。特别是考虑到以太坊本身可能在短时间（或更长时间）内迁移到PoS共识协议时，尤其如此。为了保持以太坊的兼容性和复用BC的基础架构，我们在BC上完成了BSC的<code>权益质押逻辑</code>：</p>
+<ol>
+<li class="lvl-3">
+<p>质押代币是 BNB，这是因为它是两个区块链上的原生代币。</p>
+</li>
+<li class="lvl-3">
+<p>在BC上记录BSC的权益质押和委托行为。</p>
+</li>
+<li class="lvl-3">
+<p>BSC 验证人集由它的权益质押和委托逻辑来决定，在BC上构建一个BSC的权益质押模块，并通过跨链通信在每天UTC 00:00:00 由BC传送到BSC。</p>
+</li>
+<li class="lvl-3">
+<p>BC上的奖励分配发生在每天UTC 00:00时刻。</p>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>本篇我们主要解决的是,与权益质押管理相关的跨链数据包的同步问题。</p>
+</blockquote>
+<h1>同步跨链数据包调用图:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926164613.png" alt="20220926164613" /><br />
+如图所示,bsc-relayer会构造tx,调用系统合约<code>CrossChain</code>,通过默克尔树校验后,再调用其他合约(如<code>BSCValidatorSet.sol</code>)完成具体跨链数据包的处理与同步。</p>
+<blockquote>
+<p>现在先来看看系统合约/跨链合约<code>CrossChain.sol</code>的源码及其实现</p>
+</blockquote>
+<h1>系统合约CrossChain:</h1>
+<h2 id="简介-4">简介:</h2>
+<p>负责执行<code>bsc-relayer</code>发送过来的“同步跨链数据包”的交易,进行跨链包预处理,通过<code>emit</code>事件发送跨链包到<code>BC</code>.<br />
+主要处理逻辑是:</p>
+<ol>
+<li class="lvl-3">
+<p>调用预编译合约<code>iavlMerkleProofValidate</code>对跨链数据包进行校验</p>
+</li>
+<li class="lvl-3">
+<p>根据不同的<code>channelId</code>,内部调用对应的系统合约,进行具体的数据包处理</p>
+</li>
+</ol>
+<p>简言之，主要做的工作是跨链数据包的<code>校验</code>和<code>路由</code>工作。</p>
+<h2 id="初始化函数-2">初始化函数:</h2>
+<figure class="highlight go"><figcaption><span>contracts/CrossChain.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化函数</span></span><br><span class="line"><span class="comment">// @dev 从System.sol读取配置变量,在registeredContractChannelMap映射中,建立channelId=&gt;系统合约的映射</span></span><br><span class="line">function init() external onlyNotInit &#123;</span><br><span class="line">    <span class="comment">// TokenManager Contract | 跨链代币管理(绑定/解绑)合约 | 用于`BC`和`BSC`两边代币的绑定/解绑</span></span><br><span class="line">    <span class="comment">// BIND_CHANNELID: 1</span></span><br><span class="line">    channelHandlerContractMap[BIND_CHANNELID] = TOKEN_MANAGER_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[BIND_CHANNELID] = <span class="literal">false</span>;</span><br><span class="line">    registeredContractChannelMap[TOKEN_MANAGER_ADDR][BIND_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// TokenHub Contract | 跨链代币转移合约 | 用于`BC`与`BSC`的跨链代币转移</span></span><br><span class="line">    <span class="comment">// TRANSFER_IN_CHANNELID: 2</span></span><br><span class="line">    channelHandlerContractMap[TRANSFER_IN_CHANNELID] = TOKEN_HUB_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[TRANSFER_IN_CHANNELID] = <span class="literal">false</span>;</span><br><span class="line">    registeredContractChannelMap[TOKEN_HUB_ADDR][TRANSFER_IN_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// TRANSFER_OUT_CHANNELID: 3</span></span><br><span class="line">    channelHandlerContractMap[TRANSFER_OUT_CHANNELID] = TOKEN_HUB_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[TRANSFER_OUT_CHANNELID] = <span class="literal">false</span>;</span><br><span class="line">    registeredContractChannelMap[TOKEN_HUB_ADDR][TRANSFER_OUT_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// BSCValidatorSet Contract | 智能链验证者集合合约 | 用于 BC 更新 bsc-validator 验证者节点地址列表(查询or更新)</span></span><br><span class="line">    <span class="comment">// STAKING_CHANNELID: 8</span></span><br><span class="line">    channelHandlerContractMap[STAKING_CHANNELID] = VALIDATOR_CONTRACT_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[STAKING_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line">    registeredContractChannelMap[VALIDATOR_CONTRACT_ADDR][STAKING_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// GovHub Contract | 治理管理合约 | 处理来自`BC`上的链上治理数据包</span></span><br><span class="line">    <span class="comment">// GOV_CHANNELID: 9</span></span><br><span class="line">    channelHandlerContractMap[GOV_CHANNELID] = GOV_HUB_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[GOV_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line">    registeredContractChannelMap[GOV_HUB_ADDR][GOV_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Liveness Slash Contract | 惩罚合约 |用于惩罚违规操作的 bsc-validator</span></span><br><span class="line">    <span class="comment">// SLASH_CHANNELID: 11</span></span><br><span class="line">    channelHandlerContractMap[SLASH_CHANNELID] = SLASH_CONTRACT_ADDR;</span><br><span class="line">    isRelayRewardFromSystemReward[SLASH_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line">    registeredContractChannelMap[SLASH_CONTRACT_ADDR][SLASH_CHANNELID] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    batchSizeForOracle = INIT_BATCH_SIZE;</span><br><span class="line"></span><br><span class="line">    oracleSequence = - <span class="number">1</span>;</span><br><span class="line">    previousTxHeight = <span class="number">0</span>;</span><br><span class="line">    txCounter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    alreadyInit = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在初始化函数里,主要做的工作是从<code>System.sol</code>读取配置变量,在<code>registeredContractChannelMap</code>映射中,建立<code>channelId=&gt;系统合约地址</code>的映射。<br />
+有以下映射:</p>
+<table>
+<thead>
+<tr>
+<th>ContractName</th>
+<th>ContractNameCN</th>
+<th>Role</th>
+<th>ChannelID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TokenManager Contract</td>
+<td>跨链代币管理(绑定/解绑)合约</td>
+<td>用于<code>BC</code>和<code>BSC</code>两边代币的绑定/解绑</td>
+<td>1</td>
+</tr>
+<tr>
+<td>TokenHub Contract</td>
+<td>跨链代币转移合约</td>
+<td>用于<code>BC</code>与<code>BSC</code>的跨链代币转移</td>
+<td>2,3</td>
+</tr>
+<tr>
+<td>BSCValidatorSet Contract</td>
+<td>智能链验证者集合合约</td>
+<td>用于 BC 更新 bsc-validator 验证者节点地址列表(查询or更新)</td>
+<td>8</td>
+</tr>
+<tr>
+<td>GovHub Contract</td>
+<td>治理管理合约</td>
+<td>处理来自<code>BC</code>上的链上治理数据包</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Liveness Slash Contract</td>
+<td>惩罚合约</td>
+<td>用于惩罚违规操作的 bsc-validator</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<h2 id="处理跨链数据包函数">处理跨链数据包函数:</h2>
+<figure class="highlight go"><figcaption><span>contracts/CrossChain.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 处理跨链数据包</span></span><br><span class="line"><span class="comment">// modifier检验:</span></span><br><span class="line"><span class="comment">//  onlyRelayer 仅允许中继器调用</span></span><br><span class="line"><span class="comment">//  sequenceInOrder 检验sequence序列号是否按顺序</span></span><br><span class="line"><span class="comment">//  blockSynced 在轻客户端合约中,该区块是否已经同步</span></span><br><span class="line"><span class="comment">//  channelSupported 该通道是否已经注册,相当于channelId白名单机制</span></span><br><span class="line"><span class="comment">// @param payload 编码过的跨链数据包</span></span><br><span class="line"><span class="comment">// @param proof</span></span><br><span class="line"><span class="comment">// @param height 区块高度</span></span><br><span class="line"><span class="comment">// @param packageSequence 跨链数据包序列号</span></span><br><span class="line"><span class="comment">// @param channelId 通道ID</span></span><br><span class="line">function handlePackage(bytes calldata payload, bytes calldata proof, <span class="type">uint64</span> height, <span class="type">uint64</span> packageSequence, <span class="type">uint8</span> channelId) onlyInit onlyRelayer</span><br><span class="line">sequenceInOrder(packageSequence, channelId) blockSynced(height) channelSupported(channelId) external &#123;</span><br><span class="line">    bytes memory payloadLocal = payload;</span><br><span class="line">    <span class="comment">// fix error: stack too deep, try removing local variables</span></span><br><span class="line">    bytes memory proofLocal = proof;</span><br><span class="line">    <span class="comment">// fix error: stack too deep, try removing local variables</span></span><br><span class="line">    <span class="comment">// 默克尔树根校验</span></span><br><span class="line">    require(MerkleProof.validateMerkleProof(ILightClient(LIGHT_CLIENT_ADDR).getAppHash(height), STORE_NAME, generateKey(packageSequence, channelId), payloadLocal, proofLocal), <span class="string">&quot;invalid merkle proof&quot;</span>);</span><br><span class="line">    <span class="comment">// 同步该区块的中继器地址</span></span><br><span class="line">    address payable headerRelayer = ILightClient(LIGHT_CLIENT_ADDR).getSubmitter(height);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8</span> channelIdLocal = channelId;</span><br><span class="line">    <span class="comment">// fix error: stack too deep, try removing local variables</span></span><br><span class="line">    <span class="comment">// 解码跨链数据包</span></span><br><span class="line">    (<span class="type">bool</span> success, <span class="type">uint8</span> packageType, uint256 relayFee, bytes memory msgBytes) = decodePayloadHeader(payloadLocal);</span><br><span class="line">    <span class="keyword">if</span> (!success) &#123;</span><br><span class="line">        emit unsupportedPackage(packageSequence, channelIdLocal, payloadLocal);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    emit receivedPackage(packageType, packageSequence, channelIdLocal);</span><br><span class="line">    <span class="keyword">if</span> (packageType == SYN_PACKAGE) &#123;</span><br><span class="line">        <span class="comment">// 根据channelId获取对应的系统合约地址</span></span><br><span class="line">        address handlerContract = channelHandlerContractMap[channelIdLocal];</span><br><span class="line">        <span class="comment">// 调用具体的系统合约处理跨链数据包</span></span><br><span class="line">        try IApplication(handlerContract).handleSynPackage(channelIdLocal, msgBytes) returns (bytes memory responsePayload) &#123;</span><br><span class="line">            <span class="keyword">if</span> (responsePayload.length != <span class="number">0</span>) &#123;</span><br><span class="line">                sendPackage(channelSendSequenceMap[channelIdLocal], channelIdLocal, encodePayload(ACK_PACKAGE, <span class="number">0</span>, responsePayload));</span><br><span class="line">                channelSendSequenceMap[channelIdLocal] = channelSendSequenceMap[channelIdLocal] + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch Error(<span class="type">string</span> memory reason) &#123;</span><br><span class="line">            sendPackage(channelSendSequenceMap[channelIdLocal], channelIdLocal, encodePayload(FAIL_ACK_PACKAGE, <span class="number">0</span>, msgBytes));</span><br><span class="line">            channelSendSequenceMap[channelIdLocal] = channelSendSequenceMap[channelIdLocal] + <span class="number">1</span>;</span><br><span class="line">            emit unexpectedRevertInPackageHandler(handlerContract, reason);</span><br><span class="line">        &#125; catch (bytes memory lowLevelData) &#123;</span><br><span class="line">            sendPackage(channelSendSequenceMap[channelIdLocal], channelIdLocal, encodePayload(FAIL_ACK_PACKAGE, <span class="number">0</span>, msgBytes));</span><br><span class="line">            channelSendSequenceMap[channelIdLocal] = channelSendSequenceMap[channelIdLocal] + <span class="number">1</span>;</span><br><span class="line">            emit unexpectedFailureAssertionInPackageHandler(handlerContract, lowLevelData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (packageType == ACK_PACKAGE) &#123;</span><br><span class="line">        address handlerContract = channelHandlerContractMap[channelIdLocal];</span><br><span class="line">        try IApplication(handlerContract).handleAckPackage(channelIdLocal, msgBytes) &#123;</span><br><span class="line">        &#125; catch Error(<span class="type">string</span> memory reason) &#123;</span><br><span class="line">            emit unexpectedRevertInPackageHandler(handlerContract, reason);</span><br><span class="line">        &#125; catch (bytes memory lowLevelData) &#123;</span><br><span class="line">            emit unexpectedFailureAssertionInPackageHandler(handlerContract, lowLevelData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (packageType == FAIL_ACK_PACKAGE) &#123;</span><br><span class="line">        address handlerContract = channelHandlerContractMap[channelIdLocal];</span><br><span class="line">        try IApplication(handlerContract).handleFailAckPackage(channelIdLocal, msgBytes) &#123;</span><br><span class="line">        &#125; catch Error(<span class="type">string</span> memory reason) &#123;</span><br><span class="line">            emit unexpectedRevertInPackageHandler(handlerContract, reason);</span><br><span class="line">        &#125; catch (bytes memory lowLevelData) &#123;</span><br><span class="line">            emit unexpectedFailureAssertionInPackageHandler(handlerContract, lowLevelData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    IRelayerIncentivize(INCENTIVIZE_ADDR).addReward(headerRelayer, msg.sender, relayFee, isRelayRewardFromSystemReward[channelIdLocal] || packageType != SYN_PACKAGE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一开始有多个modifier检验:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>onlyRelayer</code>: 仅允许中继器调用</p>
+</li>
+<li class="lvl-2">
+<p><code>sequenceInOrder</code>: 检验sequence序列号是否按顺序</p>
+</li>
+<li class="lvl-2">
+<p><code>blockSynced</code>: 在轻客户端合约中,该区块是否已经同步</p>
+</li>
+<li class="lvl-2">
+<p><code>channelSupported</code>: 该通道是否已经注册,相当于channelId白名单机制</p>
+</li>
+</ul>
+<blockquote>
+<p>能够成功同步区块头数据是同步跨链数据包的前提。</p>
+</blockquote>
+<p>其中关键的代码段是:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (packageType == SYN_PACKAGE) &#123;</span><br><span class="line">   <span class="comment">// 根据channelId获取对应的系统合约地址</span></span><br><span class="line">   address handlerContract = channelHandlerContractMap[channelIdLocal];</span><br><span class="line">   <span class="comment">// 调用具体的系统合约处理跨链数据包</span></span><br><span class="line">   try IApplication(handlerContract).handleSynPackage(channelIdLocal, msgBytes) returns (bytes memory responsePayload) &#123;</span><br><span class="line">       <span class="keyword">if</span> (responsePayload.length != <span class="number">0</span>) &#123;</span><br><span class="line">           sendPackage(channelSendSequenceMap[channelIdLocal], channelIdLocal, encodePayload(ACK_PACKAGE, <span class="number">0</span>, responsePayload));</span><br><span class="line">           channelSendSequenceMap[channelIdLocal] = channelSendSequenceMap[channelIdLocal] + <span class="number">1</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   ....</span><br></pre></td></tr></table></figure>
+<p>并不是在跨链合约<code>CrossChain</code>中进行具体的数据包同步逻辑,<code>CrossChain</code>主要起到<code>跨链数据包校验、路由</code>的作用，根据不同的<code>channelId</code>,<code>CrossChain</code>会去调用对应的系统合约,由它们各自进行具体的跨链数据包处理。</p>
+<h1>完整验证步骤:</h1>
+<ol>
+<li class="lvl-3">
+<p>初始化并运行起BC链</p>
+</li>
+<li class="lvl-3">
+<p>获取新的初始化共识状态数据,生成新的<code>genesis.json</code>，初始化并运行起BSC链</p>
+</li>
+<li class="lvl-3">
+<p>BC链上,新增验证者</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># bnbcli staking bsc-create-validator --chain-id 715 --from bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq --amount 2100000000000:BNB --moniker jerry_v1 --commission-rate 80000000 --commission-max-rate 95000000 --commission-max-change-rate 3000000 --side-chain-id bsc --side-cons-addr 0x86fDBAE16949433E5338846f75764067219fb221 --side-fee-addr 0x86fDBAE16949433E5338846f75764067219fb221</span></span><br><span class="line"></span><br><span class="line">Password to sign with <span class="string">&#x27;jerry&#x27;</span>:</span><br><span class="line">Committed at block 919 (tx <span class="built_in">hash</span>: 7E3B7A1038DD9C55FF3B476A1255C68D3FD17A11A876B66A5BFBDA4C9D83ECDD, response: &#123;Code:0 Data:[] Log:Msg 0:  Info: GasWanted:0 GasUsed:0 Events:[&#123;Type: Attributes:[&#123;Key:[100 101 115 116 105 110 97 116 105 111 110 45 118 97 108 105 100 97 116 111 114] Value:[98 118 97 49 56 54 116 52 122 50 112 100 117 48 50 107 104 108 102 110 53 115 107 113 120 112 100 51 54 102 119 115 97 51 57 51 109 53 97 57 102 121] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[109 111 110 105 107 101 114] Value:[106 101 114 114 121 95 118 49] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[105 100 101 110 116 105 116 121] Value:[] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[97 99 116 105 111 110] Value:[115 105 100 101 95 99 114 101 97 116 101 95 118 97 108 105 100 97 116 111 114] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;] Codespace: XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;)</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># bnbcli staking bsc-create-validator --chain-id 715 --from bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv --amount 2200000000000:BNB --moniker six_v1 --commission-rate 80000000 --commission-max-rate 95000000 --commission-max-change-rate 3000000 --side-chain-id bsc --side-cons-addr 0xeE8620E0DEF0129c9b7a2F46C8C1C364B0869752 --side-fee-addr 0xeE8620E0DEF0129c9b7a2F46C8C1C364B0869752</span></span><br><span class="line">Password to sign with <span class="string">&#x27;six&#x27;</span>:</span><br><span class="line"></span><br><span class="line">Committed at block 927 (tx <span class="built_in">hash</span>: 35D7FB25C9BB6189E0B097A01F4C0839133F85ACBF0CBC24CC432198E9E4D331, response: &#123;Code:0 Data:[] Log:Msg 0:  Info: GasWanted:0 GasUsed:0 Events:[&#123;Type: Attributes:[&#123;Key:[100 101 115 116 105 110 97 116 105 111 110 45 118 97 108 105 100 97 116 111 114] Value:[98 118 97 49 118 54 52 51 50 51 121 114 122 101 107 97 117 102 56 57 113 104 115 102 114 118 121 104 101 55 120 115 118 115 99 107 48 110 110 55 108 103] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[109 111 110 105 107 101 114] Value:[115 105 120 95 118 49] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[105 100 101 110 116 105 116 121] Value:[] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125; &#123;Key:[97 99 116 105 111 110] Value:[115 105 100 101 95 99 114 101 97 116 101 95 118 97 108 105 100 97 116 111 114] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;] XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;] Codespace: XXX_NoUnkeyedLiteral:&#123;&#125; XXX_unrecognized:[] XXX_sizecache:0&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li class="lvl-3">
+<p>在BC上，查询top验证者</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># bnbcli staking  side-top-validators --trust-node --side-chain-id=&quot;bsc&quot;</span></span><br><span class="line">Validator</span><br><span class="line">Fee Address: bnb1v64323yrzekauf89qhsfrvyhe7xsvsck00jwpv</span><br><span class="line">Operator Address: bva1v64323yrzekauf89qhsfrvyhe7xsvsck0nn7lg</span><br><span class="line">Validator Consensus Pubkey:</span><br><span class="line">Jailed: <span class="literal">false</span></span><br><span class="line">Status: Unbonded</span><br><span class="line">Tokens: 2200000000000</span><br><span class="line">Delegator Shares: 2200000000000</span><br><span class="line">Description: &#123;six_v1   &#125;</span><br><span class="line">Bond Height: 0</span><br><span class="line">Unbonding Height: 0</span><br><span class="line">Minimum Unbonding Time: 1970-01-01 00:00:00 +0000 UTC</span><br><span class="line">Commission: &#123;rate: 80000000, maxRate: 95000000, maxChangeRate: 3000000, updateTime: 2022-09-26 08:15:29.716841534 +0000 UTC&#125;</span><br><span class="line">Distribution Addr: bnb1880pqwsmlzt58q57r7u5ycgn8fxnwxvxqppm9k</span><br><span class="line">Side Chain Id: bsc</span><br><span class="line">Consensus Addr on Side Chain: 0xeE8620E0DEF0129c9b7a2F46C8C1C364B0869752</span><br><span class="line">Fee Addr on Side Chain: 0xeE8620E0DEF0129c9b7a2F46C8C1C364B0869752</span><br><span class="line"></span><br><span class="line">Validator</span><br><span class="line">Fee Address: bnb186t4z2pdu02khlfn5skqxpd36fwsa393mgu4hq</span><br><span class="line">Operator Address: bva186t4z2pdu02khlfn5skqxpd36fwsa393m5a9fy</span><br><span class="line">Validator Consensus Pubkey:</span><br><span class="line">Jailed: <span class="literal">false</span></span><br><span class="line">Status: Unbonded</span><br><span class="line">Tokens: 2100000000000</span><br><span class="line">Delegator Shares: 2100000000000</span><br><span class="line">Description: &#123;jerry_v1   &#125;</span><br><span class="line">Bond Height: 0</span><br><span class="line">Unbonding Height: 0</span><br><span class="line">Minimum Unbonding Time: 1970-01-01 00:00:00 +0000 UTC</span><br><span class="line">Commission: &#123;rate: 80000000, maxRate: 95000000, maxChangeRate: 3000000, updateTime: 2022-09-26 08:15:21.651313673 +0000 UTC&#125;</span><br><span class="line">Distribution Addr: bnb1v839g444p5hlvk6ghe6ap4p4y7wnl83p5x0qn6</span><br><span class="line">Side Chain Id: bsc</span><br><span class="line">Consensus Addr on Side Chain: 0x86fDBAE16949433E5338846f75764067219fb221</span><br><span class="line">Fee Addr on Side Chain: 0x86fDBAE16949433E5338846f75764067219fb221</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li class="lvl-3">
+<p>启动bsc-relayer，拉取BC数据，同步到BSC上</p>
+</li>
+<li class="lvl-3">
+<p>查看区块浏览器的结果:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172659.png" alt="20220926172659" /><br />
+调用<code>CrossChain</code>系统合约的交易均成功</p>
+</li>
+<li class="lvl-3">
+<p>查询系统合约<code>BSCValidatorSet</code>里的数据</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172805.png" alt="20220926172805" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220926172818.png" alt="20220926172818" /><br />
+能查到新的验证者数据。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/27da6e395ec9">【BSC详解】3——bsc</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/23566.html" rel="bookmark">OpenZeppelin-代码库QuickView</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/60348.html" rel="bookmark">Project-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11477.html" rel="prev" title="DevRecord-部署vue前端到Vervel上">
+      <i class="fa fa-chevron-left"></i> DevRecord-部署vue前端到Vervel上
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/24344.html" rel="next" title="StudyRecord-Bsc详解-验证节点奖励测试">
+      StudyRecord-Bsc详解-验证节点奖励测试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">引言:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">BC权益质押管理:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">同步跨链数据包调用图:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">系统合约CrossChain:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-4"><span class="nav-number">4.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0-2"><span class="nav-number">4.2.</span> <span class="nav-text">初始化函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%B7%A8%E9%93%BE%E6%95%B0%E6%8D%AE%E5%8C%85%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">处理跨链数据包函数:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">完整验证步骤:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="引言:  目的：   本地搭建起BSC和BC两条链   启动bsc_relayer,能成功与两条链建立连接   bsc_relayer要能同步数据成功:拉取BC的数据,同步到BSC上,能成功修改bsc对应合约里的数据   bsc-relayer中继器: 简介: bsc-relayer 是一个独立进程，主要有两个功能：   拉取 BC 的块头，并同步给 BSC   拉取 BC 的跨链数据包，并同步跨">
+<meta property="og:type" content="article">
+<meta property="og:title" content="StudyRecord-Bsc详解-bsc_relayer同步区块头">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/48095.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="引言:  目的：   本地搭建起BSC和BC两条链   启动bsc_relayer,能成功与两条链建立连接   bsc_relayer要能同步数据成功:拉取BC的数据,同步到BSC上,能成功修改bsc对应合约里的数据   bsc-relayer中继器: 简介: bsc-relayer 是一个独立进程，主要有两个功能：   拉取 BC 的块头，并同步给 BSC   拉取 BC 的跨链数据包，并同步跨">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922173707.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922175541.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922175444.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922180103.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923112409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923143424.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923145003.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923145414.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923151740.png">
+<meta property="article:published_time" content="2022-09-22T03:36:34.000Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.075Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922173707.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/48095.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>StudyRecord-Bsc详解-bsc_relayer同步区块头 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/48095.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          StudyRecord-Bsc详解-bsc_relayer同步区块头
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-22 11:36:34" itemprop="dateCreated datePublished" datetime="2022-09-22T11:36:34+08:00">2022-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>22k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>20 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>引言:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922173707.png" alt="20220922173707" /><br />
+目的：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>本地搭建起BSC和BC两条链</p>
+</li>
+<li class="lvl-2">
+<p>启动bsc_relayer,能成功与两条链建立连接</p>
+</li>
+<li class="lvl-2">
+<p>bsc_relayer要能同步数据成功:拉取BC的数据,同步到BSC上,能成功修改bsc对应合约里的数据</p>
+</li>
+</ul>
+<h1>bsc-relayer中继器:</h1>
+<h2 id="简介-3">简介:</h2>
+<p>bsc-relayer 是一个独立进程，主要有两个功能：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>拉取 BC 的块头，并同步给 BSC</p>
+</li>
+<li class="lvl-2">
+<p>拉取 BC 的跨链数据包，并同步跨链数据包给 BSC</p>
+</li>
+</ul>
+<p>跨链同步主要涉及两个系统合约，分别为</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>TendermintLightClient.sol</code>: 同步块头的操作时会调用到</p>
+</li>
+<li class="lvl-2">
+<p><code>CrossChain.sol</code>: 同步跨链数据包的操作会调用到</p>
+</li>
+</ul>
+<h2 id="与两条链的连接方式">与两条链的连接方式:</h2>
+<p>bsc-relayer 与 BC、BSC 均通过 RPC 进行通信。</p>
+<ol>
+<li class="lvl-3">
+<p><code>bsc-relayer &lt;-----&gt; BC</code>:<br />
+bsc-relayer 通过发送不同的请求信息获取 BC 上的数据，例如 <code>abci_info</code>、<code>block</code>等。</p>
+</li>
+<li class="lvl-3">
+<p><code>bsc-relayer &lt;-----&gt; BSC</code>:<br />
+bsc-relayer 直接使用了 Etheruem 提供的 RPC 模块，可直接调用发送数据或者请求，其中最常用的是<code>eth_sendRawTransaction</code>进行交易的发送。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922175541.png" alt="20220922175541" /><br />
+RPC 的配置信息记录在 <code>config/config.json</code> 文件里:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922175444.png" alt="20220922175444" /></p>
+<h2 id="涉及到的系统合约">涉及到的系统合约:</h2>
+<p>可在<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-relayer">bsc-relayer</a>里的<code>const.go</code>中看到:</p>
+<figure class="highlight go"><figcaption><span>executor/const.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	prefixForCrossChainPackageKey = []<span class="type">byte</span>&#123;<span class="number">0x00</span>&#125;</span><br><span class="line">	prefixForSequenceKey          = []<span class="type">byte</span>&#123;<span class="number">0xf0</span>&#125;</span><br><span class="line"></span><br><span class="line">	PureHeaderSyncChannelID relayercommon.CrossChainChannelID = <span class="number">-1</span></span><br><span class="line">	<span class="comment">// 只涉及以下4个合约</span></span><br><span class="line">	<span class="comment">// TendermintLightClient.sol负责执行 bsc-relayer 发送过来的“同步块头”的交易，和 tmHeaderValidate 预编译合约一同工作：</span></span><br><span class="line">	tendermintLightClientContractAddr = common.HexToAddress(<span class="string">&quot;0x0000000000000000000000000000000000001003&quot;</span>)</span><br><span class="line">	<span class="comment">// 中继者奖励合约</span></span><br><span class="line">	relayerIncentivizeContractAddr    = common.HexToAddress(<span class="string">&quot;0x0000000000000000000000000000000000001005&quot;</span>)</span><br><span class="line">	<span class="comment">// RelayerHub 管理 bsc-relayer 的权限。想要运行 bsc-relayer 的人必须调用合约来存入一些 BNB 以获得授权。</span></span><br><span class="line">	relayerHubContractAddr            = common.HexToAddress(<span class="string">&quot;0x0000000000000000000000000000000000001006&quot;</span>)</span><br><span class="line">	<span class="comment">// CrossChain 跨链包预处理，通过 emit 事件发送跨链包到 BC。包预处理包括序列验证和默克尔证明验证</span></span><br><span class="line">	crossChainContractAddr            = common.HexToAddress(<span class="string">&quot;0x0000000000000000000000000000000000002000&quot;</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>只涉及到4个系统合约:</p>
+<table>
+<thead>
+<tr>
+<th>sequence</th>
+<th>ContractName</th>
+<th>ContractNameCN</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>TendermintLightClient Contract</td>
+<td>Tendermint轻客户端合约</td>
+<td>负责执行 <code>bsc-relayer</code>中继器发送过来的“同步块头”的交易</td>
+</tr>
+<tr>
+<td>2</td>
+<td>RelayerIncentivize Contract</td>
+<td>中继器奖励合约</td>
+<td>用于 <code>bsc-relayer</code> claim reward。而 bsc-validator 的 reward 为打包出块的<code>tx</code>的 gas</td>
+</tr>
+<tr>
+<td>3</td>
+<td>RelayerHub Contract</td>
+<td>中继器管理合约</td>
+<td>用于记录 <code>bsc-relayer</code> 的注册信息, RelayerHub 管理<code>bsc-relayer</code>的权限.想要运行<code>bsc-relayer</code>的人必须调用合约来存入一些 BNB 以获得授权。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>CrossChain Contract</td>
+<td>跨链包处理合约</td>
+<td>负责执行<code>bsc-relayer</code>发送过来的“同步跨链数据包”的交易,进行跨链包预处理,通过<code>emit</code>事件发送跨链包到<code>BC</code>.包预处理包括序列验证和默克尔证明验证</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>现在先看<code>TendermintLightClient.sol</code>轻客户端的源码及其实现</p>
+</blockquote>
+<h1>轻客户端的实现:</h1>
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/learn/system-contract/">官方文档</a>里有介绍。<strong>BSC用智能合约的形式,实现了一个轻客户端。</strong></p>
+<blockquote>
+<p>跨链互操作性的目的是<strong>使一个区块链能够充当另一个区块链的轻客户端。</strong></p>
+<p>由于信标链使用经典的拜占庭容错共识算法，轻客户端验证既便宜又容易：我们所要做的就是<code>检查最新区块上的验证者签名</code>，并<code>验证状态的默克尔证明</code>。</p>
+<p>在 Tendermint 中，验证者在处理区块之前就区块达成一致。<br />
+这意味着该块的签名和状态根直到下一个块才包含在内。因此，每个块都包含一个名为 <code>LastCommit</code> 的字段，其中包含负责提交前一个块的投票，以及块头中的一个名为 <code>AppHash</code> 的字段，它指的是<code>应用程序处理前一个块的交易后的 Merkle 根哈希</code>。<br />
+因此，如果我们想从<code>高度 H</code>验证<code>AppHash</code>，我们需要来自 <code>LastCommit</code> 在<code>高度 H+1</code>的签名。（请记住，此 <code>AppHash 仅包含直到并包括块 H-1 的所有交易的结果</code>）</p>
+<p>与工作量证明不同，轻客户端协议不需要下载和检查区块链中的所有标头 - <strong>客户端始终可以直接跳转到可用的最新标头，只要验证器集没有太大变化</strong>。如果验证者集发生变化，客户端需要跟踪这些变化，这需要为每个发生重大变化的块下载标头。在这里，我们将假设验证器集是恒定的，并推迟处理验证器集更改。</p>
+<p>以太坊平台支持 golang 实现的<code>无状态预编译合约</code>和<code>solidity实现的普通合约</code>。<br />
+与普通合约相比，预编译合约效率更高，gas 成本更低，但它们是无状态的。但是，链上轻客户端必须是有状态的。所以这里我们将尝试一种混合方式：</p>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>预编译实现合约（无状态计算，如签名验证）</p>
+</li>
+<li class="lvl-2">
+<p>普通合约（存储验证器集和可信appHash）</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220922180103.png" alt="20220922180103" /></p>
+<blockquote>
+<p>基于solidity的智能合约,我们比较熟悉，所以接下来我们先了解一下预编译合约。</p>
+</blockquote>
+<h2 id="预编译合约">预编译合约:</h2>
+<h3 id="介绍">介绍:</h3>
+<p>预编译合约是 EVM 中用于提供更复杂库函数(通常用于加密、散列等复杂操作)的一种折衷方法，这些函数不适合编写操作码。<br />
+它们适用于简单但经常调用的合约，或逻辑上固定但计算量很大的合约。<br />
+预编译合约是在使用节点客户端(如geth)代码实现的，因为它们不需要 EVM，所以运行速度很快。 与使用直接在 EVM 中运行的函数相比，它对开发人员来说成本也更低。</p>
+<p>简言之,预编译合约特点如下:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>常用于加密、散列、验证、数据计算等操作</p>
+</li>
+<li class="lvl-2">
+<p>不运行在evm中，在geth客户端里实现</p>
+</li>
+<li class="lvl-2">
+<p>无状态、运行速度快、成本低</p>
+</li>
+</ul>
+<p>BSC 中的预编译合约定义如下：</p>
+<figure class="highlight go"><figcaption><span>core/vm/contracts.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PrecompiledContractsIstanbul contains the default set of pre-compiled Ethereum</span></span><br><span class="line"><span class="comment">// contracts used in the Istanbul release.</span></span><br><span class="line"><span class="keyword">var</span> PrecompiledContractsIstanbul = <span class="keyword">map</span>[common.Address]PrecompiledContract&#123;</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">1</span>&#125;): &amp;ecrecover&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">2</span>&#125;): &amp;sha256hash&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">3</span>&#125;): &amp;ripemd160hash&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">4</span>&#125;): &amp;dataCopy&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">5</span>&#125;): &amp;bigModExp&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">6</span>&#125;): &amp;bn256AddIstanbul&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">7</span>&#125;): &amp;bn256ScalarMulIstanbul&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">8</span>&#125;): &amp;bn256PairingIstanbul&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">9</span>&#125;): &amp;blake2F&#123;&#125;,</span><br><span class="line">  <span class="comment">// Bsc新增的</span></span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">100</span>&#125;): &amp;tmHeaderValidate&#123;&#125;,</span><br><span class="line">	common.BytesToAddress([]<span class="type">byte</span>&#123;<span class="number">101</span>&#125;): &amp;iavlMerkleProofValidate&#123;&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面的都是在Etheruem中已经实现的预编译合约了，BSC 新增了两个:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>tmHeaderValidate</code>预编译合约: 主要用于验证 BC 块头是否合法，被 <code>TendermintLightClient</code> 系统合约调用</p>
+</li>
+<li class="lvl-2">
+<p><code>iavlMerkleProofValidate</code>预编译合约: 主要用于验证 BC 跨链数据包是否合法，被 <code>CrossChainContract</code> 系统合约调用</p>
+</li>
+</ul>
+<blockquote>
+<p>接下来主要介绍预编译合约<code>tmHeaderValidate</code>和系统合约<code>TendermintLightClient</code></p>
+</blockquote>
+<h1>系统合约TendermintLightClient:</h1>
+<h2 id="数据结构">数据结构:</h2>
+<figure class="highlight js"><figcaption><span>TendermintLightClient.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">contract <span class="title class_">TendermintLightClient</span> is <span class="title class_">ILightClient</span>, <span class="title class_">System</span>, <span class="title class_">IParamSubscriber</span> &#123;</span><br><span class="line"></span><br><span class="line">    struct <span class="title class_">ConsensusState</span> &#123;</span><br><span class="line">        uint64 preValidatorSetChangeHeight; <span class="comment">// 上一个验证者集合变更的高度</span></span><br><span class="line">        bytes32 appHash; <span class="comment">// BC的Merkle根哈希</span></span><br><span class="line">                         <span class="comment">// 对应bc的header.Block.Header.AppHash</span></span><br><span class="line">        bytes32 curValidatorSetHash; <span class="comment">// 对应bc的header.Block.Header.ValidatorsHash</span></span><br><span class="line">        bytes nextValidatorSet;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">uint64</span> =&gt;</span> <span class="title class_">ConsensusState</span>) public lightClientConsensusStates; <span class="comment">// 区块高度height=&gt;共识状态数据</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">uint64</span> =&gt;</span> address payable) public submitters; <span class="comment">// 区块高度height=&gt;提交者地址</span></span><br><span class="line">    uint64 public initialHeight; <span class="comment">// 初始化高度</span></span><br><span class="line">    uint64 public latestHeight;</span><br><span class="line">    bytes32 public chainID; <span class="comment">// 链标识符</span></span><br><span class="line">    <span class="comment">// 初始化共识状态</span></span><br><span class="line">    bytes constant public <span class="variable constant_">INIT_CONSENSUS_STATE_BYTES</span> = hex<span class="string">&quot;42696e616e63652d436861696e2d4e696c650000000000000000000000000000000000000000000229eca254b3859bffefaf85f4c95da9fbd26527766b784272789c30ec56b380b6eb96442aaab207bc59978ba3dd477690f5c5872334fc39e627723daa97e441e88ba4515150ec3182bc82593df36f8abb25a619187fcfab7e552b94e64ed2deed000000e8d4a51000&quot;</span>;</span><br><span class="line">    uint256 constant public <span class="variable constant_">INIT_REWARD_FOR_VALIDATOR_SER_CHANGE</span> = <span class="number">1e16</span>; <span class="comment">// 应该是0.01BNB</span></span><br><span class="line">    uint256 public rewardForValidatorSetChange;</span><br><span class="line"></span><br><span class="line">    event <span class="title function_">initConsensusState</span>(uint64 initHeight, bytes32 appHash);</span><br><span class="line">    event <span class="title function_">syncConsensusState</span>(uint64 height, uint64 preValidatorSetChangeHeight, bytes32 appHash, bool validatorChanged);</span><br><span class="line">    event <span class="title function_">paramChange</span>(string key, bytes value);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* solium-disable-next-line */</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) public &#123;&#125;</span><br><span class="line"></span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要关注的是 <code>INIT_CONSENSUS_STATE_BYTES</code> 初始化共识状态变量,该变量可在创始系统合约仓库<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-genesis-contract">bsc-genesis-contract</a>中的<code>generate-tendermintlightclient.js</code>中设置,这个值要设置得对,后面的区块头才能顺利通过验证并同步。</p>
+<blockquote>
+<p>在<code>INIT_CONSENSUS_STATE_BYTES</code>这变量上消耗了很多时间</p>
+</blockquote>
+<h2 id="初始化函数">初始化函数:</h2>
+<figure class="highlight js"><figcaption><span>TendermintLightClient.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">init</span>(<span class="params"></span>) external onlyNotInit &#123;</span><br><span class="line">    uint256 pointer;</span><br><span class="line">    uint256 length;</span><br><span class="line">    (pointer, length) = <span class="title class_">Memory</span>.<span class="title function_">fromBytes</span>(<span class="variable constant_">INIT_CONSENSUS_STATE_BYTES</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* solium-disable-next-line */</span></span><br><span class="line">    <span class="comment">// sstore: writes a (u)int256 to storage</span></span><br><span class="line">    <span class="comment">// mload：reads a (u)int256 from memory</span></span><br><span class="line">    <span class="comment">// 从pointer位置内存中读取数据，再写入到合约的storage存储中</span></span><br><span class="line">    assembly &#123;</span><br><span class="line">        <span class="title function_">sstore</span>(chainID_slot, <span class="title function_">mload</span>(pointer))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">ConsensusState</span> memory cs;</span><br><span class="line">    uint64 height;</span><br><span class="line">    (cs, height) = <span class="title function_">decodeConsensusState</span>(pointer, length, <span class="literal">false</span>);</span><br><span class="line">    cs.<span class="property">preValidatorSetChangeHeight</span> = <span class="number">0</span>;</span><br><span class="line">    lightClientConsensusStates[height] = cs;</span><br><span class="line"></span><br><span class="line">    initialHeight = height;</span><br><span class="line">    latestHeight = height;</span><br><span class="line">    alreadyInit = <span class="literal">true</span>;</span><br><span class="line">    rewardForValidatorSetChange = <span class="variable constant_">INIT_REWARD_FOR_VALIDATOR_SER_CHANGE</span>;</span><br><span class="line"></span><br><span class="line">    emit <span class="title function_">initConsensusState</span>(initialHeight, cs.<span class="property">appHash</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化函数中主要是将初始化共识状态变量<code>INIT_CONSENSUS_STATE_BYTES</code>中的值通过内联汇编的方式写入<code>storage</code>中，该函数以及后面的函数会大量操作指针变量<code>uint256 pointer</code>和长度变量<code>uint256 length</code>来实现存储/读取数据的操作。</p>
+<h2 id="同步区块头函数">同步区块头函数:</h2>
+<figure class="highlight js"><figcaption><span>TendermintLightClient.sol</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 同步区块头</span></span><br><span class="line"><span class="comment">// bsc-relayer会调用该方法</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">syncTendermintHeader</span>(<span class="params">bytes calldata header, uint64 height</span>) external onlyRelayer returns (bool) &#123;</span><br><span class="line">    <span class="built_in">require</span>(submitters[height] == <span class="title function_">address</span>(<span class="number">0x0</span>), <span class="string">&quot;can&#x27;t sync duplicated header&quot;</span>); <span class="comment">// 不能同步重复的区块头</span></span><br><span class="line">    <span class="built_in">require</span>(height &gt; initialHeight, <span class="string">&quot;can&#x27;t sync header before initialHeight&quot;</span>); <span class="comment">// 不能同步初始高度之前的区块头,当前同步的区块高度必须大于初始高度</span></span><br><span class="line"></span><br><span class="line">    uint64 preValidatorSetChangeHeight = latestHeight; <span class="comment">// 上一个验证人集合变更的高度 = 当前最新高度</span></span><br><span class="line">    <span class="title class_">ConsensusState</span> memory cs = lightClientConsensusStates[preValidatorSetChangeHeight];</span><br><span class="line">    <span class="keyword">for</span> (; preValidatorSetChangeHeight &gt;= height &amp;&amp; preValidatorSetChangeHeight &gt;= initialHeight;) &#123;</span><br><span class="line">        preValidatorSetChangeHeight = cs.<span class="property">preValidatorSetChangeHeight</span>;</span><br><span class="line">        cs = lightClientConsensusStates[preValidatorSetChangeHeight]; <span class="comment">// cs存储的是上一次的共识状态数据</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cs.<span class="property">nextValidatorSet</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">        preValidatorSetChangeHeight = cs.<span class="property">preValidatorSetChangeHeight</span>;</span><br><span class="line">        cs.<span class="property">nextValidatorSet</span> = lightClientConsensusStates[preValidatorSetChangeHeight].<span class="property">nextValidatorSet</span>;</span><br><span class="line">        <span class="built_in">require</span>(cs.<span class="property">nextValidatorSet</span>.<span class="property">length</span> != <span class="number">0</span>, <span class="string">&quot;failed to load validator set data&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//32 + 32 + 8 + 32 + 32 + cs.nextValidatorSet.length;</span></span><br><span class="line">    uint256 length = <span class="number">136</span> + cs.<span class="property">nextValidatorSet</span>.<span class="property">length</span>;</span><br><span class="line">    bytes memory input = <span class="keyword">new</span> <span class="title function_">bytes</span>(length + header.<span class="property">length</span>);</span><br><span class="line">    uint256 ptr = <span class="title class_">Memory</span>.<span class="title function_">dataPtr</span>(input); <span class="comment">// Returns a memory pointer to the data portion of the provided bytes array.</span></span><br><span class="line">    <span class="built_in">require</span>(<span class="title function_">encodeConsensusState</span>(cs, preValidatorSetChangeHeight, ptr, length), <span class="string">&quot;failed to serialize consensus state&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// write header to input</span></span><br><span class="line">    uint256 src;</span><br><span class="line">    ptr = ptr + length;</span><br><span class="line">    (src, length) = <span class="title class_">Memory</span>.<span class="title function_">fromBytes</span>(header);</span><br><span class="line">    <span class="title class_">Memory</span>.<span class="title function_">copy</span>(src, ptr, length); <span class="comment">//  Copy &#x27;len&#x27; bytes from memory address &#x27;src&#x27;, to address &#x27;dest&#x27;.</span></span><br><span class="line"></span><br><span class="line">    length = input.<span class="property">length</span> + <span class="number">32</span>;</span><br><span class="line">    <span class="comment">// Maximum validator quantity is 99</span></span><br><span class="line">    bytes32[<span class="number">128</span>] memory result;</span><br><span class="line">    <span class="comment">/* solium-disable-next-line */</span></span><br><span class="line">    assembly &#123;</span><br><span class="line">    <span class="comment">// call validateTendermintHeader precompile contract</span></span><br><span class="line">    <span class="comment">// 调用预编译合约中的方法</span></span><br><span class="line">    <span class="comment">// Contract address: 0x64</span></span><br><span class="line">        <span class="comment">// if iszero(call(gasLimit, contractAddress, value, input, inputLength, output, outputLength)) &#123;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="title function_">iszero</span>(<span class="params">staticcall(not(<span class="number">0</span>), <span class="number">0x64</span>, input, length, result, <span class="number">4096</span>)</span>) &#123;</span><br><span class="line">            <span class="title function_">revert</span>(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Judge if the validator set is changed</span></span><br><span class="line">    <span class="comment">/* solium-disable-next-line */</span></span><br><span class="line">    assembly &#123;</span><br><span class="line">        length := <span class="title function_">mload</span>(<span class="title function_">add</span>(result, <span class="number">0</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 验证者集合是否发生变化的标志</span></span><br><span class="line">    bool validatorChanged = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> ((length &amp; (<span class="number">0x01</span> &lt;&lt; <span class="number">248</span>)) != <span class="number">0x00</span>) &#123;</span><br><span class="line">        validatorChanged = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 系统奖励合约的提取奖励函数</span></span><br><span class="line">        <span class="title class_">ISystemReward</span>(<span class="variable constant_">SYSTEM_REWARD_ADDR</span>).<span class="title function_">claimRewards</span>(msg.<span class="property">sender</span>, rewardForValidatorSetChange);</span><br><span class="line">    &#125;</span><br><span class="line">    length = length &amp; <span class="number">0xffffffffffffffff</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* solium-disable-next-line */</span></span><br><span class="line">    assembly &#123;</span><br><span class="line">        ptr := <span class="title function_">add</span>(result, <span class="number">32</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint64 actualHeaderHeight;</span><br><span class="line">    <span class="comment">// 解码共识状态</span></span><br><span class="line">    <span class="comment">// ptr 指针位置、length长度、validatorChanged是否验证者集合发生变化</span></span><br><span class="line">    (cs, actualHeaderHeight) = <span class="title function_">decodeConsensusState</span>(ptr, length, !validatorChanged);</span><br><span class="line">    <span class="built_in">require</span>(actualHeaderHeight == height, <span class="string">&quot;header height doesn&#x27;t equal to the specified height&quot;</span>); <span class="comment">// 区块头高度必须等于指定的高度</span></span><br><span class="line"></span><br><span class="line">    submitters[height] = msg.<span class="property">sender</span>;</span><br><span class="line">    cs.<span class="property">preValidatorSetChangeHeight</span> = preValidatorSetChangeHeight;</span><br><span class="line">    lightClientConsensusStates[height] = cs;</span><br><span class="line">    <span class="keyword">if</span> (height &gt; latestHeight) &#123;</span><br><span class="line">        latestHeight = height;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    emit <span class="title function_">syncConsensusState</span>(height, preValidatorSetChangeHeight, cs.<span class="property">appHash</span>, validatorChanged);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该函数需要关注的是 调用了预编译合约<code>tmHeaderValidate</code>进行区块头合法性的验证</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">assembly &#123;</span><br><span class="line">    <span class="comment">// call validateTendermintHeader precompile contract</span></span><br><span class="line">    <span class="comment">// 调用预编译合约中的方法</span></span><br><span class="line">    <span class="comment">// Contract address: 0x64</span></span><br><span class="line">        <span class="comment">// if iszero(call(gasLimit, contractAddress, value, input, inputLength, output, outputLength)) &#123;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="title function_">iszero</span>(<span class="params">staticcall(not(<span class="number">0</span>), <span class="number">0x64</span>, input, length, result, <span class="number">4096</span>)</span>) &#123;</span><br><span class="line">            <span class="title function_">revert</span>(<span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>调用关系如下:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923112409.png" alt="20220923112409" /></p>
+<blockquote>
+<p>一开始就卡在调用预编译合约这一步,验证一直没法通过。</p>
+</blockquote>
+<h1>预编译合约tmHeaderValidate:</h1>
+<p>先在geth中找到预编译合约的代码文件: <code>core/vm/contracts_lightclient.go</code> ,通过测试文件<code>core/vm/contracts_lightclient_test.go</code>可以帮助我们测试、快速了解。</p>
+<h2 id="测试代码">测试代码:</h2>
+<figure class="highlight go"><figcaption><span>core/vm/contracts_lightclient_test.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestTmHeaderValidateAndMerkleProofValidate</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">  <span class="comment">// 初始共识状态</span></span><br><span class="line">  consensusStateBytes, err := hex.DecodeString(<span class="string">&quot;...&quot;</span>)</span><br><span class="line">  require.NoError(t, err)</span><br><span class="line">  <span class="comment">// 解码</span></span><br><span class="line">  cs, err := lightclient.DecodeConsensusState(consensusStateBytes)</span><br><span class="line">  require.NoError(t, err)</span><br><span class="line">  <span class="comment">// 新区块头的数据</span></span><br><span class="line">  headerBytes, err := hex.DecodeString(<span class="string">&quot;....&quot;</span>)</span><br><span class="line">  require.NoError(t, err)</span><br><span class="line"></span><br><span class="line">  parameterInput := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">32</span>+<span class="built_in">len</span>(consensusStateBytes)+<span class="built_in">len</span>(headerBytes))</span><br><span class="line">  binary.BigEndian.PutUint64(parameterInput[<span class="number">24</span>:<span class="number">32</span>], <span class="type">uint64</span>(<span class="built_in">len</span>(consensusStateBytes)))</span><br><span class="line">  <span class="built_in">copy</span>(parameterInput[<span class="number">32</span>:<span class="number">32</span>+<span class="built_in">len</span>(consensusStateBytes)], consensusStateBytes)</span><br><span class="line">  <span class="built_in">copy</span>(parameterInput[<span class="number">32</span>+<span class="built_in">len</span>(consensusStateBytes):], headerBytes)</span><br><span class="line"></span><br><span class="line">  totalLengthPrefix := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">32</span>)</span><br><span class="line">  binary.BigEndian.PutUint64(totalLengthPrefix[<span class="number">0</span>:<span class="number">8</span>], <span class="number">0</span>)</span><br><span class="line">  binary.BigEndian.PutUint64(totalLengthPrefix[<span class="number">8</span>:<span class="number">16</span>], <span class="number">0</span>)</span><br><span class="line">  binary.BigEndian.PutUint64(totalLengthPrefix[<span class="number">16</span>:<span class="number">24</span>], <span class="number">0</span>)</span><br><span class="line">  binary.BigEndian.PutUint64(totalLengthPrefix[<span class="number">24</span>:], <span class="type">uint64</span>(<span class="built_in">len</span>(parameterInput)))</span><br><span class="line">  input := <span class="built_in">append</span>(totalLengthPrefix, parameterInput...)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> tmHeaderValidateContract tmHeaderValidate</span><br><span class="line">  <span class="comment">// 区块头验证</span></span><br><span class="line">  <span class="comment">// 区块头里的共识状态</span></span><br><span class="line">  syncedConsensusStateBytes, err := tmHeaderValidateContract.Run(input) <span class="comment">// 验证</span></span><br><span class="line">  require.NoError(t, err)</span><br><span class="line">  syncedConsensusState, err := lightclient.DecodeConsensusState(syncedConsensusStateBytes[<span class="number">32</span>:])</span><br><span class="line">  require.NoError(t, err)</span><br><span class="line">  <span class="comment">// 连续区块的情况</span></span><br><span class="line">  require.Equal(t, testHeight+<span class="number">1</span>, syncedConsensusState.Height)</span><br><span class="line">  require.Equal(t, cs.ChainID, syncedConsensusState.ChainID) <span class="comment">// chainId相等</span></span><br><span class="line">  ....</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>共识状态数据结构:</p>
+<figure class="highlight go"><figcaption><span>core/vm/lightclient/types.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">consensusState := ConsensusState&#123;</span><br><span class="line">  ChainID:             chainID,</span><br><span class="line">  Height:              height,</span><br><span class="line">  AppHash:             appHash,</span><br><span class="line">  CurValidatorSetHash: curValidatorSetHash,</span><br><span class="line">  NextValidatorSet: &amp;tmtypes.ValidatorSet&#123;</span><br><span class="line">    Validators: validatorSet,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先看测试代码前面的部分,主要步骤如下:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>十六进制的初始化的共识状态字节数组字符串，解码成共识状态数据结构体<code>cs</code></p>
+</li>
+<li class="lvl-2">
+<p>十六进制的要同步的区块头数据，解码成共识状态数据结构体<code>newCs</code></p>
+</li>
+<li class="lvl-2">
+<p>两个数据结构进行比较、验证</p>
+</li>
+</ul>
+<p>轻客户端本身保存着当前的活跃验证者集合，当收到新的区块后，</p>
+<ol>
+<li class="lvl-3">
+<p>首先对新区块头做基本的检查: 例如<code>chainId</code>是否相等</p>
+</li>
+<li class="lvl-3">
+<p>判断新区块头是否获得了3分之2的投票<br />
+区块头中的验证者集合与轻客户端本身存储的验证者集合做比较，若相同，则通过+2/3的投票，通过验证，若不同，更新轻客户端的活跃验证者集合，再次验证；</p>
+</li>
+<li class="lvl-3">
+<p>当轻客户端的安全性不足时（如高度不连续、bft超过1/3等等），与全节点进行交互验证。</p>
+</li>
+</ol>
+<blockquote>
+<p>上面部分摘自《区块链架构与实现-cosmos详解-9.1.1轻客户端原理概述》</p>
+</blockquote>
+<h3 id="共识状态数据结构">共识状态数据结构:</h3>
+<p>先把解码后的数据打印出来观察一下。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">=== RUN   TestTmHeaderValidateAndMerkleProofValidateMy</span><br><span class="line">[*****] tmHeaderValidate Run Func </span><br><span class="line">[*****] Step 1</span><br><span class="line">[*****] Step 2</span><br><span class="line">[*****] cs: &amp;&#123;715 2 [41 236 162 84 179 133 155 255 239 175 133 244 201 93 169 251 210 101 39 118 107 120 66 114 120 156 48 236 86 179 128 182] [235 150 68 42 170 178 7 188 89 151 139 163 221 71 118 144 245 197 135 35 52 252 57 230 39 114 61 170 151 228 65 232] ValidatorSet&#123;</span><br><span class="line">  Proposer: Validator&#123;35B42F545A2E3575E48A95B47C9E9540074756BD PubKeyEd25519&#123;8BA4515150EC3182BC82593DF36F8ABB25A619187FCFAB7E552B94E64ED2DEED&#125; VP:1000000000000 A:0&#125;</span><br><span class="line">  Validators:</span><br><span class="line">    Validator&#123;35B42F545A2E3575E48A95B47C9E9540074756BD PubKeyEd25519&#123;8BA4515150EC3182BC82593DF36F8ABB25A619187FCFAB7E552B94E64ED2DEED&#125; VP:1000000000000 A:0&#125;</span><br><span class="line">&#125;&#125;</span><br><span class="line">[*****] header: SignedHeader&#123;</span><br><span class="line">  Header&#123;</span><br><span class="line">    Version:        &#123;10 0&#125;</span><br><span class="line">    ChainID:        715</span><br><span class="line">    Height:         5335</span><br><span class="line">    Time:           2022-09-20 10:00:41.504366656 +0000 UTC</span><br><span class="line">    NumTxs:         0</span><br><span class="line">    TotalTxs:       0</span><br><span class="line">    LastBlockID:    0EE58A3014F929D14E9A82AB04CDBF2097B1915A0CF8C23EB8143B900777357F:1:A84AF4EA95C5</span><br><span class="line">    LastCommit:     B6D621C0189F2DFD4767E85C57B61813804DECF7A32F08E73666F53616E5FDDF</span><br><span class="line">    Data:           </span><br><span class="line">    Validators:     C506C171480200F8EDE028065D07D02CA8DA35C94463326A6E31FBD6CF82388C</span><br><span class="line">    NextValidators: C506C171480200F8EDE028065D07D02CA8DA35C94463326A6E31FBD6CF82388C</span><br><span class="line">    App:            0E067C5259944D79F6110455B387C9EF941C9D10A8552B5ACDD3DEF69868DE25</span><br><span class="line">    Consensus:       294D8FBD0B94B767A7EBA9840F299A3586DA7FE6B5DEAD3B7EECBA193C400F93</span><br><span class="line">    Results:        </span><br><span class="line">    Evidence:       </span><br><span class="line">    Proposer:       931B028E3A2B6C045D0E4579470E9E50847029A2</span><br><span class="line">  &#125;<span class="comment">#20404785119D52196F6BA954C57AF0F0FF19E680921A7F7E8A4A8CD485195972</span></span><br><span class="line">  Commit&#123;</span><br><span class="line">    BlockID:    20404785119D52196F6BA954C57AF0F0FF19E680921A7F7E8A4A8CD485195972:1:6B3354315C9D</span><br><span class="line">    Precommits:</span><br><span class="line">      Vote&#123;0:931B028E3A2B 5335/00/2(Precommit) 20404785119D 654C58D09A92 @ 2022-09-20T10:00:42.512185556Z&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基本检查">基本检查:</h3>
+<p>先对新区块头的数据进行基本检查,例如<code>chainId</code>是否相等。<br />
+一开始就是卡在这一步,<code>generate-tendermintlightclient.js</code>中默认的<code>INIT_CONSENSUS_STATE_BYTES</code>里的<code>chainId</code>为<code>Binance-Chain-Nile</code>，而我同步过来新区块头里的<code>chainId</code>为715</p>
+<figure class="highlight go"><figcaption><span>core/vm/contracts_lightclient_encode_test.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestTmHeaderValidateAndMerkleProofValidateTemp</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 初始共识状态</span></span><br><span class="line">	<span class="comment">// TendermintLightClient.sol默认的INIT_CONSENSUS_STATE_BYTES里的chainId为Binance-Chain-Nile</span></span><br><span class="line">	consensusStateBytesStr := <span class="string">&quot;3731350000000000000000000000000000000000000000000000000000000000000000000000000229eca254b3859bffefaf85f4c95da9fbd26527766b784272789c30ec56b380b6eb96442aaab207bc59978ba3dd477690f5c5872334fc39e627723daa97e441e88ba4515150ec3182bc82593df36f8abb25a619187fcfab7e552b94e64ed2deed000000e8d4a51000&quot;</span> <span class="comment">// 十六进制字符串</span></span><br><span class="line">	consensusStateBytes, err := hex.DecodeString(consensusStateBytesStr)</span><br><span class="line">	require.NoError(t, err)</span><br><span class="line"></span><br><span class="line">	cs, err := lightclient.DecodeConsensusState(consensusStateBytes)</span><br><span class="line">	require.NoError(t, err)</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">&quot;cs: %v \n&quot;</span>, cs)</span><br><span class="line">	<span class="comment">// <span class="doctag">TODO:</span>生成chainId可自定义的INIT_CONSENSUS_STATE_BYTES</span></span><br><span class="line">	cs.ChainID = <span class="string">&quot;715&quot;</span>	<span class="comment">// 修改链id</span></span><br><span class="line">	cs.Height = <span class="number">2</span> <span class="comment">// 修改初始高度</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// <span class="doctag">TODO:</span>修改验证者集合ValidatorSet和Validators</span></span><br><span class="line">	consensusStateBytes, err = cs.EncodeConsensusState()</span><br><span class="line">	<span class="comment">// 需要转成十六进制字符串</span></span><br><span class="line">	newConsensusStateBytesStr := hex.EncodeToString(consensusStateBytes)</span><br><span class="line">	fmt.Println(<span class="string">&quot;consensusStateBytesHexStr: &quot;</span>, newConsensusStateBytesStr)</span><br><span class="line">	newConsensusStateBytes, err := hex.DecodeString(newConsensusStateBytesStr)</span><br><span class="line">	newcs, err := lightclient.DecodeConsensusState(newConsensusStateBytes)</span><br><span class="line">	require.NoError(t, err)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;newcs: %v \n&quot;</span>, newcs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我尝试去修改其中的链id,再编码回去，<code>chainId</code>校验可以通过,但会出现新的报错:投票权重不足</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error: Received unexpected error:</span><br><span class="line">Invalid commit -- insufficient old voting power: got 0, needed 666666666667</span><br></pre></td></tr></table></figure>
+<h3 id="投票权重检查">投票权重检查:</h3>
+<p>接着上面的报错,同步过来的新区块的提案者地址为</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Proposer:  931B028E3A2B6C045D0E4579470E9E50847029A2</span><br></pre></td></tr></table></figure>
+<p>但初始的共识状态里的验证者集合没有该地址，所以投票权重检查不通过</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Validators:</span><br><span class="line">    Validator&#123;35B42F545A2E3575E48A95B47C9E9540074756BD PubKeyEd25519&#123;8BA4515150EC3182BC82593DF36F8ABB25A619187FCFAB7E552B94E64ED2DEED&#125; VP:1000000000000 A:0&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此,我们有两个思路:</p>
+<ol>
+<li class="lvl-3">
+<p>基于<code>generate-tendermintlightclient.js</code>中默认的<code>INIT_CONSENSUS_STATE_BYTES</code>,我们去魔改/生成一个对的初始共识状态十六进制字节数组字符串</p>
+</li>
+<li class="lvl-3">
+<p>直接获取bc上某高度个共识状态数据,再编码成十六进制字节数组字符串</p>
+</li>
+</ol>
+<h3 id="思路1-2">思路1:</h3>
+<p>比较棘手的是<code>PubKeyEd25519</code>公钥数据，没法通过BC的cli、rpc api直接获取。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Validators:</span><br><span class="line">    Validator&#123;35B42F545A2E3575E48A95B47C9E9540074756BD PubKeyEd25519&#123;8BA4515150EC3182BC82593DF36F8ABB25A619187FCFAB7E552B94E64ED2DEED&#125; VP:1000000000000 A:0&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/Tooth_Fairy/article/details/99454417">COSMOS ED25519简析</a>，我们可以在<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bnc-tendermint">bnc-tendermint</a>中调用函数,自己生成。打开BC的配置文件<code>/config/priv_validator_key.json</code></p>
+<figure class="highlight json"><figcaption><span>/config/priv_validator_key.json</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;36231A72BBC68CBD82D0EEC690EE8540B0B049AF&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pub_key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tendermint/PubKeyEd25519&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;AXtsaPfWGEp+oDrq/PKMEvTImmb4HS87juIdVykoSNg=&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;priv_key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tendermint/PrivKeyEd25519&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cijqz2BN0KPc1qETWND0Dr7Zk4g1TYTV+MH6S04YuRcBe2xo99YYSn6gOur88owS9MiaZvgdLzuO4h1XKShI2A==&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>修改并运行测试脚本:</p>
+<figure class="highlight go"><figcaption><span>privval/file_test.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestUnmarshalValidatorKeyTemp</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="comment">//assert, require := assert.New(t), require.New(t)</span></span><br><span class="line"></span><br><span class="line">	serialized := fmt.Sprintf(<span class="string">`&#123;</span></span><br><span class="line"><span class="string">  &quot;address&quot;: &quot;931B028E3A2B6C045D0E4579470E9E50847029A2&quot;,</span></span><br><span class="line"><span class="string">  &quot;pub_key&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;type&quot;: &quot;tendermint/PubKeyEd25519&quot;,</span></span><br><span class="line"><span class="string">    &quot;value&quot;: &quot;+dC/2i1cfw/ZcHZvsxt8dDXxbl1EnClGeckR4o4vUUo=&quot;</span></span><br><span class="line"><span class="string">  &#125;,</span></span><br><span class="line"><span class="string">  &quot;priv_key&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;type&quot;: &quot;tendermint/PrivKeyEd25519&quot;,</span></span><br><span class="line"><span class="string">    &quot;value&quot;: &quot;B8z+AJ9+wtAoeMWShtlZ1BVewYp9UtD+LRMXoE8ITGX50L/aLVx/D9lwdm+zG3x0NfFuXUScKUZ5yRHiji9RSg==&quot;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;`</span>)</span><br><span class="line">	fmt.Println(serialized)</span><br><span class="line">	val := FilePVKey&#123;&#125;</span><br><span class="line">	err := cdc.UnmarshalJSON([]<span class="type">byte</span>(serialized), &amp;val)</span><br><span class="line">	<span class="comment">//require.Nil(err, &quot;%+v&quot;, err)</span></span><br><span class="line">	fmt.Println(err)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// make sure the values match</span></span><br><span class="line">	<span class="comment">//assert.EqualValues(addr, val.Address)</span></span><br><span class="line">	<span class="comment">//assert.EqualValues(pubKey, val.PubKey)</span></span><br><span class="line">	<span class="comment">//assert.EqualValues(privKey, val.PrivKey)</span></span><br><span class="line">	fmt.Println(val.Address)</span><br><span class="line">	fmt.Println((val.PubKey.(ed25519.PubKeyEd25519)).String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出测试结果,成功打印出<code>PubKeyEd25519</code>字符串</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">=== RUN   TestUnmarshalValidatorKeyTemp</span><br><span class="line">PubKeyEd25519&#123;F9D0BFDA2D5C7F0FD970766FB31B7C7435F16E5D449C294679C911E28E2F514A&#125;</span><br><span class="line">--- PASS: TestUnmarshalValidatorKeyTemp (0.00s)</span><br><span class="line">PASS</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>思路1要改的内容太多,容易出错,应采取思路2的更为直接、准确。</p>
+</blockquote>
+<h3 id="思路2-2">思路2:</h3>
+<blockquote>
+<p>直接获取BC上某高度上共识状态数据,再编码成十六进制字节数组字符串</p>
+</blockquote>
+<p>币安是先有BC链,再有BSC链,它们主网在<code>TendermintLightClient.sol</code>轻客户端合约里的初始高度设置成一个很大的值<code>110186855</code>。<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923143424.png" alt="20220923143424" /><br />
+可猜测：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>BC链是先于BSC链,持续运行着</p>
+</li>
+<li class="lvl-2">
+<p>选取了一个BC链上一个特定的高度里的共识状态数据作为轻客户端合约里的初始共识状态数据</p>
+</li>
+<li class="lvl-2">
+<p>然后运行起BSC链、bsc-relayer</p>
+</li>
+<li class="lvl-2">
+<p>中继器连接两条链,读取到BC特定高度的数据后,会同步BC后面的共识状态到轻客户端合约里</p>
+</li>
+</ul>
+<p>在<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-relayer">bsc-relayer</a>中新增测试脚本:</p>
+<figure class="highlight go"><figcaption><span>executor/blockinfo_test.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询区块信息</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestGetBlockInfo</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	initFlags()</span><br><span class="line">	<span class="keyword">var</span> height <span class="type">int64</span></span><br><span class="line">	height = <span class="number">50</span></span><br><span class="line">	bbcNetworkType := viper.GetInt(flagBBCNetworkType)</span><br><span class="line">	bbcExecutor, _ := NewBBCExecutor(cfg, types.ChainNetwork(bbcNetworkType))</span><br><span class="line">  <span class="comment">// 关键函数</span></span><br><span class="line">	cs, err := bbcExecutor.GetInitConsensusState(height)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line">	common.Logger.Infof(<span class="string">&quot;cs: %v\n&quot;</span>, cs)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;cs: %v \n&quot;</span>, cs)</span><br><span class="line">	consensusStateBytes, err := cs.EncodeConsensusState()</span><br><span class="line">	<span class="comment">// 需要转成十六进制字符串</span></span><br><span class="line">	newConsensusStateBytesStr := hex.EncodeToString(consensusStateBytes)</span><br><span class="line">	fmt.Println(<span class="string">&quot;consensusStateBytesHexStr: &quot;</span>, newConsensusStateBytesStr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行测试脚本:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /bsc-relayer/executor</span><br><span class="line">go <span class="built_in">test</span> -v</span><br></pre></td></tr></table></figure>
+<p>主要是使用了bsc-relayer中的<code>bbcExecutor.GetInitConsensusState(height)</code>函数，成功获取BC上高度为50的共识状态数据,并编码成十六进制字符串。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">consensusStateBytesHexStr:  373135000000000000000000000000000000000000000000000000000000000000000000000000323cebfa274480fa027136f6f9049aa0b6a92b4b3843ac5bce32d2d19af15d7a6a6e42927ceb8681e615b60bc77cb1ff3449b93bc9017b6c68f7d6184a7ea03aeafcf28c12f4c89a66f81d2f3b8ea51000</span><br><span class="line">--- PASS: TestGetBlockInfo (0.00s)</span><br><span class="line">PASS</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>至此,我们就获得了一个准确的初始化共识状态数据，可作为<code>TendermintLightClient.sol</code>轻客户端合约的初始化共识状态数据。</p>
+<p>现在我们需要将BC、BSC、bsc-relayer三者结合起来完整验证一下,验证bsc-relayer 是否能够同步新区块头的到<code>TendermintLightClient.sol</code>轻客户端合约里,并成功修改到轻客户端合约里的数据。</p>
+</blockquote>
+<h1>完整验证:</h1>
+<h2 id="运行BC链">运行BC链:</h2>
+<p>修改一下BC链配置文件里的同步区块间隔,原本是一天一次,现在要调整得快一些</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[base]</span><br><span class="line"># Interval blocks of breathe block, if breatheBlockInterval is 0, breathe block will be created every day.</span><br><span class="line">breatheBlockInterval = 100</span><br></pre></td></tr></table></figure>
+<p>然后初始化并运行起BC链</p>
+<h2 id="获取初始化共识状态数据">获取初始化共识状态数据</h2>
+<p>使用<code>bsc-relayer</code>上的测试脚本获取某特定高度的初始化共识状态数据的十六进制字节数组字符串</p>
+<figure class="highlight go"><figcaption><span>executor/blockinfo_test.go</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">=== RUN   TestGetBlockInfo</span><br><span class="line">consensusStateBytesHexStr:  <span class="number">373135000000000000000000000000000000000000000000000000000000000000000000000000323</span>cebfa274480fa027136f6f9049aa0b6a92b4b3843ac5bce32d2d19af15d7a6a6e42927ceb8681e615b60bc77cb1ff3449b93bc9017b6c68f7d6184a7ea03aeafcf28c12f4c89a66f81d2f3b8ea51000</span><br><span class="line">--- PASS: TestGetBlockInfo (<span class="number">0.00</span>s)</span><br><span class="line">PASS</span><br><span class="line">ok      github.com/binance-chain/bsc-relayer/executor   <span class="number">0.080</span>s</span><br></pre></td></tr></table></figure>
+<h2 id="重新生成BSC的genesis-json">重新生成BSC的genesis.json:</h2>
+<p>在创始系统合约仓库<a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-genesis-contract">bsc-genesis-contract</a>中的<code>generate-tendermintlightclient.js</code>中设置<code>initConsensusStateBytes</code></p>
+<figure class="highlight js"><figcaption><span>generate-tendermintlightclient.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">program.<span class="title function_">option</span>(<span class="string">&quot;--initConsensusStateBytes &lt;initConsensusStateBytes&gt;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;init consensusState bytes, hex encoding, no prefix with 0x&quot;</span>,</span><br><span class="line">    <span class="string">&quot;373135000000000000000000000000000000000000000000000000000000000000000000000000323cebfa274480fa027136f6f7986147b96aa4adb7c421b909049aa0b6a92b4b3843ac5bce32d2d19af15d7a6a6e42927ceb8681e615b60bc77cb1ff3449b93bc9017b6c68f7d6184a7ea03aeafcf28c12f4c89a66f81d2f3b8ee21d57292848d8000000e8d4a51000&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>生成<code>genesis.json</code>，初始化并运行起BSC链</p>
+<h2 id="运行bsc-relayer">运行bsc-relayer:</h2>
+<p>初始化并运行起<code>bsc-relayer</code>中继器</p>
+<h2 id="查看结果">查看结果:</h2>
+<p>用本地搭建的<code>blockscout</code>区块链浏览器查看结果<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923145003.png" alt="20220923145003" /><br />
+<code>bsc-relayer</code>中继器发起到<code>TendermintLightClient.sol</code>轻客户端合约的tx交易成功<br />
+<code>Remix IDE</code>读取<code>TendermintLightClient.sol</code>轻客户端合约的变量,修改成功。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923145414.png" alt="20220923145414" /></p>
+<blockquote>
+<p>跨链同步主要涉及两个系统合约，分别为</p>
+<ul class="lvl-1">
+<li class="lvl-2"><code>TendermintLightClient.sol</code>: 同步块头的操作时会调用到</li>
+<li class="lvl-2"><code>CrossChain.sol</code>: 同步跨链数据包的操作会调用到</li>
+</ul>
+<p>至此,我们就搞定了<code>TendermintLightClient.sol</code>轻客户端合约中<code>区块头的同步</code>问题，后面继续研究<code>同步跨链数据包</code>的问题。</p>
+</blockquote>
+<h1>小结:</h1>
+<p>涉及到的github代码仓库较多,简单梳理一下:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220923151740.png" alt="20220923151740" /></p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>repositories</th>
+<th>github地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BC</td>
+<td>node</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/node">https://github.com/bnb-chain/node</a></td>
+</tr>
+<tr>
+<td>BC</td>
+<td>bnc-cosmos-sdk</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bnc-cosmos-sdk">https://github.com/bnb-chain/bnc-cosmos-sdk</a></td>
+</tr>
+<tr>
+<td>BC</td>
+<td>bnc-tendermint</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bnc-tendermint">https://github.com/bnb-chain/bnc-tendermint</a></td>
+</tr>
+<tr>
+<td>BSC</td>
+<td>bsc</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc">https://github.com/bnb-chain/bsc</a></td>
+</tr>
+<tr>
+<td>BSC</td>
+<td>bsc-genesis-contract</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-genesis-contract">https://github.com/bnb-chain/bsc-genesis-contract</a></td>
+</tr>
+<tr>
+<td>Relayer</td>
+<td>bsc-relayer</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/bsc-relayer">https://github.com/bnb-chain/bsc-relayer</a></td>
+</tr>
+<tr>
+<td>Relayer</td>
+<td>oracle-relayer</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/bnb-chain/oracle-relayer">https://github.com/bnb-chain/oracle-relayer</a></td>
+</tr>
+</tbody>
+</table>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.bnbchain.org/docs/learn/system-contract">Build-in System Contract</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/27da6e395ec9">【BSC详解】3——bsc</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/321fdb7c5b8a">【BSC详解】2——bsc relayer</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/43604.html" rel="bookmark">OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/23566.html" rel="bookmark">OpenZeppelin-代码库QuickView</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2021/60348.html" rel="bookmark">Project-CryptoZombie僵尸世界NFT游戏</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/33960.html" rel="bookmark">SmartContract-DoDoFlashLoan测试网例子</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/50077.html" rel="bookmark">SmartContract-合约里调用Uniswap</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/37691.html" rel="prev" title="StudyRecord-Cosmos官方NameService域名解析应用教程">
+      <i class="fa fa-chevron-left"></i> StudyRecord-Cosmos官方NameService域名解析应用教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11477.html" rel="next" title="DevRecord-部署vue前端到Vervel上">
+      DevRecord-部署vue前端到Vervel上 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">引言:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">bsc-relayer中继器:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-3"><span class="nav-number">2.1.</span> <span class="nav-text">简介:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E4%B8%A4%E6%9D%A1%E9%93%BE%E7%9A%84%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">与两条链的连接方式:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%89%E5%8F%8A%E5%88%B0%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%90%88%E7%BA%A6"><span class="nav-number">2.3.</span> <span class="nav-text">涉及到的系统合约:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">轻客户端的实现:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91%E5%90%88%E7%BA%A6"><span class="nav-number">3.1.</span> <span class="nav-text">预编译合约:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.1.1.</span> <span class="nav-text">介绍:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">系统合约TendermintLightClient:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">数据结构:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0"><span class="nav-number">4.2.</span> <span class="nav-text">初始化函数:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%8C%BA%E5%9D%97%E5%A4%B4%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">同步区块头函数:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">预编译合约tmHeaderValidate:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">5.1.</span> <span class="nav-text">测试代码:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E8%AF%86%E7%8A%B6%E6%80%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">5.1.1.</span> <span class="nav-text">共识状态数据结构:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A3%80%E6%9F%A5"><span class="nav-number">5.1.2.</span> <span class="nav-text">基本检查:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E7%A5%A8%E6%9D%83%E9%87%8D%E6%A3%80%E6%9F%A5"><span class="nav-number">5.1.3.</span> <span class="nav-text">投票权重检查:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF1-2"><span class="nav-number">5.1.4.</span> <span class="nav-text">思路1:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF2-2"><span class="nav-number">5.1.5.</span> <span class="nav-text">思路2:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">完整验证:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8CBC%E9%93%BE"><span class="nav-number">6.1.</span> <span class="nav-text">运行BC链:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%88%9D%E5%A7%8B%E5%8C%96%E5%85%B1%E8%AF%86%E7%8A%B6%E6%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">6.2.</span> <span class="nav-text">获取初始化共识状态数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90BSC%E7%9A%84genesis-json"><span class="nav-number">6.3.</span> <span class="nav-text">重新生成BSC的genesis.json:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8Cbsc-relayer"><span class="nav-number">6.4.</span> <span class="nav-text">运行bsc-relayer:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C"><span class="nav-number">6.5.</span> <span class="nav-text">查看结果:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">小结:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">860k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:01</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

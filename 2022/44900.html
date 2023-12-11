@@ -33,10 +33,10 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165545.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220803165559.png">
 <meta property="article:published_time" content="2022-08-04T04:00:34.000Z">
-<meta property="article:modified_time" content="2022-08-12T06:43:39.131Z">
+<meta property="article:modified_time" content="2023-05-02T07:24:49.068Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="BlockChain">
 <meta property="article:tag" content="DevRecord">
+<meta property="article:tag" content="BlockChain">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220804102657.png">
 
@@ -216,7 +216,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-12 14:43:39" itemprop="dateModified" datetime="2022-08-12T14:43:39+08:00">2022-08-12</time>
+                <time title="Modified: 2023-05-02 15:24:49" itemprop="dateModified" datetime="2023-05-02T15:24:49+08:00">2023-05-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -241,7 +241,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>7.6k</span>
+              <span>7.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -366,9 +366,9 @@
 npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f472573e3048">Ubuntu20.04+solc+solc-select安装/使用记录</a><br />
 选择装<code>solc-select</code>，<code>solc-select</code>是一个基于python的轻量化solc版本管理工具。</p>
 <p>安装方法如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install solc-select</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pip install solc-select</span><br><span class="line"><span class="comment"># 将py第三方包的可执行文件加入到环境变量中</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="built_in">export</span> PATH=/usr/local/python3/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
 <p>使用方法如下:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装所有可用版本的solc，也可以指定版本</span></span><br><span class="line">solc-select install</span><br><span class="line">solc-select install [版本号]</span><br><span class="line"><span class="comment"># 切换环境变量中的solc版本</span></span><br><span class="line">solc-select use [版本号]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装所有可用版本的solc，也可以指定版本</span></span><br><span class="line">solc-select install 0.6.4</span><br><span class="line">solc-select install [版本号]</span><br><span class="line"><span class="comment"># 切换环境变量中的solc版本</span></span><br><span class="line">solc-select use [版本号]</span><br></pre></td></tr></table></figure>
 <p><code>solc</code>重装以后，主要先修改这两个文件</p>
 <ol>
 <li class="lvl-3">
@@ -466,21 +466,21 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
       <div class="popular-posts-title"><a href="/2022/37144.html" rel="bookmark">DevRecord-Sui节点搭建和验证节点申请</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/17822.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM对象</a></div>
+      <div class="popular-posts-title"><a href="/2022/11477.html" rel="bookmark">DevRecord-部署vue前端到Vervel上</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/3950.html" rel="bookmark">StudyRecord-以太坊源码分析-EVM解释器对象</a></div>
+      <div class="popular-posts-title"><a href="/2022/57835.html" rel="bookmark">DevRecord-TradingView技术分析指标API</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/33963.html" rel="bookmark">StudyRecord-以太坊源码分析-将交易递交给EVM</a></div>
+      <div class="popular-posts-title"><a href="/2022/57333.html" rel="bookmark">StudyRecord-GoBlockchain_Tutorial_Part2_ProofOfWork</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
               <a href="/tags/DevRecord/" rel="tag"># DevRecord</a>
+              <a href="/tags/BlockChain/" rel="tag"># BlockChain</a>
           </div>
 
         
@@ -581,7 +581,7 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -627,7 +627,7 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -636,12 +636,12 @@ npm装的是<code>solcjs</code>,需要自己重装一个<code>solc</code>。参�
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">652k</span>
+    <span title="Symbols count total">860k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">9:52</span>
+    <span title="Reading time total">13:01</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
