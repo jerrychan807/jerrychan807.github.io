@@ -36,8 +36,8 @@
 <meta property="article:published_time" content="2022-06-27T12:00:34.000Z">
 <meta property="article:modified_time" content="2022-06-30T12:42:17.050Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="StudyRecord">
 <meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="StudyRecord">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220628000242.png">
 
@@ -284,7 +284,7 @@
 <p><code>MainContract</code> 在内部使用 <code>SatteliteContract</code> 的数据来响应用户的查询。例如，当询问 <code>firstName</code> 时，<code>MainContract</code> 只返回存储在 <code>SatteliteContract</code> 中的值。</p>
 <p>如果 <code>MainContract</code> 的所有者想要更改逻辑，他们需要部署一个单独的 <code>SatteliteContract</code> 并修改业务逻辑，并使用新的 <code>SatteliteContract</code> 的地址调用 <code>MainContract</code> 的<code>upgradeTo</code>方法。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./../../interfaces/simple-interface/ILogic.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">contract <span class="title class_">MainContract</span> &#123;</span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    <span class="title class_">ILogic</span> satteliteContract;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        owner = msg.<span class="property">sender</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.修改业务逻辑 2.执行更新函数</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">upgradeTo</span>(<span class="params">address newImplementation</span>) public &#123;</span><br><span class="line">        <span class="comment">// 更新</span></span><br><span class="line">        <span class="built_in">require</span>(msg.<span class="property">sender</span> == owner, <span class="string">&quot;Only Owner&quot;</span>);</span><br><span class="line">        satteliteContract = <span class="title class_">ILogic</span>(newImplementation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// MainContract 在内部使用 SatteliteContract 的数据来响应用户的查询</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getFirstName</span>(<span class="params"></span>) external returns (bytes32)&#123;</span><br><span class="line">        <span class="keyword">return</span> satteliteContract.<span class="title function_">getFirstName</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">getLastName</span>(<span class="params"></span>) external returns (bytes32)&#123;</span><br><span class="line">        <span class="keyword">return</span> satteliteContract.<span class="title function_">getLastName</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setFirstName</span>(<span class="params">bytes32 _firstName</span>) external &#123;</span><br><span class="line">        satteliteContract.<span class="title function_">setFirstName</span>(_firstName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">setLastName</span>(<span class="params">bytes32 _lastName</span>) external &#123;</span><br><span class="line">        satteliteContract.<span class="title function_">setLastName</span>(_lastName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="缺点：">缺点：</h2>
+<h2 id="缺点：-3">缺点：</h2>
 <p>虽然实现简单，但<strong>接口模式非常死板且效率低下</strong>。<br />
 <code>ILogic</code> 接口用于 <code>MainContract</code> 内部，其地址不允许更改。因此，无法修改 <code>ILogic</code> 接口内的函数。此外，实际数据存储在扩展此 <code>ILogic</code> 接口的合同中。当用户设置名字和姓氏时，这些值会在 <code>SatteliteContract</code> 中更新。<br />
 <code>MainContract</code> 只是调用 <code>SatteliteContract</code> 中的函数。如果需要更新逻辑，则需要创建一个新的 <code>SatteliteContract</code>。</p>
@@ -418,8 +418,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
               <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
           </div>
 
         
@@ -504,7 +504,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">介绍：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">接口模式：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">实现：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ILogic-sol"><span class="nav-number">4.1.</span> <span class="nav-text">ILogic.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SatelliteContractV1-sol"><span class="nav-number">4.2.</span> <span class="nav-text">SatelliteContractV1.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MainContract-sol"><span class="nav-number">4.3.</span> <span class="nav-text">MainContract.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="nav-number">4.4.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">灵活性和存储效率：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">简单代理模式：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">介绍：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">接口模式：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">实现：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ILogic-sol"><span class="nav-number">4.1.</span> <span class="nav-text">ILogic.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SatelliteContractV1-sol"><span class="nav-number">4.2.</span> <span class="nav-text">SatelliteContractV1.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MainContract-sol"><span class="nav-number">4.3.</span> <span class="nav-text">MainContract.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A-3"><span class="nav-number">4.4.</span> <span class="nav-text">缺点：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">灵活性和存储效率：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">简单代理模式：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -520,7 +520,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">140</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -566,7 +566,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -575,12 +575,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">863k</span>
+    <span title="Symbols count total">867k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">13:04</span>
+    <span title="Reading time total">13:09</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

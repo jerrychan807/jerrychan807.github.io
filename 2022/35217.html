@@ -278,7 +278,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
 <h1>测试：</h1>
 <p>简单合约的话，依旧是在remix上简单编写，做语法check<br />
 然后放到hardhat框架里写测试script</p>
-<h2 id="测试结果：-3">测试结果：</h2>
+<h2 id="测试结果：-5">测试结果：</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    can&#x27;t transfer after set pause,can transfer after set Unpause</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Pause: </span><br><span class="line">【Step 3】tokenOwner Set Pause: </span><br><span class="line">【Step 3】paused Switch: true</span><br><span class="line"> After setting pause, try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line"> UnPause: </span><br><span class="line">【Step 5】tokenOwner Set UnPause: </span><br><span class="line">【Step 5】paused Switch: false</span><br><span class="line"> After setting Unpause, try to transfer: </span><br><span class="line">【Step 6】 expect : tokenOwner -&gt; 100-&gt; user0 to be not reverted</span><br><span class="line">【Step 6】userBalance(Ether): 200.0</span><br><span class="line">      ✔  (1446ms)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br><span class="line">✨  Done in 5.12s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1>Refs:</h1>
 <ul class="lvl-0">
@@ -296,13 +296,13 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
@@ -402,7 +402,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E4%B8%8D%E5%86%99super%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">5.1.</span> <span class="nav-text">可不写super关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A-3"><span class="nav-number">6.1.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E4%B8%8D%E5%86%99super%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">5.1.</span> <span class="nav-text">可不写super关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A-5"><span class="nav-number">6.1.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -418,7 +418,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">140</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -464,7 +464,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -473,12 +473,12 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/p
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">863k</span>
+    <span title="Symbols count total">867k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">13:04</span>
+    <span title="Reading time total">13:09</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
