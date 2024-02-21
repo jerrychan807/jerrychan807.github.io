@@ -309,7 +309,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 <p>Mocha是一个能够运行在Node和浏览器中的多功能的JavaScript测试框架，它让异步测试简单且有趣。</p>
 <p>Mocha连续地运行测试，并给出灵活而精确的报告，同时能够将错误精确地映射到测试用例上。它托管在GitHub上。</p>
 </blockquote>
-<h2 id="测试结果：-2">测试结果：</h2>
+<h2 id="测试结果：">测试结果：</h2>
 <p>符合预期：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transfer</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Set blacklist: </span><br><span class="line">【Step 3】tokenOwner Set user0 in blacklist: </span><br><span class="line">【Step 3】user0IfBlackList: true</span><br><span class="line"> After setting blacklist, try : </span><br><span class="line">【Step 4】tokenOwner Set user0 in blacklist and try to transfer: </span><br><span class="line">【Step 4】 expect : tokenOwner -&gt; 100-&gt; user0 to.be.reverted</span><br><span class="line">【Step 4】userBalance(Ether): 100.0</span><br><span class="line">      ✔ can&#x27;t transfer after setting blacklist (1351ms)</span><br><span class="line"></span><br><span class="line">  1 passing (1s)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1>Summary:</h1>
@@ -364,13 +364,13 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
       <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
     </li>
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/30342.html" rel="bookmark">Project-CoolErc20-whitelist-具备白名单代币</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
     </li>
   </ul>
 
@@ -464,7 +464,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E5%88%A4%E6%96%AD%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">黑名单判断：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mocha%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">6.1.</span> <span class="nav-text">Mocha测试框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A-2"><span class="nav-number">6.2.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">业务场景：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E5%88%A4%E6%96%AD%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">黑名单判断：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mocha%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">6.1.</span> <span class="nav-text">Mocha测试框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">测试结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -480,7 +480,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">140</span>
+          <span class="site-state-item-count">141</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -535,12 +535,12 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/b
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">867k</span>
+    <span title="Symbols count total">899k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">13:09</span>
+    <span title="Reading time total">13:37</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>

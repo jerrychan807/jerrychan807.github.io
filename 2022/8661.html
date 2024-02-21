@@ -297,7 +297,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/s
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tx = <span class="keyword">await</span> tokenOwner.<span class="property">Token</span>.<span class="title function_">transfer</span>(users[<span class="number">0</span>].<span class="property">address</span>, amountWei1);</span><br><span class="line"><span class="comment">// console.log(tx)  不用wait,该tx就是被确认的tx</span></span><br></pre></td></tr></table></figure>
 <h3 id="trick：">trick：</h3>
 <p>如果是使用hardhat环境，修改代码后不需要再编译、部署，直接运行<code> yarn hardhat test</code>，就可以使用新代码</p>
-<h3 id="测试结果：-3">测试结果：</h3>
+<h3 id="测试结果：-4">测试结果：</h3>
 <p>符合预期</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">  Token contract</span><br><span class="line">    Transactions</span><br><span class="line"> Before Transfer: </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】userBalance(Ether): 0.0</span><br><span class="line"> Transfer: </span><br><span class="line">【Step 2】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 2】blockNum When tx confirmed: 2</span><br><span class="line">【Step 2】tokenOwnerBalance(Ether): 900.0</span><br><span class="line">【Step 2】userBalance(Ether): 100.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 3】tokenOwnerBalance(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line">【Step 3】userBalance(Ether) AtSnapshot: 0.0  BlockNum :2</span><br><span class="line"> Transfer again: </span><br><span class="line">【Step 4】tokenOwner -&gt; 100-&gt; user0: </span><br><span class="line">【Step 4】blockNum When tx confirmed: 3</span><br><span class="line">【Step 4】tokenOwnerBalance(Ether): 800.0</span><br><span class="line">【Step 4】userBalance(Ether): 200.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 5】tokenOwnerBalance(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">【Step 5】userBalance(Ether) AtSnapshot: 100.0  BlockNum :3</span><br><span class="line">      ✔ Check snapshotId和<span class="built_in">users</span> balance (1468ms)</span><br><span class="line">    Burn</span><br><span class="line"> Before burn : </span><br><span class="line">【Step 1】tokenOwnerBalance(Ether): 1000.0</span><br><span class="line">【Step 1】totalSupplyWeiBefore(Ether): 1000.0</span><br><span class="line"> tokenOwner Burn 100Ether token: </span><br><span class="line">【Step 2】blockNum When tx confirmed: 2</span><br><span class="line">【Step 2】tokenOwnerBalanceWei(Ether): 900.0</span><br><span class="line">【Step 2】totalSupplyWei(Ether): 900.0</span><br><span class="line"> Check Snapshot: </span><br><span class="line">【Step 3】tokenOwnerBalance(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line">【Step 3】totalSupply(Ether) AtSnapshot: 1000.0  BlockNum :2</span><br><span class="line"> tokenOwner Burn 100Ether token Again: </span><br><span class="line">【Step 4】blockNum When tx confirmed: 3</span><br><span class="line">【Step 4】tokenOwnerBalanceWei(Ether): 800.0</span><br><span class="line">【Step 4】totalSupplyWei(Ether): 800.0</span><br><span class="line"> Check Snapshot Again: </span><br><span class="line">【Step 5】tokenOwnerBalance(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">【Step 5】totalSupply(Ether) AtSnapshot: 900.0  BlockNum :3</span><br><span class="line">      ✔ Burn, check Snapshot totalsupply (241ms)</span><br><span class="line"></span><br><span class="line">  2 passing (2s)</span><br><span class="line"></span><br><span class="line">✨  Done <span class="keyword">in</span> 9.05s.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1>Summary:</h1>
@@ -328,19 +328,19 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/s
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/14814.html" rel="bookmark">Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2022/30342.html" rel="bookmark">Project-CoolErc20-whitelist-具备白名单代币</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
     </li>
   </ul>
 
@@ -434,7 +434,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/s
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">自定义快照策略：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Remix"><span class="nav-number">5.1.</span> <span class="nav-text">Remix:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat"><span class="nav-number">5.2.</span> <span class="nav-text">hardhat:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96tx%E8%AF%A6%E6%83%85"><span class="nav-number">5.2.1.</span> <span class="nav-text">获取tx详情:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trick%EF%BC%9A"><span class="nav-number">5.2.2.</span> <span class="nav-text">trick：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A-3"><span class="nav-number">5.2.3.</span> <span class="nav-text">测试结果：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">需求:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">部署：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">编写合约：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E7%85%A7%E7%AD%96%E7%95%A5%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">自定义快照策略：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">测试：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Remix"><span class="nav-number">5.1.</span> <span class="nav-text">Remix:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat"><span class="nav-number">5.2.</span> <span class="nav-text">hardhat:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96tx%E8%AF%A6%E6%83%85"><span class="nav-number">5.2.1.</span> <span class="nav-text">获取tx详情:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trick%EF%BC%9A"><span class="nav-number">5.2.2.</span> <span class="nav-text">trick：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%EF%BC%9A-4"><span class="nav-number">5.2.3.</span> <span class="nav-text">测试结果：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Summary:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -450,7 +450,7 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/s
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">140</span>
+          <span class="site-state-item-count">141</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -505,12 +505,12 @@ github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/s
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">867k</span>
+    <span title="Symbols count total">899k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">13:09</span>
+    <span title="Reading time total">13:37</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
