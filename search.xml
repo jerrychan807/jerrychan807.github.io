@@ -19326,4 +19326,410 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
         <tag>SecurityTools</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Crypto-20240315_ionet_GPU算力数据分析</title>
+    <url>/2024/20872.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>数据说明:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>采集时间:20240315</p>
+</li>
+<li class="lvl-2">
+<p>数据来源:ionet官网</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505231339.png" alt="20240505231339" /></p>
+<h2 id="基础数据">基础数据:</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">序号</th>
+<th style="text-align:left">显卡型号</th>
+<th style="text-align:left">GPU数量</th>
+<th style="text-align:left">已出租GPU数量</th>
+<th style="text-align:left">京东单卡价格（rmb）</th>
+<th style="text-align:left">GPU总价值（rmb）</th>
+<th style="text-align:left">销售机型总价值（rmb）</th>
+<th style="text-align:left">上线机型出售比例%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">RTX A6000 K8S</td>
+<td style="text-align:left">8426</td>
+<td style="text-align:left">1685.2</td>
+<td style="text-align:left">32000</td>
+<td style="text-align:left">269,632,000</td>
+<td style="text-align:left">53,926,400</td>
+<td style="text-align:left">20%</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">Tesla T4</td>
+<td style="text-align:left">3047</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">5000</td>
+<td style="text-align:left">15,235,000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">RTX A4000 K8S</td>
+<td style="text-align:left">1988</td>
+<td style="text-align:left">337.96</td>
+<td style="text-align:left">5300</td>
+<td style="text-align:left">10,536,400</td>
+<td style="text-align:left">1,791,188</td>
+<td style="text-align:left">17%</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">GeForce RTX 3090</td>
+<td style="text-align:left">1953</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">8200</td>
+<td style="text-align:left">16,014,600</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">GeForce RTX 3060</td>
+<td style="text-align:left">1732</td>
+<td style="text-align:left">17.32</td>
+<td style="text-align:left">2200</td>
+<td style="text-align:left">3810400</td>
+<td style="text-align:left">38,104</td>
+<td style="text-align:left">1%</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">GeForce RTX 3070</td>
+<td style="text-align:left">1577</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2300</td>
+<td style="text-align:left">3627100</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">GeForce RTX 4090</td>
+<td style="text-align:left">1336</td>
+<td style="text-align:left">13.36</td>
+<td style="text-align:left">17000</td>
+<td style="text-align:left">22712000</td>
+<td style="text-align:left">227,120</td>
+<td style="text-align:left">1%</td>
+</tr>
+<tr>
+<td style="text-align:left">8</td>
+<td style="text-align:left">RTX A5000 K8S</td>
+<td style="text-align:left">1241</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">12000</td>
+<td style="text-align:left">14892000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">9</td>
+<td style="text-align:left">GeForce RTX 3080</td>
+<td style="text-align:left">1239</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">3300</td>
+<td style="text-align:left">4088700</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">10</td>
+<td style="text-align:left">GeForce RTX 4060</td>
+<td style="text-align:left">877</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2400</td>
+<td style="text-align:left">2104800</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">11</td>
+<td style="text-align:left">GeForce RTX 3060 Ti</td>
+<td style="text-align:left">707</td>
+<td style="text-align:left">21.21</td>
+<td style="text-align:left">2300</td>
+<td style="text-align:left">1626100</td>
+<td style="text-align:left">48,783</td>
+<td style="text-align:left">3%</td>
+</tr>
+<tr>
+<td style="text-align:left">12</td>
+<td style="text-align:left">A100-PCIE-40GB</td>
+<td style="text-align:left">700</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">60000</td>
+<td style="text-align:left">42000000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">13</td>
+<td style="text-align:left">tesla v100</td>
+<td style="text-align:left">602</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">7000</td>
+<td style="text-align:left">4214000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">14</td>
+<td style="text-align:left">GeForce RTX 4070</td>
+<td style="text-align:left">579</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">5000</td>
+<td style="text-align:left">2895000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">15</td>
+<td style="text-align:left">A16</td>
+<td style="text-align:left">536</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">21800</td>
+<td style="text-align:left">11684800</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">16</td>
+<td style="text-align:left">3090ti</td>
+<td style="text-align:left">512</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">10000</td>
+<td style="text-align:left">5120000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">17</td>
+<td style="text-align:left">4060ti</td>
+<td style="text-align:left">304</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">4000</td>
+<td style="text-align:left">1216000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">18</td>
+<td style="text-align:left">a100 pcle 80</td>
+<td style="text-align:left">272</td>
+<td style="text-align:left">272</td>
+<td style="text-align:left">140000</td>
+<td style="text-align:left">38080000</td>
+<td style="text-align:left">38,080,000</td>
+<td style="text-align:left">100%</td>
+</tr>
+<tr>
+<td style="text-align:left">19</td>
+<td style="text-align:left">3080ti</td>
+<td style="text-align:left">256</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">4400</td>
+<td style="text-align:left">1126400</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">20</td>
+<td style="text-align:left">3060 ti</td>
+<td style="text-align:left">256</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2600</td>
+<td style="text-align:left">665600</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">21</td>
+<td style="text-align:left">3060 k8s</td>
+<td style="text-align:left">245</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2400</td>
+<td style="text-align:left">588000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">22</td>
+<td style="text-align:left">3080ti k8s</td>
+<td style="text-align:left">241</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">2400</td>
+<td style="text-align:left">578400</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">23</td>
+<td style="text-align:left">3070 ti</td>
+<td style="text-align:left">235</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">3400</td>
+<td style="text-align:left">799000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">24</td>
+<td style="text-align:left">4070ti</td>
+<td style="text-align:left">214</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">6000</td>
+<td style="text-align:left">1284000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">25</td>
+<td style="text-align:left">2080ti</td>
+<td style="text-align:left">204</td>
+<td style="text-align:left">6.12</td>
+<td style="text-align:left">2700</td>
+<td style="text-align:left">550800</td>
+<td style="text-align:left">16,524</td>
+<td style="text-align:left">3%</td>
+</tr>
+<tr>
+<td style="text-align:left">26</td>
+<td style="text-align:left">a100  80gb pcle</td>
+<td style="text-align:left">203</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">145999</td>
+<td style="text-align:left">29637797</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">27</td>
+<td style="text-align:left">a100 sxm4-80</td>
+<td style="text-align:left">174</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">130000</td>
+<td style="text-align:left">22620000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">28</td>
+<td style="text-align:left">4080</td>
+<td style="text-align:left">159</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">4499</td>
+<td style="text-align:left">715341</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">29</td>
+<td style="text-align:left">a400</td>
+<td style="text-align:left">151</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">5899</td>
+<td style="text-align:left">890749</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">30</td>
+<td style="text-align:left">tesla-v100-sxm2</td>
+<td style="text-align:left">148</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">8300</td>
+<td style="text-align:left">1228400</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">31</td>
+<td style="text-align:left">h100 80g pcle k8s</td>
+<td style="text-align:left">146</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">250000</td>
+<td style="text-align:left">36500000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+<tr>
+<td style="text-align:left">32</td>
+<td style="text-align:left">3050</td>
+<td style="text-align:left">90</td>
+<td style="text-align:left">12.6</td>
+<td style="text-align:left">1500</td>
+<td style="text-align:left">135000</td>
+<td style="text-align:left">18,900</td>
+<td style="text-align:left">14%</td>
+</tr>
+<tr>
+<td style="text-align:left">33</td>
+<td style="text-align:left">a10</td>
+<td style="text-align:left">71</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">27000</td>
+<td style="text-align:left">1917000</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="汇总数据">汇总数据:</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">算力总价值（rmb）</th>
+<th style="text-align:left">5亿6872万</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">已租赁总价值（rmb）</td>
+<td style="text-align:left">9414万</td>
+</tr>
+<tr>
+<td style="text-align:left">已租赁比例</td>
+<td style="text-align:left">17%</td>
+</tr>
+<tr>
+<td style="text-align:left">GPU总量</td>
+<td style="text-align:left">30421</td>
+</tr>
+<tr>
+<td style="text-align:left">数据采集截止时间</td>
+<td style="text-align:left">2024年3月15日</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://boost-tool.com/zh/tools/md_table">从一个表格中生成Markdown</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://cloud.io.net/explorer/home">https://cloud.io.net/explorer/home</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
 </search>
