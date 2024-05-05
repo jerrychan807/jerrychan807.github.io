@@ -19732,4 +19732,133 @@ java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
         <tag>Crypto</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Crypto-初识Ionet</title>
+    <url>/2024/41871.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>大约在20240310左右接触到<code>ionet</code>，原团队决定参与。</p>
+<h1>快速了解项目:</h1>
+<p>带着一种遍历的思路，通过类似主题阅读的方式，把在Internet上能搜索到的信息都看一遍。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505224937.png" alt="20240505224937" /><br />
+通过各方不同的视角去快速的了解一个项目。常见的视角有:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>项目方视角</p>
+</li>
+<li class="lvl-2">
+<p>投资人视角</p>
+</li>
+<li class="lvl-2">
+<p>KOL视角</p>
+</li>
+<li class="lvl-2">
+<p>技术视角</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506022910.png" alt="20240506022910" /><br />
+通过关键词：<code>io.net</code>、<code>ionet</code>,在常见的网站,例如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>官方网站</p>
+</li>
+<li class="lvl-2">
+<p>YouTube</p>
+</li>
+<li class="lvl-2">
+<p>Twitter</p>
+</li>
+<li class="lvl-2">
+<p>Google</p>
+</li>
+<li class="lvl-2">
+<p>区块链媒体(blockbeat律动、深潮等)</p>
+</li>
+<li class="lvl-2">
+<p>各类研报</p>
+</li>
+</ul>
+<p>去遍历搜索，把能搜刮到的文章、视频都快速过一遍。<br />
+这里面需要注意的关键词有:一手二手信息源、时效性、专业度、官方非官方等。</p>
+<p>遍历完已有的咨询后，把一些认为比较写得/讲得较好的文章，再反刍一下，加深理解，这个时候对ionet项目全貌就能有个概览。</p>
+<blockquote>
+<p>初步看下来，ionet这个项目的基本分挺高的，叙事概念(AI+Depin+Solana)的热度很高。</p>
+<p>此时，就需要带着批判思维，不断提出问题并 亲自去验证。</p>
+</blockquote>
+<h2 id="数据分析">数据分析:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505230514.png" alt="20240505230514" /><br />
+当时看完深潮对项目方的多个采访稿后，觉得ionet确实是个好项目,越看越充值了信仰。<br />
+这个时候又产生了新的质疑:</p>
+<blockquote>
+<p>这些可信吗? 屁股歪吗? 能否从数据分析的角度再了解一下?</p>
+</blockquote>
+<p>详细数据分析表格可参考: <a href="https://jerrychan807.github.io/2024/20872.html">Crypto-20240315_ionet_GPU算力数据分析</a></p>
+<p>截止20240315，<code>ionet</code>已采集约5亿rmb的算力。<br />
+第一阶段积分奖励计划<code>Ignition</code>的时间范围为:3.1~4.28,也就是过了四分之一的活动周期，就有上亿rmb等值gpu算力转发到ionet的集群中去，换言之，就是有很多热钱涌过去。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506024205.png" alt="20240506024205" /></p>
+<blockquote>
+<p>把已收集到的信息，通过<code>$</code>这个单位进行格式化，再加工处理，输出一份简化研报。</p>
+</blockquote>
+<h1>ionet简化版研报:</h1>
+<h2 id="叙事概念">叙事概念:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>AI 人工智能</p>
+</li>
+<li class="lvl-2">
+<p>Depin 去中心化的物理基础设施网络</p>
+</li>
+<li class="lvl-2">
+<p>Solana 高性能的公链</p>
+</li>
+</ul>
+<h2 id="一句话介绍">一句话介绍:</h2>
+<p>Gpu云算力租赁平台<br />
+Io.net致力于通过其专为机器学习设计的去中心化GPU网络，革新云计算领域。</p>
+<h2 id="融资情况">融资情况:</h2>
+<p>A轮高达3000万美金</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023251.png" alt="20240506023251" /><br />
+数据来源:<a href="https://www.coincarp.com/zh/fundraising/ionet-series-a/">https://www.coincarp.com/zh/fundraising/ionet-series-a/</a></p>
+<h2 id="媒体相关报道">媒体相关报道:</h2>
+<p>数据来源:深潮<br />
+<a href="https://www.techflowpost.com/search/index_io.net.html">https://www.techflowpost.com/search/index_io.net.html</a></p>
+<h2 id="数据分析-2">数据分析:</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">算力总价值（rmb）</th>
+<th style="text-align:left">5亿6872万</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">已租赁总价值（rmb）</td>
+<td style="text-align:left">9414万</td>
+</tr>
+<tr>
+<td style="text-align:left">已租赁比例</td>
+<td style="text-align:left">17%</td>
+</tr>
+<tr>
+<td style="text-align:left">GPU总量</td>
+<td style="text-align:left">30421</td>
+</tr>
+<tr>
+<td style="text-align:left">数据采集截止时间</td>
+<td style="text-align:left">2024年3月15日</td>
+</tr>
+</tbody>
+</table>
+<h2 id="io-net与rndr对比图">io.net与rndr对比图:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023739.png" alt="20240506023739" /></p>
+<p>当时从官网的数据来看，ionet的未来估值会超过rndr，大致进入市值前30去。</p>
+<h1>Summary:</h1>
+<p>初步调研后，我们决定大仓位参与。</p>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
 </search>

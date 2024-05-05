@@ -22,29 +22,27 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre:  对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja: 破解版安装: 下载链接 app,找到Binary Ninja,显示包内容，替换文件  123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ni">
+  <meta name="description" content="Pre: 大约在20240310左右接触到ionet，原团队决定参与。 快速了解项目: 带着一种遍历的思路，通过类似主题阅读的方式，把在Internet上能搜索到的信息都看一遍。  通过各方不同的视角去快速的了解一个项目。常见的视角有:   项目方视角   投资人视角   KOL视角   技术视角    通过关键词：io.net、ionet,在常见的网站,例如   官方网站   YouTube">
 <meta property="og:type" content="article">
-<meta property="og:title" content="StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录">
-<meta property="og:url" content="https://jerrychan807.github.io/2022/60923.html">
+<meta property="og:title" content="Crypto-初识Ionet">
+<meta property="og:url" content="https://jerrychan807.github.io/2024/41871.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre:  对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》  逆向工具BinaryNinja: 破解版安装: 下载链接 app,找到Binary Ninja,显示包内容，替换文件  123# 进入到Crack目录# 签名方法codesign --sign - --force --deep &#x2F;Applications&#x2F;Binary\ Ni">
+<meta property="og:description" content="Pre: 大约在20240310左右接触到ionet，原团队决定参与。 快速了解项目: 带着一种遍历的思路，通过类似主题阅读的方式，把在Internet上能搜索到的信息都看一遍。  通过各方不同的视角去快速的了解一个项目。常见的视角有:   项目方视角   投资人视角   KOL视角   技术视角    通过关键词：io.net、ionet,在常见的网站,例如   官方网站   YouTube">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105254.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105648.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105809.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110136.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110953.png">
-<meta property="article:published_time" content="2022-07-17T00:00:34.000Z">
-<meta property="article:modified_time" content="2024-04-18T16:53:54.180Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505224937.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506022910.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505230514.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506024205.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023251.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023739.png">
+<meta property="article:published_time" content="2024-05-02T14:36:34.000Z">
+<meta property="article:modified_time" content="2024-05-05T18:54:11.159Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="StudyRecord">
-<meta property="article:tag" content="SmartContract">
-<meta property="article:tag" content="EVM">
+<meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505224937.png">
 
-<link rel="canonical" href="https://jerrychan807.github.io/2022/60923.html">
+<link rel="canonical" href="https://jerrychan807.github.io/2024/41871.html">
 
 
 <script id="page-configurations">
@@ -57,7 +55,7 @@
   };
 </script>
 
-  <title>StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录 | Trash Bin</title>
+  <title>Crypto-初识Ionet | Trash Bin</title>
   
 
 
@@ -190,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/60923.html">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2024/41871.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
@@ -203,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          StudyRecord-逆向工具BinaryNinja搭配ethersplay使用记录
+          Crypto-初识Ionet
         </h1>
 
         <div class="post-meta">
@@ -213,14 +211,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-07-17 08:00:34" itemprop="dateCreated datePublished" datetime="2022-07-17T08:00:34+08:00">2022-07-17</time>
+              <time title="Created: 2024-05-02 22:36:34" itemprop="dateCreated datePublished" datetime="2024-05-02T22:36:34+08:00">2024-05-02</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-04-19 00:53:54" itemprop="dateModified" datetime="2024-04-19T00:53:54+08:00">2024-04-19</time>
+                <time title="Modified: 2024-05-06 02:54:11" itemprop="dateModified" datetime="2024-05-06T02:54:11+08:00">2024-05-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/StudyRecord/" itemprop="url" rel="index"><span itemprop="name">StudyRecord</span></a>
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
                 </span>
             </span>
 
@@ -245,7 +243,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.4k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -265,68 +263,123 @@
 
       
         <h1>Pre:</h1>
+<p>大约在20240310左右接触到<code>ionet</code>，原团队决定参与。</p>
+<h1>快速了解项目:</h1>
+<p>带着一种遍历的思路，通过类似主题阅读的方式，把在Internet上能搜索到的信息都看一遍。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505224937.png" alt="20240505224937" /><br />
+通过各方不同的视角去快速的了解一个项目。常见的视角有:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>项目方视角</p>
+</li>
+<li class="lvl-2">
+<p>投资人视角</p>
+</li>
+<li class="lvl-2">
+<p>KOL视角</p>
+</li>
+<li class="lvl-2">
+<p>技术视角</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506022910.png" alt="20240506022910" /><br />
+通过关键词：<code>io.net</code>、<code>ionet</code>,在常见的网站,例如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>官方网站</p>
+</li>
+<li class="lvl-2">
+<p>YouTube</p>
+</li>
+<li class="lvl-2">
+<p>Twitter</p>
+</li>
+<li class="lvl-2">
+<p>Google</p>
+</li>
+<li class="lvl-2">
+<p>区块链媒体(blockbeat律动、深潮等)</p>
+</li>
+<li class="lvl-2">
+<p>各类研报</p>
+</li>
+</ul>
+<p>去遍历搜索，把能搜刮到的文章、视频都快速过一遍。<br />
+这里面需要注意的关键词有:一手二手信息源、时效性、专业度、官方非官方等。</p>
+<p>遍历完已有的咨询后，把一些认为比较写得/讲得较好的文章，再反刍一下，加深理解，这个时候对ionet项目全貌就能有个概览。</p>
 <blockquote>
-<p>对EVM字节码进行反编译是理解高级语言solidity如何在EVM中运作的一个极好的方式 ——《精通以太坊》</p>
+<p>初步看下来，ionet这个项目的基本分挺高的，叙事概念(AI+Depin+Solana)的热度很高。</p>
+<p>此时，就需要带着批判思维，不断提出问题并 亲自去验证。</p>
 </blockquote>
-<h1>逆向工具BinaryNinja:</h1>
-<h2 id="破解版安装">破解版安装:</h2>
-<p><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">下载链接</a></p>
-<p>app,找到<code>Binary Ninja</code>,显示包内容，替换文件<br />
-<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717095312.png" alt="20220717095312" /></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入到Crack目录</span></span><br><span class="line"><span class="comment"># 签名方法</span></span><br><span class="line">codesign --sign - --force --deep /Applications/Binary\ Ninja.app</span><br></pre></td></tr></table></figure>
-<p>然后就能正常打开了</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105254.png" alt="20220717105254" /></p>
-<h1>ethersplay插件:</h1>
-<p><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">github链接</a></p>
-<h2 id="安装">安装:</h2>
+<h2 id="数据分析">数据分析:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240505230514.png" alt="20240505230514" /><br />
+当时看完深潮对项目方的多个采访稿后，觉得ionet确实是个好项目,越看越充值了信仰。<br />
+这个时候又产生了新的质疑:</p>
+<blockquote>
+<p>这些可信吗? 屁股歪吗? 能否从数据分析的角度再了解一下?</p>
+</blockquote>
+<p>详细数据分析表格可参考: <a href="https://jerrychan807.github.io/2024/20872.html">Crypto-20240315_ionet_GPU算力数据分析</a></p>
+<p>截止20240315，<code>ionet</code>已采集约5亿rmb的算力。<br />
+第一阶段积分奖励计划<code>Ignition</code>的时间范围为:3.1~4.28,也就是过了四分之一的活动周期，就有上亿rmb等值gpu算力转发到ionet的集群中去，换言之，就是有很多热钱涌过去。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506024205.png" alt="20240506024205" /></p>
+<blockquote>
+<p>把已收集到的信息，通过<code>$</code>这个单位进行格式化，再加工处理，输出一份简化研报。</p>
+</blockquote>
+<h1>ionet简化版研报:</h1>
+<h2 id="叙事概念">叙事概念:</h2>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p>git clone下载</p>
+<p>AI 人工智能</p>
 </li>
 <li class="lvl-2">
-<p>创建venv环境</p>
+<p>Depin 去中心化的物理基础设施网络</p>
 </li>
 <li class="lvl-2">
-<p>安装依赖包 <code>$ pip install -r requirements.txt</code></p>
+<p>Solana 高性能的公链</p>
 </li>
 </ul>
-<h2 id="链接到BinaryNinja插件文件夹">链接到BinaryNinja插件文件夹:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105648.png" alt="20220717105648" /></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入到插件文件夹</span></span><br><span class="line"><span class="comment"># 创建链接</span></span><br><span class="line"><span class="built_in">ln</span> -s &lt;your_download_location&gt;/ethersplay/ethersplay .</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717105809.png" alt="20220717105809" /></p>
-<h2 id="配置BinaryNinja的python环境">配置BinaryNinja的python环境:</h2>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110136.png" alt="20220717110136" /></p>
-<h1>Demo使用:</h1>
-<p><code>Ethersplay</code>将原始二进制格式的 evm 字节码作为输入。</p>
-<p>要获得solidity 文件的字节码，请使用<code>solc</code>：</p>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p>solc --bin-runtime file.sol：打印合约运行时部分的字节码（大多数情况下）。</p>
-</li>
-<li class="lvl-2">
-<p>solc --bin file.sol：打印合约（构造函数）的初始化字节码，</p>
-</li>
-</ul>
-<p>test.sol使用以下内容的示例：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">contract <span class="title class_">Test</span> &#123;</span><br><span class="line">    uint256 value;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">Test</span>(<span class="params"></span>) &#123;</span><br><span class="line">        value = <span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">set_value</span>(<span class="params">uint256 v</span>) &#123;</span><br><span class="line">        value = v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">function</span>(<span class="params"></span>) payable &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行solidity编译：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solc --bin-runtime test.sol</span><br></pre></td></tr></table></figure>
-<p><code>solc</code> 将字节码打印到标准输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">======= test.sol:Test =======</span><br><span class="line">Binary of the runtime part:</span><br><span class="line">60606040523615603d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063b0f2b72a146041575b5b5b005b3415604b57600080fd5b605f60048080359060200190919050506061565b005b806000819055505b505600a165627a7a72305820c177a64bf54a26574918ddc2201f7ab2dd8619d6c3ee87ce9aaa1eb0e0b1d4650029</span><br></pre></td></tr></table></figure>
-<p>复制 ascii 十六进制字符串，然后在 <code>Binary Ninja</code> 中创建一个新文件。右键单击并选择<code>Paste From -&gt; Raw Hex</code>。将此文件另存为<code>test.evm</code>并关闭它。</p>
-<p>或者，将 ascii 十六进制字符串粘贴到一个新的文本文件中，然后<code>utils/convert_bytecode.py</code>在该文件上运行。</p>
-<p><code>test.evm</code>现在可以加载到BinaryNinja中。</p>
-<p>注意：文件必须<code>.evm</code>以EVM字节码二进制文件结尾。</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220717110953.png" alt="20220717110953" /></p>
-<h1>Refs:</h1>
-<ul class="lvl-0">
-<li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1583596-1-1.html">https://www.52pojie.cn/thread-1583596-1-1.html</a></p>
-</li>
-<li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://github.com/crytic/ethersplay">https://github.com/crytic/ethersplay</a></p>
-</li>
-</ul>
+<h2 id="一句话介绍">一句话介绍:</h2>
+<p>Gpu云算力租赁平台<br />
+Io.net致力于通过其专为机器学习设计的去中心化GPU网络，革新云计算领域。</p>
+<h2 id="融资情况">融资情况:</h2>
+<p>A轮高达3000万美金</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023251.png" alt="20240506023251" /><br />
+数据来源:<a target="_blank" rel="noopener" href="https://www.coincarp.com/zh/fundraising/ionet-series-a/">https://www.coincarp.com/zh/fundraising/ionet-series-a/</a></p>
+<h2 id="媒体相关报道">媒体相关报道:</h2>
+<p>数据来源:深潮<br />
+<a target="_blank" rel="noopener" href="https://www.techflowpost.com/search/index_io.net.html">https://www.techflowpost.com/search/index_io.net.html</a></p>
+<h2 id="数据分析-2">数据分析:</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">算力总价值（rmb）</th>
+<th style="text-align:left">5亿6872万</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">已租赁总价值（rmb）</td>
+<td style="text-align:left">9414万</td>
+</tr>
+<tr>
+<td style="text-align:left">已租赁比例</td>
+<td style="text-align:left">17%</td>
+</tr>
+<tr>
+<td style="text-align:left">GPU总量</td>
+<td style="text-align:left">30421</td>
+</tr>
+<tr>
+<td style="text-align:left">数据采集截止时间</td>
+<td style="text-align:left">2024年3月15日</td>
+</tr>
+</tbody>
+</table>
+<h2 id="io-net与rndr对比图">io.net与rndr对比图:</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023739.png" alt="20240506023739" /></p>
+<p>当时从官网的数据来看，ionet的未来估值会超过rndr，大致进入市值前30去。</p>
+<h1>Summary:</h1>
+<p>初步调研后，我们决定大仓位参与。</p>
 
     </div>
 
@@ -337,28 +390,26 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/46486.html" rel="bookmark">StudyRecord-DivingIntoThe_EVM_Part1_Introduction_to_the_EVM_assembly_code</a></div>
+      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/46265.html" rel="bookmark">StudyRecord-Hitchhikers_Guide_to_the_EVM</a></div>
+      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/42891.html" rel="bookmark">StudyRecord-深入探索EVM—编译和部署智能合约</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/16132.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part1</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/15939.html" rel="bookmark">StudyRecord-逆向分析以太坊智能合约Part2</a></div>
+      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/StudyRecord/" rel="tag"># StudyRecord</a>
-              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
-              <a href="/tags/EVM/" rel="tag"># EVM</a>
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
           </div>
 
         
@@ -367,12 +418,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/49924.html" rel="prev" title="StudyRecord-SushiSwap_MasterChef质押收益计算原理">
-      <i class="fa fa-chevron-left"></i> StudyRecord-SushiSwap_MasterChef质押收益计算原理
+    <a href="/2024/41454.html" rel="prev" title="Crypto-TurnUp_AntiBot_Arbitrage">
+      <i class="fa fa-chevron-left"></i> Crypto-TurnUp_AntiBot_Arbitrage
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/16132.html" rel="next" title="StudyRecord-逆向分析以太坊智能合约Part1">
-      StudyRecord-逆向分析以太坊智能合约Part1 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/20872.html" rel="next" title="Crypto-20240315_ionet_GPU算力数据分析">
+      Crypto-20240315_ionet_GPU算力数据分析 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -443,7 +494,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">逆向工具BinaryNinja:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%B4%E8%A7%A3%E7%89%88%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">破解版安装:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">ethersplay插件:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E5%88%B0BinaryNinja%E6%8F%92%E4%BB%B6%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">3.2.</span> <span class="nav-text">链接到BinaryNinja插件文件夹:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEBinaryNinja%E7%9A%84python%E7%8E%AF%E5%A2%83"><span class="nav-number">3.3.</span> <span class="nav-text">配置BinaryNinja的python环境:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Demo使用:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">快速了解项目:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="nav-number">2.1.</span> <span class="nav-text">数据分析:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">ionet简化版研报:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%99%E4%BA%8B%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">叙事概念:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.2.</span> <span class="nav-text">一句话介绍:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%9E%8D%E8%B5%84%E6%83%85%E5%86%B5"><span class="nav-number">3.3.</span> <span class="nav-text">融资情况:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AA%92%E4%BD%93%E7%9B%B8%E5%85%B3%E6%8A%A5%E9%81%93"><span class="nav-number">3.4.</span> <span class="nav-text">媒体相关报道:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90-2"><span class="nav-number">3.5.</span> <span class="nav-text">数据分析:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#io-net%E4%B8%8Erndr%E5%AF%B9%E6%AF%94%E5%9B%BE"><span class="nav-number">3.6.</span> <span class="nav-text">io.net与rndr对比图:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Summary:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
