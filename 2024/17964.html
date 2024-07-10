@@ -22,22 +22,29 @@
     var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pre: Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到Transfer()函数,在代码层面上是只有转移的行为。那么如何在solidity里区分这几个行为呢？如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。 github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;four_way To">
+  <meta name="description" content="Pre: 上篇提到，最终定下的方案是，租用大厂(Google cloud、Amazon aws、Vultr)等的海外云gpu服务器，那开始在这些厂商租用服务器。 在租用过程中，也碰到了不少的问题。 动态租赁方案：  在租用云服务器过程中，有以下变量：   server provider   server Account   人工沟通、工单   服务器配置   初步定的是一个动态的方案，哪家云服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币">
-<meta property="og:url" content="https://jerrychan807.github.io/2022/14814.html">
+<meta property="og:title" content="Crypto-Ionet总结系列-租用算力">
+<meta property="og:url" content="https://jerrychan807.github.io/2024/17964.html">
 <meta property="og:site_name" content="Trash Bin">
-<meta property="og:description" content="Pre: Erc20代币在买卖、添加&#x2F;移除流动性的多个行为的过程中，都会调用到Transfer()函数,在代码层面上是只有转移的行为。那么如何在solidity里区分这几个行为呢？如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。 github仓库地址: https:&#x2F;&#x2F;github.com&#x2F;jerrychan807&#x2F;cool-erc20&#x2F;tree&#x2F;main&#x2F;four_way To">
+<meta property="og:description" content="Pre: 上篇提到，最终定下的方案是，租用大厂(Google cloud、Amazon aws、Vultr)等的海外云gpu服务器，那开始在这些厂商租用服务器。 在租用过程中，也碰到了不少的问题。 动态租赁方案：  在租用云服务器过程中，有以下变量：   server provider   server Account   人工沟通、工单   服务器配置   初步定的是一个动态的方案，哪家云服务器">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-05-24T14:36:34.000Z">
-<meta property="article:modified_time" content="2024-04-18T16:53:54.175Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710205646.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710205322.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710214159.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710215646.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710221725.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710221805.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710222922.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710223819.png">
+<meta property="article:published_time" content="2024-05-08T14:36:34.000Z">
+<meta property="article:modified_time" content="2024-07-10T15:02:43.932Z">
 <meta property="article:author" content="Foolisheddy">
-<meta property="article:tag" content="SmartContract">
-<meta property="article:tag" content="Project">
-<meta property="article:tag" content="CoolErc20">
+<meta property="article:tag" content="Crypto">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710205646.png">
 
-<link rel="canonical" href="https://jerrychan807.github.io/2022/14814.html">
+<link rel="canonical" href="https://jerrychan807.github.io/2024/17964.html">
 
 
 <script id="page-configurations">
@@ -50,7 +57,7 @@
   };
 </script>
 
-  <title>Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币 | Trash Bin</title>
+  <title>Crypto-Ionet总结系列-租用算力 | Trash Bin</title>
   
 
 
@@ -183,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/14814.html">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2024/17964.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
@@ -196,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Project-CoolErc20-four_way-区分买卖添加移除流动性行为的代币
+          Crypto-Ionet总结系列-租用算力
         </h1>
 
         <div class="post-meta">
@@ -206,14 +213,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-05-24 22:36:34" itemprop="dateCreated datePublished" datetime="2022-05-24T22:36:34+08:00">2022-05-24</time>
+              <time title="Created: 2024-05-08 22:36:34" itemprop="dateCreated datePublished" datetime="2024-05-08T22:36:34+08:00">2024-05-08</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-04-19 00:53:54" itemprop="dateModified" datetime="2024-04-19T00:53:54+08:00">2024-04-19</time>
+                <time title="Modified: 2024-07-10 23:02:43" itemprop="dateModified" datetime="2024-07-10T23:02:43+08:00">2024-07-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -221,7 +228,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
+                  <a href="/categories/Crypto/" itemprop="url" rel="index"><span itemprop="name">Crypto</span></a>
                 </span>
             </span>
 
@@ -238,7 +245,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -258,179 +265,111 @@
 
       
         <h1>Pre:</h1>
-<p>Erc20代币在买卖、添加/移除流动性的多个行为的过程中，都会调用到<code>Transfer()</code>函数,在代码层面上是只有转移的行为。那么如何在solidity里区分这几个行为呢？如果能够区分这几个行为的话，就能实现某些功能的定制化,例如税收等。</p>
-<p>github仓库地址: <code>https://github.com/jerrychan807/cool-erc20/tree/main/four_way</code></p>
-<h1>Token转移：</h1>
-<p>token发生转移时，会有发送方<code>sender</code>,接收方<code>recipient</code>可以把Buy、Sell、AddLiquidity、RemoveLiquidity分类为下面两种情况。</p>
+<p><a href="https://jerrychan807.github.io/2024/18410.html">上篇</a>提到，最终定下的方案是，租用大厂(Google cloud、Amazon aws、Vultr)等的海外云gpu服务器，那开始在这些厂商租用服务器。</p>
+<p>在租用过程中，也碰到了不少的问题。</p>
+<h1>动态租赁方案：</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710205646.png" alt="20240710205646" /></p>
+<p>在租用云服务器过程中，有以下变量：</p>
 <ol>
 <li class="lvl-3">
-<p><code>sender</code>为Pair，<code>recipient</code>为Token</p>
-</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Buy:</span><br><span class="line">Usdt ——&gt; Pair ——&gt; Token</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RemoveLiquidity:</span><br><span class="line">LpToken ——&gt; Pair ——&gt; Usdt、Token</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li class="lvl-3">
-<p><code>sender</code>为Token，<code>recipient</code>为Pair</p>
-</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sell:</span><br><span class="line">Token ——&gt; Pair ——&gt; Usdt</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AddLiquidity:</span><br><span class="line">Usdt、Token ——&gt; Pair ——&gt; LpToken</span><br></pre></td></tr></table></figure>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>sender</th>
-<th>recipient</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Buy</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>Token</td>
-<td>Pair</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>Pair</td>
-<td>Token</td>
-</tr>
-</tbody>
-</table>
-<p>那如何在smart contract里区分这四种行为呢？</p>
-<h1>在smart contract里区分：</h1>
-<p>关键的判断代码如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询uniswap储备量</span></span><br><span class="line"><span class="comment">// 实例化pair</span></span><br><span class="line"><span class="title class_">IUniswapV</span>2Pair uniswapV2Pair = <span class="title class_">IUniswapV</span>2Pair(uniswapV2PairAddress);</span><br><span class="line"><span class="comment">// 获取上一次swap的结果</span></span><br><span class="line">(uint112 reserve0, uint112 reserve1,) = uniswapV2Pair.<span class="title function_">getReserves</span>();</span><br><span class="line"><span class="comment">// Buy: Usdt↑ Token↓</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token0</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve1) </span><br><span class="line">|| (<span class="title function_">address</span>(<span class="variable language_">this</span>) == uniswapV2Pair.<span class="title function_">token1</span>() &amp;&amp; <span class="title class_">IERC20</span>(usdtAddress).<span class="title function_">balanceOf</span>(uniswapV2PairAddress) &gt; reserve0)) &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>通过储备量的变化情况，来区分开这四种行为。</p>
-<h1>测试情况：</h1>
-<h2 id="手动测试网测试">手动测试网测试:</h2>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Fee</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Buy</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>10%</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>5%</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>10%</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>Result</th>
-<th>tx</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Buy</td>
-<td>ok</td>
-<td><a target="_blank" rel="noopener" href="https://testnet.bscscan.com/tx/0x8e937af584c94bfbd1f5280c2a382a2812301178f9d5f3498fe3a75dc24bf285">tx</a></td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>fail</td>
-<td>tx</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>ok</td>
-<td><a target="_blank" rel="noopener" href="https://testnet.bscscan.com/tx/0x7ed0f97a08896a0f1059ae15c2ff42dcd16370f755f386aafad76d861da51879">tx</a></td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>ok</td>
-<td><a target="_blank" rel="noopener" href="https://testnet.bscscan.com/tx/0x2e837f4e94c9f8e47490911f1c2d9953ed92e598f4976724444076f160da2cb3">tx</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="hardhat测试：">hardhat测试：</h2>
-<p>也是<code>Sell</code>这一步骤没能成功</p>
-<h1>一些知识点：</h1>
-<h2 id="Uniswap的getreserves获取储备量函数">Uniswap的getreserves获取储备量函数</h2>
-<p>可以通过<code>getreserves()</code>获取pair里两类币种的储备量。</p>
-<table>
-<thead>
-<tr>
-<th>行为</th>
-<th>reserve0(USDT)储备量变化</th>
-<th>reserve1（XToken）储备量变化</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Buy</td>
-<td>↓</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>Sell</td>
-<td>↑</td>
-<td>↓</td>
-</tr>
-<tr>
-<td>AddLiquidity</td>
-<td>↑</td>
-<td>↑</td>
-</tr>
-<tr>
-<td>RemoveLiquidity</td>
-<td>↓</td>
-<td>↓</td>
-</tr>
-</tbody>
-</table>
-<h2 id="在合约里调用其他合约">在合约里调用其他合约</h2>
-<p>interface + 地址</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;./IUniswapV2Factory.sol&quot;</span>;</span><br><span class="line"><span class="comment">// bsc testnet addr</span></span><br><span class="line">address v2FactoryAddress = <span class="number">0x182859893230dC89b114d6e2D547BFFE30474a21</span>;</span><br><span class="line"><span class="title class_">IUniswapV</span>2Factory uniswapv2Factory = <span class="title class_">IUniswapV</span>2Factory(v2FactoryAddress);</span><br><span class="line">uniswapV2PairAddress = uniswapv2Factory.<span class="title function_">createPair</span>(<span class="title function_">address</span>(<span class="variable language_">this</span>), usdtAddress);</span><br></pre></td></tr></table></figure>
-<h2 id="验证多合约源码：">验证多合约源码：</h2>
-<ol>
-<li class="lvl-3">
-<p>etherscan、bscscan直接将多个源代码文件上传即可</p>
+<p>server provider</p>
 </li>
 <li class="lvl-3">
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43405220/article/details/122256055">使用Hardhat验证 Solidity 源码 （Ethereum or BSC）</a></p>
+<p>server Account</p>
+</li>
+<li class="lvl-3">
+<p>人工沟通、工单</p>
+</li>
+<li class="lvl-3">
+<p>服务器配置</p>
 </li>
 </ol>
-<h1>Refs:</h1>
+<p>初步定的是一个动态的方案，哪家云服务器厂商提供了算力，就优先上部分算力，与此同时，由于是租用的方式，到时候也可以动态地把部分算力下线。</p>
+<h1>Vultr:</h1>
+<p>Vultr上有a100,a40,a10系列的机器，性价比都不错。但遇到的问题是，账号有购买限额。<br />
+新号是250u/月，为了租用足够的云服务器，有2个思路：</p>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair">uniswap doc</a></p>
+<p>申请多个Vultr账号</p>
 </li>
 <li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://solveforum.com/forums/threads/solved-hardhat-testing-on-testnet-rinkeby.467949/">[Solved] Hardhat testing on testnet (Rinkeby)</a></p>
-</li>
-<li class="lvl-2">
-<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/question/3458">限制用户卖出币的数量，同时加池子不受影响</a></p>
+<p>单个大号，以企业采购的名义与客服进行沟通</p>
 </li>
 </ul>
+<h2 id="多号">多号:</h2>
+<p>在测试过程中，采用英国手机号及认证信息的话，新注册的号，官方会给到500u/月的额度。如果用Chinese的认证信息去注册的话，只能开到250u/月的额度。</p>
+<p>注册多个账号，有以下缺点：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>ip地址与认证信息不一致，容易被封号，不稳定</p>
+</li>
+<li class="lvl-2">
+<p>多个账号下，不利于管理机器</p>
+</li>
+</ul>
+<p>考虑到以上因素，不按这个思路去执行。</p>
+<h2 id="客服沟通：">客服沟通：</h2>
+<p>提交工单，以公司的名义与Vultr官方进行沟通，表面我们是企业用户，有较大的预算，可以预付服务器费用，希望在它上面采购租用较多的云gpu服务器。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710205322.png" alt="20240710205322" /><br />
+经过多次工单后，对方只是将我们大号的额度，由250u/月提升到750u/月,并且表示如果需要提额，只能等下个月。</p>
+<p>那么这条路也走不通，存在不可控因素：</p>
+<ol>
+<li class="lvl-3">
+<p>账号有限额</p>
+</li>
+<li class="lvl-3">
+<p>a系列的卡数量有限，就算有额度，也不一定有货</p>
+</li>
+</ol>
+<p>所以只能放弃Vultr。</p>
+<h1>Oracle:</h1>
+<p>Oracle的机器配置太大，过于冗余了，而且价格很贵。</p>
+<p>当中有个小插曲，另一位技术小伙伴觉得可以尝试在Oracle的一台机器上，采用虚拟化的方式，将1个gpu虚拟化成多个gpu，以作弊的方式在一台机器上跑多个Worker。</p>
+<p>当时我查了下，docker是可以获取到宿主机的硬件信息，也就是说ionet官方有办法检测到此类的作弊方案，就否了这个思路。<br />
+后来事实证明这个思路确实不行，因为ionet官方出了公告，说要严格检测作弊的Worker。</p>
+<h1>Amazon aws:</h1>
+<p>在aws上，决定购买的是T4的卡，也是遇到了同样的账户限额的问题。这类云厂商的付款方案都是先用后付，采取的是一个信用分的机制。<br />
+对于新号，信用分低，也是有对应的限额，但是亚马逊在国内有一定的团队，可以很快的就和他们的官方人员沟通上，并且打开了限额。</p>
+<p>后续还和他们的BD人员进行了沟通，了解到了亚马逊在国内，大多都是走的经销商的方案，也就是个人预付款给经销商，经销商给机器给个人，到时候官方找经销商收款的模式。</p>
+<p>走经销商方案的话，有以下优缺点：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>优点：付款方便，有些经销商支持usdt支付，可以快速开机器，没有限额的限制</p>
+</li>
+<li class="lvl-2">
+<p>缺点：需要预付款，也就是要先打一大笔钱过去</p>
+</li>
+</ul>
+<p>考虑到多个因素，一方面是资金方面不安全，个人不太信任第三方公司，一方面是价格没有太大的折扣，约9折左右，一方面是打钱过去后，这部分算力的额度就要锁定在亚马逊上，到时候想切换部分算力到别的云服务器厂商的话，就没有操作空间了。与一开始指定的动态方案相违背。</p>
+<p>所以，就没走经销商方案，直接在官网用自己的账号购买。</p>
+<p>当中遇到一个小插曲就是，官方的付款方式非常麻烦，仅支持电汇的方式，需要以公司名义走公账，银行汇款，一直搞不懂该如何电汇。在与aws销售沟通的时候，对方存在一定的错误引导，一直推荐我们走经销商方案，当时我怀疑销售是为了吃下其推荐的经销商给的回扣。</p>
+<p>后来到下个月扣款日的时候，发现官网上绑定的信用卡能够成功扣款，才结束了和aws销售扯皮的沟通。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710214159.png" alt="20240710214159" /></p>
+<p>当时人手不够，没有及时去跟进服务器成本的计算，在aws上开了将近20台t4的机器，过了几天去算了一下，不算不知道，一算吓一跳.<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710215646.png" alt="20240710215646" /><br />
+预计总账单达到11000多u，吓得我赶紧把aws上的机器都停了。</p>
+<blockquote>
+<p>至此，需要找到新的替代方案。</p>
+</blockquote>
+<h1>市面上竞品方案：</h1>
+<h2 id="竞品一-龙哥-Google-T4-525u：">竞品一: 龙哥_Google_T4_525u：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710221725.png" alt="20240710221725" /></p>
+<h2 id="竞品二-五哥-Google-T4-350u：">竞品二 五哥_Google_T4_350u：</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710221805.png" alt="20240710221805" /><br />
+在跑算力的过程中，发现ionet的客户端占用资源很少，也就是空挂状态下，按照官方文档给出的最低配置去跑的话，很浪费服务器资源。</p>
+<p>再结合市面上的竞品方案，别的团队在Google cloud配置的云算力成本较低，后面决定用更低的服务器配置去跑ionet，因为其空挂状态下用不了啥资源，开始研究如何把算力切换到Google cloud上。</p>
+<h1>Google Cloud:</h1>
+<p>个人账号在Google Cloud上同样是有限额问题，如果需要开较多的gpu服务器，也是需要走人工申请。与亚马逊云不同的是，Google cloud没有国内的同事，在沟通上只能通过邮件的形式。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710222922.png" alt="20240710222922" /><br />
+邮件的沟通时效性就很差了，由于着急上机器，同时自己也去找一下经销商。<br />
+让之前的aws销售推荐一家Google cloud经销商，给的价格也是没有什么折扣。<br />
+货比三家，自己去Google一下，国内有什么较大的经销商，后来找到了一家挺不错的厂商<a target="_blank" rel="noopener" href="https://tw.cloud-ace.com/">Cloud Ace</a>。<br />
+联系上对方的国内团队后，对方还推荐了另一个gpu型号：L4的机器，还给了定制化的套餐，感觉对方挺专业的，服务器价格方面也非常不错，大概是160u左右一个月。所以剩余的25天左右的算力就全上到他们家了。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240710223819.png" alt="20240710223819" /></p>
+<blockquote>
+<p>也再次印证了，那位aws销售不太ok。</p>
+</blockquote>
+<p>至此，租用算力的方案没有优化的空间了，折腾算力租用的过程也告一段落了，后面就是持续维护Worker的上线情况了。</p>
 
     </div>
 
@@ -441,28 +380,26 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/24654.html" rel="bookmark">Project-CoolErc20-blacklist-具备黑名单代币</a></div>
+      <div class="popular-posts-title"><a href="/2021/32598.html" rel="bookmark">Crypto-Bp宝石回购监控脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/21702.html" rel="bookmark">Project-CoolErc20-burnable-燃烧通缩代币</a></div>
+      <div class="popular-posts-title"><a href="/2021/43268.html" rel="bookmark">Crypto-Raca Nft市场实时交易记录</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/35217.html" rel="bookmark">Project-CoolErc20-pauseable-可暂停代币</a></div>
+      <div class="popular-posts-title"><a href="/2021/1333.html" rel="bookmark">Crypto-RacaNft市场挂单script</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/8661.html" rel="bookmark">Project-CoolErc20-snapshot-快照功能代币</a></div>
+      <div class="popular-posts-title"><a href="/2021/14610.html" rel="bookmark">Crypto-SuperTrend指标_合约交易脚本</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2022/30342.html" rel="bookmark">Project-CoolErc20-whitelist-具备白名单代币</a></div>
+      <div class="popular-posts-title"><a href="/2021/48779.html" rel="bookmark">Crypto-SuperTrend指标_现货交易脚本</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
-              <a href="/tags/Project/" rel="tag"># Project</a>
-              <a href="/tags/CoolErc20/" rel="tag"># CoolErc20</a>
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
           </div>
 
         
@@ -471,12 +408,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/14901.html" rel="prev" title="FAQ-如何监控token初次添加流动性">
-      <i class="fa fa-chevron-left"></i> FAQ-如何监控token初次添加流动性
+    <a href="/2024/18410.html" rel="prev" title="Crypto-Ionet总结系列-可行性分析">
+      <i class="fa fa-chevron-left"></i> Crypto-Ionet总结系列-可行性分析
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/15785.html" rel="next" title="Uniswap-getReserves获取储备量">
-      Uniswap-getReserves获取储备量 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/36133.html" rel="next" title="StudyRecord-无屿咖啡Neverland零基础咖啡课程">
+      StudyRecord-无屿咖啡Neverland零基础咖啡课程 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -547,7 +484,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Token转移：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">在smart contract里区分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">测试情况：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E6%B5%8B%E8%AF%95%E7%BD%91%E6%B5%8B%E8%AF%95"><span class="nav-number">4.1.</span> <span class="nav-text">手动测试网测试:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hardhat%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">4.2.</span> <span class="nav-text">hardhat测试：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">一些知识点：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Uniswap%E7%9A%84getreserves%E8%8E%B7%E5%8F%96%E5%82%A8%E5%A4%87%E9%87%8F%E5%87%BD%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">Uniswap的getreserves获取储备量函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%90%88%E7%BA%A6%E9%87%8C%E8%B0%83%E7%94%A8%E5%85%B6%E4%BB%96%E5%90%88%E7%BA%A6"><span class="nav-number">5.2.</span> <span class="nav-text">在合约里调用其他合约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E5%A4%9A%E5%90%88%E7%BA%A6%E6%BA%90%E7%A0%81%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">验证多合约源码：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">动态租赁方案：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Vultr:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%8F%B7"><span class="nav-number">3.1.</span> <span class="nav-text">多号:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%9C%8D%E6%B2%9F%E9%80%9A%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">客服沟通：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">Oracle:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Amazon aws:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">市面上竞品方案：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E5%93%81%E4%B8%80-%E9%BE%99%E5%93%A5-Google-T4-525u%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">竞品一: 龙哥_Google_T4_525u：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E5%93%81%E4%BA%8C-%E4%BA%94%E5%93%A5-Google-T4-350u%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">竞品二 五哥_Google_T4_350u：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">Google Cloud:</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
