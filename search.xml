@@ -20221,4 +20221,279 @@ Io.net致力于通过其专为机器学习设计的去中心化GPU网络，革�
         <tag>Coffee</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Crypto-Ionet总结系列-可行性分析</title>
+    <url>/2024/18410.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<blockquote>
+<p>笛卡儿在《谈谈方法》中指出，研究问题的方法分四个步骤：</p>
+<ol>
+<li class="lvl-3">永远不接受任何我自己不清楚的真理，就是说要尽量避免鲁莽和偏见，只能是根据自己的判断非常清楚和确定，没有任何值得怀疑的地方的真理。就是说只要没有经过自己切身体会的问题，不管有什么权威的结论，都可以怀疑。这就是著名的“怀疑一切”理论。</li>
+<li class="lvl-3">可以将要研究的复杂问题，尽量分解为多个比较简单的小问题，一个一个地分开解决。</li>
+<li class="lvl-3">将这些小问题从简单到复杂排列，先从容易解决的问题着手。</li>
+<li class="lvl-3">将所有问题解决后，再综合起来检验，看是否完全，是否将问题彻底解决了。</li>
+</ol>
+</blockquote>
+<p>对于这类早期项目，先遍历提出一系列问题。</p>
+<h1>提出问题:</h1>
+<blockquote>
+<p>这里面有哪几个对象?</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>项目方ionet</td>
+<td>平台:收集、租赁算力</td>
+</tr>
+<tr>
+<td>Gpu Provider</td>
+<td>提供算力</td>
+</tr>
+<tr>
+<td>Gpu Consumer</td>
+<td>使用算力</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>了解项目需要具备哪些相关行业知识? 我们可以从哪些角度去看待这个项目?</p>
+</blockquote>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>AI从业者</p>
+</li>
+<li class="lvl-2">
+<p>程序员</p>
+</li>
+<li class="lvl-2">
+<p>节点运营商</p>
+</li>
+<li class="lvl-2">
+<p>拥有算力的厂商(矿工、云服务器厂商)</p>
+</li>
+</ul>
+<blockquote>
+<p>项目方最想要哪些数据?</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>归属</th>
+<th>分类</th>
+<th>平台</th>
+<th>具体数据</th>
+<th>自评重要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>第三方</td>
+<td>社交媒体</td>
+<td>discord</td>
+<td>follower、热度</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>第三方</td>
+<td>社交媒体</td>
+<td>Twitter</td>
+<td>follower、热度</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>第三方</td>
+<td>社交媒体</td>
+<td>AMA会议</td>
+<td>在线人数</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>自有</td>
+<td>官网</td>
+<td>官网</td>
+<td>平台入口用户注册数</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>自有</td>
+<td>官网</td>
+<td>官网</td>
+<td>Gpu Consumer消费数据</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>自有</td>
+<td>官网</td>
+<td>官网</td>
+<td>Gpu Provider提供的算力</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>哪些数据所需成本最高?哪些数据作弊成本最高,门槛最高?</p>
+</blockquote>
+<p>可想而知是，Gpu Provider提供的算力</p>
+<p>可以引出下一个重要的问题: 我们去哪获得GPU算力，提供给平台？</p>
+<h1>寻找Gpu算力:</h1>
+<p>当时看了很多家gpu云服务器厂商，包括国内外的都看过了。</p>
+<p>国内:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>阿里云</p>
+</li>
+<li class="lvl-2">
+<p>ucloud</p>
+</li>
+<li class="lvl-2">
+<p>腾讯云</p>
+</li>
+<li class="lvl-2">
+<p>等等</p>
+</li>
+</ul>
+<p>国外的，看了以下厂家：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>hostkey</p>
+</li>
+<li class="lvl-2">
+<p><a href="http://vast.ai">vast.ai</a></p>
+</li>
+<li class="lvl-2">
+<p>hyperstack</p>
+</li>
+<li class="lvl-2">
+<p>lambdalabs</p>
+</li>
+<li class="lvl-2">
+<p>vultr</p>
+</li>
+<li class="lvl-2">
+<p>ibm</p>
+</li>
+<li class="lvl-2">
+<p>digital ocean</p>
+</li>
+<li class="lvl-2">
+<p>等等</p>
+</li>
+</ul>
+<h2 id="国内云服务器厂商">国内云服务器厂商:</h2>
+<p>不考虑国内的话，有几个原因：</p>
+<ol>
+<li class="lvl-3">
+<p>网络问题：</p>
+</li>
+</ol>
+<p>ionet官方在Discord明确说了，使用vpn是用户行为。言下之意就是，他们很可能不认用了梯子的机器。<br />
+vpn方面呢，怕购买的机场服务不靠谱，自建的vpn隧道又怕带宽速度不够、需要维护等问题。</p>
+<ol start="2">
+<li class="lvl-3">
+<p>机器数量少：</p>
+</li>
+</ol>
+<p>国内的云厂商，gpu服务器的数量和质量都不满足需求。高端一点的a系列显卡很少，供不应求。普通一点的3090等游戏卡全都断货了。</p>
+<h2 id="自建机房">自建机房:</h2>
+<p>由于缺乏这方面的经验和资源，也没法第一时间找到实体卡货源和场地。</p>
+<h2 id="国外云服务器厂商">国外云服务器厂商:</h2>
+<p>大大小小的国内外厂商，都去看了，能充值测试的都充值了少量的金额，并且开机测试，看看提供的机器资源能不能接到ionet上去。<br />
+当时的情况，gpu算力很紧缺，属于供不应求的情况，后面就敲定了几个大厂：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Google cloud</p>
+</li>
+<li class="lvl-2">
+<p>Amazon aws</p>
+</li>
+<li class="lvl-2">
+<p>Vultr</p>
+</li>
+</ul>
+<h1>得分规则：</h1>
+<p>这个时候，还要研究得分规则，由于是属于盲挖阶段，所以可以参考之前同类型的项目<code>rndr</code>的给分规则：<a href="https://twitter.com/web3lgx/status/1767916222845526068">参考链接</a></p>
+<h2 id="rndr规则">rndr规则:</h2>
+<p>四个维度：工资金额，带宽，GPU型号，运行时间。</p>
+<ol>
+<li class="lvl-3">
+<p>积分体系：</p>
+</li>
+</ol>
+<p>完成工作时间<em>0.25+带宽</em>0.35+GPU型号<em>0.2+运行时间</em>0.2。最后得出你的分数，然后使用你的分数处以所有人的分数得出占比，最后再乘以总奖励，就是你的空投代币。所以你的目的应该是提高总分数，而非专注于提升显卡型号。</p>
+<ol start="2">
+<li class="lvl-3">
+<p>完成工作时间：</p>
+</li>
+</ol>
+<p>完成工作的时间这个如果想要提高，有两种方式，一种是你自己租自己的，一种是提供热门的GPU型号，没有什么需要详细分析的。</p>
+<ol start="3">
+<li class="lvl-3">
+<p>带宽：</p>
+</li>
+</ol>
+<p>带宽的权重是0.35，所有里面最高的，也就是文章开头的结论里为什么要提升带宽而非显卡型号。文章内描述了4种带宽等级，分别为0.2、0.4、0.6、0.8，最低的0.2与最高的0.8，最终实际得分分别为0.07与0.28，相差4倍。假设你有两台机器，都是4090，都没有被租出去过，运行时间一样的情况下，高带宽最后得分0.68分，低带宽得分0.47分，相当于多了44%的奖励。</p>
+<ol start="4">
+<li class="lvl-3">
+<p>GPU型号：</p>
+</li>
+</ol>
+<p>RNDR里有RTX30系GPU型号的分数，可以发现4090的分数为1，3090为0.9，也就是说当你拥有两款GPU供你选择时，更高配的GPU所带来的总奖励提升也许并不是那么夸张。</p>
+<p>具体的计算为，假设一款4090和一款3090，带宽都是最高等级，且都没人租用，且运行时间一样，则3090的分数为：0x0.25+0.8x0.35+0.9x0.2+1x0.2=0.66，而4090的分数为：0x0.25+0.8x0.35+1x0.2+1x0.2=0.68，相当于只多了3%的奖励。而4090和3090的租金多了多少，相信大家在找服务器的时候应该有体会。</p>
+<ol start="5">
+<li class="lvl-3">
+<p>运行时间：</p>
+</li>
+</ol>
+<p>这个也挺方便计算，2个月的时间，运行满就是0.2总分，运行一半时间就是0.1分。</p>
+<ol start="6">
+<li class="lvl-3">
+<p>一些思路：</p>
+</li>
+</ol>
+<p>总的来说，带宽提升的性价比是最高的，哪怕你的机器是低保机器3050，运行满两个月的话，你的总分也在0.57分左右。而这个分数最终只比一台4090低带宽的少拿18%左右的代币。</p>
+<h2 id="思路">思路:</h2>
+<p>经过少量时间的测试后，我们对几个得分项的分析如下，</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>完成工作时间：ionet官网整体算力空闲率很高，很少消费者去租用gpu算力，这点大家都不太能拿到分数</p>
+</li>
+<li class="lvl-2">
+<p>运行时间: 官方的后端老是炸，经常维护，算力经常会接不上去。这块大家的分数也差不多</p>
+</li>
+<li class="lvl-2">
+<p>GPU型号: 不用普通的3090等游戏卡，选用专业一些的ai卡。如T4、A10等。</p>
+</li>
+<li class="lvl-2">
+<p>带宽: 租用国外云gpu服务器，优先采用美国机房的机器，这块可以拿多点分。</p>
+</li>
+</ul>
+<h1>总结:</h1>
+<p>最终敲定的方案就是，租用大厂(Google cloud、Amazon aws、Vultr)等的海外云gpu服务器。争取在GPU型号和带宽方面拿高点分。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://zh.wikipedia.org/zh-cn/%E8%AB%87%E8%AB%87%E6%96%B9%E6%B3%95">谈谈方法</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Crypto</category>
+      </categories>
+      <tags>
+        <tag>Crypto</tag>
+      </tags>
+  </entry>
 </search>
