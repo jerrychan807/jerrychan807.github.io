@@ -19852,7 +19852,7 @@ Io.net致力于通过其专为机器学习设计的去中心化GPU网络，革�
 <p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20240506023739.png" alt="20240506023739" /></p>
 <p>当时从官网的数据来看，ionet的未来估值会超过rndr，大致进入市值前30去。</p>
 <h1>Summary:</h1>
-<p>初步调研后，我们决定大仓位参与。</p>
+<p>初步调研后，我们决定参与。</p>
 ]]></content>
       <categories>
         <category>Crypto</category>
@@ -20611,6 +20611,149 @@ vpn方面呢，怕购买的机场服务不靠谱，自建的vpn隧道又怕带�
       </categories>
       <tags>
         <tag>Crypto</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DevRecord-初步接入privy钱包</title>
+    <url>/2024/9391.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>搭建privy github仓库中的前端demo，后端测试接入privy钱包</p>
+<h1>搭建前端demo:</h1>
+<p>前端demo链接：<a href="https://github.com/privy-io/permissionless-example">permissionless-example</a></p>
+<h2 id="云服务器搭建：">云服务器搭建：</h2>
+<p>根据readme执行命令，先要执行<code>npm i</code>，一开始在云服务器上，node版本过低。</p>
+<p>参考文章,<a href="https://www.cnblogs.com/aresxin/p/Centos7-node-npm-sheng-ji-ban-ben.html">Centos7 node npm升级版本</a>,<a href="https://www.cnblogs.com/-roc/p/17247229.html">centos7 Linux 安装及升级node、npm</a>,对node进行升级后，又遇到了新的问题：GLIBC等的版本太低。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">[root@foolisheddy permissionless-example]<span class="comment"># npm version</span></span><br><span class="line">node: /lib64/libm.so.6: version `GLIBC_2.27<span class="string">&#x27; not found (required by node)</span></span><br><span class="line"><span class="string">node: /lib64/libc.so.6: version `GLIBC_2.25&#x27;</span> not found (required by node)</span><br><span class="line">node: /lib64/libc.so.6: version `GLIBC_2.28<span class="string">&#x27; not found (required by node)</span></span><br><span class="line"><span class="string">node: /lib64/libstdc++.so.6: version `CXXABI_1.3.9&#x27;</span> not found (required by node)</span><br><span class="line">node: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.20<span class="string">&#x27; not found (required by node)</span></span><br><span class="line"><span class="string">node: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.21&#x27;</span> not found (required by node)</span><br></pre></td></tr></table></figure>
+<p>参考文章,<a href="https://www.cnblogs.com/even160941/p/17319119.html">解决nvm升级node v18.14.0时/lib64/libm.so.6: version ‘GLIBC_2.27’ not found (required by node)问题</a>，发现升级GLIBC等的版本有点麻烦。所以就先不折腾服务器的环境，在本地mac进行搭建。</p>
+<h2 id="本地搭建：">本地搭建：</h2>
+<p>在本地搭建，没有遇到什么问题，设置好配置文件后，就可以跑起来demo。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241029132213.png" alt="20241029132213" /><br />
+进行登录，邮箱可以正常收到验证码。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241029132302.png" alt="20241029132302" /><br />
+可以登录成功。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241029132418.png" alt="20241029132418" /></p>
+<p>在privy的dashboard能看到新登录的用户。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241029132547.png" alt="20241029132547" /></p>
+<p>至此，就可以获得privy服务端生成的<code>jwt token</code>。后端可以对<code>jwt token</code>进行解码，获得认证后的用户数据。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;sid&quot;</span>: <span class="string">&quot;cm2u0mxtr05d9f6s0zzp9wcne&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iss&quot;</span>: <span class="string">&quot;privy.io&quot;</span>,</span><br><span class="line">  <span class="string">&quot;iat&quot;</span>: 1730180230,</span><br><span class="line">  <span class="string">&quot;aud&quot;</span>: <span class="string">&quot;clpgf04wn04hnkw0fv1m11mnb&quot;</span>,</span><br><span class="line">  <span class="string">&quot;sub&quot;</span>: <span class="string">&quot;did:privy:cm231tmfp05r9zlze9gnih9u9&quot;</span>, // 用户<span class="built_in">id</span></span><br><span class="line">  <span class="string">&quot;exp&quot;</span>: 1730183830</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>DevRecord</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-Solana账户模型</title>
+    <url>/2024/11380.html</url>
+    <content><![CDATA[<h1>什么是 Solana 账户以及它如何运作？</h1>
+<p>Solana 账户可以被视为存储桶，能够保存所有数据类型：从 SOL 等代币到程序的状态变量（例如整数、字符串、公钥），甚至整个程序本身。</p>
+<p>每个账户都有指定的所有者，单个所有者可以拥有许多不同的账户。</p>
+<p>账户模型通常与计算机文件系统进行比较：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241207194846.png" alt="20241207194846" /></p>
+<h1>Solana 账户类型有哪些？</h1>
+<p>Solana 账户类型主要有两种：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>可执行账户 executable</p>
+</li>
+<li class="lvl-2">
+<p>不可执行账户 non-executable</p>
+</li>
+</ul>
+<p>这是因为Solana程序不像 以太坊智能合约那样存储状态，因此需要将两种类型的操作分开。</p>
+<h2 id="什么是可执行程序？">什么是可执行程序？</h2>
+<p>可执行程序由不可变代码组成，这些代码拥有并创建存储状态的其他帐户。<br />
+该代码用Rust等语言编写，然后编译为 eBPF，这是一种字节码形式。</p>
+<p>可执行程序最常见的例子是 Solana 的核心系统程序，它负责创建人们用来访问其代币和 NFT 的账户（钱包）。</p>
+<h2 id="什么是不可执行程序？">什么是不可执行程序？</h2>
+<p>不可执行程序是“存储”账户，其中包含所有其他类型的数据，如程序变量、代币余额、NFT、可替代货币等。<br />
+通过不可执行账户，协议反映了每次交易后发生的状态变化。</p>
+<h2 id="以太坊智能合约与Solana-程序">以太坊智能合约与Solana 程序:</h2>
+<p>智能合约预先构建了一个称为“存储”的特殊隔间，其中存储了其状态变量。然后，智能合约使用其可执行代码来修改这些状态​​变量。<br />
+<strong>以太坊合约可以看作是可执行代码和不可执行代码共存的统一场所</strong>。</p>
+<p>让我们以 USDC 代币为例。其合约包含一个名为“余额”的映射，将用户的地址映射到他自己的 USDC 金额。在发送或接收 USDC 代币时，合约会通过其可执行代码自行反映变化。</p>
+<p>Solana 以不同的方式处理这个问题。有一个 USDC 代币程序，为每个代币持有者创建一个新账户。这些账户存储持有者的可用 USDC 金额。当用户传播交易时，USDC 代币账户会查找想要进行交换的用户的关联代币账户，然后在其中反映更改。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241207195227.png" alt="Solana 的关联代币账户结构" /></p>
+<h1>Solana 账户类型有哪些？</h1>
+<p>可执行账户和不可执行账户又可以分为</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>原生程序 native programs</p>
+</li>
+<li class="lvl-2">
+<p>程序账户 program accounts</p>
+</li>
+<li class="lvl-2">
+<p>数据账户 data accounts</p>
+</li>
+</ul>
+<p>等几个附加类别。</p>
+<h2 id="可执行的原生程序">可执行的原生程序:</h2>
+<p>可执行原生程序是 Solana 生态系统的“原生”程序，负责维护和运行验证器节点等任务。<br />
+此类型最著名的示例是系统程序，它负责创建新的系统帐户（我们通常称为“钱包”）、转移SOL 等。</p>
+<p>其他实例是Stake程序，它负责质押机制，以及 BPF 加载器，它类似于以太坊的 EVM。</p>
+<h2 id="可执行程序帐户">可执行程序帐户:</h2>
+<p>可执行程序账户是预制的 Solana 程序，用于创建和存储其他程序。</p>
+<p><code>Solana程序库(SPL)</code> 就是一个很好的例子，它是一组支持许多链上活动的程序，包括创建、交换和借出代币、生成权益池以及维护链上名称服务。</p>
+<p>SPL的一个突出代表是代币程序，它创建和管理代币。<br />
+Solana 的 USDC 代币只是一个代币账户，由代币计划管理。但是，代币账户并不存储用户的代币余额。这由第三类账户的成员处理：数据账户。</p>
+<h2 id="不可执行数据帐户">不可执行数据帐户:</h2>
+<p>虽然原生程序和程序账户被视为可执行程序，但数据账户则相反：它们是一个反映特定程序和整个 Solana 协议的状态变化的注册表。</p>
+<p>数据账户可以分为：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>代币账户 <code>Token accounts</code>: 由代币计划创建的账户</p>
+</li>
+<li class="lvl-2">
+<p>关联代币账户 <code>Associated Token Accounts</code>(ATA) : 存储每个用户代币余额的账户</p>
+</li>
+<li class="lvl-2">
+<p>系统拥有的账户 <code>System Owned Accounts</code>: 存储数据并允许签署交易</p>
+</li>
+</ul>
+<p>代币账户代表每种可替代货币（USDC、USDT等），并包含代币的基本信息，如供应量、小数位数、名称等。<br />
+每个唯一的代币账户都会生成一个不同的关联代币账户 (ATA)。例如，如果您同时拥有 USDC 和 USDT，您可以访问由 USDC 和 USDT 代币账户分别创建的两个 ATA。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241207200513.png" alt="Solana 帐户类型和类别" /></p>
+<h1>Solana账户的组成:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><strong>lamports</strong> :账户的SOL余额，单位是lamports，这是SOL中最小的单位(1 SOL = 10亿 lamports)。</p>
+</li>
+<li class="lvl-2">
+<p><strong>所有者 owner</strong>: 这是拥有该帐户的程序的地址</p>
+</li>
+<li class="lvl-2">
+<p><strong>可执行文件 executable</strong>: 一个布尔变量，指示帐户是否包含可执行代码</p>
+</li>
+<li class="lvl-2">
+<p><strong>数据 data</strong>: 存储在帐户中的原始数据字节数组，可以是存储变量或可执行代码</p>
+</li>
+<li class="lvl-2">
+<p><strong>rent_epoch</strong> : 表示账户下一个需要支付租金的时期</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241207201905.png" alt="20241207201905" /><br />
+所有者和持有者之间的区别在于，所有者是控制账户的程序，而持有者是持有账户私钥的用户。例如，系统拥有账户由 Solana 的原生系统程序拥有。</p>
+<h1>Solana 账户租金:</h1>
+<p>每个账户都需要支付一定的租金来使用区块链上的内存，这是一种预防措施，可以防止攻击者使用所有内存来堵塞网络。</p>
+<p>为了让区块链满足所有用户的需求，它必须包含某种经济激励。这尤其适用于验证者，他们提供硬件和计算能力来验证所有交易。验证者需要维护所有状态更改的工作副本，并获得租金作为奖励。</p>
+<p>账户中最低余额相当于 2 年租金的账户可免除租金。如果没有，则在交易引用时或每个纪元（目前相当于两天）收取费用。如果账户不包含免除租金的最低 SOL 金额，其数据将从链中删除。</p>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.alchemy.com/overviews/solana-account-model">什么是 Solana 账户模型？</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://solana.com/zh/docs/core/accounts#%E8%A6%81%E7%82%B9">Solana Documentation-核心概念-Solana账户模型</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>StudyRecord</tag>
       </tags>
   </entry>
 </search>
