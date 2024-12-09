@@ -20756,4 +20756,218 @@ Solana 的 USDC 代币只是一个代币账户，由代币计划管理。但是�
         <tag>StudyRecord</tag>
       </tags>
   </entry>
+  <entry>
+    <title>StudyRecord-Solana上的代币</title>
+    <url>/2024/1.html</url>
+    <content><![CDATA[<p>代币是代表对各种资产所有权的数字资产。 代币化使得财产权的数字化成为可能，是管理 可替代和不可替代资产的基本组成部分。</p>
+<ul class="lvl-0">
+<li class="lvl-2">可替代代币: 代表同类型和同价值的可互换和可分割资产（例如 USDC）。</li>
+<li class="lvl-2">不可替代代币（NFT）: 代表不可分割资产的所有权（例如艺术品）。</li>
+</ul>
+<p>本节将介绍代币在 Solana 上的基本表示方式。这些代币被称为 SPL (Solana Program Library) 代币。</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>代币程序（Token Program）</code>: 包含与网络上的代币（包括可替代和不可替代）交互的所有指令逻辑。</p>
+</li>
+<li class="lvl-2">
+<p><code>铸造账户（Mint Account）</code>: 代表一种特定类型的代币，并存储关于代币的全局元数据，如总供应量和铸造权限（有权创建新代币单位的地址）。</p>
+</li>
+<li class="lvl-2">
+<p><code>代币账户（Token Account）</code>: 跟踪特定地址拥有的特定类型代币（铸造账户）的单位数量。</p>
+</li>
+</ul>
+<h1>关键点:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>代币代表对可替代（可互换）或不可替代（唯一）资产的所有权。</p>
+</li>
+<li class="lvl-2">
+<p>代币程序包含与网络上可替代和不可替代代币交互的所有指令。</p>
+</li>
+<li class="lvl-2">
+<p>代币扩展程序是代币程序的新版本，包含额外功能，同时保持相同的核心功能。</p>
+</li>
+<li class="lvl-2">
+<p><code>铸造账户</code>代表网络上的唯一代币，并存储全局元数据，如总供应量。</p>
+</li>
+<li class="lvl-2">
+<p>代币账户跟踪特定铸造账户的代币的个人所有权。</p>
+</li>
+<li class="lvl-2">
+<p>关联代币账户（ Associated Token Account）是使用所有者和铸造账户地址派生的地址 创建的代币账户。</p>
+</li>
+</ul>
+<h1>代币程序:</h1>
+<p>代币程序包含与网络上的代币（包括可替代和不可替代）交互的所有指令逻辑。<br />
+Solana 上的所有代币实际上都是由代币程序拥有的数据账户。</p>
+<p>可以在这里找到<a href="https://github.com/solana-labs/solana-program-library/blob/b1c44c171bc95e6ee74af12365cb9cbab68be76c/token/program/src/instruction.rs">代币程序指令的完整列表</a>。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209180449.png" alt="20241209180449" /></p>
+<p>一些常用的指令包括：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>InitializeMint</code>: 创建一个新的铸造账户以代表一种新的代币类型。</p>
+</li>
+<li class="lvl-2">
+<p><code>InitializeAccount</code>: 创建一个新的代币账户以持有特定类型代币（铸造）。</p>
+</li>
+<li class="lvl-2">
+<p><code>MintTo</code>: 创建特定类型代币的新单位并将其添加到代币账户中。这会增加代币的供应量，并且只能由铸造账户的铸造权限执行。</p>
+</li>
+<li class="lvl-2">
+<p><code>Transfer</code>: 将特定类型代币的单位从一个代币账户转移到另一个代币账户。</p>
+</li>
+</ul>
+<h2 id="铸造账户">铸造账户:</h2>
+<p>Solana 上的代币通过由代币程序拥有的铸造账户的地址唯一标识。该账户实际上是特定代币的全局计数器，并存储以下数据：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>供应量：代币的总供应量</p>
+</li>
+<li class="lvl-2">
+<p>小数位：代币的小数精度</p>
+</li>
+<li class="lvl-2">
+<p>铸造权限：有权创建新代币单位的账户，从而增加供应量</p>
+</li>
+<li class="lvl-2">
+<p>冻结权限：有权冻结代币账户中代币转移的账户</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209180819.png" alt="20241209180819" /><br />
+每个铸造账户存储的完整详细信息包括以下内容：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Mint</span> &#123;</span><br><span class="line">    <span class="comment">/// Optional authority used to mint new tokens. The mint authority may only</span></span><br><span class="line">    <span class="comment">/// be provided during mint creation. If no mint authority is present</span></span><br><span class="line">    <span class="comment">/// then the mint has a fixed supply and no further tokens may be</span></span><br><span class="line">    <span class="comment">/// minted.</span></span><br><span class="line">    <span class="keyword">pub</span> mint_authority: COption&lt;Pubkey&gt;,</span><br><span class="line">    <span class="comment">/// Total supply of tokens.</span></span><br><span class="line">    <span class="keyword">pub</span> supply: <span class="type">u64</span>,</span><br><span class="line">    <span class="comment">/// Number of base 10 digits to the right of the decimal place.</span></span><br><span class="line">    <span class="keyword">pub</span> decimals: <span class="type">u8</span>,</span><br><span class="line">    <span class="comment">/// Is `true` if this structure has been initialized</span></span><br><span class="line">    <span class="keyword">pub</span> is_initialized: <span class="type">bool</span>,</span><br><span class="line">    <span class="comment">/// Optional authority to freeze token accounts.</span></span><br><span class="line">    <span class="keyword">pub</span> freeze_authority: COption&lt;Pubkey&gt;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代币账户">代币账户:</h2>
+<p>为了跟踪每个特定代币单位的个人所有权，必须创建另一种由代币程序拥有的数据账户。该 账户被称 为代币账户。</p>
+<p>代币账户中最常引用的数据包括以下内容：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>铸造：代币账户持有的代币类型</p>
+</li>
+<li class="lvl-2">
+<p>所有者：有权从代币账户转移代币的账户</p>
+</li>
+<li class="lvl-2">
+<p>数量：代币账户当前持有的代币单位</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209182241.png" alt="20241209182241" /><br />
+每个代币账户存储的完整详细信息包括以下内容：</p>
+<figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Account</span> &#123;</span><br><span class="line">    <span class="comment">/// The mint associated with this account</span></span><br><span class="line">    <span class="keyword">pub</span> mint: Pubkey,</span><br><span class="line">    <span class="comment">/// The owner of this account.</span></span><br><span class="line">    <span class="keyword">pub</span> owner: Pubkey,</span><br><span class="line">    <span class="comment">/// The amount of tokens this account holds.</span></span><br><span class="line">    <span class="keyword">pub</span> amount: <span class="type">u64</span>,</span><br><span class="line">    <span class="comment">/// If `delegate` is `Some` then `delegated_amount` represents</span></span><br><span class="line">    <span class="comment">/// the amount authorized by the delegate</span></span><br><span class="line">    <span class="keyword">pub</span> delegate: COption&lt;Pubkey&gt;,</span><br><span class="line">    <span class="comment">/// The account&#x27;s state</span></span><br><span class="line">    <span class="keyword">pub</span> state: AccountState,</span><br><span class="line">    <span class="comment">/// If is_native.is_some, this is a native token, and the value logs the</span></span><br><span class="line">    <span class="comment">/// rent-exempt reserve. An Account is required to be rent-exempt, so</span></span><br><span class="line">    <span class="comment">/// the value is used by the Processor to ensure that wrapped SOL</span></span><br><span class="line">    <span class="comment">/// accounts do not drop below this threshold.</span></span><br><span class="line">    <span class="keyword">pub</span> is_native: COption&lt;<span class="type">u64</span>&gt;,</span><br><span class="line">    <span class="comment">/// The amount delegated</span></span><br><span class="line">    <span class="keyword">pub</span> delegated_amount: <span class="type">u64</span>,</span><br><span class="line">    <span class="comment">/// Optional authority to close the account.</span></span><br><span class="line">    <span class="keyword">pub</span> close_authority: COption&lt;Pubkey&gt;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，每个代币账户的数据包括一个<code>owner</code>字段，用于标识谁对该特定代币账户拥有权限。这与 AccountInfo 中指定的程序所有者是 分开的，所有代币账户的程序所有者都是代币程序。</p>
+<p>一个钱包可以为同一种代币创建多个代币账户，但每个代币账户只能由一个钱包拥有，并且只能持有一种类型的代币。</p>
+<p>账户关系图:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209182453.png" alt="20241209182453" /></p>
+<h2 id="关联代币账户">关联代币账户</h2>
+<p>为了简化查找特定铸造和所有者的代币账户地址的过程，我们通常使用关联代币账户。</p>
+<p>关联代币账户是使用<code>所有者地址</code>和<code>铸造账户地址</code>确定性派生的代币账户。你可以将关联代币账户视为特定铸造和所有者的<code>“默认”代币账户</code>。</p>
+<p>重要的是要理解，关联代币账户并不是一种不同类型的代币账户。它只是一个具有特定地址的代币账户。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209182644.png" alt="20241209182644" /></p>
+<p>这介绍了 Solana 开发中的一个关键概念： <code>程序派生地址 (PDA)</code>。 从概念上讲，PDA 提供了一种使用一些<code>预定义输入生成地址的确定性方法</code>。 这使我们能够在以后轻松找到账户的地址。</p>
+<p>这里有一个 Solana Playground 示例，它派生了 USDC 关联代币账户地址和所有者。 对于相同的铸造和所有者，它将始终生成相同的地址 。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; getAssociatedTokenAddressSync &#125; <span class="keyword">from</span> <span class="string">&quot;@solana/spl-token&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> associatedTokenAccountAddress = <span class="title function_">getAssociatedTokenAddressSync</span>(</span><br><span class="line">  <span class="variable constant_">USDC_MINT_ADDRESS</span>,</span><br><span class="line">  <span class="variable constant_">OWNER_ADDRESS</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>具体来说，关联代币账户的地址是使用以下输入派生的。 这里有一个 Solana Playground 示例，它生成 了与前一个示例相同的地址。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">PublicKey</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@solana/web3.js&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> [<span class="variable constant_">PDA</span>, bump] = <span class="title class_">PublicKey</span>.<span class="title function_">findProgramAddressSync</span>(</span><br><span class="line">  [</span><br><span class="line">    <span class="variable constant_">OWNER_ADDRESS</span>.<span class="title function_">toBuffer</span>(),</span><br><span class="line">    <span class="variable constant_">TOKEN_PROGRAM_ID</span>.<span class="title function_">toBuffer</span>(),</span><br><span class="line">    <span class="variable constant_">USDC_MINT_ADDRESS</span>.<span class="title function_">toBuffer</span>(),</span><br><span class="line">  ],</span><br><span class="line">  <span class="variable constant_">ASSOCIATED_TOKEN_PROGRAM_ID</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>为了让两个钱包持有相同类型的代币，每个钱包需要为特定的铸造账户拥有自己的代币账户。下图展示了这种账户关系的样子。</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209182935.png" alt="20241209182935" /></p>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://solana.com/zh/docs/core/tokens">Solana Documentation-核心概念-Solana 上的代币</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>StudyRecord-Solana关联代币账户ATA</title>
+    <url>/2024/11380.html</url>
+    <content><![CDATA[<h1>什么是关联代币账户？</h1>
+<p>关联代币账户是通过Solana关联代币账户程序<code>Solana Associated Token Account Program,</code>创建的，其中包含有关<strong>特定代币、其余额及其所有者的信息</strong>。<br />
+它是程序派生地址的变体。</p>
+<p>每个术语的含义如下：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>关联代币账户<code>Associated Token Account</code>: 与代币关联的账户（类似Solana代币计划）</p>
+</li>
+<li class="lvl-2">
+<p>程序派生地址: 从 Solana 程序（即关联代币账户程序）“派生”（创建）的地址</p>
+</li>
+</ul>
+<h1>关联代币账户以及它们之间的转账如何运作？</h1>
+<p>关联代币账户之间的转账直接在账户之间进行，或通过其钱包地址间接进行。</p>
+<p>代币账户相当于以太坊上的 ERC-20 代币，但有一个根本的区别：以太坊智能合约拥有其状态和代码，而 <strong>Solana 上的代币账户仅包含其代码并将其状态（例如代币余额）“导出”到关联代币账户中，该账户是为该代币的每个所有者创建的。</strong></p>
+<p>以USDC为例:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Solana 上的 USDC 是一个代币账户</p>
+</li>
+<li class="lvl-2">
+<p>代币账户由系统程序创建</p>
+</li>
+<li class="lvl-2">
+<p>由SPL代币程序初始化为代币铸币厂</p>
+</li>
+<li class="lvl-2">
+<p>一旦 USDC 代币初始化后，用户就可以开始转账</p>
+</li>
+<li class="lvl-2">
+<p>拥有 USDC 代币的用户拥有通过关联代币账户计划 (ATP) 创建的关联代币账户</p>
+</li>
+<li class="lvl-2">
+<p>两个人之间的 USDC 交换发生在用户的 ATA 之间</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209173457.png" alt="Solana 上的关联代币账户" /></p>
+<h1>如何创建关联代币账户?</h1>
+<p>要创建关联代币账户，您必须遵循以下四个步骤：</p>
+<ol>
+<li class="lvl-3">
+<p>转移 SOL: 系统程序初始化 ATA 并使其免租</p>
+</li>
+<li class="lvl-3">
+<p>创建可用空间: 系统程序为 ATA 分配可用空间。</p>
+</li>
+<li class="lvl-3">
+<p>转移所有权: 系统程序将账户所有权转移给 SPL 关联代币账户程序</p>
+</li>
+<li class="lvl-3">
+<p>初始化账户: 该过程总结了账户初始化并设置了代币地址、新创建的 ATA 地址及其所有者</p>
+</li>
+</ol>
+<h1>owners和authorities的区别?</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>owners：所有者</p>
+</li>
+<li class="lvl-2">
+<p>authorities: 授权者</p>
+</li>
+</ul>
+<p>所有者是控制 ATA 的 Solana 程序类型，而授权者是账户（钱包），它向所有者程序发送交易，然后所有者程序代表授权者更改 ATA 中的数据。</p>
+<h1>关联代币账户的费用是多少？</h1>
+<p>默认情况下，关联代币账户在创建时必须标记为免租，因此账户必须持有的最低金额应至少为 0.00203928 SOL。系统程序将此 SOL 转移到 ATA，从发起交易的账户中扣除。</p>
+<p>除了初始费用外，任何进一步互动的费用都不会超过 Solana 上的普通交易费用。</p>
+<h1>如何查看关联代币账户?</h1>
+<p>您可以通过 Phantom 等客户端检查关联代币账户，这些<strong>客户端会自动导出用户钱包拥有权限的所有 ATA</strong>。此外，由于区块链是公开的，您还可以借助 <a href="http://Solscan.io">Solscan.io</a> 等浏览器访问此信息。</p>
+<p>粘贴您想要检查的钱包地址，其 ATA 将在代币账户下显示：</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20241209174708.png" alt="20241209174708" /></p>
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.alchemy.com/overviews/associated-token-account">What is an Solana Associated Token Account on Solana?</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>StudyRecord</category>
+      </categories>
+      <tags>
+        <tag>StudyRecord</tag>
+      </tags>
+  </entry>
 </search>
