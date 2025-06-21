@@ -20758,7 +20758,7 @@ Solana 的 USDC 代币只是一个代币账户，由代币计划管理。但是�
   </entry>
   <entry>
     <title>StudyRecord-Solana上的代币</title>
-    <url>/2024/1.html</url>
+    <url>/2024/8289.html</url>
     <content><![CDATA[<p>代币是代表对各种资产所有权的数字资产。 代币化使得财产权的数字化成为可能，是管理 可替代和不可替代资产的基本组成部分。</p>
 <ul class="lvl-0">
 <li class="lvl-2">可替代代币: 代表同类型和同价值的可互换和可分割资产（例如 USDC）。</li>
@@ -20885,7 +20885,7 @@ Solana 上的所有代币实际上都是由代币程序拥有的数据账户。<
   </entry>
   <entry>
     <title>StudyRecord-Solana关联代币账户ATA</title>
-    <url>/2024/11380.html</url>
+    <url>/2024/50711.html</url>
     <content><![CDATA[<h1>什么是关联代币账户？</h1>
 <p>关联代币账户是通过Solana关联代币账户程序<code>Solana Associated Token Account Program,</code>创建的，其中包含有关<strong>特定代币、其余额及其所有者的信息</strong>。<br />
 它是程序派生地址的变体。</p>
@@ -20968,6 +20968,154 @@ Solana 上的所有代币实际上都是由代币程序拥有的数据账户。<
       </categories>
       <tags>
         <tag>StudyRecord</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DevRecord-Git工作流程指南</title>
+    <url>/2025/3464.html</url>
+    <content><![CDATA[<h1>Git 工作流程指南</h1>
+<h2 id="基本工作流程图">基本工作流程图</h2>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250621170204.png" alt="Git工作流程图" /></p>
+<h2 id="详细步骤说明">详细步骤说明</h2>
+<h3 id="1-克隆远程仓库">1. 克隆远程仓库</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/example/example.git</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：将远程仓库完整复制到本地，包含所有分支和历史记录</p>
+</blockquote>
+<h3 id="2-创建功能分支">2. 创建功能分支</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b my-feature</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：基于当前分支创建并切换到新的功能分支，隔离开发工作，不影响主分支</p>
+</blockquote>
+<h3 id="3-修改代码并查看变更">3. 修改代码并查看变更</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 编辑代码...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看所有变更</span></span><br><span class="line">git diff</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看特定文件变更</span></span><br><span class="line">git diff path/to/file</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：<code>git diff</code> 显示工作区与暂存区的差异，帮助你确认修改内容</p>
+</blockquote>
+<h3 id="4-提交变更到本地仓库">4. 提交变更到本地仓库</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加特定文件到暂存区</span></span><br><span class="line">git add &lt;changed_file&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加所有变更文件</span></span><br><span class="line">git add .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交到本地仓库</span></span><br><span class="line">git commit -m <span class="string">&quot;描述你的修改内容&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：先用 <code>git add</code> 将修改添加到暂存区，再用 <code>git commit</code> 提交到本地仓库</p>
+</blockquote>
+<h3 id="5-推送到远程仓库">5. 推送到远程仓库</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push origin my-feature</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：将本地功能分支推送到远程仓库，便于团队协作或代码审查</p>
+</blockquote>
+<h3 id="6-处理主分支更新（当你开发期间主分支有更新时）">6. 处理主分支更新（当你开发期间主分支有更新时）</h3>
+<h4 id="6-1-切换到主分支">6.1 切换到主分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：切换到主分支，准备获取最新更新</p>
+</blockquote>
+<h4 id="6-2-拉取主分支最新代码">6.2 拉取主分支最新代码</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：从远程仓库获取主分支最新代码并合并到本地主分支</p>
+</blockquote>
+<h4 id="6-3-切回功能分支">6.3 切回功能分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout my-feature</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：切换回你的功能分支，准备合并主分支的更新</p>
+</blockquote>
+<h4 id="6-4-变基操作">6.4 变基操作</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git rebase main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：变基操作会先将你的修改&quot;搁置&quot;，然后应用主分支的最新提交，最后将你的修改重新应用在最新代码之上，使提交历史更加清晰</p>
+</blockquote>
+<h4 id="6-5-解决冲突（如果有）">6.5 解决冲突（如果有）</h4>
+<p>如果出现冲突，Git会提示你解决冲突的文件。解决后：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 标记冲突已解决</span></span><br><span class="line">git add &lt;conflict_file&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 继续变基过程</span></span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：手动编辑冲突文件，保留需要的代码，然后继续变基过程</p>
+</blockquote>
+<h4 id="6-6-强制推送更新后的分支">6.6 强制推送更新后的分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push -f origin my-feature</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：由于变基改变了提交历史，需要强制推送。注意：仅对个人功能分支使用强制推送</p>
+</blockquote>
+<h3 id="7-完成功能开发后的清理">7. 完成功能开发后的清理</h3>
+<h4 id="7-1-在GitHub上删除远程功能分支（通过Pull-Request合并后）">7.1 在GitHub上删除远程功能分支（通过Pull Request合并后）</h4>
+<h4 id="7-2-切换到主分支">7.2 切换到主分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout main</span><br></pre></td></tr></table></figure>
+<h4 id="7-3-删除本地功能分支">7.3 删除本地功能分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -D my-feature</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：-D 参数强制删除分支，即使该分支还未合并</p>
+</blockquote>
+<h4 id="7-4-更新本地主分支">7.4 更新本地主分支</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明：确保本地主分支与远程保持同步，包含已合并的功能</p>
+</blockquote>
+<h2 id="Git-命令解释">Git 命令解释</h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git checkout -b xxx</code></td>
+<td>创建并切换到新分支xxx。<code>-b</code>表示创建分支，<code>checkout</code>表示切换</td>
+</tr>
+<tr>
+<td><code>git diff</code></td>
+<td>显示工作区与暂存区的差异，帮助查看未暂存的修改内容</td>
+</tr>
+<tr>
+<td><code>git add xxx</code></td>
+<td>将xxx文件的修改添加到暂存区，准备提交</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>将暂存区的内容提交到当前分支的本地仓库</td>
+</tr>
+<tr>
+<td><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;</code></td>
+<td>将本地分支推送到远程主机的同名分支</td>
+</tr>
+<tr>
+<td><code>git push -f &lt;远程主机名&gt; &lt;本地分支名&gt;</code></td>
+<td>强制推送，会覆盖远程分支（谨慎使用）</td>
+</tr>
+<tr>
+<td><code>git pull &lt;远程主机名&gt; &lt;远程分支名&gt;</code></td>
+<td>从远程下载分支并与本地同名分支合并</td>
+</tr>
+<tr>
+<td><code>git rebase xxx</code></td>
+<td>变基操作，将当前分支的修改&quot;重新应用&quot;到xxx分支的最新状态之上</td>
+</tr>
+<tr>
+<td><code>git branch -D xxx</code></td>
+<td>强制删除本地分支xxx，即使该分支还未合并</td>
+</tr>
+</tbody>
+</table>
+<h2 id="实用技巧">实用技巧</h2>
+<h3 id="查看提交历史">查看提交历史</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看简洁历史</span></span><br><span class="line">git <span class="built_in">log</span> --oneline</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看图形化历史</span></span><br><span class="line">git <span class="built_in">log</span> --graph --oneline --all</span><br></pre></td></tr></table></figure>
+<h3 id="暂存当前工作">暂存当前工作</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 暂存当前修改</span></span><br><span class="line">git stash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复最近的暂存</span></span><br><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+<h3 id="撤销操作">撤销操作</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 撤销工作区修改</span></span><br><span class="line">git checkout -- &lt;file&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 撤销暂存区修改</span></span><br><span class="line">git reset HEAD &lt;file&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 撤销最近一次提交</span></span><br><span class="line">git reset --soft HEAD^</span><br></pre></td></tr></table></figure>
+<h3 id="查看分支">查看分支</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看本地分支</span></span><br><span class="line">git branch</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看远程分支</span></span><br><span class="line">git branch -r</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看所有分支</span></span><br><span class="line">git branch -a</span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.bilibili.com/video/BV19e4y1q7JJ/?spm_id_from=333.1007.top_right_bar_window_history.content.click&amp;vd_source=b826d688bd872fcba1831a8e9086ecfd">十分钟学会正确的github工作流，和开源作者们使用同一套流程</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>DevRecord</tag>
       </tags>
   </entry>
 </search>
