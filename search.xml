@@ -21156,7 +21156,7 @@ Solana 上的所有代币实际上都是由代币程序拥有的数据账户。<
 <p>然后构建完整应用程序：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">本地编译</span></span><br><span class="line">go build -o asynqmon ./cmd/asynqmon</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">交叉编译</span></span><br><span class="line">GOOS=linux GOARCH=amd64 go build -o asynqmon ./cmd/asynqmon</span><br></pre></td></tr></table></figure>
 <p>its work:</p>
-<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250625212041.png" alt="20250625212041" /></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250625212444.png" alt="20250625212444" /></p>
 ]]></content>
       <categories>
         <category>DevRecord</category>
