@@ -21118,4 +21118,51 @@ Solana 上的所有代币实际上都是由代币程序拥有的数据账户。<
         <tag>DevRecord</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DevRecord-Nginx配合AsynqmonWeb监控</title>
+    <url>/2025/3464.html</url>
+    <content><![CDATA[<h1>Pre:</h1>
+<p>遇到的问题:</p>
+<ol>
+<li class="lvl-3">
+<p><a href="https://github.com/hibiken/asynqmon">asynqweb监控</a>没有认证,需要配合nginx使用</p>
+</li>
+<li class="lvl-3">
+<p>加了nginx后,会出现访问前端资源文件404的问题,<a href="https://github.com/hibiken/asynqmon/issues/156">issue: Add a server path option to proxy the asynqmon</a></p>
+</li>
+</ol>
+<p>解决方案:</p>
+<ol>
+<li class="lvl-3">
+<p>修改asynqmon源码,添加server path选项</p>
+</li>
+<li class="lvl-3">
+<p>重新编译asynqmon</p>
+</li>
+</ol>
+<p><a href="https://github.com/jerrychan807/asynqmon">fork后修改完的asynqmon仓库</a></p>
+<h1>nginx生成认证文件:</h1>
+<p>安装 htpasswd 工具生成认证文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install httpd-tools</span><br></pre></td></tr></table></figure>
+<p>创建认证文件并添加用户<br />
+例如创建一个用户叫 admin：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">htpasswd -c /etc/nginx/.asynqmon_pass admin</span><br></pre></td></tr></table></figure>
+<p>配置 Nginx 反向代理并加上认证</p>
+<p>假设你本地运行 asynqmon 的监听端口是 localhost:8081，你希望通过 <a href="http://yourdomain.com/asynqmon">http://yourdomain.com/asynqmon</a> 访问：</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> yourdomain.com;</span><br><span class="line"></span><br><span class="line">    <span class="section">location</span> /asynqmon/ &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://127.0.0.1:8081/asynqmon/;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">auth_basic</span>           <span class="string">&quot;Restricted Access&quot;</span>;</span><br><span class="line">        <span class="attribute">auth_basic_user_file</span> /etc/nginx/.asynqmon_pass;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>重新编译asynqmon:</h1>
+<p>如果遇到 Node.js 版本兼容性问题，使用以下命令构建前端资源：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd ui</span><br><span class="line">export NODE_OPTIONS=&quot;--openssl-legacy-provider&quot;</span><br><span class="line">yarn build</span><br></pre></td></tr></table></figure>
+<p>然后构建完整应用程序：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">本地编译</span></span><br><span class="line">go build -o asynqmon ./cmd/asynqmon</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">交叉编译</span></span><br><span class="line">GOOS=linux GOARCH=amd64 go build -o asynqmon ./cmd/asynqmon</span><br></pre></td></tr></table></figure>
+<p>its work:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250625212041.png" alt="20250625212041" /></p>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>DevRecord</tag>
+      </tags>
+  </entry>
 </search>
