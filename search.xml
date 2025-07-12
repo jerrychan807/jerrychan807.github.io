@@ -21165,4 +21165,130 @@ Solana 上的所有代币实际上都是由代币程序拥有的数据账户。<
         <tag>DevRecord</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DevRecord-捣鼓ClaudeCode</title>
+    <url>/2025/60805.html</url>
+    <content><![CDATA[<h1>注册&amp;使用:</h1>
+<h2 id="官方注册">官方注册:</h2>
+<p>使用<a href="https://bewildcard.com/i/XEXR8DWN">wildcard</a>,进行付款。<br />
+第二天就被封号了.<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250627140952.png" alt="20250627140952" /><br />
+后续有收到退款。</p>
+<h2 id="gaccode中转站">gaccode中转站:</h2>
+<p><a href="https://gaccode.com/credits">gaccode官网</a>然后去淘宝买的订阅卡。</p>
+<p>参考:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.yuque.com/beihu-iq2oo/zlyf06/ehh872tzdeglic37?singleDoc#6591f4ee">相关资料</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://wiki.tu-zi.com/zh/Code/claude_code">Wiki 站点</a></p>
+</li>
+</ul>
+<h2 id="不用中转站的原因">不用中转站的原因:</h2>
+<p>看完这篇文章<a href="https://www.v2ex.com/t/1144388#reply35">使用 Claude Code 中转商的风险</a>后，问了下ChatGPT:怎么判断中转站的cc有没掺水?</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712170136.png" alt="20250712170136" /></p>
+<p>然后提供了prompt 测试语句。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">下面是一组专门用来辨别 Claude Sonnet 4（或 Opus）是否为真身的 prompt 测试包。它们专门设计来测 能力边界、上下文记忆能力、语言风格一致性 和 模型稳定性，能有效识别是否掺水（如 Qwen、GPT-3.5、Gemini Pro 混用）。</span><br><span class="line"></span><br><span class="line">✅ 测试 1：长上下文记忆 + 人设保持能力</span><br><span class="line">你是一个生活在三国时期的谋士，说话要文言风格。现在你要分析以太坊与比特币的不同之处，并评价哪一个更有潜力。</span><br><span class="line">🧠 真实 Sonnet4 会：</span><br><span class="line"></span><br><span class="line">说话文风古雅（而不是硬套“我是三国人…”）</span><br><span class="line">懂加密货币技术（Layer 2、智能合约等）</span><br><span class="line">有结构性分析（条理清晰，非空话）</span><br><span class="line"></span><br><span class="line">✅ 测试 3：推理+数字运算能力</span><br><span class="line">有 3 个箱子：A、B、C。每个箱子上贴着一个标签，分别写着“只有苹果”、“只有橘子”、“苹果和橘子”。其实这三个标签都贴错了。你可以从任意一个箱子里取出一个水果，并通过这个信息判断每个箱子实际装了什么，请说明推理过程。</span><br><span class="line">🧠 真实 Sonnet4 会：</span><br><span class="line"></span><br><span class="line">从“标签都错了”入手，用逻辑排除法</span><br><span class="line">推出正确装配关系</span><br><span class="line">给出完整清晰推理过程</span><br></pre></td></tr></table></figure>
+<p>中转站效果:</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712170421.png" alt="20250712170421" /></p>
+<p>poe里的sonnet4效果:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712170442.png" alt="20250712170442" /></p>
+<p>中转站的上下文记忆能力不行。</p>
+<p>官方版cc效果:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712170611.png" alt="20250712170611" /></p>
+<h1>再次官方注册:</h1>
+<h2 id="网络问题">网络问题:</h2>
+<h3 id="静态住宅ip方案">静态住宅ip方案:</h3>
+<p>一开始是打算用网友的方案: 再套一层<a href="https://iproyal.com/">静态住宅ip</a></p>
+<blockquote>
+<p>你本地 -&gt; 前置代理（如机场）-&gt; IProyal 提供的静态 IP -&gt; Claude目标服务</p>
+</blockquote>
+<p>捣鼓了一下，修改机场的配置文件，有点麻烦.因为原来用的ikuuu梯子有太多规则了，跟我配置的走静态住宅ip的规则重复了，有些流量还是通过direct方式访问了Claude家的域名。<br />
+先放弃这个方案。</p>
+<h3 id="较为干净的梯子">较为干净的梯子:</h3>
+<p>换了款朋友推荐的梯子<a href="https://1s.bigmeok.me/user#/register?code=FmS18hc1">bigme.pro</a>,ip会相对干净些.</p>
+<p>clash verge下载链接:<br />
+wins:<a href="https://api0.moe233.app/clients/cvr/x64.exe">https://api0.moe233.app/clients/cvr/x64.exe</a><br />
+mac:<a href="https://api0.moe233.app/clients/cvr/aarch64.dmg">https://api0.moe233.app/clients/cvr/aarch64.dmg</a></p>
+<p>开启虚拟网卡模式:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712171321.png" alt="20250712171321" /><br />
+然后用日本节点,不要用香港节点</p>
+<h2 id="支付">支付:</h2>
+<p>注册了一张bybit的虚拟卡，地区填的是澳大利亚。很快就申请成功了。然后在claude code官方付款</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>地区选择澳大利亚。</p>
+</li>
+<li class="lvl-2">
+<p>举例:Full Name 应填写<code>Xiaoming Wang</code></p>
+</li>
+<li class="lvl-2">
+<p>地址填:</p>
+</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 地址可填写虚拟的、但合理的澳大利亚地址</span></span><br><span class="line">123 George Street  </span><br><span class="line">Sydney NSW 2000  </span><br><span class="line">Australia</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712172953.png" alt="20250712172953" /><br />
+能够订阅成功。<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250712173012.png" alt="20250712173012" /></p>
+<blockquote>
+<p>后续看能不能稳定使用了 -c-</p>
+</blockquote>
+<h1>相关命令:</h1>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">npm install -g @anthropic-ai/claude-code</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">npm uninstall -g @anthropic-ai/claude-code</span><br><span class="line"></span><br><span class="line"><span class="built_in">rm</span> -rf ~/.claude*</span><br></pre></td></tr></table></figure>
+<h1>mcp配置:</h1>
+<h2 id="mcp-server-mysql">mcp_server_mysql:</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo npm install -g @benborla29/mcp-server-mysql</span><br><span class="line">claude mcp add mcp_server_mysql \</span><br><span class="line">  -e MYSQL_HOST=&quot;xxx&quot; \</span><br><span class="line">  -e MYSQL_PORT=&quot;3306&quot; \</span><br><span class="line">  -e MYSQL_USER=&quot;&quot; \</span><br><span class="line">  -e MYSQL_PASS=&quot;&quot; \</span><br><span class="line">  -e MYSQL_DB=&quot;&quot; \</span><br><span class="line">  -e ALLOW_INSERT_OPERATION=&quot;false&quot; \</span><br><span class="line">  -e ALLOW_UPDATE_OPERATION=&quot;false&quot; \</span><br><span class="line">  -e ALLOW_DELETE_OPERATION=&quot;false&quot; \</span><br><span class="line">  -- npx @benborla29/mcp-server-mysql</span><br></pre></td></tr></table></figure>
+<h2 id="Sequential-Thinking">Sequential Thinking:</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">claude mcp add sequential-thinking -s user -- npx -y @modelcontextprotocol/server-sequential-thinking  </span><br></pre></td></tr></table></figure>
+<h2 id="context7">context7:</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">claude mcp add context7 -s user -- npx -y @upstash/context7-mcp</span><br></pre></td></tr></table></figure>
+<h2 id="Filesystem">Filesystem</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">claude mcp add filesystem -s user -- npx -y @modelcontextprotocol/server-filesystem ~/Documents ~/Desktop ~/Downloads ~/Projects</span><br></pre></td></tr></table></figure>
+<h2 id="Web-Fetching">Web Fetching</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">claude mcp add fetch -s user -- npx -y @kazuph/mcp-fetch</span><br></pre></td></tr></table></figure>
+<p>refs:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.reddit.com/r/ClaudeAI/comments/1jf4hnt/setting_up_mcp_servers_in_claude_code_a_tech/">Setting Up MCP Servers in Claude Code: A Tech Ritual for the Quietly Desperate</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/punkpeye/awesome-mcp-servers/blob/main/README-zh.md">awesome-mcp-servers</a></p>
+</li>
+</ul>
+<h1><a href="http://CLAUDE.md">CLAUDE.md</a>:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://docs.qq.com/doc/DTGZUd096cVdxekFz">三阶段工作流</a></p>
+</li>
+</ul>
+<h1>实践:</h1>
+<h2 id="并发cc">并发cc:</h2>
+<p>效果图:<br />
+<img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20250701231013.png" alt="20250701231013" /></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.youtube.com/watch?v=an-Abb7b2XM">Claude Code &amp; Git Worktrees: How to Run Claude Code in parallel with Git Worktrees</a></p>
+</li>
+<li class="lvl-2">
+<p><a href="https://github.com/claude-ai/claude/discussions/1052">Field notes: git worktree pattern #1052</a></p>
+</li>
+</ul>
+<p>并发不太实际，多个问题来回切换，处理起来有点累。</p>
+<h2 id="配合worktree">配合worktree:</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git worktree add ../feature-main -b feature-main</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ../feature-main</span><br><span class="line"></span><br><span class="line">claude --dangerously-skip-permissions</span><br></pre></td></tr></table></figure>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="https://www.xmsumi.com/detail/1039">Claude Code：你的智能代码助手，智能编码的最佳实践</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DevRecord</category>
+      </categories>
+      <tags>
+        <tag>DevRecord</tag>
+      </tags>
+  </entry>
 </search>
