@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: DoDo支持flash loan,并且手续费上比较友好  注：DODO V2 闪电贷仅当返还的base quote 数量比例产生变化时，合约会预览一笔将base quote 磨平的交易，该磨平交易手续费作为闪电贷手续费。其他情况不收取手续费用  试试在rinkby测试网上能否执行借款还款操作 DoDo闪电交换机制:  Code: solidity代码: 参考文档里闪电交换，有代码例子该代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TechNotes-SmartContract-DoDoFlashLoan测试网例子">
+<meta property="og:url" content="https://jerrychan807.github.io/2022/15023.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: DoDo支持flash loan,并且手续费上比较友好  注：DODO V2 闪电贷仅当返还的base quote 数量比例产生变化时，合约会预览一笔将base quote 磨平的交易，该磨平交易手续费作为闪电贷手续费。其他情况不收取手续费用  试试在rinkby测试网上能否执行借款还款操作 DoDo闪电交换机制:  Code: solidity代码: 参考文档里闪电交换，有代码例子该代">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png">
+<meta property="article:published_time" content="2022-02-26T14:36:34.000Z">
+<meta property="article:modified_time" content="2025-09-11T13:17:00.985Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="SmartContract">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2022/15023.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>TechNotes-SmartContract-DoDoFlashLoan测试网例子 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2022/15023.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TechNotes-SmartContract-DoDoFlashLoan测试网例子
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-26 22:36:34" itemprop="dateCreated datePublished" datetime="2022-02-26T22:36:34+08:00">2022-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-09-11 21:17:00" itemprop="dateModified" datetime="2025-09-11T21:17:00+08:00">2025-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SmartContract/" itemprop="url" rel="index"><span itemprop="name">SmartContract</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>DoDo支持flash loan,并且手续费上比较友好</p>
+<blockquote>
+<p>注：DODO V2 闪电贷仅当返还的base quote 数量比例产生变化时，合约会预览一笔将base quote 磨平的交易，该磨平交易手续费作为闪电贷手续费。其他情况不收取手续费用</p>
+</blockquote>
+<p>试试在<code>rinkby</code>测试网上能否执行借款还款操作</p>
+<h1>DoDo闪电交换机制:</h1>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162909.png" alt="20220226162909" /></p>
+<h1>Code:</h1>
+<h2 id="solidity代码">solidity代码:</h2>
+<p>参考文档里<a target="_blank" rel="noopener" href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a>，有代码例子该代码则是只实现了借款和还款的操作，具体的借款后的操作逻辑还要自己实现</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/IDODO.sol&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./interface/Withdraw.sol&quot;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Flashloan</span> is <span class="title class_">Withdraw</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">dodoFlashLoan</span>(<span class="params"></span></span><br><span class="line"><span class="params">        address flashLoanPool, <span class="comment">//You will make a flashloan from this DODOV2 pool</span></span></span><br><span class="line"><span class="params">        uint256 loanAmount, </span></span><br><span class="line"><span class="params">        address loanToken</span></span><br><span class="line"><span class="params">    </span>) external  &#123;</span><br><span class="line">        <span class="comment">//Note: The data can be structured with any variables required by your logic. The following code is just an example</span></span><br><span class="line">        bytes memory data = abi.<span class="title function_">encode</span>(flashLoanPool, loanToken, loanAmount);</span><br><span class="line">        address flashLoanBase = <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">_BASE_TOKEN_</span>();</span><br><span class="line">        <span class="keyword">if</span>(flashLoanBase == loanToken) &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(loanAmount, <span class="number">0</span>, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">IDODO</span>(flashLoanPool).<span class="title function_">flashLoan</span>(<span class="number">0</span>, loanAmount, <span class="title function_">address</span>(<span class="variable language_">this</span>), data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DVM) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DVMFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount,bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DPP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DPPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Note: CallBack function executed by DODOV2(DSP) flashLoan pool</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">DSPFlashLoanCall</span>(<span class="params">address sender, uint256 baseAmount, uint256 quoteAmount, bytes calldata data</span>) external &#123;</span><br><span class="line">        <span class="title function_">_flashLoanCallBack</span>(sender,baseAmount,quoteAmount,data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_flashLoanCallBack</span>(<span class="params">address sender, uint256, uint256, bytes calldata data</span>) internal &#123;</span><br><span class="line">        (address flashLoanPool, address loanToken, uint256 loanAmount) = abi.<span class="title function_">decode</span>(data, (address, address, uint256));</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">require</span>(sender == <span class="title function_">address</span>(<span class="variable language_">this</span>) &amp;&amp; msg.<span class="property">sender</span> == flashLoanPool, <span class="string">&quot;HANDLE_FLASH_NENIED&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Note: Realize your own logic using the token from flashLoan pool.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//Return funds</span></span><br><span class="line">        <span class="title class_">IERC20</span>(loanToken).<span class="title function_">transfer</span>(flashLoanPool, loanAmount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="brownie">brownie</h2>
+<p>部署脚本:</p>
+<p><code>brownie run scripts/deployment.py --network rinkeby</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Deploy a `Flashloan` contract from `accounts[0]`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    acct = accounts.add(</span><br><span class="line">        config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>]</span><br><span class="line">    )  <span class="comment"># add your keystore ID as an argument to this call</span></span><br><span class="line"></span><br><span class="line">    flashloan = Flashloan.deploy(&#123;<span class="string">&quot;from&quot;</span>: acct&#125;)</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br></pre></td></tr></table></figure>
+<p>执行脚本</p>
+<p><code>brownie run scripts/run_flash_loan.py --network rinkeby</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> brownie <span class="keyword">import</span> Flashloan, accounts, config, network, interface</span><br><span class="line"></span><br><span class="line">ETHERSCAN_TX_URL = <span class="string">&quot;https://rinkeby.etherscan.io/tx/&#123;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Executes the funcitonality of the flash loan.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    acct = accounts.add(config[<span class="string">&quot;wallets&quot;</span>][<span class="string">&quot;from_key&quot;</span>])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Getting Flashloan contract...&quot;</span>)</span><br><span class="line">    flashloan = Flashloan[<span class="built_in">len</span>(Flashloan) - <span class="number">1</span>]</span><br><span class="line">    usdc = interface.IERC20(config[<span class="string">&quot;networks&quot;</span>][network.show_active()][<span class="string">&quot;usdc&quot;</span>])</span><br><span class="line"></span><br><span class="line">    balance = usdc.balanceOf(acct) </span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Executing Flashloan...&quot;</span>)</span><br><span class="line">    tx = flashloan.dodoFlashLoan(<span class="string">&quot;0x446Bb563EEC2E5C439f5b94C6DaAebcCF5d2F99C&quot;</span>,<span class="number">10000000</span>,<span class="string">&quot;0xab0733588776B8881F7712f6AbCa98F510e6B63D&quot;</span>,  &#123;<span class="string">&quot;from&quot;</span>: acct, <span class="string">&quot;gas_limit&quot;</span>:<span class="string">&quot;5074044&quot;</span>, <span class="string">&quot;allow_revert&quot;</span>:<span class="literal">True</span>&#125;)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;You did it! View your tx here: &quot;</span> + ETHERSCAN_TX_URL.<span class="built_in">format</span>(tx.txid))</span><br><span class="line">    <span class="keyword">return</span> flashloan</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="执行效果">执行效果:</h2>
+<p><a target="_blank" rel="noopener" href="https://rinkeby.etherscan.io/tx/0xbc67ada4c2d570f8aba40cae4bd47794d9f25f4969b72792b30d2e23f0c8481b">tx</a></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226164550.png" alt="20220226164550" /></p>
+<p>能成功借款还款</p>
+<h1>遇到的问题:</h1>
+<p>dodoFlashLoan函数有3个参数:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>flashLoanPool 池子地址</p>
+</li>
+<li class="lvl-2">
+<p>loanAmount 数量</p>
+</li>
+<li class="lvl-2">
+<p>loanToken 要借的token地址</p>
+</li>
+</ul>
+<h2 id="选择池子地址">选择池子地址:</h2>
+<p>在<code>https://app.dodoex.io/pool/list?network=rinkeby</code>可以看到有哪些池子信息</p>
+<p>比如此处我要借usdc，就可以搜索一下</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161537.png" alt="20220226161537" /></p>
+<p>然后该池子还要支持flashloan，比如上图第一个池子就不支持，第二个池子才支持</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226161948.png" alt="20220226161948" /></p>
+<h2 id="借款数量">借款数量</h2>
+<p>一开始我填的<code>loanAmount</code>为10 ether,想借10个，转换成wei则为<code>10000000000000000000</code>执行后报错，无法正常借款还款</p>
+<p>查一下报错<br />
+<code>https://dashboard.tenderly.co/tx/rinkeby/0xee7f3a6e0ef5906f8f95cbc789151e1d62da424dc80c6d93c80307ba060be646</code></p>
+<p><code>Error Message:ERC20: transfer amount exceeds balance</code></p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226162947.png" alt="20220226162947" /></p>
+<p>对比一下Dodo流程，此时池子在借款的时候，要发送token给我合约时报错了，报错信息为转账数量超过余额了。</p>
+<p>减少<code>loanAmount</code>为<code>10000000</code>后，发现能成功，原来该usdc的精度为6位</p>
+<p><img src="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220226163700.png" alt="20220226163700" /></p>
+<p>以后要注意一下，大多数代币的精度为18位，但有些代币不是。</p>
+<h1>Refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://dodoex.github.io/docs/zh/docs/flashSwap">闪电交换</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts">https://github.com/yuichiroaoki/poly-flash/blob/main/test/dodoflash.test.ts</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://medium.com/coinmonks/no-flashloan-fee-with-dodo-cc78215d7f93">No Flashloan Fee with DODO</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/2638.html" rel="bookmark">TechNotes-OpenZeppelin-ERC20-extensions源码学习(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/49005.html" rel="bookmark">TechNotes-OpenZeppelin-代码库QuickView</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/26907.html" rel="bookmark">TechNotes-SmartContract-合约里调用Uniswap</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/27732.html" rel="bookmark">TechNotes-Uniswap-恒定乘积公式原理</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/57945.html" rel="bookmark">TechNotes-Uniswap-getReserves获取储备量</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Crypto/" rel="tag"># Crypto</a>
+              <a href="/tags/SmartContract/" rel="tag"># SmartContract</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/26907.html" rel="prev" title="TechNotes-SmartContract-合约里调用Uniswap">
+      <i class="fa fa-chevron-left"></i> TechNotes-SmartContract-合约里调用Uniswap
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/64479.html" rel="next" title="StudyRecord-Hardhat框架初步使用">
+      StudyRecord-Hardhat框架初步使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">DoDo闪电交换机制:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Code:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#solidity%E4%BB%A3%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">solidity代码:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#brownie"><span class="nav-number">3.2.</span> <span class="nav-text">brownie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%95%88%E6%9E%9C"><span class="nav-number">3.3.</span> <span class="nav-text">执行效果:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">遇到的问题:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%B1%A0%E5%AD%90%E5%9C%B0%E5%9D%80"><span class="nav-number">4.1.</span> <span class="nav-text">选择池子地址:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E6%AC%BE%E6%95%B0%E9%87%8F"><span class="nav-number">4.2.</span> <span class="nav-text">借款数量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">Refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">950k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:24</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pre: 用nyawc框架,试图爬取该urlhttp:&#x2F;&#x2F;atmos.sysu.edu.cn&#x2F;里的文档类型链接的时候,发现爬取不到. 比如  通过python模拟发包请求该urlhttp:&#x2F;&#x2F;atmos.sysu.edu.cn&#x2F;article&#x2F;2005 发现返回包里没有doc链接.  Debug思路1: 猜测: nyawc处理不了无后缀的url(eg.http:&#x2F;&#x2F;atmos.sysu.edu.c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tools-nyawc源码-解析不了网页里的链接分析">
+<meta property="og:url" content="https://jerrychan807.github.io/2019/788.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Pre: 用nyawc框架,试图爬取该urlhttp:&#x2F;&#x2F;atmos.sysu.edu.cn&#x2F;里的文档类型链接的时候,发现爬取不到. 比如  通过python模拟发包请求该urlhttp:&#x2F;&#x2F;atmos.sysu.edu.cn&#x2F;article&#x2F;2005 发现返回包里没有doc链接.  Debug思路1: 猜测: nyawc处理不了无后缀的url(eg.http:&#x2F;&#x2F;atmos.sysu.edu.c">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d713de4f8.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71524169.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d716322e4.jpg">
+<meta property="article:published_time" content="2019-04-06T14:36:34.000Z">
+<meta property="article:modified_time" content="2025-09-11T13:17:00.988Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SecurityTools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2019/788.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Tools-nyawc源码-解析不了网页里的链接分析 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2019/788.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tools-nyawc源码-解析不了网页里的链接分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-06 22:36:34" itemprop="dateCreated datePublished" datetime="2019-04-06T22:36:34+08:00">2019-04-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-09-11 21:17:00" itemprop="dateModified" datetime="2025-09-11T21:17:00+08:00">2025-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index"><span itemprop="name">SecurityTools</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Pre:</h1>
+<p>用<code>nyawc</code>框架,试图爬取该url<code>http://atmos.sysu.edu.cn/</code>里的文档类型链接的时候,发现爬取不到.</p>
+<p>比如</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d712ac5eb.jpg" alt="" /></p>
+<p>通过<code>python</code>模拟发包请求该url<code>http://atmos.sysu.edu.cn/article/2005</code></p>
+<p>发现返回包里没有<code>doc</code>链接.</p>
+<hr />
+<h1>Debug思路1:</h1>
+<p>猜测: <code>nyawc</code>处理不了无后缀的url(eg.<code>http://atmos.sysu.edu.cn/article/2005</code>)</p>
+<p>该网站可能是隐藏了网页的后缀.也就是对url进行了重写即<code>url rewrite</code></p>
+<hr />
+<h2 id="URL重写">URL重写:</h2>
+<h2 id="什么是URL重写">什么是URL重写</h2>
+<p>如果您正在给银行写信，您可能会打开文字处理程序并创建一个名为的文件<code>lettertobank.doc</code>。该文件可能位于您的Documents目录中，其中包含完整路径<code>C:/Windows/users/julie/Documents/lettertobank.doc</code>。一个文件路径=一个文档(<strong><code>One file path = one document</code></strong>).</p>
+<p>同样，如果您要创建一个银行网站，您可以创建一个名为的页面page1.html，上传它，然后将浏览器指向。一个URL =一个资源(<strong><code>One URL = one resource</code></strong>)。在这种情况下，资源是物理网页，但它也可以是从CMS中提取的页面或产品。</p>
+<p>URL重写会改变这一切。它允许您将URL与资源完全分开。</p>
+<p>通过URL重写，您可以将用户带到<code>…/page1.html</code>或去<code>…/about-us/</code>或去<code>…/about-this-website-and-me/</code>或去<code>…/youll-never-find-out-about-me-hahaha-Xy2834/</code>。或者所有这些。它有点像硬盘上的快捷方式或符号链接。一个URL =查找资源的一种方法(<strong><code>One URL = one way to find a resource.</code></strong>)。</p>
+<p><strong>通过URL重写，URL和它所引导的资源可以完全相互独立</strong>。</p>
+<p>实际上，它们通常不是完全独立的：URL通常包含一些代码或数字或名称，使CMS能够查找资源。但从理论上讲，这就是URL重写所提供的：<strong>完全分离</strong>。</p>
+<hr />
+<h3 id="为什么要重写URL">为什么要重写URL:</h3>
+<p>对于网站来说:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>隐藏网站实现细节</p>
+</li>
+<li class="lvl-2">
+<p>有利于<code>SEO</code>,复杂的url地址会对网页的收录造成影响</p>
+</li>
+</ul>
+<p>例如:<code>http://www.prof…co.uk/products/brown-miniflo-gutter-148/</code>,URL本身包含搜索词中的单词.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d713de4f8.jpg" alt="" /></p>
+<p>对于用户来说:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>让url看起来更简洁、更容易输入和记住</p>
+</li>
+</ul>
+<hr />
+<h3 id="如何重写URL">如何重写URL:</h3>
+<p>是否可以在网站上实现URL重写主要取决于Web服务器</p>
+<p>几乎所有服务器都支持,比如</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>Java</code>可以通过<code>web.xml</code>配置</p>
+</li>
+<li class="lvl-2">
+<p><code>PHP</code>可以通过模板引擎配置</p>
+</li>
+<li class="lvl-2">
+<p><code>Apache</code> 有专门的 <code>module</code> 等等</p>
+</li>
+</ul>
+<hr />
+<h4 id="例子-2">例子:</h4>
+<p>通过<code>Apache</code>配置的例子:</p>
+<ol>
+<li class="lvl-3">
+<p>开启<code>apache</code> <code>Rewrite_mod</code>模块。</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LoadModule rewrite_module modules/mod_rewrite.so</span><br></pre></td></tr></table></figure>
+</li>
+<li class="lvl-3">
+<p>在配置文件末尾添加虚拟主机配置</p>
+</li>
+<li class="lvl-3">
+<p>新建<code>.htaccess</code>文件,添加规则</p>
+<p>eg1:</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RewriteRule ^([a-zA-Z]+)\/([a-zA-Z0-9]+)\.shtml$ $1.php?id=$2 [L]</span><br></pre></td></tr></table></figure>
+<p><code>http://www.test.test/test/3.shtml</code> 对应实际的Url地址为：<code>http://www.test.test/test.php?id=3</code></p>
+<p>eg2:</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RewriteRule ^room_(.*)$ room.php?id=$1 [NC]</span><br></pre></td></tr></table></figure>
+<p><code>http://localhost/room_123/</code> 对应的Url地址为: <code>http://localhost/room.php?id=123</code></p>
+</li>
+</ol>
+<hr />
+<h1>Debug思路2:</h1>
+<p>抓包分析,比较浏览器请求的包与用<code>python</code>模拟发的包.</p>
+<hr />
+<h2 id="浏览器抓包的实际请求">浏览器抓包的实际请求:</h2>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71524169.jpg" alt="" /></p>
+<p>在获取我们需要的内容(第三个包)前,必须执行一个js请求.</p>
+<hr />
+<h2 id="模拟发的包">模拟发的包:</h2>
+<p>发现第一个包的请求的状态码是<code>202</code>,也就是上面图的第一个包.</p>
+<hr />
+<h2 id="结论">结论:</h2>
+<p>这种要执行js请求才能获取得到的返回包,一般要使用无头浏览器才能解决得了.</p>
+<hr />
+<h1>总结:</h1>
+<h2 id="原因-2">原因:</h2>
+<p>这个问题是 <strong>发送了正确的请求,但是没有获得正确的返回结果</strong>.</p>
+<p>获取不到预期的返回包(含doc链接),是因为在这之前还必须要有个js请求,这种请求用模拟发包一般是实现不了的,除非再花时间理解那个js文件,再模拟js的请求.</p>
+<p>如果这样处理就会有点麻烦,一般这种情况,上无头浏览器是比较通用的解决办法.</p>
+<hr />
+<h2 id="错误的debug思路">错误的debug思路:</h2>
+<p>一开始debug的思路是不正确的,没有经过细致的排查,猜测的依据也只是根据印象,有点想当然了.</p>
+<p>自己在调用<code>nyawc</code>框架的时候,是有做跟url后缀处理相关的请求.</p>
+<p>不过这个处理只是过滤掉一些提前预设的静态url,如<code>&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;woff&quot;, &quot;ttf&quot;, &quot;eot&quot;, &quot;svg&quot;, &quot;woff2&quot;, &quot;ico&quot;</code>,然后过滤掉这些url,不对这些url发送新的请求.</p>
+<p>而我的猜测的依据 就是看到这个url<code>http://atmos.sysu.edu.cn/article/2005</code>是个无后缀的Url,就简单猜测,并把问题定位在: <code>nyawc</code>处理不了无后缀的url.</p>
+<p>这个问题定位过于宽泛了.因为</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>后缀的处理是请求前的问题</p>
+</li>
+<li class="lvl-2">
+<p>解析链接是请求后的问题</p>
+</li>
+</ul>
+<hr />
+<h2 id="正确的debug思路">正确的debug思路:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>请求前: <strong>后缀处理是否有问题?</strong></p>
+</li>
+<li class="lvl-2">
+<p>请求中: <strong>是否请求到了正确的页面?并获得正确的返回结果?</strong></p>
+<ul class="lvl-2">
+<li class="lvl-6">一般的爬虫问题,获取不到预期的结果.最直接的办法还是比较浏览器请求的包与用<code>python</code>模拟发的包</li>
+<li class="lvl-6">如果发的包不同,那就是请求前的问题.如果发的包都相同，那就是请求后处理的问题.</li>
+</ul>
+</li>
+<li class="lvl-2">
+<p>请求后: <strong>获得正确的返回结果后,是否能解析到?</strong></p>
+</li>
+</ul>
+<hr />
+<h2 id="改进">改进:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>nyawc</code>这个爬虫框架还是有点局限的.可能后续要增加爬虫能力的话,还是要考虑上无头浏览器.</p>
+</li>
+<li class="lvl-2">
+<p>Debug要定位问题的时候,范围不能过于宽泛.排查的步骤不能漏.要能排列组合、没有交集的列出一二三.</p>
+</li>
+<li class="lvl-2">
+<p>要多看源码,理解要更深入.</p>
+</li>
+</ul>
+<hr />
+<h1>其他:</h1>
+<p>设置brupsuite截取js请求.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d716322e4.jpg" alt="" /></p>
+<hr />
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.smashingmagazine.com/2011/11/introduction-to-url-rewriting/">URL重写简介</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20282238">很多网站上的登陆页面等为什么没有后缀名？比如diandian/register却没有.html等？</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="http://www.itfuns.com/201.html">隐藏PHP后缀名的几种方法</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/35316.html" rel="bookmark">DevRecord-记录-brup&xray配置使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/8760.html" rel="bookmark">Security-Awvs-linux版配置文件修改</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/49195.html" rel="bookmark">Security-子域名搜集</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2020/61887.html" rel="bookmark">Security-浅谈越权自动化</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/8716.html" rel="bookmark">Security-获取masscan的扫描进度</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/25290.html" rel="prev" title="Tools-Sqlmap源码-请求参数的检验和解析(二)">
+      <i class="fa fa-chevron-left"></i> Tools-Sqlmap源码-请求参数的检验和解析(二)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/32026.html" rel="next" title="DevRecord-记录-Centos7系统安装">
+      DevRecord-记录-Centos7系统安装 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">Debug思路1:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URL%E9%87%8D%E5%86%99"><span class="nav-number">2.1.</span> <span class="nav-text">URL重写:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFURL%E9%87%8D%E5%86%99"><span class="nav-number">2.2.</span> <span class="nav-text">什么是URL重写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%87%8D%E5%86%99URL"><span class="nav-number">2.2.1.</span> <span class="nav-text">为什么要重写URL:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99URL"><span class="nav-number">2.2.2.</span> <span class="nav-text">如何重写URL:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90-2"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">例子:</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">Debug思路2:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8A%93%E5%8C%85%E7%9A%84%E5%AE%9E%E9%99%85%E8%AF%B7%E6%B1%82"><span class="nav-number">3.1.</span> <span class="nav-text">浏览器抓包的实际请求:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%8F%91%E7%9A%84%E5%8C%85"><span class="nav-number">3.2.</span> <span class="nav-text">模拟发的包:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">3.3.</span> <span class="nav-text">结论:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">总结:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0-2"><span class="nav-number">4.1.</span> <span class="nav-text">原因:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84debug%E6%80%9D%E8%B7%AF"><span class="nav-number">4.2.</span> <span class="nav-text">错误的debug思路:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E7%A1%AE%E7%9A%84debug%E6%80%9D%E8%B7%AF"><span class="nav-number">4.3.</span> <span class="nav-text">正确的debug思路:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B"><span class="nav-number">4.4.</span> <span class="nav-text">改进:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">其他:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">950k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:24</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

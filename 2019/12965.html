@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="项目名:WPSIH Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器  项目地址:WSPIH  运行效果:   程序执行逻辑:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tools-WPSIH-网站个人敏感信息文件扫描器-开发记录">
+<meta property="og:url" content="https://jerrychan807.github.io/2019/12965.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="项目名:WPSIH Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器  项目地址:WSPIH  运行效果:   程序执行逻辑:">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2019/04/28/5cc5b3a24036a.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc72451486a1.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/29/5cc71ada6c08d.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/29/5cc71c1146490.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc736e3b72a8.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc736f97350d.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc721bf2ce18.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc7233328377.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/28/5cc5c4a676f30.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/28/5cc5c5113bb70.png">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc732ed512d9.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/04/30/5cc7330875dcd.jpg">
+<meta property="article:published_time" content="2019-04-25T06:36:34.000Z">
+<meta property="article:modified_time" content="2025-09-11T13:17:00.987Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SecurityTools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/28/5cc5b3a24036a.png">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2019/12965.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Tools-WPSIH-网站个人敏感信息文件扫描器-开发记录 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2019/12965.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tools-WPSIH-网站个人敏感信息文件扫描器-开发记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-25 14:36:34" itemprop="dateCreated datePublished" datetime="2019-04-25T14:36:34+08:00">2019-04-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-09-11 21:17:00" itemprop="dateModified" datetime="2025-09-11T21:17:00+08:00">2025-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SecurityTools/" itemprop="url" rel="index"><span itemprop="name">SecurityTools</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>项目名:WPSIH</h1>
+<p>Website Sensitive Personal Information Hunter-网站个人敏感信息文件扫描器</p>
+<p><img src="https://i.loli.net/2019/04/28/5cc5b3a24036a.png" alt="" /></p>
+<p>项目地址:<a target="_blank" rel="noopener" href="https://github.com/jerrychan807/WSPIH">WSPIH</a></p>
+<hr />
+<h1>运行效果:</h1>
+<p><img src="https://i.loli.net/2019/04/30/5cc72451486a1.png" alt="" /></p>
+<hr />
+<h1>程序执行逻辑:</h1>
+<p><img src="https://i.loli.net/2019/04/29/5cc71ada6c08d.png" alt="" /></p>
+<hr />
+<h2 id="爬取链接">爬取链接:</h2>
+<p>需要过滤掉一些无用的后缀名:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IGNORED_EXTESIONS = [&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;woff&quot;, &quot;ttf&quot;, &quot;eot&quot;, &quot;svg&quot;, &quot;woff2&quot;, &quot;ico&quot;]</span><br></pre></td></tr></table></figure>
+<p>并筛选出需要的后缀名,然后保存下来:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">EXCEL_EXTENSIONS = [&quot;xls&quot;, &quot;xlsx&quot;]</span><br><span class="line">PDF_EXTENSIONS = [&quot;pdf&quot;]</span><br><span class="line">WORD_EXTENSIONS = [&quot;doc&quot;, &quot;docx&quot;]</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="解析文本内容">解析文本内容:</h2>
+<p>ExcelParser:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>使用<code>xlrd</code>模块</p>
+</li>
+</ul>
+<p>PdfParser：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>使用<code>pdfminer</code>模块</p>
+</li>
+<li class="lvl-2">
+<p>无法检测图片中是否存在敏感信息；</p>
+</li>
+</ul>
+<p>WordParser:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>使用<code>python-docx</code>模块</p>
+</li>
+<li class="lvl-2">
+<p>无法检测图片中是否存在敏感信息；</p>
+</li>
+<li class="lvl-2">
+<p>只支持.docx</p>
+</li>
+</ul>
+<blockquote>
+<p><code>doc</code>后缀的,需要在wins环境下转换成<code>docx</code>后缀,然后才能解析.遂放弃.</p>
+</blockquote>
+<hr />
+<h2 id="基于正则匹配敏感信息">基于正则匹配敏感信息</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHONE_REGEX = r&#x27;^(?:\+?86)?1(?:3\d&#123;3&#125;|5[^4\D]\d&#123;2&#125;|8\d&#123;3&#125;|7(?:[35678]\d&#123;2&#125;|4(?:0\d|1[0-2]|9\d))|9[189]\d&#123;2&#125;|66\d&#123;2&#125;)\d&#123;6&#125;$&#x27;</span><br><span class="line"></span><br><span class="line">EMAIL_REGEX = r&#x27;^\w+@(\w+\.)+\w+&#x27;</span><br><span class="line"></span><br><span class="line">IDCARD_REGEX = r&#x27;^[1-9]\d&#123;5&#125;(18|19|20)\d&#123;2&#125;((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d&#123;3&#125;[0-9Xx]&#x27;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>手机号码的正则一开始没在后面加上<code>$</code>符号(<code>$</code>是正则表达式匹配字符串结束位置),因为一开始在简单测试excel里的手机号码的时候,发现有这种情况:<code>13424324567.0</code>,所以唐突的把<code>$</code>去掉了.</p>
+<p>这种就是没有经过大量测试的后果.</p>
+<p>导致产生了很多误报. 可见正则大法好,但是要<strong>深刻理解和正确使用</strong>.不然误报太多了.</p>
+</blockquote>
+<hr />
+<h1>一些有趣的点:</h1>
+<h2 id="隐藏起来的敏感信息">隐藏起来的敏感信息:</h2>
+<p>有些文件是能匹配出敏感结果的,但是实际上你去打开那个文件,你会找不到结果.举例如下:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>excel的隐藏列:</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2019/04/29/5cc71c1146490.png" alt="" /></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>excel的折叠列:</p>
+</li>
+</ul>
+<p>拉开前:</p>
+<p><img src="https://i.loli.net/2019/04/30/5cc736e3b72a8.png" alt="" /></p>
+<p>看图上的绿色线,是把内容折叠了起来</p>
+<p>实际上把绿色线拉开之后,确实是存在敏感信息的.</p>
+<p><img src="https://i.loli.net/2019/04/30/5cc736f97350d.png" alt="" /></p>
+<hr />
+<h2 id="在书里找到了敏感信息">在书里找到了敏感信息:</h2>
+<p>在一本书里,匹配到了邮箱…估计是作者、出版社的联系方式…</p>
+<p><img src="https://i.loli.net/2019/04/30/5cc721bf2ce18.jpg" alt="" /></p>
+<p>尴尬…</p>
+<hr />
+<h1>问题:</h1>
+<h2 id="已解决的Bug">已解决的Bug:</h2>
+<h3 id="把命令写死了">把命令写死了:</h3>
+<p><img src="https://i.loli.net/2019/04/30/5cc7233328377.png" alt="" /></p>
+<blockquote>
+<p>不同环境下的python执行路径是不同的…</p>
+</blockquote>
+<hr />
+<h3 id="跨平台运行的问题">跨平台运行的问题:</h3>
+<p>比如wins下没有<code>find</code>命令,要用<code>for</code></p>
+<blockquote>
+<p>跨平台运行是个令人头疼的问题呀…会有很多意想不到的结果出现.</p>
+</blockquote>
+<hr />
+<h3 id="减少模板类文件的误报">减少模板类文件的误报:</h3>
+<p>如模板类,解决办法: 通过数量判定,例如从某个文件收集到的邮箱少于2个.则认为这是个模板类文件.</p>
+<p>举例:</p>
+<p><img src="https://i.loli.net/2019/04/28/5cc5c4a676f30.png" alt="" /><br />
+<img src="https://i.loli.net/2019/04/28/5cc5c5113bb70.png" alt="" /></p>
+<hr />
+<h1>待改进的地方:</h1>
+<hr />
+<h2 id="更多的正则匹配">更多的正则匹配:</h2>
+<p>for Chinese:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>支付宝账号</p>
+</li>
+<li class="lvl-2">
+<p>社保账号</p>
+</li>
+<li class="lvl-2">
+<p>银行卡号</p>
+</li>
+<li class="lvl-2">
+<p>身份证</p>
+</li>
+<li class="lvl-2">
+<p>护照</p>
+</li>
+<li class="lvl-2">
+<p>香港永久性居民身份证</p>
+</li>
+<li class="lvl-2">
+<p>澳门永久性居民身份证</p>
+</li>
+<li class="lvl-2">
+<p>台湾居民来往大陆通行证</p>
+</li>
+<li class="lvl-2">
+<p>军官证</p>
+</li>
+</ul>
+<p>for Foreign:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>外国手机号</p>
+</li>
+<li class="lvl-2">
+<p>外国身份证号码</p>
+</li>
+</ul>
+<blockquote>
+<p>估计也没时间去完善hhh</p>
+</blockquote>
+<hr />
+<h2 id="基于关键字匹配">基于关键字匹配:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>身份证</p>
+</li>
+<li class="lvl-2">
+<p>身份证号</p>
+</li>
+<li class="lvl-2">
+<p>身份证号码</p>
+</li>
+<li class="lvl-2">
+<p>身份证件号码</p>
+</li>
+<li class="lvl-2">
+<p>证件号码</p>
+</li>
+<li class="lvl-2">
+<p>zjhm</p>
+</li>
+<li class="lvl-2">
+<p>证件类型</p>
+</li>
+<li class="lvl-2">
+<p>证书号码</p>
+</li>
+<li class="lvl-2">
+<p>手机</p>
+</li>
+<li class="lvl-2">
+<p>联系电话</p>
+</li>
+<li class="lvl-2">
+<p>联系方式</p>
+</li>
+<li class="lvl-2">
+<p>电子邮箱</p>
+</li>
+<li class="lvl-2">
+<p>dzly</p>
+</li>
+<li class="lvl-2">
+<p>通信地址</p>
+</li>
+<li class="lvl-2">
+<p>家庭地址</p>
+</li>
+</ul>
+<blockquote>
+<p>预期使用关键词匹配的话,误报会很多,只适用于excel类型的表头.</p>
+</blockquote>
+<hr />
+<h2 id="动态链接下载">动态链接下载:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>http://yjsy.uibe.edu.cn/common/downloadFile.jsp?id=119295</code></p>
+</li>
+<li class="lvl-2">
+<p><code>http://yz.nwafu.edu.cn/common/rtfeditor/openfile.jsp?id=DBCPDBDDDFDIDBCPDADBDGCOHIGMHD</code></p>
+</li>
+</ul>
+<p>类似以上这种url,要访问动态链接,服务器才会返回文件的url地址.</p>
+<p>目前是处理不了这种情况.</p>
+<blockquote>
+<p>搜索引擎是可以爬取到这类url的文件的预计解决办法是:1.要用上无头浏览器等技术.模拟发包是不行的 2.直接访问该url并下载文件.</p>
+</blockquote>
+<hr />
+<h1>其他:</h1>
+<hr />
+<h2 id="测试服务器">测试服务器:</h2>
+<p><img src="https://i.loli.net/2019/04/30/5cc732ed512d9.jpg" alt="" /></p>
+<p>跑到机子模糊…</p>
+<p><img src="https://i.loli.net/2019/04/30/5cc7330875dcd.jpg" alt="" /></p>
+<hr />
+<h2 id="搜索引擎hack">搜索引擎hack:</h2>
+<p>百度:</p>
+<p><code>site:*.edu.cn filetype:xls</code><br />
+<code>site:*.edu.cn filetype:xls 身份证</code></p>
+<p>google:</p>
+<p><code>site:*.edu.cn filetype:xls</code></p>
+<blockquote>
+<p>主要是用于前期寻找测试文件</p>
+</blockquote>
+<hr />
+<h2 id="注意点">注意点:</h2>
+<p>我已知的,目前<code>edu-src</code>判定是敏感文件的范围是:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>个人手机</p>
+</li>
+<li class="lvl-2">
+<p>个人住址</p>
+</li>
+<li class="lvl-2">
+<p><s>个人邮箱</s> (目前不收了)</p>
+</li>
+<li class="lvl-2">
+<p><strong>身份证</strong></p>
+</li>
+</ul>
+<p>不属于的范围:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>工作邮箱</p>
+</li>
+<li class="lvl-2">
+<p>准考证号</p>
+</li>
+</ul>
+<blockquote>
+<p>知道规则也很重要…hhh</p>
+</blockquote>
+<hr />
+<h2 id="修复方案">修复方案:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>作为信息公示的话,身份证显示后六位或者打码显示即可</p>
+</li>
+<li class="lvl-2">
+<p>如无必要,不要上传到公网上.</p>
+</li>
+</ul>
+<hr />
+<h1>Contributors:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>JackChan1024</p>
+</li>
+</ul>
+<blockquote>
+<p>hacking together , is so cool…</p>
+</blockquote>
+<hr />
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/148a192191dc9a4d71c3b11c.html">excel中如何隐藏列和取消隐藏列</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://github.com/tijme/not-your-average-web-crawler">not-your-average-web-crawler</a> 这是个很棒的爬虫框架.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/35316.html" rel="bookmark">DevRecord-记录-brup&xray配置使用</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/8760.html" rel="bookmark">Security-Awvs-linux版配置文件修改</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/49195.html" rel="bookmark">Security-子域名搜集</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2020/61887.html" rel="bookmark">Security-浅谈越权自动化</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/8716.html" rel="bookmark">Security-获取masscan的扫描进度</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SecurityTools/" rel="tag"># SecurityTools</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/32026.html" rel="prev" title="DevRecord-记录-Centos7系统安装">
+      <i class="fa fa-chevron-left"></i> DevRecord-记录-Centos7系统安装
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/6283.html" rel="next" title="Tools-Dsss源码-100行的SqliScanner-源码分析笔记">
+      Tools-Dsss源码-100行的SqliScanner-源码分析笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">项目名:WPSIH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">运行效果:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">程序执行逻辑:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%88%AC%E5%8F%96%E9%93%BE%E6%8E%A5"><span class="nav-number">3.1.</span> <span class="nav-text">爬取链接:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%96%87%E6%9C%AC%E5%86%85%E5%AE%B9"><span class="nav-number">3.2.</span> <span class="nav-text">解析文本内容:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.</span> <span class="nav-text">基于正则匹配敏感信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">一些有趣的点:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E8%B5%B7%E6%9D%A5%E7%9A%84%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">4.1.</span> <span class="nav-text">隐藏起来的敏感信息:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%B9%A6%E9%87%8C%E6%89%BE%E5%88%B0%E4%BA%86%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.</span> <span class="nav-text">在书里找到了敏感信息:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">问题:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%B2%E8%A7%A3%E5%86%B3%E7%9A%84Bug"><span class="nav-number">5.1.</span> <span class="nav-text">已解决的Bug:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%8A%E5%91%BD%E4%BB%A4%E5%86%99%E6%AD%BB%E4%BA%86"><span class="nav-number">5.1.1.</span> <span class="nav-text">把命令写死了:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.2.</span> <span class="nav-text">跨平台运行的问题:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E6%A8%A1%E6%9D%BF%E7%B1%BB%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%AF%E6%8A%A5"><span class="nav-number">5.1.3.</span> <span class="nav-text">减少模板类文件的误报:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">6.</span> <span class="nav-text">待改进的地方:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E7%9A%84%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D"><span class="nav-number">6.1.</span> <span class="nav-text">更多的正则匹配:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%B3%E9%94%AE%E5%AD%97%E5%8C%B9%E9%85%8D"><span class="nav-number">6.2.</span> <span class="nav-text">基于关键字匹配:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E4%B8%8B%E8%BD%BD"><span class="nav-number">6.3.</span> <span class="nav-text">动态链接下载:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">7.</span> <span class="nav-text">其他:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">7.1.</span> <span class="nav-text">测试服务器:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8Ehack"><span class="nav-number">7.2.</span> <span class="nav-text">搜索引擎hack:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">7.3.</span> <span class="nav-text">注意点:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%B9%E6%A1%88"><span class="nav-number">7.4.</span> <span class="nav-text">修复方案:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">8.</span> <span class="nav-text">Contributors:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">9.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">950k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:24</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

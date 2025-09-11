@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="pre: sqlmap在处理数据的时候大量使用了自定义的AttribDict属性字典这个数据类型. 123456789101112131415# sqlmap pathspaths &#x3D; AttribDict()# object to store original command line optionscmdLineOptions &#x3D; AttribDict()# object to store m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tools-Sqlmap源码-AttribDict">
+<meta property="og:url" content="https://jerrychan807.github.io/2019/33682.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="pre: sqlmap在处理数据的时候大量使用了自定义的AttribDict属性字典这个数据类型. 123456789101112131415# sqlmap pathspaths &#x3D; AttribDict()# object to store original command line optionscmdLineOptions &#x3D; AttribDict()# object to store m">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg">
+<meta property="article:published_time" content="2019-03-05T06:36:34.000Z">
+<meta property="article:modified_time" content="2025-09-11T13:17:00.986Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="SourceCodeReading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2019/33682.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Tools-Sqlmap源码-AttribDict | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2019/33682.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tools-Sqlmap源码-AttribDict
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-05 14:36:34" itemprop="dateCreated datePublished" datetime="2019-03-05T14:36:34+08:00">2019-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-09-11 21:17:00" itemprop="dateModified" datetime="2025-09-11T21:17:00+08:00">2025-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SourceCodeReading/" itemprop="url" rel="index"><span itemprop="name">SourceCodeReading</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>6k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>pre:</h1>
+<p>sqlmap在处理数据的时候大量使用了自定义的<code>AttribDict</code>属性字典这个数据类型.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sqlmap paths</span></span><br><span class="line">paths = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store original command line options</span></span><br><span class="line">cmdLineOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to store merged options (command line, configuration file and default options)</span></span><br><span class="line">mergedOptions = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes command</span></span><br><span class="line"><span class="comment"># line options and settings</span></span><br><span class="line">conf = AttribDict()</span><br><span class="line"></span><br><span class="line"><span class="comment"># object to share within function and classes results</span></span><br><span class="line">kb = AttribDict()</span><br></pre></td></tr></table></figure>
+<p>所以有必要看看<code>AttribDict</code>这个类.</p>
+<p>顺便总结一下自己不熟悉的相关知识点.</p>
+<hr />
+<h1><code>AttribDict</code>组成:</h1>
+<p>这个类通过override了几个<code>super method</code>.</p>
+<p>修改原生的<code>dict</code>定制成了自己项目需要的属性字典.</p>
+<p><img src="https://i.loli.net/2019/04/25/5cc1d71bed008.jpg" alt="" /></p>
+<hr />
+<h2 id="定义-2">定义:</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;&quot;&quot;</span><br><span class="line">This class defines the sqlmap object, inheriting from Python data</span><br><span class="line">type dictionary.</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; foo = AttribDict()</span><br><span class="line">&gt;&gt;&gt; foo.bar = 1</span><br><span class="line">&gt;&gt;&gt; foo.bar</span><br><span class="line">1</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
+<p>原来的字典的用法:<code>dict1[&quot;key&quot;]</code><br />
+现在的自定义字典的用法:<code>dict1.key</code></p>
+<hr />
+<h2 id="init-初始化"><code>__init__</code> 初始化</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, indict=<span class="literal">None</span>, attribute=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">if</span> indict <span class="keyword">is</span> <span class="literal">None</span>: </span><br><span class="line">        indict = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Set any attributes here - before initialisation</span></span><br><span class="line">    <span class="comment"># these remain as normal attributes   在初始化之前设置通用属性</span></span><br><span class="line">    self.attribute = attribute</span><br><span class="line">    <span class="built_in">dict</span>.__init__(self, indict)</span><br><span class="line">    self.__initialised = <span class="literal">True</span> <span class="comment"># 初始化标志</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># After initialisation, setting attributes</span></span><br><span class="line">    <span class="comment"># is the same as setting an item  初始化之后</span></span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="setattr-对一个属性赋值"><code>__setattr__</code> 对一个属性赋值</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__setattr__</span>(<span class="params">self, item, value</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Maps attributes to values</span></span><br><span class="line"><span class="string">    Only if we are initialised   只对初始化过的实例赋值</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># This test allows attributes to be set in the __init__ method</span></span><br><span class="line">    <span class="comment"># 允许在初始化的时候设置属性</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;_AttribDict__initialised&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> self.__dict__:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">dict</span>.__setattr__(self, item, value)</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Any normal attributes are handled normally</span></span><br><span class="line">    <span class="keyword">elif</span> item <span class="keyword">in</span> self.__dict__: <span class="comment"># 如果已经设置过了</span></span><br><span class="line">        <span class="built_in">dict</span>.__setattr__(self, item, value)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>: <span class="comment"># 没设置过的</span></span><br><span class="line">        self.__setitem__(item, value)</span><br></pre></td></tr></table></figure>
+<p>例如执行以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line">kb.a = <span class="number">1</span> </span><br></pre></td></tr></table></figure>
+<p><code>kb = AttribDict()</code>执行完,也就初始化完<code>kb</code>这个实例了,对象的属性储存在对象的<code>__dict__</code>属性中,这个时候它的<code>__dict__</code>为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;_AttribDict__initialised&#x27;</span>: <span class="literal">True</span>, <span class="string">&#x27;attribute&#x27;</span>: <span class="literal">None</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>执行<code>kb.a=1</code>即对实例的属性赋值的时候,就会隐式调用到<code>__setattr__</code>这个super method.</p>
+<p>首先会在<code>__dict__</code>搜索是否初始化过的标志属性</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>如果未初始化过的话,返回一个<code>dict</code>.</p>
+</li>
+<li class="lvl-2">
+<p>如果初始化过的实例,会根据<code>key</code>在<code>__dict__</code>搜索</p>
+<ul class="lvl-2">
+<li class="lvl-4">如果这个属性已经设置过的话,会调用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dict</span>.__setattr__(self, item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self.itme = value`,对一个属性赋值(覆盖已有属性)</span></span><br></pre></td></tr></table></figure>
+<ul class="lvl-2">
+<li class="lvl-4">
+<p>如果这个属性没设置过的话,会调用</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.__setitem__(item, value)</span><br><span class="line"><span class="comment"># 相当于执行`self[key] = val`,对新索引值赋值</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr />
+<h2 id="getattr-访问一个不存在的属性"><code>__getattr__</code> 访问一个不存在的属性</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__getattr__</span>(<span class="params">self, item</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; </span></span><br><span class="line"><span class="string">    Maps values to attributes</span></span><br><span class="line"><span class="string">    Only called if there *is NOT* an attribute with this name </span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> self.__getitem__(item) <span class="comment"># 通过key获取value</span></span><br><span class="line">    <span class="keyword">except</span> KeyError:</span><br><span class="line">        <span class="keyword">raise</span> AttributeError(<span class="string">&quot;unable to access item &#x27;%s&#x27;&quot;</span> % item)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kb = AttribDict()</span><br><span class="line"><span class="built_in">print</span> kb.a</span><br></pre></td></tr></table></figure>
+<p>执行<code>print kb.a</code>的时候,访问一个不存在的属性的时候,会隐式调用<code>__getattr__</code>这个super method.</p>
+<p>当属性不存在的时候,<code>__getattr__</code>会raise an AttributeError exception.</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>默认的<code>__getattr__</code>的报错:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &#x27;AttribDict&#x27; object has no attribute &#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+<li class="lvl-2">
+<p>修改过的<code>__getattr__</code>的报错:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: unable to access item &#x27;a&#x27;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>额,效果只是让错误输出更友好而已…</p>
+<hr />
+<h2 id="getstate-序列化"><code>__getstate__</code> 序列化</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__getstate__</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">return</span> self.__dict__</span><br></pre></td></tr></table></figure>
+<p>代替对象的__dict__属性被保存。</p>
+<p>当对象pickled，你可返回一个自定义的状态被保存。当对象unpickled时，这个状态将会被<code>__setstate__</code>使用。</p>
+<hr />
+<h2 id="setstate-序列化"><code>__setstate__</code> 序列化</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__setstate__</span>(<span class="params">self, <span class="built_in">dict</span></span>):</span><br><span class="line">    self.__dict__ = <span class="built_in">dict</span></span><br></pre></td></tr></table></figure>
+<p>对象unpickled时，如果<code>__setstate__</code>定义对象状态会传递来代替用对象的__dict__属性。</p>
+<p>这正好跟<code>__getstate__</code>手牵手：当二者都被定义了，你可以描述对象的pickled状态，任何你想要的。</p>
+<hr />
+<h2 id="deepcopy-深复制"><code>__deepcopy__</code> 深复制</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__deepcopy__</span>(<span class="params">self, memo</span>):</span><br><span class="line">    retVal = self.__class__()</span><br><span class="line">    memo[<span class="built_in">id</span>(self)] = retVal</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> attr <span class="keyword">in</span> <span class="built_in">dir</span>(self):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> attr.startswith(<span class="string">&#x27;_&#x27;</span>):</span><br><span class="line">            value = <span class="built_in">getattr</span>(self, attr)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(value, (types.BuiltinFunctionType, types.FunctionType, types.MethodType)):</span><br><span class="line">                <span class="built_in">setattr</span>(retVal, attr, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> self.items():</span><br><span class="line">        retVal.__setitem__(key, copy.deepcopy(value, memo))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> retVal</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>对于简单的 object，用 shallow copy 和 deep copy 没区别</p>
+</blockquote>
+<blockquote>
+<p>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</p>
+</blockquote>
+<p>嵌套的复杂object,为了保证数据的独立性,要尽量的使用deepcopy.</p>
+<hr />
+<h1>好处:</h1>
+<p>kb作为一个全局的字典,保留了相关的配置信息,很多代码里都会用到这个全局的字典,暂时能想到这样的好处就是</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>大篇幅代码都用到的话,<code>dict1.key</code>比<code>dict1[&quot;key&quot;]</code>看起来更简洁.更pythonic.</p>
+</li>
+<li class="lvl-2">
+<p>可以自定义更加友好的错误输出提示信息.</p>
+</li>
+<li class="lvl-2">
+<p>扫描中断需要继续的话,可以自定义序列化的内容,便于自己保存对象.</p>
+</li>
+</ul>
+<hr />
+<h1>相关知识点:</h1>
+<h2 id="special-method">special method:</h2>
+<h3 id="特殊之处在哪呢">特殊之处在哪呢?</h3>
+<p>它的特殊之处在于:</p>
+<p>如果把Python当成一个<code>framework</code>的话，这些预留的特殊方法相当于接口<code>interface</code>.</p>
+<p>你可以通过这些接口,使得<code>your-object</code>就跟<code>built-in object</code>高度一致,也能复用到<code>built in-object</code>原有的强大的功能.</p>
+<hr />
+<h2 id="有哪些类型的接口呢">有哪些类型的接口呢?</h2>
+<p>可以在以下这些方面定制你自己的类:</p>
+<ol>
+<li class="lvl-3">
+<p>构造和初始化</p>
+</li>
+<li class="lvl-3">
+<p>控制属性访问</p>
+</li>
+<li class="lvl-3">
+<p>创建自定义容器</p>
+</li>
+<li class="lvl-3">
+<p>反射</p>
+</li>
+<li class="lvl-3">
+<p>可调用的对象</p>
+</li>
+<li class="lvl-3">
+<p>上下文管理</p>
+</li>
+<li class="lvl-3">
+<p>创建对象描述器</p>
+</li>
+<li class="lvl-3">
+<p>复制</p>
+</li>
+</ol>
+<hr />
+<h3 id="什么时候会用到特殊方法呢">什么时候会用到特殊方法呢?</h3>
+<p><strong>原有的数据类型的功能不能满足你的要求.</strong></p>
+<p>例子:</p>
+<ol>
+<li class="lvl-3">
+<p>你可以像sqlmap这里的<code>AttribDict</code>在原生字典的基础上构造自己符合自己项目的数据类型.</p>
+</li>
+<li class="lvl-3">
+<p>自带的<code>dict</code>是无序的,如果你想用有序的字典.你可以用<code>collections</code>模块的<code>OrderedDict</code>.而这个<code>OrderedDict</code>就是在<code>dict</code>的基础上拓展来的.</p>
+</li>
+</ol>
+<hr />
+<h2 id="dict-对象的属性系统"><code>__dict__</code> 对象的属性系统:</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>对象的属性储存在对象的<code>__dict__</code>属性中</p>
+</li>
+<li class="lvl-2">
+<p><code>__dict__</code>为一个词典，键为属性名，对应的值为属性本身.</p>
+</li>
+</ul>
+<p>来源:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><code>类属性(class attribute)</code>: 类定义 or 根据类定义继承来的</p>
+</li>
+<li class="lvl-2">
+<p><code>对象属性(object attribute)</code>: 对象实例定义的</p>
+</li>
+</ul>
+<p>例子:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">bird</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    feather = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">chicken</span>(<span class="title class_ inherited__">bird</span>):</span><br><span class="line">    fly = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, age</span>):</span><br><span class="line">        self.age = age</span><br><span class="line"></span><br><span class="line">summer = chicken(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(bird.__dict__)</span><br><span class="line"><span class="built_in">print</span>(chicken.__dict__)</span><br><span class="line"><span class="built_in">print</span>(summer.__dict__)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bird对象属性 比如feather</span></span><br><span class="line">&#123;<span class="string">&#x27;__dict__&#x27;</span>: &lt;attribute <span class="string">&#x27;__dict__&#x27;</span> of <span class="string">&#x27;bird&#x27;</span> objects&gt;, <span class="string">&#x27;__module__&#x27;</span>: <span class="string">&#x27;__main__&#x27;</span>, <span class="string">&#x27;__weakref__&#x27;</span>: &lt;attribute <span class="string">&#x27;__weakref__&#x27;</span> of <span class="string">&#x27;bird&#x27;</span> objects&gt;, <span class="string">&#x27;feather&#x27;</span>: <span class="literal">True</span>, <span class="string">&#x27;__doc__&#x27;</span>: <span class="literal">None</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># chicken对象属性 比如fly和__init__方法</span></span><br><span class="line">&#123;<span class="string">&#x27;fly&#x27;</span>: <span class="literal">False</span>, <span class="string">&#x27;__module__&#x27;</span>: <span class="string">&#x27;__main__&#x27;</span>, <span class="string">&#x27;__doc__&#x27;</span>: <span class="literal">None</span>, <span class="string">&#x27;__init__&#x27;</span>: &lt;function __init__ at <span class="number">0x2b91db476d70</span>&gt;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># summer对象属性 比如age</span></span><br><span class="line">&#123;<span class="string">&#x27;age&#x27;</span>: <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>有一些属性，比如<code>__doc__</code>，并不是由我们定义的，而是由Python自动生成。</p>
+<p>此外，bird类也有父类，是object类(正如我们的bird定义，<code>class bird(object)</code>)。</p>
+<p>这个object类是Python中所有类的父类。</p>
+<p>可以看到，<strong>Python中的属性是分层定义的</strong>，比如这里分为<code>object/bird/chicken/summer</code>这四层。</p>
+<p><strong>当我们需要调用某个属性的时候，Python会一层层向上遍历，直到找到那个属性。</strong>(某个属性可能出现再不同的层被重复定义，Python向上的过程中，会选取先遇到的那一个，也就是比较低层的属性定义)。</p>
+<p>当我们有一个summer对象的时候，分别查询summer对象、chicken类、bird类以及object类的属性，就可以知道summer对象所有的<code>__dict__</code>，就可以找到通过对象summer可以调用和修改的所有属性了.</p>
+<p>refs: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html">Python深入03 对象的属性</a></p>
+<hr />
+<h2 id="deep-copy和shadow-copy">deep copy和shadow copy:</h2>
+<blockquote>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>我们寻常意义的复制就是深复制，即将被复制对象完全再复制一遍作为独立的新个体单独存在。所以改变原有被复制对象不会对已经复制出来的新对象产生影响。</p>
+</li>
+<li class="lvl-2">
+<p>而浅复制并不会产生一个独立的对象单独存在，他只是将原有的数据块打上一个新标签，所以当其中一个标签被改变的时候，数据块就会发生变化，另一个标签也会随之改变。这就和我们寻常意义上的复制有所不同了。</p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>对于简单的 object，用 shallow copy 和 deep copy 没区别</p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul class="lvl-1">
+<li class="lvl-2">
+<p>复杂的 object， 如 list 中套着 list 的情况，shallow copy 中的 子list，并未从原 object 真的「独立」出来。也就是说，如果你改变原 object 的子 list 中的一个元素，你的 copy 就会跟着一起变。这跟我们直觉上对「复制」的理解不同。</p>
+</li>
+</ul>
+</blockquote>
+<p>refs: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hokky/p/8476698.html">Python-copy()与deepcopy()区别</a></p>
+<hr />
+<h1>refs:</h1>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2033150/subclassing-dict-should-dict-init-be-called">Subclassing dict: should dict.<strong>init</strong>() be called?</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/yuxinleipp/article/details/7869290">Python 方法调用机制</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12627949/python-override-getstate-and-setstate">Python, override__getstate__() and <strong>setstate</strong>()</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/codingwithme/article/details/41675679">sqlmap源码阅读之基础(dict,sys)</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="http://python.jobbole.com/88367/">Python 魔术方法 - Magic Method</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://pycoders-weekly-chinese.readthedocs.io/en/latest/issue6/a-guide-to-pythons-magic-methods.html#id13">Python 魔术方法指南</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://docs.python.org/2/reference/datamodel.html#customizing-attribute-access">3. Data model</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/vamei/archive/2012/12/11/2772448.html">Python深入03 对象的属性</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/blackmatrix/p/5630515.html">Python新式类与经典类的区别</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.peterbe.com/plog/must__deepcopy__">When to <strong>deepcopy</strong> classes in Python</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hokky/p/8476698.html">Python-copy()与deepcopy()区别</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/6283.html" rel="bookmark">Tools-Dsss源码-100行的SqliScanner-源码分析笔记</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/55439.html" rel="bookmark">Tools-Sqlmap源码-checkSameHost函数的疑问</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/25290.html" rel="bookmark">Tools-Sqlmap源码-请求参数的检验和解析(二)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/41582.html" rel="bookmark">Tools-Sqlmap源码-请求参数的检验和解析(一)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/24097.html" rel="bookmark">Tools-XSScon源码-Simple XSS Scanner tool</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SourceCodeReading/" rel="tag"># SourceCodeReading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/55439.html" rel="prev" title="Tools-Sqlmap源码-checkSameHost函数的疑问">
+      <i class="fa fa-chevron-left"></i> Tools-Sqlmap源码-checkSameHost函数的疑问
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/6753.html" rel="next" title="TechNotes-Python-dynamic typing">
+      TechNotes-Python-dynamic typing <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">pre:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">AttribDict组成:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="nav-number">2.1.</span> <span class="nav-text">定义:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.2.</span> <span class="nav-text">__init__ 初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setattr-%E5%AF%B9%E4%B8%80%E4%B8%AA%E5%B1%9E%E6%80%A7%E8%B5%8B%E5%80%BC"><span class="nav-number">2.3.</span> <span class="nav-text">__setattr__ 对一个属性赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getattr-%E8%AE%BF%E9%97%AE%E4%B8%80%E4%B8%AA%E4%B8%8D%E5%AD%98%E5%9C%A8%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">2.4.</span> <span class="nav-text">__getattr__ 访问一个不存在的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getstate-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.5.</span> <span class="nav-text">__getstate__ 序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setstate-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.6.</span> <span class="nav-text">__setstate__ 序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deepcopy-%E6%B7%B1%E5%A4%8D%E5%88%B6"><span class="nav-number">2.7.</span> <span class="nav-text">__deepcopy__ 深复制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">好处:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">相关知识点:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#special-method"><span class="nav-number">4.1.</span> <span class="nav-text">special method:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E4%B9%8B%E5%A4%84%E5%9C%A8%E5%93%AA%E5%91%A2"><span class="nav-number">4.1.1.</span> <span class="nav-text">特殊之处在哪呢?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%91%A2"><span class="nav-number">4.2.</span> <span class="nav-text">有哪些类型的接口呢?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E7%94%A8%E5%88%B0%E7%89%B9%E6%AE%8A%E6%96%B9%E6%B3%95%E5%91%A2"><span class="nav-number">4.2.1.</span> <span class="nav-text">什么时候会用到特殊方法呢?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dict-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.3.</span> <span class="nav-text">__dict__ 对象的属性系统:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-copy%E5%92%8Cshadow-copy"><span class="nav-number">4.4.</span> <span class="nav-text">deep copy和shadow copy:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text">refs:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">950k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:24</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

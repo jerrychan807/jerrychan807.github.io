@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="下载&amp;安装： java1.8: 卸载： 1# rpm -qa|grep java           ／／ 查看jdk的信息 一般将获得如下信息： java-1.4.2-gcj-compat-1.4.2.0-40jpp.115 java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5 12# yum -y remove java java-1.4.2-gcj-compa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DevRecord-记录-日志分析环境搭建">
+<meta property="og:url" content="https://jerrychan807.github.io/2018/34966.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="下载&amp;安装： java1.8: 卸载： 1# rpm -qa|grep java           ／／ 查看jdk的信息 一般将获得如下信息： java-1.4.2-gcj-compat-1.4.2.0-40jpp.115 java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5 12# yum -y remove java java-1.4.2-gcj-compa">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-06-03T06:36:34.000Z">
+<meta property="article:modified_time" content="2025-09-11T13:17:00.979Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2018/34966.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DevRecord-记录-日志分析环境搭建 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2018/34966.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DevRecord-记录-日志分析环境搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-06-03 14:36:34" itemprop="dateCreated datePublished" datetime="2018-06-03T14:36:34+08:00">2018-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-09-11 21:17:00" itemprop="dateModified" datetime="2025-09-11T21:17:00+08:00">2025-09-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>下载&amp;安装：</h1>
+<h2 id="java1-8">java1.8:</h2>
+<p>卸载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># rpm -qa|grep java           ／／ 查看jdk的信息</span><br></pre></td></tr></table></figure>
+<p>一般将获得如下信息：<br />
+java-1.4.2-gcj-compat-1.4.2.0-40jpp.115<br />
+java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># yum -y remove java java-1.4.2-gcj-compat-1.4.2.0-40jpp.115／／ 卸载  </span><br><span class="line">yum -y remove  java-1.6.0-openjdk-1.6.0.0-1.7.b09.el5</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-cookies --no-check-certificate --header &quot;Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie&quot; &quot;http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.rpm&quot;</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="xampp">xampp:</h2>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/caicaizi/p/5107834.html">原创）CentOS6.4下安装xampp（一定要在linux上下载）</a></p>
+<p><a href="zerfew.blog.163.com/blog/static/193810169201511224353649/">RedHat中xampp的lampp开启失败提示“aaa proftpd[48908]⚠️ unable to determine IP address of ‘aaa’”解决办法</a></p>
+<hr />
+<p>dvwa环境:<code>http://192.168.199.244:8080/dvwa/index.php</code></p>
+<hr />
+<h2 id="Elasticsearch">Elasticsearch:</h2>
+<p><code>wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.1.rpm </code></p>
+<p><code>sudo rpm --install elasticsearch-5.6.1.rpm </code></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><a href="www.cnblogs.com/yswenli/p/6397351.html">centos 7安装es 及异常处理</a></p>
+</li>
+<li class="lvl-2">
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/feinifi/article/details/73633235?utm_source=itdadao&amp;utm_medium=referral">elasticsearch启动错误</a></p>
+</li>
+</ul>
+<hr />
+<h3 id="ElasticSearch分词器设置">ElasticSearch分词器设置</h3>
+<p><code>http://192.168.0.38:9200/_template/web_apache_template</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;template&quot;: &quot;web-apache-*&quot;,</span><br><span class="line">  &quot;order&quot;:2,</span><br><span class="line">  &quot;settings&quot;: &#123;</span><br><span class="line">    &quot;analysis&quot;: &#123;  </span><br><span class="line">      &quot;analyzer&quot;: &#123;   </span><br><span class="line">        &quot;charSplit&quot;: &#123;  </span><br><span class="line">          &quot;type&quot;: &quot;custom&quot;,  </span><br><span class="line">              &quot;tokenizer&quot;: &quot;ngram_tokenizer&quot;  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;,  </span><br><span class="line">     &quot;tokenizer&quot;: &#123;  </span><br><span class="line">           &quot;ngram_tokenizer&quot;: &#123;  </span><br><span class="line">             &quot;type&quot;: &quot;nGram&quot;,  </span><br><span class="line">             &quot;min_gram&quot;: &quot;1&quot;,  </span><br><span class="line">             &quot;max_gram&quot;: &quot;1&quot;,  </span><br><span class="line">             &quot;token_chars&quot;: [  </span><br><span class="line">               &quot;letter&quot;,  </span><br><span class="line">               &quot;digit&quot;,  </span><br><span class="line">               &quot;punctuation&quot;  </span><br><span class="line">             ]  </span><br><span class="line">           &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;  </span><br><span class="line">  &#125;,&quot;mappings&quot;: &#123;</span><br><span class="line"></span><br><span class="line">    &quot;apache-access&quot;: &#123;</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">            &quot;raw_request&quot;: &#123;  </span><br><span class="line">					     &quot;type&quot;: &quot;text&quot;,  </span><br><span class="line">					     &quot;store&quot;: &quot;yes&quot;,  </span><br><span class="line">					     &quot;analyzer&quot;: &quot;charSplit&quot;</span><br><span class="line">					&#125;,  </span><br><span class="line">            &quot;method&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;offset&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;long&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;auth&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;input_type&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">            &quot;http_version&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;float&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;read_timestamp&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;date&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;source&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;type&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;tags&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;@timestamp&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;date&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;bytes&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;long&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;@version&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;beat&quot;: &#123;</span><br><span class="line">                &quot;properties&quot;: &#123;</span><br><span class="line">                    &quot;hostname&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;name&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;version&quot;: &#123;</span><br><span class="line">                        &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;host&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;client_ip&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;status&quot;: &#123;</span><br><span class="line">                &quot;type&quot;: &quot;keyword&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="Logstash">Logstash:</h2>
+<p><code>wget https://artifacts.elastic.co/downloads/logstash/logstash-5.6.1.rpm </code></p>
+<p><code>sudo rpm --install logstash-5.6.1.rpm</code></p>
+<hr />
+<h2 id="Kibana">Kibana:</h2>
+<p><code>wget https://artifacts.elastic.co/downloads/kibana/kibana-5.6.1-x86_64.rpm </code></p>
+<p><code>sudo rpm --install kibana-5.6.1-x86_64.rpm </code></p>
+<p>修改<code>/etc/kibana/kibana.yml</code>添加<code>server.host:0.0.0.0</code></p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/13876.html" rel="bookmark">DevRecord-记录-Centos7 Docker部署漏洞环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/35604.html" rel="bookmark">DevRecord-记录-Centos7下root运行Chrome</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/34058.html" rel="bookmark">DevRecord-记录-Centos7安装py环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/53360.html" rel="bookmark">DevRecord-记录-RabbitMq-Install</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2019/32026.html" rel="bookmark">DevRecord-记录-Centos7系统安装</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dev/" rel="tag"># Dev</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/32034.html" rel="prev" title="TechNotes-Celery-任务调度框架实践">
+      <i class="fa fa-chevron-left"></i> TechNotes-Celery-任务调度框架实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/14550.html" rel="next" title="Security-BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析">
+      Security-BlueCMS-v1.6-sp1-admin-login.phpSQL注入漏洞分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">下载&amp;安装：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java1-8"><span class="nav-number">1.1.</span> <span class="nav-text">java1.8:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xampp"><span class="nav-number">1.2.</span> <span class="nav-text">xampp:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch"><span class="nav-number">1.3.</span> <span class="nav-text">Elasticsearch:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ElasticSearch%E5%88%86%E8%AF%8D%E5%99%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.3.1.</span> <span class="nav-text">ElasticSearch分词器设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logstash"><span class="nav-number">1.4.</span> <span class="nav-text">Logstash:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kibana"><span class="nav-number">1.5.</span> <span class="nav-text">Kibana:</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">161</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">950k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:24</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
