@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrychan807.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Telegram-Wallet-usdt-usde年化理财安全性分析 结论先说：这个“Telegram Wallet → Dollars Earn（USDT换成 USDe 拿 17% 年化）”不是骗局式的野生盘，但绝不是无风险、保本型理财。 它本质上是把你的 USDT 自动兑换成 Ethena 的合成稳定币 USDe，收益一部分来自 Ethena 协议的策略收益，另一部分是 Wallet 官方短期">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CryptoAI-Telegram-Wallet-usdt-usde年化理财安全性分析">
+<meta property="og:url" content="https://jerrychan807.github.io/2025/50984.html">
+<meta property="og:site_name" content="Trash Bin">
+<meta property="og:description" content="Telegram-Wallet-usdt-usde年化理财安全性分析 结论先说：这个“Telegram Wallet → Dollars Earn（USDT换成 USDe 拿 17% 年化）”不是骗局式的野生盘，但绝不是无风险、保本型理财。 它本质上是把你的 USDT 自动兑换成 Ethena 的合成稳定币 USDe，收益一部分来自 Ethena 协议的策略收益，另一部分是 Wallet 官方短期">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-09-14T14:36:34.000Z">
+<meta property="article:modified_time" content="2025-10-10T12:10:02.568Z">
+<meta property="article:author" content="Foolisheddy">
+<meta property="article:tag" content="CryptoAI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrychan807.github.io/2025/50984.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>CryptoAI-Telegram-Wallet-usdt-usde年化理财安全性分析 | Trash Bin</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Trash Bin</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://jerrychan807.github.io/2025/50984.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+      <meta itemprop="name" content="Foolisheddy">
+      <meta itemprop="description" content="温故而知新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Trash Bin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CryptoAI-Telegram-Wallet-usdt-usde年化理财安全性分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-09-14 22:36:34" itemprop="dateCreated datePublished" datetime="2025-09-14T22:36:34+08:00">2025-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-10-10 20:10:02" itemprop="dateModified" datetime="2025-10-10T20:10:02+08:00">2025-10-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CryptoAI/" itemprop="url" rel="index"><span itemprop="name">CryptoAI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Telegram-Wallet-usdt-usde年化理财安全性分析</h1>
+<p>结论先说：这个“Telegram Wallet → Dollars Earn（USDT换成 USDe 拿 17% 年化）”不是骗局式的野生盘，但<strong>绝不是无风险、保本型理财</strong>。<br />
+它本质上是把你的 USDT 自动兑换成 Ethena 的合成稳定币 <strong>USDe</strong>，收益一部分来自 Ethena 协议的策略收益，另一部分是 Wallet 官方短期“加息活动”的<strong>奖励池</strong>（Boosted APY），活动随时会变，且条款里写明极端情况下可能<strong>暂停提币</strong>、USDe 也可能<strong>脱锚</strong>。</p>
+<h2 id="这到底是什么">这到底是什么</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>你在 Telegram 的 <strong>Wallet（Crypto Wallet）</strong> 里点 Earn，<strong>USDT 会被自动换成 USDe</strong>，按日计入奖励。当前“Boosted APY”阶段显示到 <strong>17%</strong>，但只有<strong>前 25,000 USDe</strong>享受加成，且持续时间受奖励池余额限制，<strong>基础 APY 每周波动</strong>。可随时换回 USDT，但按<strong>当时汇率结算</strong>（若 USDe&lt;1，会少拿）。</p>
+</li>
+<li class="lvl-2">
+<p>这是 Wallet 官方与 <strong>Ethena</strong> 的联动活动，条款写得很白：这是“活动/奖励”，<strong>不是存款或受监管的储蓄产品</strong>。</p>
+</li>
+</ul>
+<h2 id="收益从哪来，核心风险在哪">收益从哪来，核心风险在哪</h2>
+<p><strong>Ethena/USDe 机制</strong></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>USDe 通过<strong>现货 + 永续/期货空头</strong>对冲做“合成美元”，主要收入来自：</p>
+</li>
+<li class="lvl-2">
+<p>① 质押 ETH 的奖励；</p>
+</li>
+<li class="lvl-2">
+<p>② 做空永续的<strong>资金费 &amp; 基差</strong>；</p>
+</li>
+<li class="lvl-2">
+<p>③ 协议持有的“可生息稳定币”的固定收益。各部分占比会动态调整。</p>
+</li>
+<li class="lvl-2">
+<p><strong>关键风险：资金费转负</strong>（长期为负时，做空要付钱）、<strong>交易所/托管对手方风险</strong>、<strong>清算风险</strong>等；Ethena 设有<strong>储备基金</strong>、多家<strong>离场结算托管</strong>（Copper/Ceffu/Fireblocks）做缓冲，但不能消灭风险。</p>
+</li>
+</ul>
+<p><strong>Wallet 活动/平台层风险</strong></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>这是在 <strong>Telegram 的 Crypto Wallet（托管）<strong>里参与，需 <strong>KYC</strong>；<strong>条款写明：遇到 USDe 脱锚、流动性/极端波动等“不可预期情况”时，Wallet 可</strong>暂时</strong>限制或暂停 Earn 账户的</strong>提现**。</p>
+</li>
+</ul>
+<h2 id="Ethena-官方风险要点（精简版）">Ethena 官方风险要点（精简版）</h2>
+<p><a target="_blank" rel="noopener" href="https://docs.ethena.fi/solution-overview/risks">refs</a></p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>融资风险（Funding Risk）：永续资金费长期为负导致对冲成本上升；缓释：设立储备基金兜底，低/负资金费期提高“可生息稳定币”配置，资金费历史呈正偏与均值回归。</p>
+</li>
+<li class="lvl-2">
+<p>清算风险（Liquidation Risk）：背书资产（如LST、稳定币）与衍生品标的不完全一致，极端价差下交易所按“无损原则”可能递增式平仓；缓释：极低实质杠杆、严格保证金/发夹式减仓、LST-ETH历史价差小、资产与场景分散。</p>
+</li>
+<li class="lvl-2">
+<p>托管风险（Custodial Risk）：依赖离场结算/托管商（OES）的可用性、运营与存续；缓释：多托管分散、资产隔离（破产隔离信托/MPC）、频繁日结PnL（如 Copper ClearLoop）。</p>
+</li>
+<li class="lvl-2">
+<p>交易所失败风险（Exchange Failure Risk）：交易所宕机/破产时仅暴露结算周期内的未结PnL与对冲缺口；缓释：现货永不入所、快速迁移对冲到其他所、交易所分散与持续风控监测。</p>
+</li>
+<li class="lvl-2">
+<p>支持资产风险（Backing Assets Risk）：LST等背书资产潜在脱锚/流动性骤降；缓释：选取行业支持度高、历史稳健的LST，LST占比低（约6%），更紧的发型折扣与风控参数。</p>
+</li>
+<li class="lvl-2">
+<p>稳定币相关风险（Stablecoin-Related Risks）：USDC/USDT等集中稳定币的监管/托管/银行体系与审查风险；缓释：仅在市场压力期动态提高稳定币权重以护盘，承认发行方条款与信用风险，不长期重仓。</p>
+</li>
+<li class="lvl-2">
+<p>保证金抵押风险（Margin Collateral Risks）：线性USDT计价永续使头寸对USDT有单边敞口；缓释：持续监控USDT稳定性，必要时转向逆向（BTC/ETH保证金）合约降低USDT敞口。</p>
+</li>
+</ul>
+<h2 id="推特（X）与业内声音怎么说">推特（X）与业内声音怎么说</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>官方口径：TON/Ethena 多次宣传“USDe/tsUSDe 在 Telegram 可赚 <strong>10–18% APY</strong>”，强调一键收益与生态扩张。</p>
+</li>
+<li class="lvl-2">
+<p>行业媒体/KOL：</p>
+<ul class="lvl-2">
+<li class="lvl-4"><strong>WuBlockchain</strong> 等报道了 Ethena 与 TON 的整合，把收益带进 Telegram 生态。</li>
+<li class="lvl-4">也有交易员/研究号持续提醒 <strong>Ethena 的资金费风险与潜在脱锚尾部风险</strong>，并给出对冲/监控建议（如 Route2FI、Y2K 等）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="给你的“安全清单”（按重要性）">给你的“安全清单”（按重要性）</h2>
+<ol>
+<li class="lvl-3">
+<p><strong>明白 17% 不是常态</strong>：其中很大一块是活动奖励池（Boosted），随时可能结束；基础 APY 每周变。</p>
+</li>
+<li class="lvl-3">
+<p><strong>资产敞口=USDe</strong>：不是USDT的银行存款。USDe若短暂脱锚（&lt;1），你换回 USDT 会打折。</p>
+</li>
+<li class="lvl-3">
+<p><strong>平台条款风险</strong>：Wallet 有权在极端情况下<strong>限制/延迟提现</strong>；这不是受存款保险保护的产品。</p>
+</li>
+<li class="lvl-3">
+<p><strong>协议风险</strong>：Ethena 收益对<strong>市场资金费</strong>高度敏感；若资金费长期为负，靠储备金顶，储备不足会传导到稳定性。</p>
+</li>
+<li class="lvl-3">
+<p><strong>托管/对手方</strong>：虽有离场结算和托管多元化，但仍存在<strong>集中托管/交易所失灵</strong>的尾部风险。</p>
+</li>
+</ol>
+<h2 id="适合谁-怎么用更稳妥">适合谁 &amp; 怎么用更稳妥</h2>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p><strong>适合</strong>：清楚理解 USDe 机制、接受波动与活动收益不确定性的加密老手；用<strong>小仓位/短周期</strong>博活动加成。</p>
+</li>
+<li class="lvl-2">
+<p><strong>不适合</strong>：把它当“余额宝/定存”的用户，或对临时提现限制完全不能接受的人。</p>
+</li>
+<li class="lvl-2">
+<p><strong>实操建议</strong>：</p>
+<ul class="lvl-2">
+<li class="lvl-4">小额试水，<strong>分批进出</strong>；设置心理止损与<strong>最大持仓上限</strong>。</li>
+<li class="lvl-4">关注：① Earn 页面的<strong>基础/Boosted APY 变动</strong>；② <strong>USDe↔USDT 汇率</strong>；③ Ethena 公告/储备金与托管<strong>月度证明</strong>。</li>
+</ul>
+</li>
+</ul>
+<h2 id="简单收益分析">简单收益分析</h2>
+<p>本金假设：10000 USDT；按单利估算（不计复利），按365天/年、12个月/年。</p>
+<table>
+<thead>
+<tr>
+<th>年化(APR)</th>
+<th style="text-align:right">每天（USDT）</th>
+<th style="text-align:right">每月（USDT）</th>
+<th style="text-align:right">每年（USDT）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5%</td>
+<td style="text-align:right">1.37</td>
+<td style="text-align:right">41.67</td>
+<td style="text-align:right">500</td>
+</tr>
+<tr>
+<td>10%</td>
+<td style="text-align:right">2.74</td>
+<td style="text-align:right">83.33</td>
+<td style="text-align:right">1000</td>
+</tr>
+<tr>
+<td>17%</td>
+<td style="text-align:right">4.66</td>
+<td style="text-align:right">141.67</td>
+<td style="text-align:right">1700</td>
+</tr>
+</tbody>
+</table>
+<p>注：实际收益按平台结算口径、资金费变动、活动加成和手续费等因素会有差异；上表仅为静态估算。</p>
+<h2 id="简单收益分析-2">简单收益分析:</h2>
+
+    </div>
+
+    
+    
+    
+      
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CryptoAI/" rel="tag"># CryptoAI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/58455.html" rel="prev" title="CryptoDailyRead-250912">
+      <i class="fa fa-chevron-left"></i> CryptoDailyRead-250912
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/41999.html" rel="next" title="DailyRead-251009-以史为鉴,历史上黄金市场的五次熊市复盘">
+      DailyRead-251009-以史为鉴,历史上黄金市场的五次熊市复盘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+<script src="https://utteranc.es/client.js"
+        repo="jerrychan807/blog-comment"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+    
+
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Telegram-Wallet-usdt-usde年化理财安全性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">这到底是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B6%E7%9B%8A%E4%BB%8E%E5%93%AA%E6%9D%A5%EF%BC%8C%E6%A0%B8%E5%BF%83%E9%A3%8E%E9%99%A9%E5%9C%A8%E5%93%AA"><span class="nav-number">1.2.</span> <span class="nav-text">收益从哪来，核心风险在哪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ethena-%E5%AE%98%E6%96%B9%E9%A3%8E%E9%99%A9%E8%A6%81%E7%82%B9%EF%BC%88%E7%B2%BE%E7%AE%80%E7%89%88%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">Ethena 官方风险要点（精简版）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E7%89%B9%EF%BC%88X%EF%BC%89%E4%B8%8E%E4%B8%9A%E5%86%85%E5%A3%B0%E9%9F%B3%E6%80%8E%E4%B9%88%E8%AF%B4"><span class="nav-number">1.4.</span> <span class="nav-text">推特（X）与业内声音怎么说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%99%E4%BD%A0%E7%9A%84%E2%80%9C%E5%AE%89%E5%85%A8%E6%B8%85%E5%8D%95%E2%80%9D%EF%BC%88%E6%8C%89%E9%87%8D%E8%A6%81%E6%80%A7%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">给你的“安全清单”（按重要性）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E5%90%88%E8%B0%81-%E6%80%8E%E4%B9%88%E7%94%A8%E6%9B%B4%E7%A8%B3%E5%A6%A5"><span class="nav-number">1.6.</span> <span class="nav-text">适合谁 &amp; 怎么用更稳妥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%94%B6%E7%9B%8A%E5%88%86%E6%9E%90"><span class="nav-number">1.7.</span> <span class="nav-text">简单收益分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%94%B6%E7%9B%8A%E5%88%86%E6%9E%90-2"><span class="nav-number">1.8.</span> <span class="nav-text">简单收益分析:</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Foolisheddy"
+      src="https://i.loli.net/2019/04/26/5cc1da1c90e1a.png">
+  <p class="site-author-name" itemprop="name">Foolisheddy</p>
+  <div class="site-description" itemprop="description">温故而知新</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">164</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jerrychan807" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jerrychan807" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:529883409@qq.com" title="E-Mail → mailto:529883409@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Foolisheddy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">959k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">14:32</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
